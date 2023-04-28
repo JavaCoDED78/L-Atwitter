@@ -9,8 +9,6 @@ import App from './App';
 import theme from "./theme";
 import {store} from "./store/store";
 
-
-
 ReactDOM.render(
     <React.StrictMode>
         <MuiThemeProvider theme={theme}>

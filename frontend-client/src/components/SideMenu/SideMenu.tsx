@@ -11,6 +11,7 @@ import {useHomeStyles} from "../../pages/Home/HomeStyles";
 import {Create} from "@material-ui/icons";
 import ModalBlock from "../ModalBlock/ModalBlock";
 import {AddTweetForm} from "../TweetForm/AddTweetForm";
+import {Link} from "react-router-dom";
 
 
 interface SideMenuProps {
@@ -31,9 +32,11 @@ const SideMenu: FC<SideMenuProps> = ({classes}: SideMenuProps): ReactElement => 
     return (
         <ul className={classes.sideMenuList}>
             <li className={classes.sideMenuListItem}>
-                <IconButton className={classes.logo} color="primary">
-                    <TwitterIcon className={classes.logoIcon}/>
-                </IconButton>
+                <Link to={"/home"}>
+                    <IconButton className={classes.logo} color="primary">
+                        <TwitterIcon className={classes.logoIcon}/>
+                    </IconButton>
+                </Link>
             </li>
             <li className={classes.sideMenuListItem}>
                 <div>
