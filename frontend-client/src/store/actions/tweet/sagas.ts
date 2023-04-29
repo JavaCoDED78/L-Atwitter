@@ -1,21 +1,24 @@
-import { LoadingState, TweetsState } from "./contracts/state";
-import { TweetsApi } from "../../../services/api/tweetsApi";
 import {
-  setTweets,
-  setTweetsLoadingState,
-  TweetsActionType,
-} from "./actionCreators";
-import { call, put, takeLatest } from "redux-saga/effects";
+  FetchTweetDataActionInterface,
+  TweetActionType,
+} from "./contracts/actionTypes";
+import { Tweet } from "../tweets/contracts/state";
+import { call, put, takeEvery } from "redux-saga/effects";
+import { TweetsApi } from "../../../services/api/tweetsApi";
+import { setTweetData, setTweetLoadingState } from "./actionCreators";
+import { LoadingState } from "./contracts/state";
 
-export function* fetchTweetsRequest() {
+export function* fetchTweetDataRequest({
+  payload: tweetId,
+}: FetchTweetDataActionInterface) {
   try {
-    const items: TweetsState["items"] = yield call(TweetsApi.fetchTweets);
-    yield put(setTweets(items));
-  } catch (e) {
-    yield put(setTweetsLoadingState(LoadingState.ERROR));
+    const data: Tweet[] = yield call(TweetsApi.fetchTweetData, tweetId);
+    yield put(setTweetData(data[0]));
+  } catch (error) {
+    yield put(setTweetLoadingState(LoadingState.ERROR));
   }
 }
 
-export function* tweetsSaga() {
-  yield takeLatest(TweetsActionType.FETCH_TWEETS, fetchTweetsRequest);
+export function* tweetSaga() {
+  yield takeEvery(TweetActionType.FETCH_TWEET_DATA, fetchTweetDataRequest);
 }

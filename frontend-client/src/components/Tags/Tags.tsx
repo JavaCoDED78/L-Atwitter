@@ -31,7 +31,7 @@ const Tags: FC<TagsProps> = ({ classes }: TagsProps): ReactElement | null => {
   return (
     <Paper className={classes.rightSideBlock}>
       <Paper className={classes.rightSideBlockHeader} variant="outlined">
-        <b>Актуальные темы</b>
+        <b>Topics</b>
       </Paper>
       <List>
         {tags.map((tag: Tag) => (

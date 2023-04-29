@@ -27,10 +27,12 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   selectIsTweetsLoading,
   selectTweetsItems,
-} from "../../store/actions/tweet/selectors";
-import { fetchTweets } from "../../store/actions/tweet/actionCreators";
+} from "../../store/actions/tweets/selectors";
+import { fetchTweets } from "../../store/actions/tweets/actionCreators";
 import { fetchTags } from "../../store/actions/tags/actionCreators";
 import { Route } from "react-router-dom";
+import BackButton from "../../components/BackButton/BackButton";
+import FullTweet from "./FullTweet";
 
 const Home: FC = (): ReactElement => {
   const classes = useHomeStyles();
@@ -52,14 +54,24 @@ const Home: FC = (): ReactElement => {
         <Grid item sm={8} md={6}>
           <Paper className={classes.tweetsWrapper} variant="outlined">
             <Paper className={classes.tweetsHeader} variant="outlined">
-              <Typography variant="h6">Home</Typography>
+              <Route path="/home/:any">
+                <BackButton />
+              </Route>
+              <Route path={["/home", "/home/search"]} exact>
+                <Typography variant="h6">Home</Typography>
+              </Route>
+              <Route path="/home/tweet">
+                <Typography variant="h6">Tweet</Typography>
+              </Route>
             </Paper>
-            <Paper>
-              <div className={classes.addForm}>
-                <AddTweetForm classes={classes} />
-              </div>
-              <div className={classes.addFormBottomLine} />
-            </Paper>
+            <Route path={["/home", "/home/search"]} exact>
+              <Paper>
+                <div className={classes.addForm}>
+                  <AddTweetForm classes={classes} />
+                </div>
+                <div className={classes.addFormBottomLine} />
+              </Paper>
+            </Route>
             <Route exact path={"/home"}>
               {isLoading ? (
                 <div className={classes.tweetsCentred}>
@@ -67,15 +79,11 @@ const Home: FC = (): ReactElement => {
                 </div>
               ) : (
                 tweets.map((tweet) => (
-                  <Tweet
-                    key={tweet._id}
-                    classes={classes}
-                    text={tweet.text}
-                    user={tweet.user}
-                  />
+                  <Tweet key={tweet._id} classes={classes} {...tweet} />
                 ))
               )}
             </Route>
+            <Route path="/home/tweet/:id" component={FullTweet} exact />
           </Paper>
         </Grid>
         <Grid item sm={3} md={3}>

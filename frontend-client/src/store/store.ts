@@ -1,20 +1,26 @@
-import {applyMiddleware, compose, createStore} from 'redux';
-import {rootReducer} from "./rootReducer";
-import {TweetsState} from "./actions/tweet/contracts/state";
-import {TagsState} from "./actions/tags/contracts/state";
-import createSagaMiddleware from 'redux-saga';
+import { applyMiddleware, compose, createStore } from "redux";
+import { rootReducer } from "./rootReducer";
+import { TweetsState } from "./actions/tweets/contracts/state";
+import { TagsState } from "./actions/tags/contracts/state";
+import createSagaMiddleware from "redux-saga";
 import rootSaga from "./saga";
 
-
 export interface RootState {
-    tweets: TweetsState;
-    tags: TagsState;
+  tweets: TweetsState;
+  tweet: TweetsState;
+  tags: TagsState;
 }
 
-const composeEnhancers = (typeof window !== 'undefined' && window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__) || compose;
+const composeEnhancers =
+  (typeof window !== "undefined" &&
+    window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__) ||
+  compose;
 
 const sagaMiddleware = createSagaMiddleware();
 
-export const store = createStore(rootReducer, composeEnhancers(applyMiddleware(sagaMiddleware)));
+export const store = createStore(
+  rootReducer,
+  composeEnhancers(applyMiddleware(sagaMiddleware))
+);
 
 sagaMiddleware.run(rootSaga);
