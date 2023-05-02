@@ -4,10 +4,11 @@ import { TweetsState } from "./actions/tweets/contracts/state";
 import { TagsState } from "./actions/tags/contracts/state";
 import createSagaMiddleware from "redux-saga";
 import rootSaga from "./saga";
+import { TweetState } from "./actions/tweet/contracts/state";
 
 export interface RootState {
   tweets: TweetsState;
-  tweet: TweetsState;
+  tweet: TweetState;
   tags: TagsState;
 }
 

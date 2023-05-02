@@ -32,11 +32,11 @@ import { fetchTweets } from "../../store/actions/tweets/actionCreators";
 import { fetchTags } from "../../store/actions/tags/actionCreators";
 import { Route } from "react-router-dom";
 import BackButton from "../../components/BackButton/BackButton";
-import FullTweet from "./FullTweet";
+import { FullTweet } from "./FullTweet";
 
 const Home: FC = (): ReactElement => {
-  const classes = useHomeStyles();
   const dispatch = useDispatch();
+  const classes = useHomeStyles();
   const tweets = useSelector(selectTweetsItems);
   const isLoading = useSelector(selectIsTweetsLoading);
 

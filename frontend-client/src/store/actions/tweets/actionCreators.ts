@@ -1,26 +1,18 @@
-import { Action } from "redux";
-import { LoadingState, TweetsState } from "./contracts/state";
-
-export enum TweetsActionType {
-  SET_TWEETS = "tweets/SET_TWEETS",
-  FETCH_TWEETS = "tweets/FETCH_TWEETS",
-  SET_LOADING_STATE = "tweets/SET_LOADING_STATE",
-}
-
-export interface SetTweetsActionInterface extends Action<TweetsActionType> {
-  type: TweetsActionType.SET_TWEETS;
-  payload: TweetsState["items"];
-}
-
-export interface FetchTweetsActionInterface extends Action<TweetsActionType> {
-  type: TweetsActionType.FETCH_TWEETS;
-}
-
-export interface SetTweetsLoadingStateInterface
-  extends Action<TweetsActionType> {
-  type: TweetsActionType.SET_LOADING_STATE;
-  payload: LoadingState;
-}
+import {
+  AddFormState,
+  LoadingState,
+  Tweet,
+  TweetsState,
+} from "./contracts/state";
+import {
+  AddTweetActionInterface,
+  FetchAddTweetActionInterface,
+  FetchTweetsActionInterface,
+  SetAddFormStateInterface,
+  SetTweetsActionInterface,
+  SetTweetsLoadingStateInterface,
+  TweetsActionType,
+} from "./contracts/actionTypes";
 
 export const setTweets = (
   payload: TweetsState["items"]
@@ -29,8 +21,16 @@ export const setTweets = (
   payload,
 });
 
-export const fetchTweets = (): FetchTweetsActionInterface => ({
-  type: TweetsActionType.FETCH_TWEETS,
+export const addTweet = (payload: Tweet): AddTweetActionInterface => ({
+  type: TweetsActionType.ADD_TWEET,
+  payload,
+});
+
+export const fetchAddTweet = (
+  payload: string
+): FetchAddTweetActionInterface => ({
+  type: TweetsActionType.FETCH_ADD_TWEET,
+  payload,
 });
 
 export const setTweetsLoadingState = (
@@ -40,7 +40,13 @@ export const setTweetsLoadingState = (
   payload,
 });
 
-export type TweetsActions =
-  | SetTweetsActionInterface
-  | FetchTweetsActionInterface
-  | SetTweetsLoadingStateInterface;
+export const setAddFormState = (
+  payload: AddFormState
+): SetAddFormStateInterface => ({
+  type: TweetsActionType.SET_ADD_FORM_STATE,
+  payload,
+});
+
+export const fetchTweets = (): FetchTweetsActionInterface => ({
+  type: TweetsActionType.FETCH_TWEETS,
+});

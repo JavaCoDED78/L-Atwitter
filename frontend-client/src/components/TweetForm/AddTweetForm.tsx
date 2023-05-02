@@ -9,6 +9,11 @@ import {
 import IconButton from "@material-ui/core/IconButton";
 import { ImageOutlined, SentimentSatisfiedOutlined } from "@material-ui/icons";
 import classNames from "classnames";
+import { useDispatch, useSelector } from "react-redux";
+import { selectAddFormState } from "../../store/actions/tweets/selectors";
+import { fetchAddTweet } from "../../store/actions/tweets/actionCreators";
+import { AddFormState } from "../../store/actions/tweets/contracts/state";
+import { Alert } from "@material-ui/lab";
 
 interface AddTweetFormProps {
   classes: ReturnType<typeof useHomeStyles>;
@@ -21,6 +26,8 @@ export const AddTweetForm: React.FC<AddTweetFormProps> = ({
   classes,
   maxRows,
 }: AddTweetFormProps): React.ReactElement => {
+  const dispatch = useDispatch();
+  const addFormState = useSelector(selectAddFormState);
   const [text, setText] = React.useState<string>("");
   const textLimitPercent = Math.round((text.length / 320) * 100);
   const textCount = MAX_LENGTH - text.length;
@@ -34,6 +41,7 @@ export const AddTweetForm: React.FC<AddTweetFormProps> = ({
   };
 
   const handleClickAddTweet = (): void => {
+    dispatch(fetchAddTweet(text));
     setText("");
   };
 
@@ -93,14 +101,30 @@ export const AddTweetForm: React.FC<AddTweetFormProps> = ({
           )}
           <Button
             onClick={handleClickAddTweet}
-            disabled={text.length >= MAX_LENGTH}
+            disabled={
+              addFormState === AddFormState.LOADING ||
+              !text ||
+              text.length >= MAX_LENGTH
+            }
             color="primary"
             variant="contained"
           >
-            Tweet
+            {addFormState === AddFormState.LOADING ? (
+              <CircularProgress color="inherit" size={16} />
+            ) : (
+              "Tweet"
+            )}
           </Button>
         </div>
       </div>
+      {addFormState === AddFormState.ERROR && (
+        <Alert severity="error">
+          Error adding Tweet{" "}
+          <span aria-label="emoji-plak" role="img">
+            😞
+          </span>
+        </Alert>
+      )}
     </div>
   );
 };

@@ -22,3 +22,8 @@ export interface FetchTweetDataActionInterface extends Action<TweetActionType> {
   type: TweetActionType.FETCH_TWEET_DATA;
   payload: string;
 }
+
+export type TweetActions =
+  | SetTweetDataActionInterface
+  | SetTweetDataLoadingStateInterface
+  | FetchTweetDataActionInterface;
