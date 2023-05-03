@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -19,4 +21,5 @@ public class UserResponse {
     private String about;
     private String website;
     private boolean confirmed;
+    private List<TweetResponse> tweets;
 }

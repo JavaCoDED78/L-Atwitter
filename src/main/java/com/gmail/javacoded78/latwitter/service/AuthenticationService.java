@@ -1,12 +1,11 @@
 package com.gmail.javacoded78.latwitter.service;
 
+import com.gmail.javacoded78.latwitter.dto.response.AuthenticationResponse;
 import com.gmail.javacoded78.latwitter.model.User;
-
-import java.util.Map;
 
 public interface AuthenticationService {
 
-    Map<String, Object> login(String email);
+     AuthenticationResponse login(String email);
 
     boolean registration(User user);
 

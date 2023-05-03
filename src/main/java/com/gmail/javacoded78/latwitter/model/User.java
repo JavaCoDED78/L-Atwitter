@@ -4,6 +4,7 @@ import lombok.*;
 import lombok.experimental.FieldNameConstants;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name = "users")
@@ -29,4 +30,7 @@ public class User {
     private String passwordResetCode;
     private String role;
     private boolean active;
+
+    @OneToMany
+    private List<Tweet> tweets;
 }

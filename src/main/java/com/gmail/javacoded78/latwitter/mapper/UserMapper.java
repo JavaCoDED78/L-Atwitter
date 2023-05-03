@@ -1,15 +1,18 @@
 package com.gmail.javacoded78.latwitter.mapper;
 
 import com.gmail.javacoded78.latwitter.dto.request.RegistrationRequest;
+import com.gmail.javacoded78.latwitter.dto.request.TweetRequest;
+import com.gmail.javacoded78.latwitter.dto.response.TweetResponse;
 import com.gmail.javacoded78.latwitter.dto.response.UserResponse;
+import com.gmail.javacoded78.latwitter.model.Tweet;
 import com.gmail.javacoded78.latwitter.model.User;
 import com.gmail.javacoded78.latwitter.service.UserService;
-import com.gmail.javacoded78.latwitter.service.impl.AuthenticationServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 
-import java.util.Map;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
@@ -17,41 +20,46 @@ public class UserMapper {
 
     private final ModelMapper modelMapper;
     private final UserService userService;
-    private final AuthenticationServiceImpl authenticationService;
 
-    private UserResponse convertToResponseDto(User user) {
+    UserResponse convertToUserResponse(User user) {
         return modelMapper.map(user, UserResponse.class);
     }
 
-    private User convertToEntity(RegistrationRequest registrationRequest) {
+    private Tweet convertToTweetEntity(TweetRequest tweetRequest) {
+        return modelMapper.map(tweetRequest, Tweet.class);
+    }
+
+    private TweetResponse convertToTweetResponse(Tweet tweet) {
+        return modelMapper.map(tweet, TweetResponse.class);
+    }
+
+    private List<TweetResponse> convertListToResponseDto(List<Tweet> tweets) {
+        return tweets.stream()
+                .map(this::convertToTweetResponse)
+                .collect(Collectors.toList());
+    }
+
+    User convertToEntity(RegistrationRequest registrationRequest) {
         return modelMapper.map(registrationRequest, User.class);
     }
 
     public UserResponse getUserById(Long userId) {
-        return convertToResponseDto(userService.getUserById(userId));
+        return convertToUserResponse(userService.getUserById(userId));
     }
 
-    public Map<String, Object> login(String email) {
-        return authenticationService.login(email);
+    public List<TweetResponse> getTweets() {
+        return convertListToResponseDto(userService.getTweets());
     }
 
-    public boolean registration(RegistrationRequest registrationRequest) {
-        return authenticationService.registration(convertToEntity(registrationRequest));
+    public TweetResponse getTweetById(Long tweetId) {
+        return convertToTweetResponse(userService.getTweetById(tweetId));
     }
 
-    public boolean activateUser(String code) {
-        return authenticationService.activateUser(code);
+    public List<TweetResponse> createTweet(TweetRequest tweetRequest) {
+        return convertListToResponseDto(userService.createTweet(convertToTweetEntity(tweetRequest)));
     }
 
-    public boolean sendPasswordResetCode(String email) {
-        return authenticationService.sendPasswordResetCode(email);
-    }
-
-    public UserResponse findByPasswordResetCode(String code) {
-        return convertToResponseDto(authenticationService.findByPasswordResetCode(code));
-    }
-
-    public String passwordReset(String email, String password) {
-        return authenticationService.passwordReset(email, password);
+    public List<TweetResponse> deleteTweet(Long tweetId) {
+        return convertListToResponseDto(userService.deleteTweet(tweetId));
     }
 }
