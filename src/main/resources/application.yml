@@ -1,0 +1,38 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5434/twitter
+    username: postgres
+    password: postgres
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    properties.hibernate:
+      batch_size: 50
+      fetch_size: 50
+      show_sql: true
+      format_sql: true
+    open-in-view: false
+    hibernate:
+      ddl-auto: update
+  mail:
+    host: smtp.gmail.com
+    username: perfumestoreapp@gmail.com
+    password: oggmtuvzwyxbvifk
+    port: 465
+    protocol: smtps
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
+jwt:
+  header: Authorization
+  secret:  qwerty
+  expiration: 6000000
+
+hostname: localhost:3000
+
+mail:
+  debug: false
