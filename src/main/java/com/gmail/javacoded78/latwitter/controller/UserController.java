@@ -1,5 +1,7 @@
 package com.gmail.javacoded78.latwitter.controller;
 
+import com.fasterxml.jackson.annotation.JsonView;
+import com.gmail.javacoded78.latwitter.dto.Views;
 import com.gmail.javacoded78.latwitter.dto.request.TweetRequest;
 import com.gmail.javacoded78.latwitter.dto.response.TweetResponse;
 import com.gmail.javacoded78.latwitter.dto.response.UserResponse;
@@ -18,11 +20,13 @@ public class UserController {
     private final UserMapper userMapper;
 
     @GetMapping("/{userId}")
+    @JsonView(Views.User.class)
     public ResponseEntity<UserResponse> getUserById(@PathVariable Long userId) {
         return ResponseEntity.ok(userMapper.getUserById(userId));
     }
 
     @GetMapping("/tweets")
+    @JsonView(Views.Tweet.class)
     public ResponseEntity<List<TweetResponse>> getTweets() {
         return ResponseEntity.ok(userMapper.getTweets());
     }

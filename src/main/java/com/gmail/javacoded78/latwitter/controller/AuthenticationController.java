@@ -1,5 +1,7 @@
 package com.gmail.javacoded78.latwitter.controller;
 
+import com.fasterxml.jackson.annotation.JsonView;
+import com.gmail.javacoded78.latwitter.dto.Views;
 import com.gmail.javacoded78.latwitter.dto.request.AuthenticationRequest;
 import com.gmail.javacoded78.latwitter.dto.request.PasswordResetRequest;
 import com.gmail.javacoded78.latwitter.dto.request.RegistrationRequest;
@@ -30,6 +32,7 @@ public class AuthenticationController {
     private final AuthenticationMapper authenticationMapper;
 
     @PostMapping("/login")
+    @JsonView(Views.User.class)
     public ResponseEntity<AuthenticationResponse> login(@RequestBody AuthenticationRequest request) {
         try {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
