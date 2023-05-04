@@ -1,4 +1,4 @@
-import React, { FC, ReactElement } from "react";
+import React, { FC, ReactElement, useState } from "react";
 import { useHistory } from "react-router-dom";
 import classNames from "classnames";
 import {
@@ -36,7 +36,7 @@ const Tweet: FC<TweetProps> = ({
   user,
   dateTime,
 }: TweetProps): ReactElement => {
-  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
   const history = useHistory();
 
@@ -85,7 +85,7 @@ const Tweet: FC<TweetProps> = ({
                 {formatDate(new Date(dateTime))}
               </span>
             </div>
-            <div>
+            <div className={classes.tweetPopupMenu}>
               <IconButton
                 aria-label="more"
                 aria-controls="long-menu"
