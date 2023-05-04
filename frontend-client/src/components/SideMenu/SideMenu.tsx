@@ -8,10 +8,11 @@ import BookmarkIcon from "@material-ui/icons/BookmarkBorderOutlined";
 import ListIcon from "@material-ui/icons/ListAltOutlined";
 import PersonIcon from "@material-ui/icons/PersonOutlineOutlined";
 import { useHomeStyles } from "../../pages/Home/HomeStyles";
-import { Create } from "@material-ui/icons";
+import { Create, HomeOutlined } from "@material-ui/icons";
 import ModalBlock from "../ModalBlock/ModalBlock";
 import { AddTweetForm } from "../TweetForm/AddTweetForm";
 import { Link } from "react-router-dom";
+import { UserSideProfile } from "../UserSideProfile/UserSideProfile";
 
 interface SideMenuProps {
   classes: ReturnType<typeof useHomeStyles>;
@@ -32,94 +33,132 @@ const SideMenu: FC<SideMenuProps> = ({
   };
 
   return (
-    <ul className={classes.sideMenuList}>
-      <li className={classes.sideMenuListItem}>
-        <Link to={"/home"}>
-          <IconButton className={classes.logo} color="primary">
-            <TwitterIcon className={classes.logoIcon} />
-          </IconButton>
-        </Link>
-      </li>
-      <li className={classes.sideMenuListItem}>
-        <div>
-          <SearchIcon className={classes.sideMenuListItemIcon} />
-          <Hidden smDown>
-            <Typography className={classes.sideMenuListItemLabel} variant="h6">
-              Explore
-            </Typography>
-          </Hidden>
-        </div>
-      </li>
-      <li className={classes.sideMenuListItem}>
-        <div>
-          <NotificationIcon className={classes.sideMenuListItemIcon} />
-          <Hidden smDown>
-            <Typography className={classes.sideMenuListItemLabel} variant="h6">
-              Notification
-            </Typography>
-          </Hidden>
-        </div>
-      </li>
-      <li className={classes.sideMenuListItem}>
-        <div>
-          <MessageIcon className={classes.sideMenuListItemIcon} />
-          <Hidden smDown>
-            <Typography className={classes.sideMenuListItemLabel} variant="h6">
-              Messages
-            </Typography>
-          </Hidden>
-        </div>
-      </li>
-      <li className={classes.sideMenuListItem}>
-        <div>
-          <BookmarkIcon className={classes.sideMenuListItemIcon} />
-          <Hidden smDown>
-            <Typography className={classes.sideMenuListItemLabel} variant="h6">
-              Bookmarks
-            </Typography>
-          </Hidden>
-        </div>
-      </li>
-      <li className={classes.sideMenuListItem}>
-        <div>
-          <ListIcon className={classes.sideMenuListItemIcon} />
-          <Hidden smDown>
-            <Typography className={classes.sideMenuListItemLabel} variant="h6">
-              Lists
-            </Typography>
-          </Hidden>
-        </div>
-      </li>
-      <li className={classes.sideMenuListItem}>
-        <div>
-          <PersonIcon className={classes.sideMenuListItemIcon} />
-          <Hidden smDown>
-            <Typography className={classes.sideMenuListItemLabel} variant="h6">
-              Profile
-            </Typography>
-          </Hidden>
-        </div>
-      </li>
-      <li className={classes.sideMenuListItem}>
-        <Button
-          onClick={handleClickOpenAddTweet}
-          className={classes.sideMenuTweetButton}
-          variant="contained"
-          color="primary"
-          fullWidth
-        >
-          <Hidden smDown>Tweet</Hidden>
-          <Hidden mdUp>
-            <Create />
-          </Hidden>
-        </Button>
-        <ModalBlock onClose={onCloseAddTweet} visible={visibleAddTweet}>
-          <div style={{ width: 550 }}>
-            <AddTweetForm maxRows={15} classes={classes} />
+    <>
+      <ul className={classes.sideMenuList}>
+        <li className={classes.sideMenuListItem}>
+          <Link to="/home">
+            <IconButton className={classes.logo} color="primary">
+              <TwitterIcon className={classes.logoIcon} />
+            </IconButton>
+          </Link>
+        </li>
+        <li className={classes.sideMenuListItem}>
+          <Link to="/home">
+            <div>
+              <HomeOutlined className={classes.sideMenuListItemIcon} />
+              <Hidden smDown>
+                <Typography
+                  className={classes.sideMenuListItemLabel}
+                  variant="h6"
+                >
+                  Главная
+                </Typography>
+              </Hidden>
+            </div>
+          </Link>
+        </li>
+        <li className={classes.sideMenuListItem}>
+          <div>
+            <SearchIcon className={classes.sideMenuListItemIcon} />
+            <Hidden smDown>
+              <Typography
+                className={classes.sideMenuListItemLabel}
+                variant="h6"
+              >
+                Поиск
+              </Typography>
+            </Hidden>
           </div>
-        </ModalBlock>
-      </li>
-    </ul>
+        </li>
+        <li className={classes.sideMenuListItem}>
+          <div>
+            <NotificationIcon className={classes.sideMenuListItemIcon} />
+            <Hidden smDown>
+              <Typography
+                className={classes.sideMenuListItemLabel}
+                variant="h6"
+              >
+                Уведомления
+              </Typography>
+            </Hidden>
+          </div>
+        </li>
+        <li className={classes.sideMenuListItem}>
+          <div>
+            <MessageIcon className={classes.sideMenuListItemIcon} />
+            <Hidden smDown>
+              <Typography
+                className={classes.sideMenuListItemLabel}
+                variant="h6"
+              >
+                Сообщения
+              </Typography>
+            </Hidden>
+          </div>
+        </li>
+        <li className={classes.sideMenuListItem}>
+          <div>
+            <BookmarkIcon className={classes.sideMenuListItemIcon} />
+            <Hidden smDown>
+              <Typography
+                className={classes.sideMenuListItemLabel}
+                variant="h6"
+              >
+                Закладки
+              </Typography>
+            </Hidden>
+          </div>
+        </li>
+        <li className={classes.sideMenuListItem}>
+          <div>
+            <ListIcon className={classes.sideMenuListItemIcon} />
+            <Hidden smDown>
+              <Typography
+                className={classes.sideMenuListItemLabel}
+                variant="h6"
+              >
+                Список
+              </Typography>
+            </Hidden>
+          </div>
+        </li>
+        <li className={classes.sideMenuListItem}>
+          <Link to="/user">
+            <div>
+              <PersonIcon className={classes.sideMenuListItemIcon} />
+              <Hidden smDown>
+                <Typography
+                  className={classes.sideMenuListItemLabel}
+                  variant="h6"
+                >
+                  Профиль
+                </Typography>
+              </Hidden>
+            </div>
+          </Link>
+        </li>
+        <li className={classes.sideMenuListItem}>
+          <Button
+            onClick={handleClickOpenAddTweet}
+            className={classes.sideMenuTweetButton}
+            variant="contained"
+            color="primary"
+            fullWidth
+          >
+            <Hidden smDown>Твитнуть</Hidden>
+            <Hidden mdUp>
+              <Create />
+            </Hidden>
+          </Button>
+          <ModalBlock onClose={onCloseAddTweet} visible={visibleAddTweet}>
+            <div style={{ width: 550 }}>
+              <AddTweetForm maxRows={15} classes={classes} />
+            </div>
+          </ModalBlock>
+        </li>
+      </ul>
+      <UserSideProfile classes={classes} />
+    </>
   );
 };
 

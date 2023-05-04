@@ -1,7 +1,7 @@
-import { makeStyles } from "@material-ui/core";
+import { colors, makeStyles, Theme } from "@material-ui/core";
 import grey from "@material-ui/core/colors/grey";
 
-export const useHomeStyles = makeStyles((theme) => ({
+export const useHomeStyles = makeStyles((theme: Theme) => ({
   wrapper: {
     height: "100vh",
   },
@@ -20,6 +20,10 @@ export const useHomeStyles = makeStyles((theme) => ({
     width: 230,
   },
   sideMenuListItem: {
+    "& a": {
+      color: "inherit",
+      textDecoration: "none",
+    },
     cursor: "pointer",
     "& div": {
       display: "inline-flex",
@@ -60,7 +64,7 @@ export const useHomeStyles = makeStyles((theme) => ({
   tweetsWrapper: {
     marginTop: 10,
     borderRadius: 0,
-    height: "100%",
+    height: "100vh",
     borderTop: 0,
     borderBottom: 0,
   },
@@ -85,6 +89,9 @@ export const useHomeStyles = makeStyles((theme) => ({
     display: "flex",
     alignItems: "center",
   },
+  tweetsHeaderBackButton: {
+    marginRight: 20,
+  },
   tweetFooter: {
     display: "flex",
     position: "relative",
@@ -97,12 +104,23 @@ export const useHomeStyles = makeStyles((theme) => ({
   },
   fullTweet: {
     padding: 22,
+    paddingBottom: 0,
   },
   fullTweetText: {
     fontSize: 24,
     marginTop: 20,
+    marginBottom: 20,
     lineHeight: 1.3125,
     wordBreak: "break-word",
+  },
+  fullTweetFooter: {
+    margin: "0 auto",
+    borderTop: "1px solid #E6ECF0",
+    left: 0,
+    maxWidth: "100%",
+    justifyContent: "space-around",
+    padding: "2px 0",
+    marginTop: 20,
   },
   tweet: {
     display: "flex",
@@ -122,6 +140,14 @@ export const useHomeStyles = makeStyles((theme) => ({
     width: theme.spacing(6.5),
     height: theme.spacing(6.5),
     marginRight: 15,
+  },
+  tweetHeader: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
+  tweetContent: {
+    flex: 1,
   },
   rightSide: {
     paddingTop: 20,
@@ -206,5 +232,25 @@ export const useHomeStyles = makeStyles((theme) => ({
   addFormBottomRight: {
     display: "flex",
     alignItems: "center",
+  },
+  sideProfile: {
+    display: "flex",
+    alignItems: "center",
+    position: "fixed",
+    bottom: 30,
+    padding: "10px 15px",
+    width: 260,
+    borderRadius: 50,
+    cursor: "pointer",
+    "&:hover": {
+      backgroundColor: colors.lightGreen[50],
+    },
+  },
+  sideProfileInfo: {
+    flex: 1,
+    marginLeft: 10,
+    "& b": {
+      fontSize: 16,
+    },
   },
 }));

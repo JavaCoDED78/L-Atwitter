@@ -1,19 +1,23 @@
-import React, {FC, ReactElement} from 'react';
-import {Route, Switch} from 'react-router-dom';
+import React, { FC, ReactElement } from "react";
+import { Route, Switch } from "react-router-dom";
 
-import SignIn from './pages/SignIn';
+import SignIn from "./pages/SignIn/SignIn";
 import Home from "./pages/Home/Home";
+import { User } from "./pages/User/User";
+import { Layout } from "./pages/Layout";
 
 const App: FC = (): ReactElement => {
-
   return (
-      <div className="App">
-        <Switch>
-          <Route path="/signin" component={SignIn}/>
-          <Route path="/home" component={Home}/>
-        </Switch>
-      </div>
+    <div className="App">
+      <Switch>
+        <Route path="/signin" component={SignIn} exact />
+        <Layout>
+          <Route path="/home" component={Home} />
+          <Route path="/user" component={User} />
+        </Layout>
+      </Switch>
+    </div>
   );
-}
+};
 
 export default App;

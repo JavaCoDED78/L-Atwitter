@@ -34,6 +34,10 @@ export const theme = createTheme({
     text: {
       primary: "#14171a",
     },
+    action: {
+      disabledBackground: "rgb(153,255,173)",
+      disabled: "#fff",
+    },
   },
   shadows: [],
   overrides: {

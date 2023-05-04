@@ -1,11 +1,7 @@
-import {
-  AddFormState,
-  LoadingState,
-  Tweet,
-  TweetsState,
-} from "./contracts/state";
+import { AddFormState, LoadingState, Tweet } from "./contracts/state";
 import { TweetsApi } from "../../../services/api/tweetsApi";
 import {
+  addTweet,
   setAddFormState,
   setTweets,
   setTweetsLoadingState,
@@ -18,7 +14,7 @@ import {
 
 export function* fetchTweetsRequest() {
   try {
-    const items: TweetsState["items"] = yield call(TweetsApi.fetchTweets);
+    const items: Tweet[] = yield call(TweetsApi.fetchTweets);
     yield put(setTweets(items));
   } catch (e) {
     yield put(setTweetsLoadingState(LoadingState.ERROR));
@@ -26,22 +22,11 @@ export function* fetchTweetsRequest() {
 }
 
 export function* fetchAddTweetRequest({
-  payload,
+  payload: text,
 }: FetchAddTweetActionInterface) {
   try {
-    const data: Tweet = {
-      _id: Math.random().toString(36).substring(2),
-      text: payload,
-      user: {
-        fullname: "Example",
-        username: "Example",
-        avatarUrl:
-          "https://cs8.pikabu.ru/post_img/2016/05/27/5/1464332742115529028.jpg",
-      },
-    };
-
-    const item: Tweet[] = yield call(TweetsApi.addTweet, data);
-    yield put(setTweets(item));
+    const item: Tweet[] = yield call(TweetsApi.addTweet, text);
+    yield put(addTweet(item));
   } catch (e) {
     yield put(setAddFormState(AddFormState.ERROR));
   }
