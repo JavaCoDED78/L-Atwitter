@@ -1,16 +1,15 @@
 import React, { FC, ReactElement, useEffect } from "react";
-import { Paper, Typography, CircularProgress } from "@material-ui/core";
-
-import Tweet from "../../components/Tweet/Tweet";
-import { useHomeStyles } from "./HomeStyles";
-import { AddTweetForm } from "../../components/TweetForm/AddTweetForm";
 import { useDispatch, useSelector } from "react-redux";
+import { Route } from "react-router-dom";
+import { CircularProgress, Paper, Typography } from "@material-ui/core";
+import { useHomeStyles } from "./HomeStyles";
 import {
   selectIsTweetsLoading,
   selectTweetsItems,
 } from "../../store/actions/tweets/selectors";
-import { Route } from "react-router-dom";
 import BackButton from "../../components/BackButton/BackButton";
+import { AddTweetForm } from "../../components/TweetForm/AddTweetForm";
+import Tweet from "../../components/Tweet/Tweet";
 import { FullTweet } from "./FullTweet";
 
 const Home: FC = (): ReactElement => {
@@ -20,8 +19,8 @@ const Home: FC = (): ReactElement => {
   const isLoading = useSelector(selectIsTweetsLoading);
 
   // useEffect(() => {
-  //   dispatch(fetchTweets());
-  //   dispatch(fetchTags());
+  //     dispatch(fetchTweets());
+  //     dispatch(fetchTags());
   // }, [dispatch]);
 
   return (

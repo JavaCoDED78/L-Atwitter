@@ -1,10 +1,8 @@
 import React, { FC } from "react";
-import Dialog from "@material-ui/core/Dialog";
-import DialogContent from "@material-ui/core/DialogContent";
-import DialogTitle from "@material-ui/core/DialogTitle";
+import { useStylesSignIn } from "../../pages/SignIn/SignIn";
+import { Dialog, DialogContent, DialogTitle } from "@material-ui/core";
 import IconButton from "@material-ui/core/IconButton";
 import CloseIcon from "@material-ui/icons/Close";
-import { useStylesSignIn } from "../../pages/SignIn/SignIn";
 
 interface ModalBlockProps {
   title?: string;

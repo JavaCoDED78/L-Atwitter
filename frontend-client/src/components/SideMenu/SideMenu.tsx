@@ -1,17 +1,19 @@
 import React, { FC, ReactElement } from "react";
-import { Button, Hidden, IconButton, Typography } from "@material-ui/core";
+import { useHomeStyles } from "../../pages/Home/HomeStyles";
+import { Link } from "react-router-dom";
+import IconButton from "@material-ui/core/IconButton";
 import TwitterIcon from "@material-ui/icons/Twitter";
+import HomeIcon from "@material-ui/icons/HomeOutlined";
 import SearchIcon from "@material-ui/icons/Search";
+import ListIcon from "@material-ui/icons/ListAltOutlined";
+import PersonIcon from "@material-ui/icons/PersonOutlineOutlined";
+import CreateIcon from "@material-ui/icons/Create";
 import NotificationIcon from "@material-ui/icons/NotificationsOutlined";
 import MessageIcon from "@material-ui/icons/MailOutlineOutlined";
 import BookmarkIcon from "@material-ui/icons/BookmarkBorderOutlined";
-import ListIcon from "@material-ui/icons/ListAltOutlined";
-import PersonIcon from "@material-ui/icons/PersonOutlineOutlined";
-import { useHomeStyles } from "../../pages/Home/HomeStyles";
-import { Create, HomeOutlined } from "@material-ui/icons";
+import { Button, Hidden, Typography } from "@material-ui/core";
 import ModalBlock from "../ModalBlock/ModalBlock";
 import { AddTweetForm } from "../TweetForm/AddTweetForm";
-import { Link } from "react-router-dom";
 import { UserSideProfile } from "../UserSideProfile/UserSideProfile";
 
 interface SideMenuProps {
@@ -45,7 +47,7 @@ const SideMenu: FC<SideMenuProps> = ({
         <li className={classes.sideMenuListItem}>
           <Link to="/home">
             <div>
-              <HomeOutlined className={classes.sideMenuListItemIcon} />
+              <HomeIcon className={classes.sideMenuListItemIcon} />
               <Hidden smDown>
                 <Typography
                   className={classes.sideMenuListItemLabel}
@@ -147,7 +149,7 @@ const SideMenu: FC<SideMenuProps> = ({
           >
             <Hidden smDown>Твитнуть</Hidden>
             <Hidden mdUp>
-              <Create />
+              <CreateIcon />
             </Hidden>
           </Button>
           <ModalBlock onClose={onCloseAddTweet} visible={visibleAddTweet}>

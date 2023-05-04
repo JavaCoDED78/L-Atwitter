@@ -1,33 +1,33 @@
 import React, { FC, ReactElement } from "react";
-import { useHomeStyles } from "./Home/HomeStyles";
 import { useDispatch } from "react-redux";
-import { fetchTweets } from "../store/actions/tweets/actionCreators";
-import { fetchTags } from "../store/actions/tags/actionCreators";
 import {
-  Avatar,
-  Button,
   Container,
-  Divider,
   Grid,
   InputAdornment,
-  List,
-  ListItem,
-  ListItemAvatar,
-  ListItemText,
   Paper,
   Typography,
 } from "@material-ui/core";
+import SearchIcon from "@material-ui/icons/SearchOutlined";
+import PersonAddIcon from "@material-ui/icons/PersonAddOutlined";
+import ListItem from "@material-ui/core/ListItem/ListItem";
+import Divider from "@material-ui/core/Divider/Divider";
+import ListItemAvatar from "@material-ui/core/ListItemAvatar/ListItemAvatar";
+import Avatar from "@material-ui/core/Avatar/Avatar";
+import ListItemText from "@material-ui/core/ListItemText/ListItemText";
+import List from "@material-ui/core/List/List";
+import Button from "@material-ui/core/Button/Button";
+import { useHomeStyles } from "./Home/HomeStyles";
+import { fetchTweets } from "../store/actions/tweets/actionCreators";
+import { fetchTags } from "../store/actions/tags/actionCreators";
 import SideMenu from "../components/SideMenu/SideMenu";
 import { SearchTextField } from "../components/Tweet/SearchTextField";
-import SearchIcon from "@material-ui/icons/Search";
 import Tags from "../components/Tags/Tags";
-import { PersonAddOutlined } from "@material-ui/icons";
 
-interface LayoutProps {
+interface Layout {
   children: React.ReactNode;
 }
 
-export const Layout: FC<LayoutProps> = ({ children }): ReactElement => {
+export const Layout: FC<Layout> = ({ children }): ReactElement => {
   const classes = useHomeStyles();
   const dispatch = useDispatch();
 
@@ -88,7 +88,7 @@ export const Layout: FC<LayoutProps> = ({ children }): ReactElement => {
                     }
                   />
                   <Button color="primary">
-                    <PersonAddOutlined />
+                    <PersonAddIcon />
                   </Button>
                 </ListItem>
                 <Divider component="li" />

@@ -1,7 +1,10 @@
 import React, { FC, ReactElement, useState } from "react";
+import { colors } from "@material-ui/core";
+import Avatar from "@material-ui/core/Avatar";
+import Popover from "@material-ui/core/Popover";
+import ArrowBottomIcon from "@material-ui/icons/KeyboardArrowDown";
+import Typography from "@material-ui/core/Typography";
 import { useHomeStyles } from "../../pages/Home/HomeStyles";
-import { Avatar, colors, Popover, Typography } from "@material-ui/core";
-import { KeyboardArrowDown } from "@material-ui/icons";
 
 interface UserSideProfileProps {
   classes: ReturnType<typeof useHomeStyles>;
@@ -34,7 +37,7 @@ export const UserSideProfile: FC<UserSideProfileProps> = ({
             @Vbhjckfd1
           </Typography>
         </div>
-        <KeyboardArrowDown />
+        <ArrowBottomIcon />
       </div>
       <Popover
         open={visiblePopup}

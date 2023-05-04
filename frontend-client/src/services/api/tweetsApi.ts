@@ -1,5 +1,5 @@
 import { Tweet } from "../../store/actions/tweets/contracts/state";
-import axios from "axios";
+import { axios } from "../../core/axios";
 
 interface Response<T> {
   status: string;

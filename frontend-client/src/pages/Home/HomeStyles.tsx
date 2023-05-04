@@ -6,18 +6,18 @@ export const useHomeStyles = makeStyles((theme: Theme) => ({
     height: "100vh",
   },
   logo: {
-    margin: "10px 10px",
+    margin: "10px 0",
   },
   logoIcon: {
-    fontSize: 38,
+    fontSize: 36,
   },
   sideMenuList: {
     position: "sticky",
     top: 0,
     listStyle: "none",
     padding: 0,
-    margin: "20px 0 0 0",
-    width: 230,
+    margin: 0,
+    maxWidth: 230,
   },
   sideMenuListItem: {
     "& a": {
@@ -25,16 +25,6 @@ export const useHomeStyles = makeStyles((theme: Theme) => ({
       textDecoration: "none",
     },
     cursor: "pointer",
-    "& div": {
-      display: "inline-flex",
-      alignItems: "center",
-      position: "relative",
-      borderRadius: 15,
-      padding: "0 25px 0 20px",
-      marginBottom: 15,
-      height: 50,
-      transition: "background-color 0.2s ease-in-out",
-    },
     "&:hover": {
       "& div": {
         backgroundColor: "rgba(29, 161, 242, 0.1)",
@@ -42,9 +32,20 @@ export const useHomeStyles = makeStyles((theme: Theme) => ({
           color: theme.palette.primary.main,
         },
         "& svg path": {
-          color: theme.palette.primary.main,
+          fill: theme.palette.primary.main,
         },
       },
+    },
+
+    "& div": {
+      display: "inline-flex",
+      alignItems: "center",
+      position: "relative",
+      padding: "0 25px 0 20px",
+      borderRadius: 30,
+      height: 50,
+      marginBottom: 15,
+      transition: "background-color 0.1s ease-in-out",
     },
   },
   sideMenuListItemLabel: {
@@ -53,20 +54,18 @@ export const useHomeStyles = makeStyles((theme: Theme) => ({
     marginLeft: 15,
   },
   sideMenuListItemIcon: {
-    fontSize: 30,
+    fontSize: 32,
     marginLeft: -5,
   },
   sideMenuTweetButton: {
-    fontSize: 20,
-    padding: theme.spacing(3.3),
+    padding: theme.spacing(3.2),
     marginTop: theme.spacing(2),
   },
   tweetsWrapper: {
-    marginTop: 10,
     borderRadius: 0,
-    height: "100vh",
-    borderTop: 0,
-    borderBottom: 0,
+    minHeight: "100vh",
+    borderTop: "0",
+    borderBottom: "0",
   },
   tweetsCentred: {
     marginTop: 50,
@@ -76,10 +75,10 @@ export const useHomeStyles = makeStyles((theme: Theme) => ({
     display: "flex",
     alignItems: "center",
     flex: 1,
+    borderTop: "0",
+    borderLeft: "0",
+    borderRight: "0",
     borderRadius: 0,
-    borderTop: 0,
-    borderLeft: 0,
-    borderRight: 0,
     padding: "10px 15px",
     "& h6": {
       fontWeight: 800,
@@ -92,12 +91,39 @@ export const useHomeStyles = makeStyles((theme: Theme) => ({
   tweetsHeaderBackButton: {
     marginRight: 20,
   },
+  tweet: {
+    display: "flex",
+    cursor: "pointer",
+    alignItems: "flex-start",
+    paddingTop: 15,
+    paddingLeft: 20,
+    "&:hover": {
+      backgroundColor: "rgb(245, 248, 250)",
+    },
+  },
+  tweetWrapper: {
+    color: "inherit",
+    textDecoration: "none",
+  },
+  tweetAvatar: {
+    width: theme.spacing(6.5),
+    height: theme.spacing(6.5),
+    marginRight: 15,
+  },
+  tweetHeader: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
+  tweetContent: {
+    flex: 1,
+  },
   tweetFooter: {
     display: "flex",
     position: "relative",
     left: -13,
     justifyContent: "space-between",
-    width: 450,
+    maxWidth: 450,
   },
   tweetUserName: {
     color: grey[500],
@@ -121,33 +147,6 @@ export const useHomeStyles = makeStyles((theme: Theme) => ({
     justifyContent: "space-around",
     padding: "2px 0",
     marginTop: 20,
-  },
-  tweet: {
-    display: "flex",
-    alignItems: "flex-start",
-    cursor: "pointer",
-    paddingTop: 15,
-    paddingLeft: 20,
-    "&:hover": {
-      backgroundColor: "rgb(245, 248, 250)",
-    },
-  },
-  tweetWrapper: {
-    color: "inherit",
-    textDecoration: "none",
-  },
-  tweetAvatar: {
-    width: theme.spacing(6.5),
-    height: theme.spacing(6.5),
-    marginRight: 15,
-  },
-  tweetHeader: {
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "space-between",
-  },
-  tweetContent: {
-    flex: 1,
   },
   rightSide: {
     paddingTop: 20,
@@ -243,7 +242,7 @@ export const useHomeStyles = makeStyles((theme: Theme) => ({
     borderRadius: 50,
     cursor: "pointer",
     "&:hover": {
-      backgroundColor: colors.lightGreen[50],
+      backgroundColor: colors.lightBlue[50],
     },
   },
   sideProfileInfo: {

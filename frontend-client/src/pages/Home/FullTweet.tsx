@@ -1,14 +1,18 @@
-import { FC, ReactElement, useEffect } from "react";
-import { useHomeStyles } from "./HomeStyles";
+import React, { FC, ReactElement, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
-import {
-  Avatar,
-  CircularProgress,
-  Divider,
-  Paper,
-  Typography,
-} from "@material-ui/core";
+import CircularProgress from "@material-ui/core/CircularProgress";
+import classNames from "classnames";
+import Paper from "@material-ui/core/Paper";
+import { Avatar, Divider, IconButton } from "@material-ui/core";
+import Typography from "@material-ui/core/Typography";
+import ShareIcon from "@material-ui/icons/ReplyOutlined";
+import RepostIcon from "@material-ui/icons/RepeatOutlined";
+import CommentIcon from "@material-ui/icons/ModeCommentOutlined";
+import LikeIcon from "@material-ui/icons/FavoriteBorderOutlined";
+import format from "date-fns/format";
+import ruLang from "date-fns/locale/ru";
+import { useHomeStyles } from "./HomeStyles";
 import {
   selectIsTweetLoading,
   selectTweetData,
@@ -17,16 +21,6 @@ import {
   fetchTweetData,
   setTweetData,
 } from "../../store/actions/tweet/actionCreators";
-import classNames from "classnames";
-import format from "date-fns/format";
-import ruLang from "date-fns/locale/ru";
-import IconButton from "@material-ui/core/IconButton";
-import {
-  FavoriteBorderOutlined,
-  ModeCommentOutlined,
-  RepeatOutlined,
-  ReplyOutlined,
-} from "@material-ui/icons";
 import Tweet from "../../components/Tweet/Tweet";
 
 export const FullTweet: FC = (): ReactElement | null => {
@@ -64,9 +58,7 @@ export const FullTweet: FC = (): ReactElement | null => {
               // alt={`Аватарка пользователя ${tweetData.user.fullName}`}
               // src={tweetData.user.avatarUrl}
               alt={`Аватарка пользователя`}
-              src={
-                "https://cs8.pikabu.ru/post_img/2016/05/27/5/1464332742115529028.jpg"
-              }
+              src={"https://avatars.githubusercontent.com/u/56604599?v=4"}
             />
             <Typography>
               <b>{tweetData.user.fullName}</b>&nbsp;
@@ -94,16 +86,16 @@ export const FullTweet: FC = (): ReactElement | null => {
             className={classNames(classes.tweetFooter, classes.fullTweetFooter)}
           >
             <IconButton>
-              <ModeCommentOutlined style={{ fontSize: 25 }} />
+              <CommentIcon style={{ fontSize: 25 }} />
             </IconButton>
             <IconButton>
-              <RepeatOutlined style={{ fontSize: 25 }} />
+              <RepostIcon style={{ fontSize: 25 }} />
             </IconButton>
             <IconButton>
-              <FavoriteBorderOutlined style={{ fontSize: 25 }} />
+              <LikeIcon style={{ fontSize: 25 }} />
             </IconButton>
             <IconButton>
-              <ReplyOutlined style={{ fontSize: 25 }} />
+              <ShareIcon style={{ fontSize: 25 }} />
             </IconButton>
           </div>
         </Paper>
@@ -115,8 +107,7 @@ export const FullTweet: FC = (): ReactElement | null => {
           user={{
             fullName: "Arlene Andrews",
             username: "ArleneAndrews_1",
-            avatarUrl:
-              "https://cs8.pikabu.ru/post_img/2016/05/27/5/1464332742115529028.jpg",
+            avatarUrl: "https://avatars.githubusercontent.com/u/56604599?v=4",
           }}
           classes={classes}
         />
@@ -127,8 +118,7 @@ export const FullTweet: FC = (): ReactElement | null => {
           user={{
             fullName: "Arlene Andrews",
             username: "ArleneAndrews_1",
-            avatarUrl:
-              "https://cs8.pikabu.ru/post_img/2016/05/27/5/1464332742115529028.jpg",
+            avatarUrl: "https://avatars.githubusercontent.com/u/56604599?v=4",
           }}
           classes={classes}
         />
@@ -139,14 +129,12 @@ export const FullTweet: FC = (): ReactElement | null => {
           user={{
             fullName: "Arlene Andrews",
             username: "ArleneAndrews_1",
-            avatarUrl:
-              "https://cs8.pikabu.ru/post_img/2016/05/27/5/1464332742115529028.jpg",
+            avatarUrl: "https://avatars.githubusercontent.com/u/56604599?v=4",
           }}
           classes={classes}
         />
       </>
     );
   }
-
   return null;
 };

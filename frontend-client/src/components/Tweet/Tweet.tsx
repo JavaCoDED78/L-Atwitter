@@ -1,4 +1,5 @@
 import React, { FC, ReactElement } from "react";
+import { useHistory } from "react-router-dom";
 import classNames from "classnames";
 import {
   Avatar,
@@ -11,11 +12,10 @@ import {
 import CommentIcon from "@material-ui/icons/ModeCommentOutlined";
 import RepostIcon from "@material-ui/icons/RepeatOutlined";
 import LikeIcon from "@material-ui/icons/FavoriteBorderOutlined";
-import ReplyIcon from "@material-ui/icons/ReplyOutlined";
+import ShareIcon from "@material-ui/icons/ReplyOutlined";
+import MoreVertIcon from "@material-ui/icons/MoreVert";
 import { useHomeStyles } from "../../pages/Home/HomeStyles";
-import { Link, useHistory } from "react-router-dom";
 import { formatDate } from "../../util/formatDate";
-import { MoreVert, ReplyOutlined } from "@material-ui/icons";
 
 interface TweetProps {
   id: string;
@@ -92,7 +92,7 @@ const Tweet: FC<TweetProps> = ({
                 aria-haspopup="true"
                 onClick={handleClick}
               >
-                <MoreVert />
+                <MoreVertIcon />
               </IconButton>
               <Menu
                 id="long-menu"
@@ -128,7 +128,7 @@ const Tweet: FC<TweetProps> = ({
             </div>
             <div>
               <IconButton>
-                <ReplyOutlined style={{ fontSize: 20 }} />
+                <ShareIcon style={{ fontSize: 20 }} />
               </IconButton>
             </div>
           </div>
