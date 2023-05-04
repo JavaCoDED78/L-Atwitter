@@ -9,6 +9,8 @@ public interface AuthenticationService {
 
     boolean registration(User user);
 
+    AuthenticationResponse getUserByToken();
+
     boolean activateUser(String code);
 
     User findByPasswordResetCode(String code);

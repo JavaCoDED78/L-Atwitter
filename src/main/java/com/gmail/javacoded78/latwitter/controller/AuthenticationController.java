@@ -56,6 +56,12 @@ public class AuthenticationController {
         return ResponseEntity.ok("User successfully registered.");
     }
 
+    @GetMapping("/user")
+    @JsonView(Views.User.class)
+    public ResponseEntity<AuthenticationResponse> getUserByToken() {
+        return ResponseEntity.ok(authenticationMapper.getUserByToken());
+    }
+
     @GetMapping("/activate/{code}")
     public ResponseEntity<String> activateEmailCode(@PathVariable String code) {
         if (!authenticationMapper.activateUser(code)) {

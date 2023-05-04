@@ -9,9 +9,11 @@ import com.gmail.javacoded78.latwitter.service.AuthenticationService;
 import com.gmail.javacoded78.latwitter.service.email.MailSender;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.security.Principal;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -57,6 +59,16 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 //        mailSender.sendMessageHtml(user.getEmail(), subject, template, attributes);
         return true;
     }
+
+    @Override
+    public AuthenticationResponse getUserByToken() {
+        Principal principal = SecurityContextHolder.getContext().getAuthentication();
+        User user = userRepository.findByEmail(principal.getName());
+        AuthenticationResponse authenticationResponse = new AuthenticationResponse();
+        authenticationResponse.setUser(userMapper.convertToUserResponse(user));
+        return authenticationResponse;
+    }
+
 
     @Override
     public boolean activateUser(String code) {

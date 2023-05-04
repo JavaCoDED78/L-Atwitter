@@ -8,12 +8,4 @@ import java.util.List;
 public interface UserService {
 
     User getUserById(Long userId);
-
-    List<Tweet> getTweets();
-
-    Tweet getTweetById(Long tweetId);
-
-    List<Tweet> createTweet(Tweet tweet);
-
-    List<Tweet> deleteTweet(Long tweetId);
 }
