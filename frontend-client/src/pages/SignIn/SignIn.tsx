@@ -1,14 +1,10 @@
 import React, { FC, ReactElement } from "react";
-import FormGroup from "@material-ui/core/FormGroup";
-import FormControl from "@material-ui/core/FormControl";
-import TextField from "@material-ui/core/TextField";
 import TwitterIcon from "@material-ui/icons/Twitter";
 import SearchIcon from "@material-ui/icons/Search";
 import PeopleOutlineIcon from "@material-ui/icons/PeopleOutline";
 import ChatIcon from "@material-ui/icons/ChatBubbleOutlineOutlined";
 import { Button, makeStyles, Typography } from "@material-ui/core";
 
-import ModalBlock from "../../components/ModalBlock/ModalBlock";
 import LoginModal from "./LoginModal";
 import RegisterModal from "./RegisterModal";
 
@@ -160,49 +156,10 @@ const SignIn: FC = (): ReactElement => {
             open={visibleModal === "signIn"}
             onClose={handleCloseModal}
           />
-          <RegisterModal />
-          <ModalBlock
-            visible={visibleModal === "signUp"}
+          <RegisterModal
+            open={visibleModal === "signUp"}
             onClose={handleCloseModal}
-            classes={classes}
-            title="Create acount"
-          >
-            <FormControl
-              className={classes.loginFormControl}
-              component="fieldset"
-              fullWidth
-            >
-              <FormGroup aria-label="position" row>
-                <TextField
-                  className={classes.registerField}
-                  id="name"
-                  label="Name"
-                  variant="outlined"
-                  type="name"
-                  fullWidth
-                />
-                <TextField
-                  className={classes.registerField}
-                  id="email"
-                  label="E-Mail"
-                  variant="outlined"
-                  type="email"
-                  fullWidth
-                />
-                <TextField
-                  className={classes.registerField}
-                  id="password"
-                  label="Password"
-                  variant="outlined"
-                  type="password"
-                  fullWidth
-                />
-                <Button variant="contained" color="primary" fullWidth>
-                  Register
-                </Button>
-              </FormGroup>
-            </FormControl>
-          </ModalBlock>
+          />
         </div>
       </section>
     </div>

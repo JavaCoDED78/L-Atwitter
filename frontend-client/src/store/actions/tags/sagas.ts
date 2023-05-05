@@ -4,15 +4,16 @@ import {
   setTagsLoadingState,
   TagsActionsType,
 } from "./actionCreators";
-import { LoadingState, TagsState } from "./contracts/state";
+import { TagsState } from "./contracts/state";
 import { TagsApi } from "../../../services/api/tagsApi";
+import { LoadingStatus } from "../../types";
 
 export function* fetchTagsRequest() {
   try {
     const items: TagsState["items"] = yield call(TagsApi.fetchTags);
     yield put(setTags(items));
   } catch (error) {
-    yield put(setTagsLoadingState(LoadingState.ERROR));
+    yield put(setTagsLoadingState(LoadingStatus.ERROR));
   }
 }
 

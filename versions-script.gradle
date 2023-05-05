@@ -1,6 +1,7 @@
 ext {
     versions = [
         'jjwt': '0.11.5',
-        'modelMapper': '2.4.5'
+        'modelMapper': '2.4.5',
+        'aws': '1.12.462'
     ]
 }

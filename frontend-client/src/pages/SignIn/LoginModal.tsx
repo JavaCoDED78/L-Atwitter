@@ -1,4 +1,4 @@
-import React, { FC, ReactElement } from "react";
+import React, { FC, ReactElement, useEffect, useRef } from "react";
 import * as yup from "yup";
 import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -9,6 +9,11 @@ import { Button } from "@material-ui/core";
 
 import ModalBlock from "../../components/ModalBlock/ModalBlock";
 import { useStylesSignIn } from "./SignIn";
+import { useDispatch, useSelector } from "react-redux";
+import { LoadingStatus } from "../../store/types";
+import { Color } from "@material-ui/lab";
+import { selectUserStatus } from "../../store/actions/user/selectors";
+import { fetchSignIn } from "../../store/actions/user/actionCreators";
 
 interface LoginModalProps {
   open: boolean;
@@ -27,6 +32,7 @@ const LoginFormSchema = yup.object().shape({
 
 const LoginModal: FC<LoginModalProps> = ({ open, onClose }): ReactElement => {
   const classes = useStylesSignIn();
+  const dispatch = useDispatch();
   const {
     control,
     register,
@@ -35,7 +41,23 @@ const LoginModal: FC<LoginModalProps> = ({ open, onClose }): ReactElement => {
   } = useForm<LoginFormProps>({
     resolver: yupResolver(LoginFormSchema),
   });
-  const onSubmit = (data: LoginFormProps) => console.log(data);
+  const openNotificationRef = useRef<(text: string, type: Color) => void>(
+    () => {}
+  );
+  const loadingStatus = useSelector(selectUserStatus);
+
+  const onSubmit = async (data: LoginFormProps) => {
+    dispatch(fetchSignIn(data));
+  };
+
+  useEffect(() => {
+    if (loadingStatus === LoadingStatus.SUCCESS) {
+      openNotificationRef.current("Авторизация успешна!", "success");
+      onClose();
+    } else if (loadingStatus === LoadingStatus.ERROR) {
+      openNotificationRef.current("Неверный логин или пароль", "error");
+    }
+  }, [loadingStatus, onClose]);
 
   return (
     <ModalBlock
@@ -99,7 +121,13 @@ const LoginModal: FC<LoginModalProps> = ({ open, onClose }): ReactElement => {
                 />
               )}
             />
-            <Button type="submit" variant="contained" color="primary" fullWidth>
+            <Button
+              disabled={loadingStatus === LoadingStatus.LOADING}
+              type="submit"
+              variant="contained"
+              color="primary"
+              fullWidth
+            >
               Войти
             </Button>
           </FormGroup>

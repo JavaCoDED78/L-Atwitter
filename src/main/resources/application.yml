@@ -14,6 +14,10 @@ spring:
     open-in-view: false
     hibernate:
       ddl-auto: update
+
+  thymeleaf:
+    check-template-location: false
+
   mail:
     host: smtp.gmail.com
     username: perfumestoreapp@gmail.com

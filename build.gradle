@@ -34,6 +34,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
     implementation 'org.springframework.boot:spring-boot-starter-mail'
     implementation 'org.springframework.boot:spring-boot-starter-websocket'
+    implementation "com.amazonaws:aws-java-sdk:${versions.aws}"
     implementation "io.jsonwebtoken:jjwt-api:${versions.jjwt}"
     runtimeOnly "io.jsonwebtoken:jjwt-impl:${versions.jjwt}",
             "io.jsonwebtoken:jjwt-jackson:${versions.jjwt}"
