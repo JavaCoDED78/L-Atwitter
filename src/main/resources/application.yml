@@ -1,8 +1,9 @@
 spring:
+
   datasource:
-    url: jdbc:postgresql://localhost:5434/twitter
+    url: jdbc:postgresql://localhost:5433/twt_base
     username: postgres
-    password: postgres
+    password: pass
     driver-class-name: org.postgresql.Driver
 
   jpa:
@@ -14,6 +15,13 @@ spring:
     open-in-view: false
     hibernate:
       ddl-auto: update
+
+  servlet:
+    multipart:
+      enabled: true
+      file-size-threshold: 2MB
+      max-file-size: 5MB
+      max-request-size: 10MB
 
   thymeleaf:
     check-template-location: false
@@ -33,8 +41,16 @@ spring:
 
 jwt:
   header: Authorization
-  secret:  qwerty
-  expiration: 6000000
+  secret:  dejavu
+  expiration: 600000
+
+amazon:
+  aws:
+    access-key: AKIA2GKIUFNQ24L7PXBB
+    secret-key: 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
+  s3:
+    bucket:
+      name: perfumeshop
 
 hostname: localhost:3000
 

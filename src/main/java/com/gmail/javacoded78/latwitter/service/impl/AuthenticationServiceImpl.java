@@ -1,7 +1,5 @@
 package com.gmail.javacoded78.latwitter.service.impl;
 
-import com.gmail.javacoded78.latwitter.dto.response.AuthenticationResponse;
-import com.gmail.javacoded78.latwitter.mapper.UserMapper;
 import com.gmail.javacoded78.latwitter.model.User;
 import com.gmail.javacoded78.latwitter.repository.UserRepository;
 import com.gmail.javacoded78.latwitter.security.JwtProvider;
@@ -26,18 +24,17 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private final PasswordEncoder passwordEncoder;
     private final JwtProvider jwtProvider;
     private final MailSender mailSender;
-    private final UserMapper userMapper;
 
     @Value("${hostname}")
     private String hostname;
 
     @Override
-    public AuthenticationResponse login(String email) {
+    public Map<String, Object> login(String email) {
         User user = userRepository.findByEmail(email);
         String token = jwtProvider.createToken(email, "USER");
-        AuthenticationResponse response = new AuthenticationResponse();
-        response.setUser(userMapper.convertToUserResponse(user));
-        response.setToken(token);
+        Map<String, Object> response = new HashMap<>();
+        response.put("user", user);
+        response.put("token", token);
         return response;
     }
 
@@ -61,12 +58,14 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     }
 
     @Override
-    public AuthenticationResponse getUserByToken() {
+    public Map<String, Object> getUserByToken() {
         Principal principal = SecurityContextHolder.getContext().getAuthentication();
         User user = userRepository.findByEmail(principal.getName());
-        AuthenticationResponse authenticationResponse = new AuthenticationResponse();
-        authenticationResponse.setUser(userMapper.convertToUserResponse(user));
-        return authenticationResponse;
+        String token = jwtProvider.createToken(principal.getName(), "USER");
+        Map<String, Object> response = new HashMap<>();
+        response.put("user", user);
+        response.put("token", token);
+        return response;
     }
 
 
