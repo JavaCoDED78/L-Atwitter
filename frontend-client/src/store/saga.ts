@@ -1,10 +1,11 @@
-import { all } from "redux-saga/effects";
-import { tweetsSaga } from "./actions/tweets/sagas";
-import { tagsSaga } from "./actions/tags/sagas";
-import { tweetSaga } from "./actions/tweet/sagas";
-import { usersSaga } from "./actions/users/sagas";
-import { userSaga } from "./actions/user/sagas";
+import {all} from "redux-saga/effects";
+
+import {tweetsSaga} from "./ducks/tweets/sagas";
+import {tagsSaga} from "./ducks/tags/sagas";
+import {tweetSaga} from "./ducks/tweet/sagas";
+import {usersSaga} from "./ducks/users/sagas";
+import {userSaga} from "./ducks/user/sagas";
 
 export default function* rootSaga() {
-  yield all([tweetsSaga(), tweetSaga(), tagsSaga(), usersSaga(), userSaga()]);
+    yield all([tweetsSaga(), tweetSaga(), tagsSaga(), usersSaga(), userSaga()])
 }

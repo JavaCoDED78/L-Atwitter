@@ -33,14 +33,15 @@ public class ApplicationConfiguration {
     }
 
     @Bean
-    public ModelMapper modelMapper() {
-        ModelMapper mapper = new ModelMapper();
-        mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
-        return mapper;
+    public PasswordEncoder getPasswordEncoder() {
+        return new BCryptPasswordEncoder(8);
     }
 
     @Bean
-    public PasswordEncoder getPasswordEncoder() {
-        return new BCryptPasswordEncoder(8);
+    public ModelMapper modelMapper() {
+        ModelMapper mapper = new ModelMapper();
+        mapper.getConfiguration()
+                .setMatchingStrategy(MatchingStrategies.STRICT);
+        return mapper;
     }
 }

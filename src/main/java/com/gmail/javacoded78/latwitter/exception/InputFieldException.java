@@ -13,13 +13,14 @@ public class InputFieldException extends RuntimeException {
 
     private final BindingResult bindingResult;
     private final Map<String, String> errorsMap;
-    private final Collector<FieldError, ?, Map<String, String>> collector = Collectors.toMap(
-            fieldError -> fieldError.getField() + "Error",
-            FieldError::getDefaultMessage
-    );
 
     public InputFieldException(BindingResult bindingResult) {
         this.bindingResult = bindingResult;
         this.errorsMap = bindingResult.getFieldErrors().stream().collect(collector);
     }
+
+    Collector<FieldError, ?, Map<String, String>> collector = Collectors.toMap(
+            fieldError -> fieldError.getField() + "Error",
+            FieldError::getDefaultMessage
+    );
 }

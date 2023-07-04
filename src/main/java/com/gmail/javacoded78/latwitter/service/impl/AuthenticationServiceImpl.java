@@ -68,22 +68,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         return response;
     }
 
-
-    @Override
-    public boolean activateUser(String code) {
-        User user = userRepository.findByActivationCode(code);
-        if (user == null) return false;
-        user.setActivationCode(null);
-        user.setActive(true);
-        userRepository.save(user);
-        return true;
-    }
-
-    @Override
-    public User findByPasswordResetCode(String code) {
-        return userRepository.findByPasswordResetCode(code);
-    }
-
     @Override
     public boolean sendPasswordResetCode(String email) {
         User user = userRepository.findByEmail(email);
@@ -98,6 +82,21 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         attributes.put("resetUrl", "http://" + hostname + "/reset/" + user.getPasswordResetCode());
         mailSender.sendMessageHtml(user.getEmail(), subject, template, attributes);
         return true;
+    }
+
+    @Override
+    public boolean activateUser(String code) {
+        User user = userRepository.findByActivationCode(code);
+        if (user == null) return false;
+        user.setActivationCode(null);
+        user.setActive(true);
+        userRepository.save(user);
+        return true;
+    }
+
+    @Override
+    public User findByPasswordResetCode(String code) {
+        return userRepository.findByPasswordResetCode(code);
     }
 
     @Override

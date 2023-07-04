@@ -7,7 +7,7 @@ import java.util.Map;
 
 public interface AuthenticationService {
 
-     Map<String, Object> login(String email);
+    Map<String, Object> login(String email);
 
     boolean registration(User user);
 

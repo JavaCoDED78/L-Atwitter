@@ -12,7 +12,7 @@ spring:
       fetch_size: 50
       show_sql: true
       format_sql: true
-    open-in-view: false
+#     open-in-view: false
     hibernate:
       ddl-auto: update
 
@@ -41,8 +41,8 @@ spring:
 
 jwt:
   header: Authorization
-  secret:  dejavu
-  expiration: 600000
+  secret:  dejavudejavudejavudejavudejavudejavudejavudejavudejavudejavu
+  expiration: 6048000
 
 amazon:
   aws:

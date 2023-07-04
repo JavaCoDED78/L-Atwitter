@@ -9,10 +9,9 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
 
-@Entity
 @Data
-@AllArgsConstructor
-@Builder
+@Entity
+@Table(name = "tweets")
 public class Tweet {
 
     @Id
@@ -27,7 +26,6 @@ public class Tweet {
 
     @OneToMany
     private List<Image> images;
-
 
     public Tweet() {
         this.dateTime = LocalDateTime.now().withNano(0);

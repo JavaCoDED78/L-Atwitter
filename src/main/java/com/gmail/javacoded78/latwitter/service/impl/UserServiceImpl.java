@@ -17,14 +17,13 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.UUID;
 
-
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final ImageRepository imageRepository;
-    private  final AmazonS3 amazonS3client;
+    private final AmazonS3 amazonS3client;
 
     @Value("${amazon.s3.bucket.name}")
     private String bucketName;
