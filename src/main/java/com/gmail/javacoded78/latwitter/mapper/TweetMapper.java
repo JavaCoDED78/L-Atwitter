@@ -41,8 +41,8 @@ public class TweetMapper {
         return convertToTweetResponse(tweetService.getTweetById(tweetId));
     }
 
-    public List<TweetResponse> createTweet(TweetRequest tweetRequest, MultipartFile multipartFile) {
-        return convertListToResponseDto(tweetService.createTweet(convertToTweetEntity(tweetRequest), multipartFile));
+    public List<TweetResponse> createTweet(TweetRequest tweetRequest) {
+        return convertListToResponseDto(tweetService.createTweet(convertToTweetEntity(tweetRequest)));
     }
 
     public List<TweetResponse> deleteTweet(Long tweetId) {

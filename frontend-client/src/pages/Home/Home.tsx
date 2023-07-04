@@ -54,7 +54,10 @@ const Home: FC = (): ReactElement => {
                         <CircularProgress />
                     </div>
                 ) : (
-                    tweets.map((tweet) => <Tweet key={tweet.id} classes={classes} {...tweet} />)
+                    tweets.map((tweet) => (
+                            <Tweet key={tweet.id} classes={classes} images={tweet.images} {...tweet} />
+                        )
+                    )
                 )}
             </Route>
 

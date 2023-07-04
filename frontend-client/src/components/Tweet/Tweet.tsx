@@ -10,12 +10,17 @@ import MoreVertIcon from '@material-ui/icons/MoreVert';
 
 import {useHomeStyles} from "../../pages/Home/HomeStyles";
 import {formatDate} from '../../util/formatDate';
+import {useDispatch} from "react-redux";
+import ImageList from "../ImageList/ImageList";
+import {removeTweet} from "../../store/ducks/tweets/actionCreators";
+import {Image} from "../../store/ducks/tweets/contracts/state";
 
 interface TweetProps {
     id: string
     classes: ReturnType<typeof useHomeStyles>
     text: string
     dateTime: string
+    images?: Image[]
     user: {
         fullName: string
         username: string
@@ -23,12 +28,13 @@ interface TweetProps {
     }
 }
 
-const Tweet: FC<TweetProps> = ({id, classes, text, user, dateTime}: TweetProps): ReactElement => {
+const Tweet: FC<TweetProps> = ({id, classes, text, images, user, dateTime}: TweetProps): ReactElement => {
+    const dispatch = useDispatch();
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const open = Boolean(anchorEl);
     const history = useHistory();
 
-    const handleClickTweet = (event: React.MouseEvent<HTMLAnchorElement>): void => {
+    const handleClickTweet = (event: React.MouseEvent<HTMLAnchorElement>) => {
         event.preventDefault();
         history.push(`/home/tweet/${id}`);
     }
@@ -39,10 +45,17 @@ const Tweet: FC<TweetProps> = ({id, classes, text, user, dateTime}: TweetProps):
         setAnchorEl(event.currentTarget);
     };
 
-    const handleClose = (event: React.MouseEvent<HTMLElement>) => {
+    const handleClose = (event: React.MouseEvent<HTMLElement>): void => {
         event.stopPropagation();
         event.preventDefault();
         setAnchorEl(null);
+    };
+
+    const handleRemove = (event: React.MouseEvent<HTMLElement>): void => {
+        handleClose(event);
+        if (window.confirm('Вы действительно хотите удалить твит?')) {
+            dispatch(removeTweet(id));
+        }
     };
 
     return (
@@ -79,6 +92,7 @@ const Tweet: FC<TweetProps> = ({id, classes, text, user, dateTime}: TweetProps):
                     </div>
                     <Typography variant="body1" gutterBottom>
                         {text}
+                        {images && <ImageList classes={classes} images={images} />}
                     </Typography>
                     <div className={classes.tweetFooter}>
                         <div>

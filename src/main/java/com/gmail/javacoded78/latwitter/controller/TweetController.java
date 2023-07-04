@@ -33,9 +33,8 @@ public class TweetController {
 
     @PostMapping
     @JsonView(Views.Tweet.class)
-    public ResponseEntity<List<TweetResponse>> createTweet(@RequestPart(name = "file", required = false) MultipartFile file,
-                                                           @RequestPart TweetRequest tweetRequest) {
-        return ResponseEntity.ok(tweetMapper.createTweet(tweetRequest, file));
+    public ResponseEntity<List<TweetResponse>> createTweet(@RequestBody TweetRequest tweetRequest) {
+        return ResponseEntity.ok(tweetMapper.createTweet(tweetRequest));
     }
 
     @DeleteMapping("/{tweetId}")

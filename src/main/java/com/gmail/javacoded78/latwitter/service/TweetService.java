@@ -10,7 +10,7 @@ public interface TweetService {
 
     Tweet getTweetById(Long tweetId);
 
-    List<Tweet> createTweet(Tweet tweet, MultipartFile multipartFile);
+    List<Tweet> createTweet(Tweet tweet);
 
     List<Tweet> deleteTweet(Long tweetId);
 }

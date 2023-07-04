@@ -33,7 +33,7 @@ public class TweetServiceImpl implements TweetService {
 
     @Override
     @Transactional
-    public List<Tweet> createTweet(Tweet tweet, MultipartFile multipartFile) {
+    public List<Tweet> createTweet(Tweet tweet) {
         Principal principal = SecurityContextHolder.getContext().getAuthentication();
         User user = userRepository.findByEmail(principal.getName());
         tweet.setUser(user);
