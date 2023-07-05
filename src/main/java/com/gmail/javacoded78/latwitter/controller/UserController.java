@@ -23,6 +23,11 @@ public class UserController {
         return ResponseEntity.ok(userMapper.getUserById(userId));
     }
 
+    @GetMapping("/relevant")
+    public ResponseEntity<List<UserResponse>> getRelevantUsers() {
+        return ResponseEntity.ok(userMapper.getRelevantUsers());
+    }
+
     @GetMapping("/{userId}/tweets")
     public ResponseEntity<List<TweetResponse>> getUserTweets(@PathVariable Long userId) {
         return ResponseEntity.ok(userMapper.getUserTweets(userId));

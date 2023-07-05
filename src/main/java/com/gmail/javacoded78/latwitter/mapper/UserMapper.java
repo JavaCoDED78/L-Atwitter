@@ -1,6 +1,5 @@
 package com.gmail.javacoded78.latwitter.mapper;
 
-import com.gmail.javacoded78.latwitter.dto.request.RegistrationRequest;
 import com.gmail.javacoded78.latwitter.dto.request.UserRequest;
 import com.gmail.javacoded78.latwitter.dto.response.ImageResponse;
 import com.gmail.javacoded78.latwitter.dto.response.TweetResponse;
@@ -15,6 +14,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
@@ -29,8 +29,14 @@ public class UserMapper {
         return modelMapper.map(user, UserResponse.class);
     }
 
-    ImageResponse convertToImageResponse(Image image) {
+    private ImageResponse convertToImageResponse(Image image) {
         return modelMapper.map(image, ImageResponse.class);
+    }
+
+    private List<UserResponse> convertListToResponseDto(List<User> users) {
+        return users.stream()
+                .map(this::convertToUserResponse)
+                .collect(Collectors.toList());
     }
 
     User convertToEntity(UserRequest userRequest) {
@@ -59,5 +65,9 @@ public class UserMapper {
 
     public UserResponse unfollow(Long userId) {
         return convertToUserResponse(userService.unfollow(userId));
+    }
+
+    public List<UserResponse> getRelevantUsers() {
+        return convertListToResponseDto(userService.getRelevantUsers());
     }
 }
