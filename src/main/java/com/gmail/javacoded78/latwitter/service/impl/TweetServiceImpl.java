@@ -1,7 +1,9 @@
 package com.gmail.javacoded78.latwitter.service.impl;
 
+import com.gmail.javacoded78.latwitter.model.Tag;
 import com.gmail.javacoded78.latwitter.model.Tweet;
 import com.gmail.javacoded78.latwitter.model.User;
+import com.gmail.javacoded78.latwitter.repository.TagRepository;
 import com.gmail.javacoded78.latwitter.repository.TweetRepository;
 import com.gmail.javacoded78.latwitter.repository.UserRepository;
 import com.gmail.javacoded78.latwitter.service.TweetService;
@@ -9,10 +11,13 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.security.Principal;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Service
 @RequiredArgsConstructor
@@ -20,6 +25,7 @@ public class TweetServiceImpl implements TweetService {
 
     private final TweetRepository tweetRepository;
     private final UserRepository userRepository;
+    private final TagRepository tagRepository;
 
     @Override
     public List<Tweet> getTweets() {
@@ -37,7 +43,6 @@ public class TweetServiceImpl implements TweetService {
     }
 
     @Override
-    @Transactional
     public List<Tweet> createTweet(Tweet tweet) {
         Principal principal = SecurityContextHolder.getContext().getAuthentication();
         User user = userRepository.findByEmail(principal.getName());
@@ -45,7 +50,36 @@ public class TweetServiceImpl implements TweetService {
         tweetRepository.save(tweet);
         List<Tweet> tweets = user.getTweets();
         tweets.add(tweet);
-        return tweetRepository.findAllByUserOrderByDateTimeDesc(user);
+
+        Pattern pattern = Pattern.compile("(#\\w+)\\b");
+        Matcher match = pattern.matcher(tweet.getText());
+        List<String> hashtags = new ArrayList<>();
+
+        while (match.find()) {
+            hashtags.add(match.group(1));
+        }
+
+        if (!hashtags.isEmpty()) {
+            for (String hashtag : hashtags) {
+                Tag tag = tagRepository.findByTagName(hashtag);
+
+                if (tag != null) {
+                    Long tweetsQuantity = tag.getTweetsQuantity();
+                    tweetsQuantity = tweetsQuantity + 1;
+                    tag.setTweetsQuantity(tweetsQuantity);
+                    List<Tweet> taggedTweets = tag.getTweets();
+                    taggedTweets.add(tweet);
+                    tagRepository.save(tag);
+                } else {
+                    Tag newTag = new Tag();
+                    newTag.setTagName(hashtag);
+                    newTag.setTweetsQuantity(1L);
+                    newTag.setTweets(Collections.singletonList(tweet));
+                    tagRepository.save(newTag);
+                }
+            }
+        }
+        return tweetRepository.findAllByOrderByDateTimeDesc();
     }
 
     @Override
@@ -57,6 +91,11 @@ public class TweetServiceImpl implements TweetService {
         User user = userRepository.findByEmail(principal.getName());
         List<Tweet> tweets = user.getTweets();
         tweets.remove(tweet);
+
+//        if (tweetAuthor.getId().equals(user.getId())) {
+//            tweets.remove(tweet)
+//        }
+
         return tweetRepository.findAllByOrderByDateTimeDesc();
     }
 
