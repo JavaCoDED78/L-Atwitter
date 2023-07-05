@@ -10,10 +10,11 @@ import MoreVertIcon from '@material-ui/icons/MoreVert';
 
 import {useHomeStyles} from "../../pages/Home/HomeStyles";
 import {formatDate} from '../../util/formatDate';
-import {useDispatch} from "react-redux";
 import ImageList from "../ImageList/ImageList";
+import {useDispatch} from "react-redux";
 import {removeTweet} from "../../store/ducks/tweets/actionCreators";
 import {Image} from "../../store/ducks/tweets/contracts/state";
+import {User} from "../../store/ducks/user/contracts/state";
 
 interface TweetProps {
     id: string
@@ -21,11 +22,7 @@ interface TweetProps {
     text: string
     dateTime: string
     images?: Image[]
-    user: {
-        fullName: string
-        username: string
-        avatarUrl: string
-    }
+    user: User
 }
 
 const Tweet: FC<TweetProps> = ({id, classes, text, images, user, dateTime}: TweetProps): ReactElement => {
@@ -34,7 +31,7 @@ const Tweet: FC<TweetProps> = ({id, classes, text, images, user, dateTime}: Twee
     const open = Boolean(anchorEl);
     const history = useHistory();
 
-    const handleClickTweet = (event: React.MouseEvent<HTMLAnchorElement>) => {
+    const handleClickTweet = (event: React.MouseEvent<HTMLAnchorElement>): void => {
         event.preventDefault();
         history.push(`/home/tweet/${id}`);
     }
@@ -63,10 +60,9 @@ const Tweet: FC<TweetProps> = ({id, classes, text, images, user, dateTime}: Twee
             <Paper className={classNames(classes.tweet, classes.tweetsHeader)} variant="outlined">
                 <Avatar
                     className={classes.tweetAvatar}
-                    // alt={`Аватарка пользователя ${user.fullName}`}
-                    // src={user.avatarUrl}
-                    alt={`Аватарка пользователя`}
-                    src={"https://avatars.githubusercontent.com/u/56604599?v=4"}
+                    alt={`avatar ${user.id}`}
+                    src={user.avatar?.src ? user.avatar?.src :
+                        "https://abs.twimg.com/sticky/default_profile_images/default_profile_reasonably_small.png"}
                 />
                 <div className={classes.tweetContent}>
                     <div className={classes.tweetHeader}>
@@ -85,8 +81,8 @@ const Tweet: FC<TweetProps> = ({id, classes, text, images, user, dateTime}: Twee
                                 <MoreVertIcon/>
                             </IconButton>
                             <Menu anchorEl={anchorEl} open={open} onClose={handleClose}>
-                                <MenuItem onClick={handleClose}>Редактировать</MenuItem>
-                                <MenuItem onClick={handleClose}>Удалить твит</MenuItem>
+                                <MenuItem onClick={handleClose}>Edit tweet</MenuItem>
+                                <MenuItem onClick={handleRemove}>Delete tweet</MenuItem>
                             </Menu>
                         </div>
                     </div>
@@ -99,7 +95,7 @@ const Tweet: FC<TweetProps> = ({id, classes, text, images, user, dateTime}: Twee
                             <IconButton>
                                 <CommentIcon style={{fontSize: 20}}/>
                             </IconButton>
-                            <span>1</span>
+                            <span></span>
                         </div>
                         <div>
                             <IconButton>
@@ -124,3 +120,4 @@ const Tweet: FC<TweetProps> = ({id, classes, text, images, user, dateTime}: Twee
 };
 
 export default Tweet;
+

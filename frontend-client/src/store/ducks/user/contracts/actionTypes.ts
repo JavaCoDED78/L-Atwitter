@@ -3,14 +3,20 @@ import {Action} from "redux";
 import {LoginFormProps} from "../../../../pages/SignIn/LoginModal";
 import {RegisterFormProps} from "../../../../pages/SignIn/RegisterModal";
 import {LoadingStatus} from "../../../types";
-import {UserState} from "./state";
+import {User, UserState} from "./state";
 
 export enum UserActionsType {
     FETCH_SIGN_IN = "user/FETCH_SIGN_IN",
     FETCH_SIGN_UP = 'user/FETCH_SIGN_UP',
     SET_USER_DATA = "user/SET_USER_DATA",
+    UPDATE_USER_DATA = "user/UPDATE_USER_DATA",
     FETCH_USER_DATA = 'user/FETCH_USER_DATA',
-    SET_USER_LOADING_STATE = "user/SET_USER_LOADING_STATE"
+    SET_USER_LOADING_STATE = "user/SET_USER_LOADING_STATE",
+    SIGN_OUT = 'user/SIGN_OUT',
+}
+
+export interface SignOutActionInterface extends Action<UserActionsType> {
+    type: UserActionsType.SIGN_OUT;
 }
 
 export interface FetchSignInActionInterface extends Action<UserActionsType> {
@@ -32,6 +38,11 @@ export interface SetUserDataActionInterface extends Action<UserActionsType> {
     payload: UserState["data"] | undefined;
 }
 
+export interface UpdateUserDataActionInterface extends Action<UserActionsType> {
+    type: UserActionsType.UPDATE_USER_DATA;
+    payload: User;
+}
+
 export interface SetUserLoadingStateActionInterface extends Action<UserActionsType> {
     type: UserActionsType.SET_USER_LOADING_STATE;
     payload: LoadingStatus;
@@ -40,4 +51,6 @@ export interface SetUserLoadingStateActionInterface extends Action<UserActionsTy
 export type UserActions =
     | SetUserDataActionInterface
     | SetUserLoadingStateActionInterface
-    | FetchUserDataActionInterface;
+    | FetchUserDataActionInterface
+    | SignOutActionInterface
+    | UpdateUserDataActionInterface;

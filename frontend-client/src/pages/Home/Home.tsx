@@ -11,6 +11,8 @@ import {selectIsTweetsLoading, selectTweetsItems} from "../../store/ducks/tweets
 import {fetchTags} from "../../store/ducks/tags/actionCreators";
 import {BackButton} from "../../components/BackButton/BackButton";
 import {FullTweet} from "./FullTweet";
+import {fetchUserData} from "../../store/ducks/user/actionCreators";
+import {selectUserData} from "../../store/ducks/user/selectors";
 
 const Home: FC = (): ReactElement => {
     const dispatch = useDispatch();
@@ -18,40 +20,41 @@ const Home: FC = (): ReactElement => {
     const tweets = useSelector(selectTweetsItems);
     const isLoading = useSelector(selectIsTweetsLoading);
 
-    // useEffect(() => {
-    //     dispatch(fetchTweets());
-    //     dispatch(fetchTags());
-    // }, [dispatch]);
+    useEffect(() => {
+        dispatch(fetchTweets());
+        dispatch(fetchUserData());
+        // dispatch(fetchTags());
+    }, []);
 
     return (
         <Paper className={classes.tweetsWrapper} variant="outlined">
             <Paper className={classes.tweetsHeader} variant="outlined">
                 <Route path="/home/:any">
-                    <BackButton />
+                    <BackButton/>
                 </Route>
 
                 <Route path={['/home', '/home/search']} exact>
-                    <Typography variant="h6">Твиты</Typography>
+                    <Typography variant="h6">Home</Typography>
                 </Route>
 
                 <Route path="/home/tweet">
-                    <Typography variant="h6">Твитнуть</Typography>
+                    <Typography variant="h6">Tweet</Typography>
                 </Route>
             </Paper>
 
             <Route path={['/home', '/home/search']} exact>
                 <Paper>
                     <div className={classes.addForm}>
-                        <AddTweetForm classes={classes} />
+                        <AddTweetForm classes={classes}/>
                     </div>
-                    <div className={classes.addFormBottomLine} />
+                    <div className={classes.addFormBottomLine}/>
                 </Paper>
             </Route>
 
             <Route path="/home" exact>
                 {isLoading ? (
                     <div className={classes.tweetsCentred}>
-                        <CircularProgress />
+                        <CircularProgress/>
                     </div>
                 ) : (
                     tweets.map((tweet) => (
@@ -61,9 +64,10 @@ const Home: FC = (): ReactElement => {
                 )}
             </Route>
 
-            <Route path="/home/tweet/:id" component={FullTweet} exact />
+            <Route path="/home/tweet/:id" component={FullTweet} exact/>
         </Paper>
     );
 };
 
 export default Home;
+

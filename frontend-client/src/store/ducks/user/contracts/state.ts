@@ -1,16 +1,20 @@
 import {LoadingStatus} from "../../../types";
-import {Tweet} from "../../tweets/contracts/state";
+import {Image, Tweet} from "../../tweets/contracts/state";
 
 export interface User {
-    id: number;
-    email: string;
-    fullName: string;
+    id?: number;
+    email?: string;
+    fullName?: string;
     username: string;
+    avatar?: Image;
+    wallpaper?: Image;
     location: string;
     about: string;
     website: string;
-    confirmed: boolean;
-    tweets: Tweet[];
+    confirmed?: boolean;
+    registration?: string;
+    dateOfBirth?: string;
+    tweets?: Tweet[];
 }
 
 export interface AuthUser {
@@ -22,4 +26,3 @@ export interface UserState {
     data: AuthUser | undefined;
     status: LoadingStatus;
 }
-

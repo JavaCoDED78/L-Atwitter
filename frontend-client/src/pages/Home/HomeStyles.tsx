@@ -296,6 +296,14 @@ export const useHomeStyles = makeStyles((theme: Theme) => ({
             textDecoration: 'none',
         },
     },
+    profileMenuEditButton: {
+        float: 'right',
+        marginTop: '90px',
+        border: '1px solid',
+        borderRadius: '25px',
+        padding: '0 15px',
+        color: theme.palette.primary.main,
+    },
     imagesListItemRemove: {
         position: 'absolute',
         top: -8,
@@ -303,4 +311,9 @@ export const useHomeStyles = makeStyles((theme: Theme) => ({
         padding: '0 !important',
         backgroundColor: '#ff4d4d !important',
     },
+    saveEditedProfileBtn: {
+        marginLeft: "auto",
+        marginRight: "-20px",
+        height: "30px",
+    }
 }));

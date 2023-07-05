@@ -2,6 +2,7 @@ package com.gmail.javacoded78.latwitter.controller;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import com.gmail.javacoded78.latwitter.dto.Views;
+import com.gmail.javacoded78.latwitter.dto.request.UserRequest;
 import com.gmail.javacoded78.latwitter.dto.response.ImageResponse;
 import com.gmail.javacoded78.latwitter.dto.response.UserResponse;
 import com.gmail.javacoded78.latwitter.mapper.UserMapper;
@@ -21,6 +22,12 @@ public class UserController {
     @JsonView(Views.User.class)
     public ResponseEntity<UserResponse> getUserById(@PathVariable Long userId) {
         return ResponseEntity.ok(userMapper.getUserById(userId));
+    }
+
+    @PutMapping
+    @JsonView(Views.User.class)
+    public ResponseEntity<UserResponse> updateUserProfile(@RequestBody UserRequest userRequest) {
+        return ResponseEntity.ok(userMapper.updateUserProfile(userRequest));
     }
 
     @PostMapping("/upload")
