@@ -127,4 +127,3 @@ export const AddTweetForm: FC<AddTweetFormProps> = ({classes, maxRows}: AddTweet
         </div>
     );
 };
-

@@ -60,4 +60,3 @@ const Users: FC = (): ReactElement => {
 };
 
 export default Users;
-

@@ -43,3 +43,4 @@ export const setUserLoadingStatus = (payload: UserState["status"]): SetUserLoadi
     type: UserActionsType.SET_USER_LOADING_STATE,
     payload
 });
+

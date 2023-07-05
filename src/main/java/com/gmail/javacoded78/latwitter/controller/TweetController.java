@@ -1,15 +1,18 @@
 package com.gmail.javacoded78.latwitter.controller;
 
-import com.fasterxml.jackson.annotation.JsonView;
-import com.gmail.javacoded78.latwitter.dto.Views;
 import com.gmail.javacoded78.latwitter.dto.request.TweetRequest;
 import com.gmail.javacoded78.latwitter.dto.request.UserRequest;
 import com.gmail.javacoded78.latwitter.dto.response.TweetResponse;
 import com.gmail.javacoded78.latwitter.mapper.TweetMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
@@ -28,6 +31,11 @@ public class TweetController {
     @GetMapping("/{tweetId}")
     public ResponseEntity<TweetResponse> getTweetById(@PathVariable Long tweetId) {
         return ResponseEntity.ok(tweetMapper.getTweetById(tweetId));
+    }
+
+    @GetMapping("/search/{text}")
+    public ResponseEntity<List<TweetResponse>> searchTweets(@PathVariable String text) {
+        return ResponseEntity.ok(tweetMapper.searchTweets(text));
     }
 
     @PostMapping("/user")

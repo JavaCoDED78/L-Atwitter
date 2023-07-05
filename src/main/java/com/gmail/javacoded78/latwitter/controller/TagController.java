@@ -1,12 +1,14 @@
 package com.gmail.javacoded78.latwitter.controller;
 
-import com.gmail.javacoded78.latwitter.dto.request.TagRequest;
 import com.gmail.javacoded78.latwitter.dto.response.TagResponse;
 import com.gmail.javacoded78.latwitter.dto.response.TweetResponse;
 import com.gmail.javacoded78.latwitter.mapper.TagMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
@@ -22,8 +24,8 @@ public class TagController {
         return ResponseEntity.ok(tagMapper.getTags());
     }
 
-    @PostMapping
-    public ResponseEntity<List<TweetResponse>> getTweetsByTag(@RequestBody TagRequest tagRequest) {
-        return ResponseEntity.ok(tagMapper.getTweetsByTag(tagRequest));
+    @GetMapping("/{tagName}")
+    public ResponseEntity<List<TweetResponse>> getTweetsByTag(@PathVariable String tagName) {
+        return ResponseEntity.ok(tagMapper.getTweetsByTag(tagName));
     }
 }

@@ -7,7 +7,7 @@ import {useDispatch} from "react-redux";
 const ActivatePage = () => {
     const dispatch = useDispatch();
 
-    useEffect(() => {
+   useEffect(() => {
         dispatch(setUserLoadingStatus(LoadingStatus.NEVER));
         const hash = window.location.pathname.split('/').pop();
         if (hash) {

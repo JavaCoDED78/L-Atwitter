@@ -28,3 +28,4 @@ export interface UserState {
     data: AuthUser | undefined;
     status: LoadingStatus;
 }
+

@@ -55,6 +55,8 @@ const EditProfileModal: FC<EditProfileModalProps> = ({visible, onClose}) => {
         resolver: yupResolver(EditProfileFormSchema)
     });
 
+    console.log(avatar)
+
     const onSubmit = async (data: EditProfileFormProps) => {
         let avatarResponse: Image | undefined = undefined;
         let wallpaperResponse: Image | undefined = undefined;
@@ -177,4 +179,3 @@ const EditProfileModal: FC<EditProfileModalProps> = ({visible, onClose}) => {
 };
 
 export default EditProfileModal;
-

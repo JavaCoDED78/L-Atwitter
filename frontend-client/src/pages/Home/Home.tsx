@@ -1,6 +1,6 @@
-import React, {FC, ReactElement, useEffect} from 'react';
+import React, {ChangeEvent, FC, ReactElement, useEffect, useState} from 'react';
 import {useDispatch, useSelector} from "react-redux";
-import {Route} from "react-router-dom";
+import {Route, RouteComponentProps} from "react-router-dom";
 import {CircularProgress, Paper, Typography} from "@material-ui/core";
 
 import Tweet from "../../components/Tweet/Tweet";
@@ -12,6 +12,8 @@ import {BackButton} from "../../components/BackButton/BackButton";
 import {FullTweet} from "./FullTweet";
 import {fetchUserData} from "../../store/ducks/user/actionCreators";
 import {fetchUsers} from "../../store/ducks/users/actionCreators";
+import {fetchTags} from "../../store/ducks/tags/actionCreators";
+import Search from "../../components/Search/Search";
 
 const Home: FC = (): ReactElement => {
     const dispatch = useDispatch();
@@ -23,25 +25,25 @@ const Home: FC = (): ReactElement => {
         dispatch(fetchTweets());
         dispatch(fetchUserData());
         dispatch(fetchUsers());
+        dispatch(fetchTags());
     }, []);
 
     return (
         <Paper className={classes.tweetsWrapper} variant="outlined">
             <Paper className={classes.tweetsHeader} variant="outlined">
-                <Route path="/home/:any">
+                <Route path='/home' exact>
                     <BackButton/>
-                </Route>
-
-                <Route path={['/home', '/home/search']} exact>
                     <Typography variant="h6">Home</Typography>
                 </Route>
-
                 <Route path="/home/tweet">
+                    <BackButton/>
                     <Typography variant="h6">Tweet</Typography>
                 </Route>
+                {/*<Route path={['/home/search', '/home/search/:tag']} component={Search} />*/}
+                <Route path={'/home/search'} component={Search} />
             </Paper>
 
-            <Route path={['/home', '/home/search']} exact>
+            <Route path='/home' exact>
                 <Paper>
                     <div className={classes.addForm}>
                         <AddTweetForm classes={classes}/>
@@ -50,7 +52,7 @@ const Home: FC = (): ReactElement => {
                 </Paper>
             </Route>
 
-            <Route path="/home" exact>
+            <Route path={['/home', '/home/search']} exact>
                 {isLoading ? (
                     <div className={classes.tweetsCentred}>
                         <CircularProgress/>
@@ -69,4 +71,3 @@ const Home: FC = (): ReactElement => {
 };
 
 export default Home;
-

@@ -59,6 +59,10 @@ public class UserMapper {
         return tweetMapper.convertListToResponseDto(userService.getUserTweets(userId));
     }
 
+    public List<TweetResponse> getUserLikedTweets(Long userId) {
+        return tweetMapper.convertListToResponseDto(userService.getUserLikedTweets(userId));
+    }
+
     public UserResponse follow(Long userId) {
         return convertToUserResponse(userService.follow(userId));
     }

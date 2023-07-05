@@ -8,7 +8,6 @@ import com.gmail.javacoded78.latwitter.service.TweetService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -61,5 +60,9 @@ public class TweetMapper {
 
     public TweetResponse retweet(Long tweetId) {
         return convertToTweetResponse(tweetService.retweet(tweetId));
+    }
+
+    public List<TweetResponse> searchTweets(String text) {
+        return convertListToResponseDto(tweetService.searchTweets(text));
     }
 }
