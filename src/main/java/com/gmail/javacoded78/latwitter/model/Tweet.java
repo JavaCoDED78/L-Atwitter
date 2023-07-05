@@ -1,11 +1,17 @@
 package com.gmail.javacoded78.latwitter.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -15,7 +21,7 @@ import java.util.List;
 public class Tweet {
 
     @Id
-    @GeneratedValue(strategy= GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String text;
     private String imageSrc;
@@ -26,6 +32,12 @@ public class Tweet {
 
     @OneToMany
     private List<Image> images;
+
+    @ManyToMany
+    @JoinTable(name = "tweet_likes",
+            joinColumns = @JoinColumn(name = "tweets_id"),
+            inverseJoinColumns = @JoinColumn(name = "users_id"))
+    private List<User> likes;
 
     public Tweet() {
         this.dateTime = LocalDateTime.now().withNano(0);
