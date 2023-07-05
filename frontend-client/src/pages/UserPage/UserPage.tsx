@@ -14,36 +14,44 @@ import LinkOutlinedIcon from '@material-ui/icons/LinkOutlined';
 import {useHomeStyles} from '../Home/HomeStyles';
 import {BackButton} from "../../components/BackButton/BackButton";
 import {selectIsTweetsLoading, selectTweetsItems} from "../../store/ducks/tweets/selectors";
-import {fetchTweets} from "../../store/ducks/tweets/actionCreators";
-import {AuthApi} from "../../services/api/authApi";
+import { fetchUserTweets, setTweetsLoadingStatus} from "../../store/ducks/tweets/actionCreators";
 import Tweet from "../../components/Tweet/Tweet";
-import {User} from "../../store/ducks/user/contracts/state";
 import "./UserPage.scss";
 import EditProfileModal from "../../components/EditProfileModal/EditProfileModal";
 import {fetchUserData} from "../../store/ducks/user/actionCreators";
+import {LoadingStatus} from "../../store/types";
+import {selectUserData} from "../../store/ducks/user/selectors";
+import {selectUser} from "../../store/ducks/users/selectors";
+import {fetchUser, followUser, unfollowUser} from "../../store/ducks/users/actionCreators";
 
 const UserPage: FC<RouteComponentProps<{ id: string }>> = ({match}) => {
     const classes = useHomeStyles();
-    const tweets = useSelector(selectTweetsItems);
     const dispatch = useDispatch();
+    const tweets = useSelector(selectTweetsItems);
+    const myProfile = useSelector(selectUserData);
+    const userProfile = useSelector(selectUser);
     const isLoading = useSelector(selectIsTweetsLoading);
+
     const [activeTab, setActiveTab] = useState<number>(0);
-    const [userData, setUserData] = useState<User | undefined>();
     const [visibleEditProfile, setVisibleEditProfile] = useState<boolean>(false);
+    const followIndex = userProfile?.following?.findIndex((user) => user.id === myProfile?.user.id);
 
     useEffect(() => {
+        dispatch(setTweetsLoadingStatus(LoadingStatus.LOADING));
         dispatch(fetchUserData());
     }, []);
 
     useEffect(() => {
-        const userId = match.params.id;
-        dispatch(fetchTweets());
-        if (userId) {
-            AuthApi.getUserInfo(userId).then((data) => {
-                setUserData(data);
-            });
+        if (match.params.id) {
+            dispatch(fetchUser(match.params.id));
         }
     }, [dispatch]);
+
+    useEffect(() => {
+        if (userProfile) {
+            dispatch(fetchUserTweets(match.params.id));
+        }
+    }, [userProfile]);
 
     const handleChange = (event: ChangeEvent<{}>, newValue: number) => {
         setActiveTab(newValue);
@@ -57,61 +65,77 @@ const UserPage: FC<RouteComponentProps<{ id: string }>> = ({match}) => {
         setVisibleEditProfile(false);
     };
 
+    const handleFollow = () => {
+        if (followIndex === myProfile?.user.id) {
+            dispatch(unfollowUser(match.params.id));
+        } else {
+            dispatch(followUser(match.params.id));
+        }
+    };
+
     return (
         <Paper className={classNames(classes.tweetsWrapper, 'user')} variant="outlined">
             <Paper className={classes.tweetsHeader} variant="outlined">
                 <BackButton/>
                 <div>
-                    <Typography variant="h6">{userData?.fullName}</Typography>
+                    <Typography variant="h6">{userProfile?.fullName}</Typography>
                     <Typography variant="caption" display="block" gutterBottom>
                         {tweets.length} Tweets
                     </Typography>
                 </div>
             </Paper>
             <div className="user__header">
-                <img className="user__header__img" key={userData?.wallpaper?.src} src={userData?.wallpaper?.src}/>
+                <img className="user__header__img" key={userProfile?.wallpaper?.src} src={userProfile?.wallpaper?.src}/>
             </div>
             <div className="user__info">
                 <div style={{display: "inline-block"}}>
-                    <Avatar src={userData?.avatar?.src ? userData?.avatar.src :
+                    <Avatar src={userProfile?.avatar?.src ? userProfile?.avatar.src :
                         "https://abs.twimg.com/sticky/default_profile_images/default_profile_reasonably_small.png"}/>
                 </div>
-                <Button onClick={onOpenEditProfile} className={classes.profileMenuEditButton}>Edit profile</Button>
-                {!userData ? (
+                {userProfile?.id === myProfile?.user.id ? (
+                    <Button onClick={onOpenEditProfile} className={classes.profileMenuEditButton}>Edit profile</Button>
+                ) : (
+                    followIndex === myProfile?.user.id ? (
+                        <Button onClick={handleFollow} className={classes.profileMenuEditButton}>Follow</Button>
+                    ) : (
+                        <Button onClick={handleFollow} className={classes.profileMenuEditButton}>Unfollow</Button>
+                    )
+                )}
+                {!userProfile ? (
                     <Skeleton variant="text" width={250} height={30}/>
                 ) : (
-                    <h2 className="user__info-fullname">{userData.fullName}</h2>
+                    <h2 className="user__info-fullname">{userProfile.fullName}</h2>
                 )}
-                {!userData ? (
+                {!userProfile ? (
                     <Skeleton variant="text" width={60}/>
                 ) : (
-                    <span className="user__info-username">@{userData.username}</span>
+                    <span className="user__info-username">@{userProfile.username}</span>
                 )}
-                <p className="user__info-description">{userData?.about}</p>
+                <p className="user__info-description">{userProfile?.about}</p>
                 <ul className="user__info-details">
-                    {userData?.location ?
+                    {userProfile?.location ?
                         <li>
-                            <LocationOnOutlinedIcon className="user__info-icon"/>{userData?.location}
+                            <LocationOnOutlinedIcon className="user__info-icon"/>{userProfile?.location}
                         </li> : null}
-                    {userData?.website ?
+                    {userProfile?.website ?
                         <li>
                             <LinkOutlinedIcon className="user__info-icon"/>
-                            <a className="link" href={userData?.website}>{userData?.website}</a>
+                            <a className="link" href={userProfile?.website}>{userProfile?.website}</a>
                         </li> : null}
-                    {userData?.dateOfBirth ?
+                    {userProfile?.dateOfBirth ?
                         <li>
-                            Дата рождения: {userData?.dateOfBirth}
+                            Дата рождения: {userProfile?.dateOfBirth}
                         </li> : null}
-                    {userData?.registration ?
+                    {userProfile?.registration ?
                         <li>
-                            <DateRangeIcon className="user__info-icon"/> Joined: {userData?.registration}
+                            <DateRangeIcon className="user__info-icon"/> Joined: {userProfile?.registration}
                         </li> : null}
                     <li><DateRangeIcon className="user__info-icon"/> Joined: June 2021</li>
                 </ul>
                 <br/>
                 <ul className="user__info-details">
-                    <li><b>0</b> Following</li>
-                    <li><b>0</b> Followers</li>
+                    <li><b>{userProfile?.followers?.length ? userProfile?.followers?.length : 0}</b> Following</li>
+                    <li><b>{userProfile?.following?.length ? userProfile?.following?.length : 0}</b> Followers</li>
                 </ul>
             </div>
             <Tabs value={activeTab} indicatorColor="primary" textColor="primary" onChange={handleChange}>
@@ -130,10 +154,6 @@ const UserPage: FC<RouteComponentProps<{ id: string }>> = ({match}) => {
                         <Tweet key={tweet.id} classes={classes} images={tweet.images} {...tweet} />
                     ))
                 )}
-                {/*) : userData?.tweets !== undefined ?*/}
-                {/*userData?.tweets.map(tweet => <Tweet key={tweet.id} classes={classes} images={tweet.images} {...tweet} />)*/}
-                {/*: null*/}
-                {/*}*/}
             </div>
             {visibleEditProfile ? <EditProfileModal visible={visibleEditProfile} onClose={onCloseEditProfile}/> : null}
         </Paper>

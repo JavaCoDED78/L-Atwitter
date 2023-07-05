@@ -3,20 +3,26 @@ package com.gmail.javacoded78.latwitter.mapper;
 import com.gmail.javacoded78.latwitter.dto.request.RegistrationRequest;
 import com.gmail.javacoded78.latwitter.dto.request.UserRequest;
 import com.gmail.javacoded78.latwitter.dto.response.ImageResponse;
+import com.gmail.javacoded78.latwitter.dto.response.TweetResponse;
 import com.gmail.javacoded78.latwitter.dto.response.UserResponse;
 import com.gmail.javacoded78.latwitter.model.Image;
 import com.gmail.javacoded78.latwitter.model.User;
 import com.gmail.javacoded78.latwitter.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 @Component
 @RequiredArgsConstructor
 public class UserMapper {
 
     private final ModelMapper modelMapper;
+    @Lazy
+    private final TweetMapper tweetMapper;
     private final UserService userService;
 
     UserResponse convertToUserResponse(User user) {
@@ -27,7 +33,7 @@ public class UserMapper {
         return modelMapper.map(image, ImageResponse.class);
     }
 
-    private User convertToEntity(UserRequest userRequest) {
+    User convertToEntity(UserRequest userRequest) {
         return modelMapper.map(userRequest, User.class);
     }
 
@@ -41,5 +47,17 @@ public class UserMapper {
 
     public UserResponse updateUserProfile(UserRequest userRequest) {
         return convertToUserResponse(userService.updateUserProfile(convertToEntity(userRequest)));
+    }
+
+    public List<TweetResponse> getUserTweets(Long userId) {
+        return tweetMapper.convertListToResponseDto(userService.getUserTweets(userId));
+    }
+
+    public UserResponse follow(Long userId) {
+        return convertToUserResponse(userService.follow(userId));
+    }
+
+    public UserResponse unfollow(Long userId) {
+        return convertToUserResponse(userService.unfollow(userId));
     }
 }

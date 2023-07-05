@@ -7,9 +7,6 @@ import lombok.Data;
 @Data
 public class AuthenticationResponse {
 
-    @JsonView(Views.User.class)
     private UserResponse user;
-
-    @JsonView(Views.User.class)
     private String token;
 }

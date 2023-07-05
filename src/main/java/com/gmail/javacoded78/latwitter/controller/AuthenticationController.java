@@ -1,7 +1,5 @@
 package com.gmail.javacoded78.latwitter.controller;
 
-import com.fasterxml.jackson.annotation.JsonView;
-import com.gmail.javacoded78.latwitter.dto.Views;
 import com.gmail.javacoded78.latwitter.dto.request.AuthenticationRequest;
 import com.gmail.javacoded78.latwitter.dto.request.PasswordResetRequest;
 import com.gmail.javacoded78.latwitter.dto.request.RegistrationRequest;
@@ -10,7 +8,6 @@ import com.gmail.javacoded78.latwitter.dto.response.UserResponse;
 import com.gmail.javacoded78.latwitter.exception.ApiRequestException;
 import com.gmail.javacoded78.latwitter.exception.InputFieldException;
 import com.gmail.javacoded78.latwitter.mapper.AuthenticationMapper;
-import com.gmail.javacoded78.latwitter.mapper.UserMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,7 +18,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -32,7 +28,6 @@ public class AuthenticationController {
     private final AuthenticationMapper authenticationMapper;
 
     @PostMapping("/login")
-    @JsonView(Views.User.class)
     public ResponseEntity<AuthenticationResponse> login(@RequestBody AuthenticationRequest request) {
         try {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
@@ -57,7 +52,6 @@ public class AuthenticationController {
     }
 
     @GetMapping("/user")
-    @JsonView(Views.User.class)
     public ResponseEntity<AuthenticationResponse> getUserByToken() {
         return ResponseEntity.ok(authenticationMapper.getUserByToken());
     }

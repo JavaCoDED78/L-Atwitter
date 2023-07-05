@@ -1,6 +1,7 @@
 package com.gmail.javacoded78.latwitter.mapper;
 
 import com.gmail.javacoded78.latwitter.dto.request.TweetRequest;
+import com.gmail.javacoded78.latwitter.dto.request.UserRequest;
 import com.gmail.javacoded78.latwitter.dto.response.TweetResponse;
 import com.gmail.javacoded78.latwitter.model.Tweet;
 import com.gmail.javacoded78.latwitter.service.TweetService;
@@ -17,6 +18,7 @@ import java.util.stream.Collectors;
 public class TweetMapper {
 
     private final ModelMapper modelMapper;
+    private final UserMapper userMapper;
     private final TweetService tweetService;
 
     private Tweet convertToTweetEntity(TweetRequest tweetRequest) {
@@ -27,7 +29,7 @@ public class TweetMapper {
         return modelMapper.map(tweet, TweetResponse.class);
     }
 
-    private List<TweetResponse> convertListToResponseDto(List<Tweet> tweets) {
+    List<TweetResponse> convertListToResponseDto(List<Tweet> tweets) {
         return tweets.stream()
                 .map(this::convertToTweetResponse)
                 .collect(Collectors.toList());
@@ -50,9 +52,14 @@ public class TweetMapper {
     }
 
     public TweetResponse likeTweet(Long tweetId) {
-//        Tweet tweet = tweetService.likeTweet(tweetId);
-//        TweetResponse tweetResponse = convertToTweetResponse(tweet);
-//        tweetResponse.setTweetLikes((long) tweet.getLikes().size());
         return convertToTweetResponse(tweetService.likeTweet(tweetId));
+    }
+
+    public List<TweetResponse> getTweetsByUser(UserRequest userRequest) {
+        return convertListToResponseDto(tweetService.getTweetsByUser(userMapper.convertToEntity(userRequest)));
+    }
+
+    public TweetResponse retweet(Long tweetId) {
+        return convertToTweetResponse(tweetService.retweet(tweetId));
     }
 }

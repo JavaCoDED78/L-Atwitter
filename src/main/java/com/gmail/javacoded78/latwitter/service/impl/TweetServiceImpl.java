@@ -32,6 +32,11 @@ public class TweetServiceImpl implements TweetService {
     }
 
     @Override
+    public List<Tweet> getTweetsByUser(User user) {
+        return tweetRepository.findAllByUserOrderByDateTimeDesc(user);
+    }
+
+    @Override
     @Transactional
     public List<Tweet> createTweet(Tweet tweet) {
         Principal principal = SecurityContextHolder.getContext().getAuthentication();
@@ -52,7 +57,7 @@ public class TweetServiceImpl implements TweetService {
         User user = userRepository.findByEmail(principal.getName());
         List<Tweet> tweets = user.getTweets();
         tweets.remove(tweet);
-        return tweetRepository.findAllByUserOrderByDateTimeDesc(user);
+        return tweetRepository.findAllByOrderByDateTimeDesc();
     }
 
     @Override
@@ -66,6 +71,24 @@ public class TweetServiceImpl implements TweetService {
             tweetLikes.remove(user);
         } else {
             tweetLikes.add(user);
+        }
+        return tweetRepository.save(tweet);
+    }
+
+    @Override
+    public Tweet retweet(Long tweetId) {
+        Principal principal = SecurityContextHolder.getContext().getAuthentication();
+        User user = userRepository.findByEmail(principal.getName());
+        Tweet tweet = tweetRepository.getOne(tweetId);
+        List<Tweet> tweets = user.getTweets();
+        List<User> retweets = tweet.getRetweets();
+
+        if (tweets.contains(tweet)) {
+            tweets.remove(tweet);
+            retweets.remove(user);
+        } else {
+            tweets.add(tweet);
+            retweets.add(user);
         }
         return tweetRepository.save(tweet);
     }

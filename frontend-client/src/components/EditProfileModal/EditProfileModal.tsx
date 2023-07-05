@@ -56,7 +56,6 @@ const EditProfileModal: FC<EditProfileModalProps> = ({visible, onClose}) => {
     });
 
     const onSubmit = async (data: EditProfileFormProps) => {
-        console.log(data)
         let avatarResponse: Image | undefined = undefined;
         let wallpaperResponse: Image | undefined = undefined;
         if (avatar) {

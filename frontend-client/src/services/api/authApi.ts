@@ -3,7 +3,7 @@ import {LoginFormProps} from "../../pages/SignIn/LoginModal";
 import {AuthUser, User} from "../../store/ducks/user/contracts/state";
 import {RegisterFormProps} from "../../pages/SignIn/RegisterModal";
 
-interface Response<T> {
+export interface Response<T> {
     status: string;
     data: T;
 }
@@ -13,7 +13,6 @@ export const AuthApi = {
         const {data} = await axios.get<Response<any>>('/auth/verify?hash=' + hash);
         return data;
     },
-
     async signIn(postData: LoginFormProps): Promise<Response<AuthUser>> {
         const data = await axios.post<Response<AuthUser>>('http://localhost:8080/api/v1/auth/login', postData);
         return data.data;
@@ -31,8 +30,15 @@ export const AuthApi = {
         return data;
     },
     async updateUserProfile(userData: User): Promise<User> {
-        const {data} = await axios.put<User>('http://localhost:8080/api/v1/user/', userData);
-        console.log(data)
+        const {data} = await axios.put<User>('http://localhost:8080/api/v1/user', userData);
+        return data;
+    },
+    async follow(userId: string): Promise<User | undefined> {
+        const {data} = await axios.get<User | undefined>('http://localhost:8080/api/v1/user/follow/' + userId);
+        return data;
+    },
+    async unfollow(userId: string): Promise<User | undefined> {
+        const {data} = await axios.get<User | undefined>('http://localhost:8080/api/v1/user/unfollow/' + userId);
         return data;
     },
 };
