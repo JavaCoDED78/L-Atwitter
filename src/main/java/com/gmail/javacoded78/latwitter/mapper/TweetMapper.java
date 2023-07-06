@@ -38,6 +38,10 @@ public class TweetMapper {
         return convertListToResponseDto(tweetService.getTweets());
     }
 
+    public List<TweetResponse> getMediaTweets() {
+        return convertListToResponseDto(tweetService.getMediaTweets());
+    }
+
     public TweetResponse getTweetById(Long tweetId) {
         return convertToTweetResponse(tweetService.getTweetById(tweetId));
     }
