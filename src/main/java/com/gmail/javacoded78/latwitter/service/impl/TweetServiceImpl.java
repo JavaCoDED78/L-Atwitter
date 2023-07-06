@@ -31,7 +31,7 @@ public class TweetServiceImpl implements TweetService {
 
     @Override
     public List<Tweet> getTweets() {
-        return tweetRepository.findAllByOrderByDateTimeDesc();
+        return tweetRepository.findByAddressedUsernameIsNullOrderByDateTimeDesc();
     }
 
     @Override
@@ -41,7 +41,7 @@ public class TweetServiceImpl implements TweetService {
 
     @Override
     public List<Tweet> getTweetsByUser(User user) {
-        return tweetRepository.findAllByUserOrderByDateTimeDesc(user);
+        return tweetRepository.findByAddressedUsernameIsNullAndUserOrderByDateTimeDesc(user);
     }
 
     @Override
@@ -93,7 +93,7 @@ public class TweetServiceImpl implements TweetService {
         Principal principal = SecurityContextHolder.getContext().getAuthentication();
         User user = userRepository.findByEmail(principal.getName());
         user.getTweets().remove(tweet);
-        return tweetRepository.findAllByOrderByDateTimeDesc();
+        return tweetRepository.findByAddressedUsernameIsNullOrderByDateTimeDesc();
     }
 
     @Override
