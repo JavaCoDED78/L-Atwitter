@@ -47,6 +47,10 @@ public class UserMapper {
         return convertToUserResponse(userService.getUserById(userId));
     }
 
+    public List<UserResponse> getUsers() {
+        return convertListToResponseDto(userService.getUsers());
+    }
+
     public ImageResponse uploadImage(MultipartFile multipartFile) {
         return convertToImageResponse(userService.uploadImage(multipartFile));
     }
@@ -73,5 +77,9 @@ public class UserMapper {
 
     public List<UserResponse> getRelevantUsers() {
         return convertListToResponseDto(userService.getRelevantUsers());
+    }
+
+    public List<UserResponse> searchUsersByUsername(String username) {
+        return convertListToResponseDto(userService.searchUsersByUsername(username));
     }
 }

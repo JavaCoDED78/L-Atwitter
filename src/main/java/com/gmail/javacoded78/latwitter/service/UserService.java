@@ -11,7 +11,11 @@ public interface UserService {
 
     User getUserById(Long userId);
 
+    List<User> getUsers();
+
     List<User> getRelevantUsers();
+
+    List<User> searchUsersByUsername(String username);
 
     List<Tweet> getUserTweets(Long userId);
 

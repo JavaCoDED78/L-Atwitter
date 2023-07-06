@@ -3,9 +3,11 @@ import {
     FetchSignInActionInterface,
     FetchSignUpActionInterface,
     FetchUserDataActionInterface,
+    FollowUserActionInterface,
     SetUserDataActionInterface,
     SetUserLoadingStateActionInterface,
-    SignOutActionInterface, UpdateUserDataActionInterface,
+    SignOutActionInterface, UnfollowUserActionInterface,
+    UpdateUserDataActionInterface,
     UserActionsType
 } from "./contracts/actionTypes";
 import {LoginFormProps} from "../../../pages/SignIn/LoginModal";
@@ -44,3 +46,12 @@ export const setUserLoadingStatus = (payload: UserState["status"]): SetUserLoadi
     payload
 });
 
+export const followUser = (payload: User): FollowUserActionInterface => ({
+    type: UserActionsType.FOLLOW_USER,
+    payload,
+});
+
+export const unfollowUser = (payload: User): UnfollowUserActionInterface => ({
+    type: UserActionsType.UNFOLLOW_USER,
+    payload,
+});

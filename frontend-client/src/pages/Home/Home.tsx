@@ -1,6 +1,6 @@
-import React, {ChangeEvent, FC, ReactElement, useEffect, useState} from 'react';
+import React, {FC, ReactElement, useEffect} from 'react';
 import {useDispatch, useSelector} from "react-redux";
-import {Route, RouteComponentProps} from "react-router-dom";
+import {Route, useLocation} from "react-router-dom";
 import {CircularProgress, Paper, Typography} from "@material-ui/core";
 
 import Tweet from "../../components/Tweet/Tweet";
@@ -11,22 +11,29 @@ import {selectIsTweetsLoading, selectTweetsItems} from "../../store/ducks/tweets
 import {BackButton} from "../../components/BackButton/BackButton";
 import {FullTweet} from "./FullTweet";
 import {fetchUserData} from "../../store/ducks/user/actionCreators";
-import {fetchUsers} from "../../store/ducks/users/actionCreators";
+import {fetchRelevantUsers} from "../../store/ducks/users/actionCreators";
 import {fetchTags} from "../../store/ducks/tags/actionCreators";
-import Search from "../../components/Search/Search";
+// import Search from "../../components/Search/Search";
+import Connect from "../../components/Connect/Connect";
 
 const Home: FC = (): ReactElement => {
     const dispatch = useDispatch();
+    const location = useLocation();
     const classes = useHomeStyles();
     const tweets = useSelector(selectTweetsItems);
     const isLoading = useSelector(selectIsTweetsLoading);
 
     useEffect(() => {
-        dispatch(fetchTweets());
         dispatch(fetchUserData());
-        dispatch(fetchUsers());
         dispatch(fetchTags());
-    }, []);
+
+        if (location.pathname !== "/search") {
+            dispatch(fetchTweets());
+        }
+        if (location.pathname !== "/home/connect") {
+            dispatch(fetchRelevantUsers());
+        }
+    }, [location]);
 
     return (
         <Paper className={classes.tweetsWrapper} variant="outlined">
@@ -39,8 +46,11 @@ const Home: FC = (): ReactElement => {
                     <BackButton/>
                     <Typography variant="h6">Tweet</Typography>
                 </Route>
-                {/*<Route path={['/home/search', '/home/search/:tag']} component={Search} />*/}
-                <Route path={'/home/search'} component={Search} />
+                {/*<Route path="/home/search" component={Search}/>*/}
+                <Route path="/home/connect">
+                    <BackButton/>
+                    <Typography variant="h6">Connect</Typography>
+                </Route>
             </Paper>
 
             <Route path='/home' exact>
@@ -52,7 +62,11 @@ const Home: FC = (): ReactElement => {
                 </Paper>
             </Route>
 
-            <Route path={['/home', '/home/search']} exact>
+            <Route path="/home/connect" component={Connect} exact/>
+            {/*    <Connect/>*/}
+            {/*</Route>*/}
+
+            <Route path='/home' exact>
                 {isLoading ? (
                     <div className={classes.tweetsCentred}>
                         <CircularProgress/>

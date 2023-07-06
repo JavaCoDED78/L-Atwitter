@@ -30,9 +30,19 @@ public class UserController {
         return ResponseEntity.ok(userMapper.getUserById(userId));
     }
 
+    @GetMapping("/all")
+    public ResponseEntity<List<UserResponse>> getUsers() {
+        return ResponseEntity.ok(userMapper.getUsers());
+    }
+
     @GetMapping("/relevant")
     public ResponseEntity<List<UserResponse>> getRelevantUsers() {
         return ResponseEntity.ok(userMapper.getRelevantUsers());
+    }
+
+    @GetMapping("/search/{username}")
+    public ResponseEntity<List<UserResponse>> searchUsersByUsername(@PathVariable String username) {
+        return ResponseEntity.ok(userMapper.searchUsersByUsername(username));
     }
 
     @GetMapping("/{userId}/tweets")
