@@ -9,7 +9,6 @@ import DialogContent from "@material-ui/core/DialogContent";
 import {User} from "../../store/ducks/user/contracts/state";
 import {selectUserData} from "../../store/ducks/user/selectors";
 import {useHomeStyles} from "../../pages/Home/HomeStyles";
-import {FollowerButton} from "./FollowerButton";
 
 interface FollowerProps {
     classes: ReturnType<typeof useHomeStyles>;
@@ -61,24 +60,26 @@ const Follower: FC<FollowerProps> = ({user, classes, follow, unfollow}) => {
                         </div>
                     </Link>
                     <div>
-                        {follower === -1 ? (
-                            <Button
-                                className={classes.followerOutlinedBtn}
-                                onClick={() => handleFollow(user)}
-                                color="primary"
-                                variant="outlined">
-                                Follow
-                            </Button>
-                        ) : (
-                            <Button
-                                className={classes.followerBtn}
-                                onMouseOver={() => setBtnText("Unfollow")}
-                                onMouseLeave={() => setBtnText("Following")}
-                                onClick={handleClickOpenUnfollowModal}
-                                variant="contained"
-                                color="primary">
-                                {btnText}
-                            </Button>
+                        {myProfile?.user.id === user.id ? null : (
+                            follower === -1 ? (
+                                <Button
+                                    className={classes.followerOutlinedBtn}
+                                    onClick={() => handleFollow(user)}
+                                    color="primary"
+                                    variant="outlined">
+                                    Follow
+                                </Button>
+                            ) : (
+                                <Button
+                                    className={classes.followerBtn}
+                                    onMouseOver={() => setBtnText("Unfollow")}
+                                    onMouseLeave={() => setBtnText("Following")}
+                                    onClick={handleClickOpenUnfollowModal}
+                                    variant="contained"
+                                    color="primary">
+                                    {btnText}
+                                </Button>
+                            )
                         )}
                     </div>
                 </div>
