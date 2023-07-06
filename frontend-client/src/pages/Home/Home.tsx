@@ -17,7 +17,7 @@ import Connect from "../../components/Connect/Connect";
 
 const Home: FC = (): ReactElement => {
     const dispatch = useDispatch();
-    const location = useLocation();
+    const location = useLocation<{ background: Location }>();
     const classes = useHomeStyles();
     const tweets = useSelector(selectTweetsItems);
     const isLoading = useSelector(selectIsTweetsLoading);
@@ -32,7 +32,8 @@ const Home: FC = (): ReactElement => {
         if (location.pathname !== "/home/connect") {
             dispatch(fetchRelevantUsers());
         }
-    }, [location]);
+        document.body.style.overflow = 'unset';
+    }, []);
 
     return (
         <Paper className={classes.tweetsWrapper} variant="outlined">
