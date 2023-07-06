@@ -9,15 +9,15 @@ import IconButton from "@material-ui/core/IconButton";
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 
 import {selectUserData, selectUserIsLoading} from "../../store/ducks/user/selectors";
-import {useStylesFollower} from "./FollowerStyles";
-import Follower from "./Follower";
 import {User} from "../../store/ducks/user/contracts/state";
-import {fetchUserData, followUser} from "../../store/ducks/user/actionCreators";
+import {fetchUserData} from "../../store/ducks/user/actionCreators";
 import {selectUserProfile} from "../../store/ducks/userProfile/selectors";
-import {fetchUserProfile, unfollowUserProfile} from "../../store/ducks/userProfile/actionCreators";
+import {fetchUserProfile, followProfile, unfollowProfile} from "../../store/ducks/userProfile/actionCreators";
+import {useHomeStyles} from "../../pages/Home/HomeStyles";
+import Follower from "./Follower";
 
 const FollowingFollowers = () => {
-    const classes = useStylesFollower();
+    const classes = useHomeStyles();
     const dispatch = useDispatch();
     const history = useHistory();
     const params = useParams<{ id: string, follow: string }>();
@@ -53,11 +53,11 @@ const FollowingFollowers = () => {
     };
 
     const handleFollow = (user: User): void => {
-        dispatch(followUser(user));
+        dispatch(followProfile(user));
     };
 
     const handleUnfollow = (user: User): void => {
-        dispatch(unfollowUserProfile(user));
+        dispatch(unfollowProfile(user));
     };
 
     return (
@@ -81,7 +81,7 @@ const FollowingFollowers = () => {
                 </div>
             ) : (activeTab === 0 ? (userProfile?.followers?.length !== 0 ? (
                         userProfile?.followers?.map((user) =>
-                            <Follower user={user} follow={handleFollow} unfollow={handleUnfollow}/>)
+                            <Follower classes={classes} user={user} follow={handleFollow} unfollow={handleUnfollow}/>)
                     ) : (
                         <div className={classes.followersTopicWrapper}>
                             <Typography className={classes.followersTopic}>
@@ -108,7 +108,7 @@ const FollowingFollowers = () => {
                     )
                 ) : (userProfile?.following?.length !== 0 ? (
                         userProfile?.following?.map((user) =>
-                            <Follower user={user} follow={handleFollow} unfollow={handleUnfollow}/>)
+                            <Follower classes={classes} user={user} follow={handleFollow} unfollow={handleUnfollow}/>)
                     ) : (
                         <div className={classes.followersTopicWrapper}>
                             <Typography className={classes.followersTopic}>

@@ -14,14 +14,14 @@ import LinkOutlinedIcon from '@material-ui/icons/LinkOutlined';
 import {useHomeStyles} from '../Home/HomeStyles';
 import {BackButton} from "../../components/BackButton/BackButton";
 import EditProfileModal from "../../components/EditProfileModal/EditProfileModal";
-import {fetchUserData, followUser, unfollowUser} from "../../store/ducks/user/actionCreators";
+import {fetchUserData} from "../../store/ducks/user/actionCreators";
 import {selectUserData} from "../../store/ducks/user/selectors";
 import {fetchRelevantUsers} from "../../store/ducks/users/actionCreators";
 import {fetchTags} from "../../store/ducks/tags/actionCreators";
 import {selectIsUserTweetsLoading, selectUserTweetsItems} from "../../store/ducks/userTweets/selectors";
 import {fetchUserTweets, fetchUserLikedTweets} from "../../store/ducks/userTweets/actionCreators";
 import {selectUserProfile} from "../../store/ducks/userProfile/selectors";
-import {fetchUserProfile} from "../../store/ducks/userProfile/actionCreators";
+import {fetchUserProfile, followUserProfile, unfollowUserProfile} from "../../store/ducks/userProfile/actionCreators";
 import UserPageTweets from "./UserPageTweets";
 import "./UserPage.scss";
 
@@ -64,12 +64,10 @@ const UserPage: FC<RouteComponentProps<{ id: string }>> = ({match}) => {
     };
 
     const handleFollow = () => {
-        if (userProfile) {
-            if (follower) {
-                dispatch(unfollowUser(userProfile));
-            } else {
-                dispatch(followUser(userProfile));
-            }
+        if (follower) {
+            dispatch(unfollowUserProfile(userProfile!));
+        } else {
+            dispatch(followUserProfile(userProfile!));
         }
     };
 
@@ -132,7 +130,7 @@ const UserPage: FC<RouteComponentProps<{ id: string }>> = ({match}) => {
                         </li> : null}
                     {userProfile?.dateOfBirth ?
                         <li>
-                            Дата рождения: {userProfile?.dateOfBirth}
+                            Date of Birth: {userProfile?.dateOfBirth}
                         </li> : null}
                     {userProfile?.registration ?
                         <li>
@@ -140,12 +138,14 @@ const UserPage: FC<RouteComponentProps<{ id: string }>> = ({match}) => {
                         </li> : null}
                     <li><DateRangeIcon className="user__info-icon"/> Joined: June 2021</li>
                 </ul>
-                <br/>
                 <ul className="user__info-details">
-                    <Link to={`/user/${userProfile?.id}/following`}>
+                    <Link to={`/user/${userProfile?.id}/following`}
+                          style={{textDecoration: 'none',
+                              color: "rgb(83, 100, 113)",}}>
                         <li><b>{userProfile?.followers?.length ? userProfile?.followers?.length : 0}</b> Following</li>
                     </Link>
-                    <Link to={`/user/${userProfile?.id}/followers`}>
+                    <Link to={`/user/${userProfile?.id}/followers`}
+                          style={{textDecoration: 'none', color: "rgb(83, 100, 113)",}}>
                         <li><b>{userProfile?.following?.length ? userProfile?.following?.length : 0}</b> Followers</li>
                     </Link>
                 </ul>
@@ -172,7 +172,10 @@ const UserPage: FC<RouteComponentProps<{ id: string }>> = ({match}) => {
                     />
                 )}
             </div>
-            {visibleEditProfile ? <EditProfileModal visible={visibleEditProfile} onClose={onCloseEditProfile}/> : null}
+            {visibleEditProfile ?
+                <EditProfileModal classes={classes} visible={visibleEditProfile} onClose={onCloseEditProfile}/>
+                : null
+            }
         </Paper>
     );
 };
