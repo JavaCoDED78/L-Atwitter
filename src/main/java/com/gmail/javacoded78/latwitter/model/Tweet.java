@@ -46,6 +46,12 @@ public class Tweet {
             inverseJoinColumns = @JoinColumn(name = "users_id"))
     private List<User> retweets;
 
+    @ManyToMany
+    @JoinTable(name = "replies",
+            joinColumns = @JoinColumn(name = "tweets_id"),
+            inverseJoinColumns = @JoinColumn(name = "reply_id"))
+    private List<Tweet> replies;
+
     public Tweet() {
         this.dateTime = LocalDateTime.now().withNano(0);
     }

@@ -33,24 +33,24 @@ public class TweetController {
         return ResponseEntity.ok(tweetMapper.getTweetById(tweetId));
     }
 
-    @GetMapping("/search/{text}")
-    public ResponseEntity<List<TweetResponse>> searchTweets(@PathVariable String text) {
-        return ResponseEntity.ok(tweetMapper.searchTweets(text));
-    }
-
     @PostMapping("/user")
     public ResponseEntity<List<TweetResponse>> getTweetsByUser(@RequestBody UserRequest userRequest) {
         return ResponseEntity.ok(tweetMapper.getTweetsByUser(userRequest));
     }
 
     @PostMapping
-    public ResponseEntity<List<TweetResponse>> createTweet(@RequestBody TweetRequest tweetRequest) {
+    public ResponseEntity<TweetResponse> createTweet(@RequestBody TweetRequest tweetRequest) {
         return ResponseEntity.ok(tweetMapper.createTweet(tweetRequest));
     }
 
     @DeleteMapping("/{tweetId}")
     public ResponseEntity<List<TweetResponse>> deleteTweet(@PathVariable Long tweetId) {
         return ResponseEntity.ok(tweetMapper.deleteTweet(tweetId));
+    }
+
+    @GetMapping("/search/{text}")
+    public ResponseEntity<List<TweetResponse>> searchTweets(@PathVariable String text) {
+        return ResponseEntity.ok(tweetMapper.searchTweets(text));
     }
 
     @GetMapping("/like/{tweetId}")
@@ -61,5 +61,10 @@ public class TweetController {
     @GetMapping("/retweet/{tweetId}")
     public ResponseEntity<TweetResponse> retweet(@PathVariable Long tweetId) {
         return ResponseEntity.ok(tweetMapper.retweet(tweetId));
+    }
+
+    @PostMapping("/reply/{tweetId}")
+    public ResponseEntity<TweetResponse> replyTweet(@PathVariable Long tweetId, @RequestBody TweetRequest tweetRequest) {
+        return ResponseEntity.ok(tweetMapper.replyTweet(tweetId, tweetRequest));
     }
 }
