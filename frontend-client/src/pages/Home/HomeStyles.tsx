@@ -1,5 +1,6 @@
 import {colors, makeStyles, Theme} from '@material-ui/core';
 import grey from '@material-ui/core/colors/grey';
+import Follower from "../../components/FollowingFollowers/Follower";
 
 export const useHomeStyles = makeStyles((theme: Theme) => ({
     centered: {
@@ -118,7 +119,6 @@ export const useHomeStyles = makeStyles((theme: Theme) => ({
     },
     tweetHeader: {
         display: 'flex',
-        alignItems: 'center',
         justifyContent: 'space-between'
     },
     tweetContent: {
@@ -131,8 +131,9 @@ export const useHomeStyles = makeStyles((theme: Theme) => ({
         justifyContent: 'space-between',
         maxWidth: 450,
     },
-    tweetPopupMenu: {
-
+    tweetIconButton: {
+        padding: 0,
+        marginRight: 12
     },
     tweetUserName: {
         color: grey[500],
