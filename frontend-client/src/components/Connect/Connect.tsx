@@ -44,7 +44,7 @@ const Connect: FC<ConnectProps> = ({classes}) => {
                     </Paper>
                     <Paper className={classes.followersWrapper} variant="outlined">
                         {users ? users.map(user =>
-                                <Follower classes={classes} user={user} follow={handleFollow} unfollow={handleUnfollow}/>)
+                            <Follower classes={classes} user={user} follow={handleFollow} unfollow={handleUnfollow}/>)
                             : null
                         }
                     </Paper>
