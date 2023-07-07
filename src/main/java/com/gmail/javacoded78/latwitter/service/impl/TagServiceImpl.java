@@ -21,6 +21,11 @@ public class TagServiceImpl implements TagService {
     }
 
     @Override
+    public List<Tag> getTrends() {
+        return tagRepository.findByOrderByTweetsQuantityDesc();
+    }
+
+    @Override
     public List<Tweet> getTweetsByTag(String tagName) {
         Tag tag = tagRepository.findByTagName(tagName);
         return tag.getTweets();
