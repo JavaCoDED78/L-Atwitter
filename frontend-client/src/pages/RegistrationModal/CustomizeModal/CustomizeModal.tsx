@@ -1,20 +1,27 @@
-import React, { FC } from "react";
-
-import { useCustomizeModalStyles } from "./CustomizeModalStyles";
+import React, { FC, ReactElement } from "react";
 import { Button, Dialog, DialogContent, Radio } from "@material-ui/core";
 import TwitterIcon from "@material-ui/icons/Twitter";
+
+import { useCustomizeModalStyles } from "./CustomizeModalStyles";
 
 interface CustomizeModalProps {
   open: boolean;
   onClose: () => void;
+  onOpenCreateAccount: (
+    value: boolean | ((prevVar: boolean) => boolean)
+  ) => void;
 }
 
-const CustomizeModal: FC<CustomizeModalProps> = ({ open, onClose }) => {
+const CustomizeModal: FC<CustomizeModalProps> = ({
+  open,
+  onClose,
+  onOpenCreateAccount,
+}): ReactElement => {
   const classes = useCustomizeModalStyles();
-  // hideBackdrop={true}
 
   return (
     <Dialog
+      hideBackdrop={true}
       style={{ height: 666, marginTop: 92 }}
       transitionDuration={0}
       open={open}
@@ -44,7 +51,7 @@ const CustomizeModal: FC<CustomizeModalProps> = ({ open, onClose }) => {
         </div>
         <Button
           style={{ marginTop: 285 }}
-          // type="submit"
+          onClick={() => onOpenCreateAccount(true)}
           variant="contained"
           color="primary"
           fullWidth

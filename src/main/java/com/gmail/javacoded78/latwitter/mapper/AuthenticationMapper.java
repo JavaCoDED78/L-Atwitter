@@ -16,13 +16,8 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class AuthenticationMapper {
 
-    private final ModelMapper modelMapper;
     private final UserMapper userMapper;
     private final AuthenticationService authenticationService;
-
-    private User convertToEntity(RegistrationRequest registrationRequest) {
-        return modelMapper.map(registrationRequest, User.class);
-    }
 
     public AuthenticationResponse login(String email) {
         Map<String, Object> credentials = authenticationService.login(email);
@@ -32,8 +27,8 @@ public class AuthenticationMapper {
         return response;
     }
 
-    public boolean registration(RegistrationRequest registrationRequest) {
-        return authenticationService.registration(convertToEntity(registrationRequest));
+    public boolean registration(String email, String username, String birthday) {
+        return authenticationService.registration(email, username, birthday);
     }
 
     public AuthenticationResponse getUserByToken() {
@@ -62,5 +57,17 @@ public class AuthenticationMapper {
 
     public boolean findEmail(String email) {
         return authenticationService.findEmail(email);
+    }
+
+    public void sendRegistrationCode(String email) {
+        authenticationService.sendRegistrationCode(email);
+    }
+
+    public AuthenticationResponse endRegistration(String email, String password) {
+        Map<String, Object> credentials = authenticationService.endRegistration(email, password);
+        AuthenticationResponse authenticationResponse = new AuthenticationResponse();
+        authenticationResponse.setUser(userMapper.convertToUserResponse((User) credentials.get("user")));
+        authenticationResponse.setToken((String) credentials.get("token"));
+        return authenticationResponse;
     }
 }

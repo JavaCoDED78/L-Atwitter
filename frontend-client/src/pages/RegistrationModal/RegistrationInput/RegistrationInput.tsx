@@ -1,7 +1,7 @@
-import React, { FC, useState } from "react";
+import React, { FC, ReactElement, useState } from "react";
+import InputLabel from "@material-ui/core/InputLabel";
 
 import { useRegistrationInputStyles } from "./RegistrationInputStyles";
-import InputLabel from "@material-ui/core/InputLabel";
 import { RegistrationInputField } from "./RegistrationInputField";
 
 interface RegistrationInputProps {
@@ -22,7 +22,7 @@ const RegistrationInput: FC<RegistrationInputProps> = ({
   name,
   label,
   maxTextLength,
-}) => {
+}): ReactElement => {
   const classes = useRegistrationInputStyles();
   const [focused, setFocused] = useState<boolean>(false);
 

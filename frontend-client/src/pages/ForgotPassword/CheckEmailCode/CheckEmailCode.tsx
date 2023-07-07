@@ -1,4 +1,4 @@
-import React, { FC, FormEvent, useState } from "react";
+import React, { FC, FormEvent, ReactElement, useState } from "react";
 import { useHistory } from "react-router-dom";
 import { Button } from "@material-ui/core";
 
@@ -13,7 +13,7 @@ interface CheckEmailCodeProps {
   ) => void;
 }
 
-const CheckEmailCode: FC<CheckEmailCodeProps> = ({ setUser }) => {
+const CheckEmailCode: FC<CheckEmailCodeProps> = ({ setUser }): ReactElement => {
   const classes = useForgotPasswordStyles();
   const history = useHistory();
   const [resetCode, setResetCode] = useState<string>("");

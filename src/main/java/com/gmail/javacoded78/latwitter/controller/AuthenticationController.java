@@ -37,32 +37,40 @@ public class AuthenticationController {
         }
     }
 
-    @PostMapping("/registration")
-    public ResponseEntity<String> registration(@Valid @RequestBody RegistrationRequest user, BindingResult bindingResult) {
-        if (ControllerUtils.isPasswordDifferent(user.getPassword(), user.getPassword2())) {
-            throw new ApiRequestException("Passwords do not match.", HttpStatus.BAD_REQUEST);
+    @PostMapping("/registration/check")
+    public ResponseEntity<String> checkEmail(@RequestBody RegistrationRequest request) {
+        boolean isRegistered = authenticationMapper.registration(request.getEmail(), request.getUsername(), request.getBirthday());
+
+        if (!isRegistered) {
+            throw new ApiRequestException("Email has already been taken.", HttpStatus.FORBIDDEN);
+        } else {
+            return ResponseEntity.ok("User successfully registered.");
         }
-        if (bindingResult.hasErrors()) {
-            throw new InputFieldException(bindingResult);
-        }
-        if (!authenticationMapper.registration(user)) {
-            throw new ApiRequestException("Email is already used.", HttpStatus.FORBIDDEN);
-        }
-        return ResponseEntity.ok("User successfully registered.");
     }
 
-    @GetMapping("/user")
-    public ResponseEntity<AuthenticationResponse> getUserByToken() {
-        return ResponseEntity.ok(authenticationMapper.getUserByToken());
+    @PostMapping("/registration/code")
+    public ResponseEntity<String> sendRegistrationCode(@RequestBody RegistrationRequest request) {
+        authenticationMapper.sendRegistrationCode(request.getEmail());
+        return ResponseEntity.ok("Registration code sent successfully");
     }
 
-    @GetMapping("/activate/{code}")
-    public ResponseEntity<String> activateEmailCode(@PathVariable String code) {
+    @GetMapping("/registration/activate/{code}")
+    public ResponseEntity<String> checkRegistrationCode(@PathVariable String code) {
         if (!authenticationMapper.activateUser(code)) {
             throw new ApiRequestException("Activation code not found.", HttpStatus.NOT_FOUND);
         } else {
             return ResponseEntity.ok("User successfully activated.");
         }
+    }
+
+    @PostMapping("/registration/confirm")
+    public ResponseEntity<AuthenticationResponse> endRegistration(@RequestBody RegistrationRequest request) {
+        return ResponseEntity.ok(authenticationMapper.endRegistration(request.getEmail(), request.getPassword()));
+    }
+
+    @GetMapping("/user")
+    public ResponseEntity<AuthenticationResponse> getUserByToken() {
+        return ResponseEntity.ok(authenticationMapper.getUserByToken());
     }
 
     @PostMapping("/forgot/email")
