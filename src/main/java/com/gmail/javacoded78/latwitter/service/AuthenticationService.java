@@ -1,11 +1,12 @@
 package com.gmail.javacoded78.latwitter.service;
 
-import com.gmail.javacoded78.latwitter.dto.response.AuthenticationResponse;
 import com.gmail.javacoded78.latwitter.model.User;
 
 import java.util.Map;
 
 public interface AuthenticationService {
+
+    boolean findEmail(String email);
 
     Map<String, Object> login(String email);
 
@@ -17,7 +18,7 @@ public interface AuthenticationService {
 
     User findByPasswordResetCode(String code);
 
-    boolean sendPasswordResetCode(String email);
+    void sendPasswordResetCode(String email);
 
     String passwordReset(String email, String password);
 }

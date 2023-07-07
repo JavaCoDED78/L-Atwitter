@@ -48,8 +48,8 @@ public class AuthenticationMapper {
         return authenticationService.activateUser(code);
     }
 
-    public boolean sendPasswordResetCode(String email) {
-        return authenticationService.sendPasswordResetCode(email);
+    public void sendPasswordResetCode(String email) {
+        authenticationService.sendPasswordResetCode(email);
     }
 
     public UserResponse findByPasswordResetCode(String code) {
@@ -58,5 +58,9 @@ public class AuthenticationMapper {
 
     public String passwordReset(String email, String password) {
         return authenticationService.passwordReset(email, password);
+    }
+
+    public boolean findEmail(String email) {
+        return authenticationService.findEmail(email);
     }
 }
