@@ -11,6 +11,7 @@ public class TweetResponse {
     private Long id;
     private String text;
     private String addressedUsername;
+    private Long addressedId;
     private LocalDateTime dateTime;
     private List<ImageResponse> images;
     private List<UserResponse> retweets;

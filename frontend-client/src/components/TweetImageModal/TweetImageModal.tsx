@@ -1,6 +1,6 @@
 import React, { FC, ReactElement, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Link, useHistory, useParams } from "react-router-dom";
+import { Link, useHistory, useLocation, useParams } from "react-router-dom";
 import { Avatar, Divider, IconButton } from "@material-ui/core";
 import classNames from "classnames";
 import Typography from "@material-ui/core/Typography";
@@ -55,7 +55,6 @@ const TweetImageModal: FC = (): ReactElement | null => {
   }, []);
 
   const onCloseImageModalWindow = (event: any): void => {
-    console.log(event.target);
     if (event.target.classList[0]) {
       if (event.target.classList[0].includes("container")) {
         setVisibleTweetImageModalWindow(false);
@@ -123,7 +122,7 @@ const TweetImageModal: FC = (): ReactElement | null => {
               </Typography>
             </div>
             <Typography className={classes.text} gutterBottom>
-              {tweetData.text}
+              <div dangerouslySetInnerHTML={{ __html: tweetData.text }}></div>
             </Typography>
             <Typography style={{ marginBottom: 16 }}>
               <span style={{ color: grey[500] }}>
@@ -138,9 +137,10 @@ const TweetImageModal: FC = (): ReactElement | null => {
               </span>
             </Typography>
             <Divider />
-            {tweetData.retweets.length !== 0 || tweetData.likes.length !== 0 ? (
+            {(tweetData.retweets.length !== 0 ||
+              tweetData.likes.length !== 0) && (
               <div className={classes.content}>
-                {tweetData.retweets.length !== 0 ? (
+                {tweetData.retweets.length !== 0 && (
                   <a
                     href={"javascript:void(0);"}
                     onClick={onOpenRetweetsModalWindow}
@@ -150,8 +150,8 @@ const TweetImageModal: FC = (): ReactElement | null => {
                       <span className={classes.contentItem}>Retweets</span>
                     </span>
                   </a>
-                ) : null}
-                {tweetData.likes.length !== 0 ? (
+                )}
+                {tweetData.likes.length !== 0 && (
                   <a
                     href={"javascript:void(0);"}
                     onClick={onOpenLikesModalWindow}
@@ -161,9 +161,9 @@ const TweetImageModal: FC = (): ReactElement | null => {
                       <span className={classes.contentItem}>Likes</span>
                     </span>
                   </a>
-                ) : null}
+                )}
               </div>
-            ) : null}
+            )}
             <div className={classes.tweetFooter}>
               <div className={classes.tweetIcon}>
                 <IconButton>

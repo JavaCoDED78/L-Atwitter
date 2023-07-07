@@ -1,39 +1,45 @@
 import React, { FC, ReactElement, useState } from "react";
+import { useLocation } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 import Avatar from "@material-ui/core/Avatar";
 import Button from "@material-ui/core/Button";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import TextareaAutosize from "@material-ui/core/TextareaAutosize";
-import { Alert } from "@material-ui/lab";
+import { IconButton } from "@material-ui/core";
 
-import { useDispatch, useSelector } from "react-redux";
 import {
   fetchAddTweet,
   setAddFormState,
 } from "../../store/ducks/tweets/actionCreators";
-import { selectAddFormState } from "../../store/ducks/tweets/selectors";
+import { selectIsTweetsLoading } from "../../store/ducks/tweets/selectors";
 import { AddFormState, Image } from "../../store/ducks/tweets/contracts/state";
 import UploadImages from "../UploadImages/UploadImages";
 import { uploadImage } from "../../util/uploadImage";
 import { selectUserData } from "../../store/ducks/user/selectors";
-import { fetchReplyTweet } from "../../store/ducks/tweet/actionCreators";
+import {
+  fetchReplyTweet,
+  setTweetLoadingState,
+} from "../../store/ducks/tweet/actionCreators";
 import { useAddTweetFormStyles } from "./AddTweetFormStyles";
 import { DEFAULT_PROFILE_IMG } from "../../util/url";
-import { IconButton } from "@material-ui/core";
 import {
   CloseIcon,
   EmojiIcon,
   GifIcon,
-  MediaIcon,
   PullIcon,
   ScheduleIcon,
 } from "../../icons";
+import { selectIsTweetLoading } from "../../store/ducks/tweet/selectors";
+import { LoadingStatus } from "../../store/types";
 
 interface AddTweetFormProps {
   maxRows?: number;
+  minRows?: number;
   tweetId?: string;
   title: string;
   buttonName: string;
   addressedUsername?: string;
+  addressedId?: number;
 }
 
 export interface ImageObj {
@@ -45,18 +51,22 @@ const MAX_LENGTH = 280;
 
 export const AddTweetForm: FC<AddTweetFormProps> = ({
   maxRows,
+  minRows,
   tweetId,
   title,
   buttonName,
   addressedUsername,
+  addressedId,
 }: AddTweetFormProps): ReactElement => {
   const classes = useAddTweetFormStyles();
   const dispatch = useDispatch();
-  const addFormState = useSelector(selectAddFormState);
+  const location = useLocation();
+  const isTweetsLoading = useSelector(selectIsTweetsLoading);
+  const isReplyLoading = useSelector(selectIsTweetLoading);
   const userData = useSelector(selectUserData);
-  const [text, setText] = React.useState<string>("");
-  const [images, setImages] = React.useState<ImageObj[]>([]);
-
+  const [text, setText] = useState<string>("");
+  const [images, setImages] = useState<ImageObj[]>([]);
+  const isModal = location.pathname.includes("/modal");
   const textLimitPercent = Math.round((text.length / 280) * 100);
   const textCount = MAX_LENGTH - text.length;
 
@@ -89,19 +99,29 @@ export const AddTweetForm: FC<AddTweetFormProps> = ({
     setImages([]);
   };
 
-  const handleClickReplyTweet = (): void => {
-    if (addressedUsername) {
+  const handleClickReplyTweet = async (): Promise<void> => {
+    let result: Array<Image> = [];
+    dispatch(setTweetLoadingState(LoadingStatus.LOADING));
+    for (let i = 0; i < images.length; i++) {
+      const file: File = images[i].file;
+      const image: Image = await uploadImage(file);
+      result.push(image);
+    }
+
+    if (addressedUsername && addressedId) {
       dispatch(
         fetchReplyTweet({
           id: tweetId!,
           text: parseHashtags(text),
           addressedUsername,
-          images: [],
+          addressedId,
+          images: result,
           likes: [],
           retweets: [],
         })
       );
       setText("");
+      setImages([]);
     }
   };
 
@@ -110,6 +130,10 @@ export const AddTweetForm: FC<AddTweetFormProps> = ({
       /(#\w+)\b/gi,
       (hashtag) => `<b id="hashtag">${hashtag}</b>`
     );
+  };
+
+  const removeImage = (): void => {
+    setImages((prev) => prev.filter((obj) => obj.src !== images[0].src));
   };
 
   return (
@@ -130,30 +154,32 @@ export const AddTweetForm: FC<AddTweetFormProps> = ({
           placeholder={title}
           value={text}
           rowsMax={maxRows}
+          rowsMin={minRows}
         />
       </div>
-      {/*<div className={classes.image}>*/}
-      {/*    <img src={images[0].src} alt={DEFAULT_PROFILE_IMG}/>*/}
-      {/*    <IconButton className={classes.imageRemove}>*/}
-      {/*        {CloseIcon}*/}
-      {/*    </IconButton>*/}
-      {/*</div>*/}
-
       {images.length !== 0 && (
-        <div className={classes.image}>
+        <div
+          className={
+            location.pathname.includes("/modal")
+              ? classes.imageSmall
+              : classes.image
+          }
+        >
           <img src={images[0].src} alt={images[0].src} />
-          <IconButton className={classes.imageRemove}>{CloseIcon}</IconButton>
+          <IconButton onClick={removeImage} className={classes.imageRemove}>
+            {CloseIcon}
+          </IconButton>
         </div>
       )}
       <div className={classes.footer}>
         <div className={classes.footerWrapper}>
-          <UploadImages images={images} onChangeImages={setImages} />
+          <UploadImages onChangeImages={setImages} />
           <div className={classes.footerImage}>
             <IconButton color="primary">
               <span>{GifIcon}</span>
             </IconButton>
           </div>
-          {buttonName !== "Reply" && (
+          {!isModal && (
             <div className={classes.footerImage}>
               <IconButton color="primary">
                 <span>{PullIcon}</span>
@@ -165,7 +191,7 @@ export const AddTweetForm: FC<AddTweetFormProps> = ({
               <span>{EmojiIcon}</span>
             </IconButton>
           </div>
-          {buttonName !== "Reply" && (
+          {!isModal && (
             <div className={classes.footerImage}>
               <IconButton color="primary">
                 <span>{ScheduleIcon}</span>
@@ -204,14 +230,15 @@ export const AddTweetForm: FC<AddTweetFormProps> = ({
                 : handleClickReplyTweet
             }
             disabled={
-              addFormState === AddFormState.LOADING ||
+              isTweetsLoading ||
+              isReplyLoading ||
               !text ||
               text.length >= MAX_LENGTH
             }
             color="primary"
             variant="contained"
           >
-            {addFormState === AddFormState.LOADING ? (
+            {isTweetsLoading || isReplyLoading ? (
               <CircularProgress color="inherit" size={16} />
             ) : (
               buttonName
@@ -219,14 +246,6 @@ export const AddTweetForm: FC<AddTweetFormProps> = ({
           </Button>
         </div>
       </div>
-      {addFormState === AddFormState.ERROR && (
-        <Alert severity="error">
-          Error{" "}
-          <span aria-label="emoji-plak" role="img">
-            😞
-          </span>
-        </Alert>
-      )}
     </div>
   );
 };
