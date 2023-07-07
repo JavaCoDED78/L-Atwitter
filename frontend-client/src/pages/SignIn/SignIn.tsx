@@ -1,86 +1,99 @@
-import React, {FC, ReactElement} from 'react';
-import TwitterIcon from '@material-ui/icons/Twitter';
-import SearchIcon from '@material-ui/icons/Search';
-import PeopleOutlineIcon from '@material-ui/icons/PeopleOutline';
-import ChatIcon from '@material-ui/icons/ChatBubbleOutlineOutlined';
-import {Button, makeStyles, Typography} from '@material-ui/core';
+import React, { FC, ReactElement } from "react";
+import TwitterIcon from "@material-ui/icons/Twitter";
+import { Button, Typography } from "@material-ui/core";
 
-import LoginModal from './LoginModal';
+import LoginModal from "./LoginModal";
 import RegisterModal from "./RegisterModal";
-import {useStylesSignIn} from "./SignInStyles";
+import { useStylesSignIn } from "./SignInStyles";
+import { CommunityIcon, ReplyIcon, SearchIcon } from "../../icons";
+import { useHistory } from "react-router-dom";
 
 const SignIn: FC = (): ReactElement => {
-    const classes = useStylesSignIn();
-    const [visibleModal, setVisibleModal] = React.useState<"signIn" | "signUp">();
+  const classes = useStylesSignIn();
+  const history = useHistory();
+  const [visibleModal, setVisibleModal] = React.useState<"signIn" | "signUp">();
 
-    const handleClickOpenSignIn = (): void => {
-        setVisibleModal("signIn");
-    };
+  const handleClickOpenSignIn = (): void => {
+    // setVisibleModal("signIn");
+    history.push("/login");
+  };
 
-    const handleClickOpenSignUp = (): void => {
-        setVisibleModal("signUp");
-    };
+  const handleClickOpenSignUp = (): void => {
+    setVisibleModal("signUp");
+  };
 
-    const handleCloseModal = (): void => {
-        setVisibleModal(undefined);
-    };
+  const handleCloseModal = (): void => {
+    setVisibleModal(undefined);
+  };
 
-    return (
-        <div className={classes.wrapper}>
-            <section className={classes.leftSide}>
-                <TwitterIcon color="primary" className={classes.leftSideTwitterIcon}/>
-                <ul className={classes.leftSideListInfo}>
-                    <li className={classes.leftSideListInfoItem}>
-                        <Typography variant="h6">
-                            <SearchIcon className={classes.leftSideIcon}/>
-                            Читайте о том, что вам интересно.
-                        </Typography>
-                    </li>
-                    <li className={classes.leftSideListInfoItem}>
-                        <Typography variant="h6">
-                            <PeopleOutlineIcon className={classes.leftSideIcon}/>
-                            Узнавайте, о чем говорят в мире.
-                        </Typography>
-                    </li>
-                    <li className={classes.leftSideListInfoItem}>
-                        <Typography variant="h6">
-                            <ChatIcon className={classes.leftSideIcon}/>
-                            Присоеденяйтесь к общению.
-                        </Typography>
-                    </li>
-                </ul>
-            </section>
-            <section className={classes.rightSide}>
-                <div className={classes.rightSideWrapper}>
-                    <TwitterIcon color="primary" className={classes.rightSideTwitterIcon}/>
-                    <Typography className={classes.rightSideTittle} variant="h4">
-                        Узнайте, что происходит в мире прямо сейчас
-                    </Typography>
-                    <Typography>
-                        <b>Присоединяйтесь к Твиттеру прямо сейчас!</b>
-                    </Typography>
-                    <br/>
-                    <Button
-                        onClick={handleClickOpenSignUp}
-                        style={{marginBottom: "20px"}}
-                        variant="contained"
-                        color="primary"
-                        fullWidth>
-                        Зарегистрироваться
-                    </Button>
-                    <Button
-                        onClick={handleClickOpenSignIn}
-                        variant="outlined"
-                        color="primary"
-                        fullWidth>
-                        Войти
-                    </Button>
-                    <LoginModal open={visibleModal === 'signIn'} onClose={handleCloseModal} />
-                    <RegisterModal open={visibleModal === 'signUp'} onClose={handleCloseModal} />
-                </div>
-            </section>
+  return (
+    <div className={classes.wrapper}>
+      <section className={classes.leftSide}>
+        <TwitterIcon color="primary" className={classes.leftSideTwitterIcon} />
+        <ul className={classes.leftSideListInfo}>
+          <li className={classes.leftSideListInfoItem}>
+            <Typography variant="h6">
+              <span>{SearchIcon}</span>
+              Follow your interests.
+            </Typography>
+          </li>
+          <li className={classes.leftSideListInfoItem}>
+            <Typography variant="h6">
+              <span>{CommunityIcon}</span>
+              Hear what people are talking about.
+            </Typography>
+          </li>
+          <li className={classes.leftSideListInfoItem}>
+            <Typography variant="h6">
+              <span>{ReplyIcon}</span>
+              Join the conversation.
+            </Typography>
+          </li>
+        </ul>
+      </section>
+      <section className={classes.rightSide}>
+        <div className={classes.rightSideWrapper}>
+          <TwitterIcon
+            color="primary"
+            className={classes.rightSideTwitterIcon}
+          />
+          <Typography className={classes.rightSideTittle} variant="h4">
+            See what's happening in the world right now
+          </Typography>
+          <Typography>
+            <b>Join Twitter today!</b>
+          </Typography>
+          <br />
+          <Button
+            className={classes.signinButton}
+            onClick={handleClickOpenSignUp}
+            variant="contained"
+            color="primary"
+            fullWidth
+          >
+            Sign up
+          </Button>
+          <Button
+            className={classes.signinButton}
+            onClick={handleClickOpenSignIn}
+            variant="outlined"
+            color="primary"
+            fullWidth
+          >
+            Log in
+          </Button>
+          <LoginModal
+            open={visibleModal === "signIn"}
+            onClose={handleCloseModal}
+          />
+          <RegisterModal
+            open={visibleModal === "signUp"}
+            onClose={handleCloseModal}
+          />
         </div>
-    );
+      </section>
+    </div>
+  );
 };
 
 export default SignIn;

@@ -1,102 +1,177 @@
-import React, {FC,} from 'react';
-import {useDispatch, useSelector} from "react-redux";
-import {colors, Divider, List, ListItem, ListItemAvatar, Menu, MenuItem, Popover} from '@material-ui/core';
-import Avatar from '@material-ui/core/Avatar';
-import ArrowBottomIcon from '@material-ui/icons/KeyboardArrowDown';
-import Typography from '@material-ui/core/Typography';
-
-import {selectUserData} from "../../store/ducks/user/selectors";
-import {signOut} from "../../store/ducks/user/actionCreators";
-import {useUserSideProfileStyles} from "./UserSideProfileStyles";
-import {DEFAULT_PROFILE_IMG} from "../../util/url";
+import React, { FC, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useHistory } from "react-router-dom";
+import {
+  Button,
+  colors,
+  Divider,
+  List,
+  ListItem,
+  ListItemAvatar,
+  Popover,
+} from "@material-ui/core";
+import Avatar from "@material-ui/core/Avatar";
+import Typography from "@material-ui/core/Typography";
+import DialogContent from "@material-ui/core/DialogContent";
+import Dialog from "@material-ui/core/Dialog";
+import TwitterIcon from "@material-ui/icons/Twitter";
 import ListItemText from "@material-ui/core/ListItemText/ListItemText";
-import {CheckIcon} from "../../icons";
+
+import { selectUserData } from "../../store/ducks/user/selectors";
+import { signOut } from "../../store/ducks/user/actionCreators";
+import { useUserSideProfileStyles } from "./UserSideProfileStyles";
+import { DEFAULT_PROFILE_IMG } from "../../util/url";
+import { CheckIcon, EditIcon } from "../../icons";
 
 const UserSideProfile: FC = () => {
-    const classes = useUserSideProfileStyles();
-    const dispatch = useDispatch();
-    const myProfile = useSelector(selectUserData);
-    const userData = useSelector(selectUserData);
-    const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-    const open = Boolean(anchorEl);
-    const id = open ? "simple-popover" : undefined;
+  const classes = useUserSideProfileStyles();
+  const dispatch = useDispatch();
+  const history = useHistory();
+  const myProfile = useSelector(selectUserData);
+  const [visibleLogoutModal, setVisibleLogoutModal] = useState<boolean>(false);
+  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const open = Boolean(anchorEl);
+  const id = open ? "simple-popover" : undefined;
 
-    const handleOpenPopup = (event: React.MouseEvent<HTMLDivElement, MouseEvent>): void => {
-        setAnchorEl(event.currentTarget);
-    };
+  const handleOpenPopup = (
+    event: React.MouseEvent<HTMLDivElement, MouseEvent>
+  ): void => {
+    setAnchorEl(event.currentTarget);
+  };
 
-    const handleClosePopup = (): void => {
-        setAnchorEl(null);
-    };
+  const handleClosePopup = (): void => {
+    setAnchorEl(null);
+  };
 
-    const handleSignOut = () => {
-        window.localStorage.removeItem('token');
-        dispatch(signOut());
-    };
+  const onOpenLogoutModal = (): void => {
+    setVisibleLogoutModal(true);
+  };
 
-    if (!userData) {
-        return null;
-    }
+  const onCloseLogoutModal = (): void => {
+    setVisibleLogoutModal(false);
+  };
 
-    return (
-        <>
-            <div aria-describedby={id} onClick={handleOpenPopup} className={classes.container}>
-                <Avatar
-                    alt={`avatar ${userData?.user.id}`}
-                    src={userData?.user.avatar?.src ? userData?.user.avatar?.src : DEFAULT_PROFILE_IMG}
-                />
-                <div className={classes.info}>
-                    <b>{userData.user.fullName}</b>
-                    <Typography style={{color: colors.grey[500]}}>@{userData.user.username}</Typography>
-                </div>
-                <ArrowBottomIcon />
+  const handleSignOut = (): void => {
+    window.localStorage.removeItem("token");
+    dispatch(signOut());
+    history.push("/signin");
+  };
+
+  if (!myProfile) {
+    return null;
+  }
+
+  return (
+    <>
+      <div
+        aria-describedby={id}
+        onClick={handleOpenPopup}
+        className={classes.container}
+      >
+        <Avatar
+          alt={`avatar ${myProfile?.user.id}`}
+          src={
+            myProfile?.user.avatar?.src
+              ? myProfile?.user.avatar?.src
+              : DEFAULT_PROFILE_IMG
+          }
+        />
+        <div className={classes.info}>
+          <b>{myProfile.user.fullName}</b>
+          <Typography style={{ color: colors.grey[500] }}>
+            @{myProfile.user.username}
+          </Typography>
+        </div>
+        <div className={classes.icon}>
+          <span>{EditIcon}</span>
+        </div>
+      </div>
+      <Popover
+        id={id}
+        open={open}
+        anchorEl={anchorEl}
+        onClose={handleClosePopup}
+        classes={{
+          paper: classes.popover,
+        }}
+        anchorOrigin={{
+          vertical: "top",
+          horizontal: "center",
+        }}
+        transformOrigin={{
+          vertical: "bottom",
+          horizontal: "center",
+        }}
+      >
+        <List>
+          <ListItem>
+            <ListItemAvatar>
+              <Avatar
+                alt={`${myProfile?.user.id}`}
+                src={myProfile?.user.avatar?.src}
+              />
+            </ListItemAvatar>
+            <ListItemText
+              primary={myProfile?.user.fullName}
+              secondary={
+                <Typography
+                  component="span"
+                  variant="body2"
+                  color="textSecondary"
+                >
+                  @{myProfile?.user.username}
+                </Typography>
+              }
+            />
+            <span>{CheckIcon}</span>
+          </ListItem>
+          <div className={classes.listItemWrapper}>
+            <Divider component="li" />
+            <ListItem>Add an existing account</ListItem>
+            <Divider component="li" />
+            <ListItem onClick={onOpenLogoutModal}>
+              Log out @{myProfile?.user.username}
+            </ListItem>
+          </div>
+        </List>
+      </Popover>
+      <Dialog
+        open={visibleLogoutModal}
+        onClose={onCloseLogoutModal}
+        aria-labelledby="form-dialog-title"
+      >
+        <DialogContent style={{ padding: "0px 0px" }}>
+          <div className={classes.modalWrapper}>
+            <TwitterIcon />
+            <Typography className={classes.modalFullName}>
+              Log out of Twitter?
+            </Typography>
+            <div className={classes.modalUsername}>
+              You can always log back in at any time. If you just want to switch
+              accounts, you can do that by adding an existing account.
             </div>
-            <Popover
-                id={id}
-                open={open}
-                anchorEl={anchorEl}
-                onClose={handleClosePopup}
-                classes={{
-                    paper: classes.popover,
-                }}
-                anchorOrigin={{
-                    vertical: 'top',
-                    horizontal: 'center',
-                }}
-                transformOrigin={{
-                    vertical: 'bottom',
-                    horizontal: 'center',
-                }}
-            >
-                <List>
-                    <ListItem>
-                        <ListItemAvatar>
-                            <Avatar alt={`${myProfile?.user.id}`} src={myProfile?.user.avatar?.src}/>
-                        </ListItemAvatar>
-                        <ListItemText
-                            primary={myProfile?.user.fullName}
-                            secondary={
-                                <Typography component="span" variant="body2" color="textSecondary">
-                                    @{myProfile?.user.username}
-                                </Typography>
-                            }
-                        />
-                        <span>{CheckIcon}</span>
-                    </ListItem>
-                    <div className={classes.listItemWrapper}>
-                        <Divider component="li"/>
-                        <ListItem>
-                            Add an existing account
-                        </ListItem>
-                        <Divider component="li"/>
-                        <ListItem>
-                            Log out @{myProfile?.user.username}
-                        </ListItem>
-                    </div>
-                </List>
-            </Popover>
-        </>
-    );
+            <div className={classes.modalButtonWrapper}>
+              <Button
+                className={classes.modalCancelButton}
+                onClick={onCloseLogoutModal}
+                variant="contained"
+              >
+                Cancel
+              </Button>
+              <Button
+                className={classes.modalLogoutButton}
+                onClick={handleSignOut}
+                variant="contained"
+                color="primary"
+              >
+                Log out
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+    </>
+  );
 };
 
 export default UserSideProfile;
