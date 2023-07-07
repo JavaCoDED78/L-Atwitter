@@ -56,6 +56,7 @@ public class TweetServiceImpl implements TweetService {
         tweet.setUser(user);
         Tweet createdTweet = tweetRepository.save(tweet);
         user.getTweets().add(createdTweet);
+        user.setTweetCount(user.getTweetCount() + 1);
         userRepository.save(user);
 
         // find hashtag in text
@@ -104,7 +105,7 @@ public class TweetServiceImpl implements TweetService {
     @Override
     public List<Tweet> searchTweets(String text) {
         Set<Tweet> tweets = new HashSet<>();
-        List<Tweet> tweetsByText = tweetRepository.findAllByTextContaining(text);
+        List<Tweet> tweetsByText = tweetRepository.findAllByTextIgnoreCaseContaining(text);
         List<Tag> tagsByText = tagRepository.findByTagNameContaining(text);
         List<User> usersByText = userRepository.findByFullNameOrUsernameContaining(text, text);
 
@@ -139,6 +140,9 @@ public class TweetServiceImpl implements TweetService {
     public Tweet retweet(Long tweetId) {
         Principal principal = SecurityContextHolder.getContext().getAuthentication();
         User user = userRepository.findByEmail(principal.getName());
+        user.setTweetCount(user.getTweetCount() + 1);
+        userRepository.save(user);
+
         Tweet tweet = tweetRepository.getOne(tweetId);
         List<Tweet> tweets = user.getTweets();
         List<User> retweets = tweet.getRetweets();
@@ -155,6 +159,11 @@ public class TweetServiceImpl implements TweetService {
 
     @Override
     public Tweet replyTweet(Long tweetId, Tweet reply) {
+        Principal principal = SecurityContextHolder.getContext().getAuthentication();
+        User user = userRepository.findByEmail(principal.getName());
+        user.setTweetCount(user.getTweetCount() + 1);
+        userRepository.save(user);
+
         Tweet replyTweet = createTweet(reply);
         Tweet tweet = tweetRepository.getOne(tweetId);
         tweet.getReplies().add(replyTweet);

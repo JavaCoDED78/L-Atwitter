@@ -1,58 +1,58 @@
-import { makeStyles, Theme } from "@material-ui/core";
+import {makeStyles, Theme} from "@material-ui/core";
 
 export const useSearchStyles = makeStyles((theme: Theme) => ({
-  container: {
-    borderRadius: 0,
-    minHeight: "100vh",
-    borderTop: 0,
-    borderBottom: 0,
-  },
-  header: {
-    position: "fixed",
-    width: 602,
-    zIndex: 1,
-    display: "flex",
-    alignItems: "center",
-    flex: 1,
-    borderTop: 0,
-    borderLeft: 0,
-    borderRight: 0,
-    borderRadius: 0,
-    "& h6": {
-      fontWeight: 800,
+    container: {
+        borderRadius: 0,
+        minHeight: '100vh',
+        borderTop: 0,
+        borderBottom: 0,
     },
-  },
-  editButton: {
-    display: "inline-block",
-    "& .MuiIconButton-root": {
-      marginLeft: 25,
-      width: 40,
-      height: 40,
-      color: "rgb(29, 161, 242)",
-      "& span": {
-        paddingTop: 5,
-        "& svg": {
-          height: "0.90em",
+    header: {
+        position: "fixed",
+        width: 602,
+        zIndex: 1,
+        display: 'flex',
+        alignItems: 'center',
+        flex: 1,
+        borderTop: 0,
+        borderLeft: 0,
+        borderRight: 0,
+        borderRadius: 0,
+        '& h6': {
+            fontWeight: 800,
         },
-      },
     },
-  },
-  loading: {
-    marginTop: 50,
-    textAlign: "center",
-  },
-  tabs: {
-    "& .MuiTabs-indicator": {
-      marginLeft: 35,
-      maxWidth: 50,
-      height: 4,
-      backgroundColor: "rgb(29, 161, 242)",
+    editButton: {
+        display: "inline-block",
+        "& .MuiIconButton-root": {
+            marginLeft: 25,
+            width: 40,
+            height: 40,
+            color: "rgb(29, 161, 242)",
+            "& span": {
+                paddingTop: 5,
+                "& svg" : {
+                    height: "0.90em",
+                },
+            },
+        },
     },
-    "& .MuiTab-root": {
-      fontSize: 15,
-      textTransform: "none !important",
-      minWidth: 120,
-      fontWeight: 700,
+    loading: {
+        marginTop: 50,
+        textAlign: 'center',
     },
-  },
+    tabs: {
+        "& .MuiTabs-indicator": {
+            marginLeft: 35,
+            maxWidth: 50,
+            height: 4,
+            backgroundColor: "rgb(29, 161, 242)",
+        },
+        "& .MuiTab-root": {
+            fontSize: 15,
+            textTransform: "none !important",
+            minWidth: 120,
+            fontWeight: 700,
+        },
+    },
 }));

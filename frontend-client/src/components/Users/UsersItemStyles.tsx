@@ -1,92 +1,92 @@
-import { makeStyles, Theme } from "@material-ui/core";
+import {makeStyles, Theme} from "@material-ui/core";
 
 export const useUsersItemStyles = makeStyles((theme: Theme) => ({
-  container: {
-    cursor: "pointer",
-    borderBottom: "1px solid rgb(239, 243, 244)",
-    "& .MuiListItem-root .MuiListItem-gutters": {
-      padding: "0px 0px 0px 0px",
+    container: {
+        cursor: 'pointer',
+        borderBottom: "1px solid rgb(239, 243, 244)",
+        '& .MuiListItem-root .MuiListItem-gutters': {
+            padding: "0px 0px 0px 0px",
+        },
+        '& .MuiTypography-body1': {
+            fontWeight: 700,
+        },
+        '& .MuiListItemAvatar-root': {
+            minWidth: 50,
+        },
+        '& .MuiListItemText-root': {
+            // marginRight: 45,
+        },
+        '&:hover': {
+            backgroundColor: '#edf3f6',
+        },
+        '& a': {
+            color: 'inherit',
+            textDecoration: 'none',
+        },
     },
-    "& .MuiTypography-body1": {
-      fontWeight: 700,
+    outlinedButton: {
+        marginLeft: 49,
+        float: 'right',
+        fontSize: 15,
+        fontWeight: 700,
+        width: 79,
+        height: 32,
+        border: '1px solid',
+        borderRadius: '25px',
+        padding: '0 15px',
+        '&:hover': {
+            backgroundColor: 'rgb(29, 161, 242, 0.1)',
+        },
     },
-    "& .MuiListItemAvatar-root": {
-      minWidth: 50,
+    primaryButton: {
+        marginLeft: 29,
+        float: 'right',
+        fontSize: 15,
+        fontWeight: 700,
+        width: 105,
+        height: 32,
+        border: '1px solid',
+        borderRadius: '25px',
+        padding: '0 15px',
+        // TODO '& .MuiButton-containedPrimary':
+        '&:hover': {
+            backgroundColor: 'rgb(202, 32, 85)',
+        },
     },
-    "& .MuiListItemText-root": {
-      // marginRight: 45,
+    modalWrapper: {
+        width: 280,
+        height: 176,
+        textAlign: "center",
+        margin: "32px 20px",
     },
-    "&:hover": {
-      backgroundColor: "#edf3f6",
+    modalFullName: {
+        color: "rgb(15, 20, 25)",
+        fontWeight: 700,
+        fontSize: 20,
     },
-    "& a": {
-      color: "inherit",
-      textDecoration: "none",
+    modalUsername: {
+        color: "rgb(83, 100, 113)",
+        fontWeight: 400,
+        fontSize: 15,
+        marginTop: 8,
+        marginBottom: 24,
     },
-  },
-  outlinedButton: {
-    marginLeft: 49,
-    float: "right",
-    fontSize: 15,
-    fontWeight: 700,
-    width: 79,
-    height: 32,
-    border: "1px solid",
-    borderRadius: "25px",
-    padding: "0 15px",
-    "&:hover": {
-      backgroundColor: "rgb(29, 161, 242, 0.1)",
+    modalButtonContainer: {
+        display: "flex",
+        flexDirection: "row",
+        justifyContent: "space-between",
     },
-  },
-  primaryButton: {
-    marginLeft: 29,
-    float: "right",
-    fontSize: 15,
-    fontWeight: 700,
-    width: 105,
-    height: 32,
-    border: "1px solid",
-    borderRadius: "25px",
-    padding: "0 15px",
-    // TODO '& .MuiButton-containedPrimary':
-    "&:hover": {
-      backgroundColor: "rgb(202, 32, 85)",
+    modalCancelButton: {
+        width: 134,
+        height: 40,
+        color: "#000",
+        backgroundColor: "rgb(239, 243, 244)",
+        borderRadius: '25px',
     },
-  },
-  modalWrapper: {
-    width: 280,
-    height: 176,
-    textAlign: "center",
-    margin: "32px 20px",
-  },
-  modalFullName: {
-    color: "rgb(15, 20, 25)",
-    fontWeight: 700,
-    fontSize: 20,
-  },
-  modalUsername: {
-    color: "rgb(83, 100, 113)",
-    fontWeight: 400,
-    fontSize: 15,
-    marginTop: 8,
-    marginBottom: 24,
-  },
-  modalButtonContainer: {
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "space-between",
-  },
-  modalCancelButton: {
-    width: 134,
-    height: 40,
-    color: "#000",
-    backgroundColor: "rgb(239, 243, 244)",
-    borderRadius: "25px",
-  },
-  modalUnfollowButton: {
-    width: 134,
-    height: 40,
-    border: "1px solid",
-    borderRadius: "25px",
-  },
+    modalUnfollowButton: {
+        width: 134,
+        height: 40,
+        border: '1px solid',
+        borderRadius: '25px',
+    },
 }));
