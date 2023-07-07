@@ -111,7 +111,7 @@ const UserPage: FC<RouteComponentProps<{ id: string }>> = ({ match }) => {
           </Typography>
         </div>
       </Paper>
-      <div style={{ paddingTop: 48 }}>
+      <div style={{ paddingTop: 53 }}>
         <div className={classes.wallpaper}>
           <img
             key={userProfile?.wallpaper?.src}

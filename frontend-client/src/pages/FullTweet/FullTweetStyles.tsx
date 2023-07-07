@@ -51,6 +51,15 @@ export const useFullTweetStyles = makeStyles((theme: Theme) => ({
       color: "rgb(27, 149, 224)",
     },
   },
+  image: {
+    "& img": {
+      objectFit: "cover",
+      marginTop: 10,
+      width: 564,
+      borderRadius: 20,
+      borderColor: "#5b7083",
+    },
+  },
   content: {
     display: "flex",
     alignItems: "center",
@@ -78,6 +87,21 @@ export const useFullTweetStyles = makeStyles((theme: Theme) => ({
     padding: "2px 0",
     "& svg": {
       fontSize: 25,
+    },
+  },
+  infoIcon: {
+    "& .MuiIconButton-root": {
+      marginBottom: 6,
+      width: 40,
+      height: 40,
+      color: "#5b7083",
+      "& span": {
+        paddingBottom: 3,
+        "& svg": {
+          verticalAlign: "bottom",
+          height: "0.9em",
+        },
+      },
     },
   },
   replyWrapper: {

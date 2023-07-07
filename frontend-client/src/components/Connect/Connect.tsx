@@ -41,7 +41,7 @@ const Connect = () => {
           <CircularProgress />
         </div>
       ) : (
-        <div>
+        <div style={{ paddingTop: 48 }}>
           <Paper className={classes2.header} variant="outlined">
             <Typography variant="h6">Suggested for you</Typography>
           </Paper>
