@@ -26,6 +26,7 @@ export function* fetchSignInRequest({ payload }: FetchSignInActionInterface) {
     yield put(setUserData(data));
     payload.history.push("/home");
   } catch (error) {
+    // @ts-ignore
     yield put(signInError(error.response.status));
     yield put(setUserLoadingStatus(LoadingStatus.ERROR));
   }
