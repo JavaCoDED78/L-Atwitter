@@ -18,11 +18,10 @@ import {
   ExploreIconFilled,
   ProfileIconFilled,
 } from "../../icons";
-import ModalBlock from "../ModalBlock/ModalBlock";
-import { AddTweetForm } from "../AddTweetForm/AddTweetForm";
 import UserSideProfile from "../UserSideProfile/UserSideProfile";
 import { selectUserData } from "../../store/ducks/user/selectors";
 import { useSideMenuStyles } from "./SideMenuStyles";
+import AddTweetModal from "../AddTweetModal/AddTweetModal";
 
 const SideMenu: FC = (): ReactElement => {
   const classes = useSideMenuStyles();
@@ -155,15 +154,7 @@ const SideMenu: FC = (): ReactElement => {
               <CreateIcon />
             </Hidden>
           </Button>
-          <ModalBlock onClose={onCloseAddTweet} visible={visibleAddTweet}>
-            <div style={{ width: 550 }}>
-              <AddTweetForm
-                maxRows={15}
-                title={"What's happening?"}
-                buttonName={"Tweet"}
-              />
-            </div>
-          </ModalBlock>
+          <AddTweetModal onClose={onCloseAddTweet} visible={visibleAddTweet} />
         </li>
       </ul>
       <UserSideProfile />
