@@ -2,9 +2,11 @@ package com.gmail.javacoded78.latwitter.mapper;
 
 import com.gmail.javacoded78.latwitter.dto.request.UserRequest;
 import com.gmail.javacoded78.latwitter.dto.response.ImageResponse;
+import com.gmail.javacoded78.latwitter.dto.response.NotificationResponse;
 import com.gmail.javacoded78.latwitter.dto.response.TweetResponse;
 import com.gmail.javacoded78.latwitter.dto.response.UserResponse;
 import com.gmail.javacoded78.latwitter.model.Image;
+import com.gmail.javacoded78.latwitter.model.Notification;
 import com.gmail.javacoded78.latwitter.model.User;
 import com.gmail.javacoded78.latwitter.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -23,12 +25,22 @@ public class UserMapper {
     private final TweetMapper tweetMapper;
     private final UserService userService;
 
-    UserResponse convertToUserResponse(User user) {
-        return modelMapper.map(user, UserResponse.class);
-    }
-
     private ImageResponse convertToImageResponse(Image image) {
         return modelMapper.map(image, ImageResponse.class);
+    }
+
+    private NotificationResponse convertToNotificationResponse(Notification notification) {
+        return modelMapper.map(notification, NotificationResponse.class);
+    }
+
+    private List<NotificationResponse> convertListToNotificationResponseDto(List<Notification> notifications) {
+        return notifications.stream()
+                .map(this::convertToNotificationResponse)
+                .collect(Collectors.toList());
+    }
+
+    UserResponse convertToUserResponse(User user) {
+        return modelMapper.map(user, UserResponse.class);
     }
 
     private List<UserResponse> convertListToResponseDto(List<User> users) {
@@ -107,5 +119,9 @@ public class UserMapper {
 
     public UserResponse unpinTweet(Long tweetId) {
         return convertToUserResponse(userService.unpinTweet(tweetId));
+    }
+
+    public List<NotificationResponse> getUserNotifications() {
+        return convertListToNotificationResponseDto(userService.getUserNotifications());
     }
 }

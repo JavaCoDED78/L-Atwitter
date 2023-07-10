@@ -16,6 +16,8 @@ import TweetImageModal from "./components/TweetImageModal/TweetImageModal";
 import Login from "./pages/Login/Login";
 import ForgotPassword from "./pages/ForgotPassword/ForgotPassword";
 import Bookmarks from "./pages/Bookmarks/Bookmarks";
+import Notifications from "./pages/Notifications/Notifications";
+import NotificationInfo from "./pages/Notifications/NotificationInfo/NotificationInfo";
 
 export const useAppStyles = makeStyles((theme: Theme) => ({
   centered: {
@@ -76,6 +78,8 @@ const App: FC = (): ReactElement => {
           <Route path="/account/forgot" component={ForgotPassword} />
           <Route path="/home" component={Home} />
           <Route path="/search" component={Search} />
+          <Route path="/notifications" component={Notifications} exact />
+          <Route path="/notification" component={NotificationInfo} exact />
           <Route path="/bookmarks" component={Bookmarks} />
           <Route path="/user/:id" component={UserPage} exact />
           <Route path="/user/:id/:follow" component={FollowingFollowers} />

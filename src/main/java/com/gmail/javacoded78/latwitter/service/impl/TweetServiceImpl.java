@@ -1,11 +1,14 @@
 package com.gmail.javacoded78.latwitter.service.impl;
 
 import com.gmail.javacoded78.latwitter.model.LikeTweet;
+import com.gmail.javacoded78.latwitter.model.Notification;
+import com.gmail.javacoded78.latwitter.model.NotificationType;
 import com.gmail.javacoded78.latwitter.model.Retweet;
 import com.gmail.javacoded78.latwitter.model.Tag;
 import com.gmail.javacoded78.latwitter.model.Tweet;
 import com.gmail.javacoded78.latwitter.model.User;
 import com.gmail.javacoded78.latwitter.repository.LikeTweetRepository;
+import com.gmail.javacoded78.latwitter.repository.NotificationRepository;
 import com.gmail.javacoded78.latwitter.repository.RetweetRepository;
 import com.gmail.javacoded78.latwitter.repository.TagRepository;
 import com.gmail.javacoded78.latwitter.repository.TweetRepository;
@@ -33,6 +36,7 @@ public class TweetServiceImpl implements TweetService {
     private final UserRepository userRepository;
     private final RetweetRepository retweetRepository;
     private final LikeTweetRepository likeTweetRepository;
+    private final NotificationRepository notificationRepository;
     private final TagRepository tagRepository;
 
     @Override
@@ -133,6 +137,23 @@ public class TweetServiceImpl implements TweetService {
             likedTweets.add(newLikedTweet);
         }
 
+        Optional<Notification> notification = tweet.getUser().getNotifications().stream()
+                .filter(n -> n.getNotificationType().equals(NotificationType.LIKE))
+                .filter(n -> n.getTweet().equals(tweet))
+                .filter(n -> n.getUser().equals(user))
+                .findFirst();
+
+        if (notification.isEmpty()) {
+            Notification newNotification = new Notification();
+            newNotification.setNotificationType(NotificationType.LIKE);
+            newNotification.setUser(user);
+            newNotification.setTweet(tweet);
+            notificationRepository.save(newNotification);
+            tweet.getUser().setNotificationsCount(tweet.getUser().getNotificationsCount() + 1);
+            List<Notification> notifications = tweet.getUser().getNotifications();
+            notifications.add(newNotification);
+        }
+
         userRepository.save(user);
         return tweetRepository.save(tweet);
     }
@@ -159,6 +180,23 @@ public class TweetServiceImpl implements TweetService {
             retweetRepository.save(newRetweet);
             retweets.add(newRetweet);
             user.setTweetCount(user.getTweetCount() + 1);
+        }
+
+        Optional<Notification> notification = tweet.getUser().getNotifications().stream()
+                .filter(n -> n.getNotificationType().equals(NotificationType.RETWEET))
+                .filter(n -> n.getTweet().equals(tweet))
+                .filter(n -> n.getUser().equals(user))
+                .findFirst();
+
+        if (notification.isEmpty()) {
+            Notification newNotification = new Notification();
+            newNotification.setNotificationType(NotificationType.RETWEET);
+            newNotification.setUser(user);
+            newNotification.setTweet(tweet);
+            notificationRepository.save(newNotification);
+            tweet.getUser().setNotificationsCount(tweet.getUser().getNotificationsCount() + 1);
+            List<Notification> notifications = tweet.getUser().getNotifications();
+            notifications.add(newNotification);
         }
 
         userRepository.save(user);

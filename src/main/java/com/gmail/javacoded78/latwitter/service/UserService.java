@@ -1,6 +1,7 @@
 package com.gmail.javacoded78.latwitter.service;
 
 import com.gmail.javacoded78.latwitter.model.Image;
+import com.gmail.javacoded78.latwitter.model.Notification;
 import com.gmail.javacoded78.latwitter.model.Tweet;
 import com.gmail.javacoded78.latwitter.model.User;
 import org.springframework.web.multipart.MultipartFile;
@@ -26,6 +27,8 @@ public interface UserService {
     List<Tweet> getUserMediaTweets(Long userId);
 
     List<Tweet> getUserRetweetsAndReplies(Long userId);
+
+    List<Notification> getUserNotifications();
 
     List<Tweet> getUserBookmarks();
 

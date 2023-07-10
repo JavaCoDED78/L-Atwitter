@@ -87,23 +87,25 @@ const FollowingFollowers: FC = (): ReactElement => {
         </div>
       </Paper>
       <div style={{ paddingTop: 57 }}>
-        <Tabs
-          value={activeTab}
-          indicatorColor="primary"
-          textColor="primary"
-          onChange={handleChangeTab}
-        >
-          <Tab
-            onClick={handleShowFollowing}
-            className={classes.tab}
-            label="Following"
-          />
-          <Tab
-            onClick={handleShowFollowers}
-            className={classes.tab}
-            label="Followers"
-          />
-        </Tabs>
+        <div className={classes.tabs}>
+          <Tabs
+            value={activeTab}
+            indicatorColor="primary"
+            textColor="primary"
+            onChange={handleChangeTab}
+          >
+            <Tab
+              onClick={handleShowFollowing}
+              className={classes.tab}
+              label="Following"
+            />
+            <Tab
+              onClick={handleShowFollowers}
+              className={classes.tab}
+              label="Followers"
+            />
+          </Tabs>
+        </div>
         {isFollowersLoading ? (
           <div className={classes.loading}>
             <CircularProgress />
