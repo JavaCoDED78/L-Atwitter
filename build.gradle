@@ -2,6 +2,7 @@ plugins {
     id 'java'
     id 'org.springframework.boot' version '2.7.12-SNAPSHOT'
     id 'io.spring.dependency-management' version '1.0.15.RELEASE'
+    id 'jacoco'
 }
 
 apply from: 'versions-script.gradle'
@@ -35,6 +36,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-websocket'
     implementation "com.amazonaws:aws-java-sdk:${versions.aws}"
     implementation "io.jsonwebtoken:jjwt-api:${versions.jjwt}"
+//    testImplementation 'junit:junit:4.13.1'
     runtimeOnly "io.jsonwebtoken:jjwt-impl:${versions.jjwt}",
             "io.jsonwebtoken:jjwt-jackson:${versions.jjwt}"
     implementation "org.modelmapper:modelmapper:${versions.modelMapper}"
@@ -51,4 +53,16 @@ dependencies {
 
 tasks.named('test') {
     useJUnitPlatform()
+}
+
+test {
+    finalizedBy jacocoTestReport
+}
+jacocoTestReport {
+    dependsOn test
+    reports {
+        xml.required = false
+        csv.required = false
+        html.outputLocation = layout.buildDirectory.dir('jacocoHtml')
+    }
 }

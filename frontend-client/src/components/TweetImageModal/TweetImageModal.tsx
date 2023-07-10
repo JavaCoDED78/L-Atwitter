@@ -4,9 +4,7 @@ import { Link, useHistory, useParams } from "react-router-dom";
 import { Avatar, Divider, IconButton } from "@material-ui/core";
 import classNames from "classnames";
 import Typography from "@material-ui/core/Typography";
-import grey from "@material-ui/core/colors/grey";
 import format from "date-fns/format";
-import ruLang from "date-fns/locale/ru";
 
 import {
   LikeOutlinedIcon,
@@ -40,10 +38,10 @@ const TweetImageModal: FC = (): ReactElement | null => {
   const params: { id: string } = useParams();
   const history = useHistory();
   const isTweetLiked = tweetData?.likedTweets.find(
-    (user) => user.id === myProfile?.id
+    (like) => like.user.id === myProfile?.id
   );
   const isTweetRetweeted = tweetData?.retweets.find(
-    (user) => user.id === myProfile?.id
+    (retweet) => retweet.user.id === myProfile?.id
   );
   const [visibleTweetImageModalWindow, setVisibleTweetImageModalWindow] =
     useState<boolean>(false);

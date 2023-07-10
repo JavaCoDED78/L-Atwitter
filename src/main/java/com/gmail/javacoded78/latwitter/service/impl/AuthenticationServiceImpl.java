@@ -1,5 +1,6 @@
 package com.gmail.javacoded78.latwitter.service.impl;
 
+import com.gmail.javacoded78.latwitter.exception.ApiRequestException;
 import com.gmail.javacoded78.latwitter.model.User;
 import com.gmail.javacoded78.latwitter.repository.UserRepository;
 import com.gmail.javacoded78.latwitter.security.JwtProvider;
@@ -7,6 +8,7 @@ import com.gmail.javacoded78.latwitter.service.AuthenticationService;
 import com.gmail.javacoded78.latwitter.service.email.MailSender;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -137,7 +139,11 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     @Override
     public User findByPasswordResetCode(String code) {
-        return userRepository.findByPasswordResetCode(code);
+        User user = userRepository.findByPasswordResetCode(code);
+        if (user == null) {
+            throw new ApiRequestException("Password reset code is invalid!", HttpStatus.BAD_REQUEST);
+        }
+        return user;
     }
 
     @Override

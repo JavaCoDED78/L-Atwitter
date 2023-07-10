@@ -9,7 +9,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.security.Principal;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -31,11 +36,6 @@ public class TweetServiceImpl implements TweetService {
     @Override
     public Tweet getTweetById(Long tweetId) {
         return tweetRepository.getOne(tweetId);
-    }
-
-    @Override
-    public List<Tweet> getTweetsByUser(User user) {
-        return tweetRepository.findByAddressedUsernameIsNullAndUserOrderByDateTimeDesc(user);
     }
 
     @Override
@@ -83,17 +83,6 @@ public class TweetServiceImpl implements TweetService {
             }
         }
         return createdTweet;
-    }
-
-    @Override
-    @Transactional
-    public List<Tweet> deleteTweet(Long tweetId) {
-        Tweet tweet = tweetRepository.getOne(tweetId);
-        tweetRepository.delete(tweet);
-        Principal principal = SecurityContextHolder.getContext().getAuthentication();
-        User user = userRepository.findByEmail(principal.getName());
-        user.getTweets().remove(tweet);
-        return tweetRepository.findByAddressedUsernameIsNullOrderByDateTimeDesc();
     }
 
     @Override

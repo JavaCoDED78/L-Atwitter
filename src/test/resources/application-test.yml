@@ -1,0 +1,58 @@
+spring:
+
+  datasource:
+    url: jdbc:postgresql://localhost:5433/twt_test
+    username: postgres
+    password: pass
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    properties.hibernate:
+      batch_size: 50
+      fetch_size: 50
+      show_sql: true
+      format_sql: true
+#     open-in-view: false
+    hibernate:
+      ddl-auto: create
+
+  servlet:
+    multipart:
+      enabled: true
+      file-size-threshold: 2MB
+      max-file-size: 5MB
+      max-request-size: 10MB
+
+  thymeleaf:
+    check-template-location: false
+
+  mail:
+    host: smtp.gmail.com
+    username: perfumestoreapp@gmail.com
+    password: oggmtuvzwyxbvifk
+    port: 465
+    protocol: smtps
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
+jwt:
+  header: Authorization
+  secret:  dejavudejavudejavudejavudejavudejavudejavudejavudejavudejavu
+  expiration: 6048000
+
+amazon:
+  aws:
+    access-key: AKIA2GKIUFNQ24L7PXBB
+    secret-key: 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
+  s3:
+    bucket:
+      name: perfumeshop
+
+hostname: localhost:3000
+
+mail:
+  debug: false

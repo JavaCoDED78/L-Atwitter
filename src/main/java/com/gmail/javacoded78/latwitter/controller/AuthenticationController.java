@@ -6,7 +6,6 @@ import com.gmail.javacoded78.latwitter.dto.request.RegistrationRequest;
 import com.gmail.javacoded78.latwitter.dto.response.AuthenticationResponse;
 import com.gmail.javacoded78.latwitter.dto.response.UserResponse;
 import com.gmail.javacoded78.latwitter.exception.ApiRequestException;
-import com.gmail.javacoded78.latwitter.exception.InputFieldException;
 import com.gmail.javacoded78.latwitter.mapper.AuthenticationMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -14,10 +13,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
-
-import javax.validation.Valid;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
@@ -44,7 +45,7 @@ public class AuthenticationController {
         if (!isRegistered) {
             throw new ApiRequestException("Email has already been taken.", HttpStatus.FORBIDDEN);
         } else {
-            return ResponseEntity.ok("User successfully registered.");
+            return ResponseEntity.ok("User data checked.");
         }
     }
 
@@ -90,11 +91,7 @@ public class AuthenticationController {
 
     @GetMapping("/reset/{code}")
     public ResponseEntity<UserResponse> getUserByResetCode(@PathVariable String code) {
-        UserResponse user = authenticationMapper.findByPasswordResetCode(code);
-        if (user == null) {
-            throw new ApiRequestException("Password reset code is invalid!", HttpStatus.BAD_REQUEST);
-        }
-        return ResponseEntity.ok(user);
+        return ResponseEntity.ok(authenticationMapper.findByPasswordResetCode(code));
     }
 
     @PostMapping("/reset")

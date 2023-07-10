@@ -12,7 +12,7 @@ import {
   selectUsersIsLoading,
   selectUsers,
 } from "../../store/ducks/users/selectors";
-import Follower from "../Follower/Follower";
+import Follower from "../../components/Follower/Follower";
 import { User } from "../../store/ducks/user/contracts/state";
 import { useConnectStyles } from "./ConnetsStyles";
 
