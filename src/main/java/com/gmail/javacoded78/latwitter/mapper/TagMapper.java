@@ -33,7 +33,6 @@ public class TagMapper {
         return convertTagsListToResponseDto(tagService.getTags());
     }
 
-
     public List<TagResponse> getTrends() {
         return convertTagsListToResponseDto(tagService.getTrends());
     }

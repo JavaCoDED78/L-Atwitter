@@ -1,17 +1,17 @@
-import { LoadingStatus } from "../../../types";
-import { Tweet } from "../../tweets/contracts/state";
+import {LoadingStatus} from "../../../types";
+import {Tweet} from "../../tweets/contracts/state";
 
 export interface Image {
-  id: number;
-  src: string;
+    id: number;
+    src: string;
 }
 
 export interface PinnedTweet {
-  tweet: Tweet;
-  activeTab: number | undefined;
+    tweet: Tweet;
+    activeTab: number | undefined;
 }
 
 export interface UserTweetsState {
-  items: Tweet[];
-  loadingState: LoadingStatus;
+    items: Tweet[];
+    loadingState: LoadingStatus;
 }

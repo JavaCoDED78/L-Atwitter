@@ -2,7 +2,13 @@ package com.gmail.javacoded78.latwitter.service.impl;
 
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.PutObjectRequest;
-import com.gmail.javacoded78.latwitter.model.*;
+import com.gmail.javacoded78.latwitter.model.Bookmark;
+import com.gmail.javacoded78.latwitter.model.Image;
+import com.gmail.javacoded78.latwitter.model.LikeTweet;
+import com.gmail.javacoded78.latwitter.model.Notification;
+import com.gmail.javacoded78.latwitter.model.Retweet;
+import com.gmail.javacoded78.latwitter.model.Tweet;
+import com.gmail.javacoded78.latwitter.model.User;
 import com.gmail.javacoded78.latwitter.repository.BookmarkRepository;
 import com.gmail.javacoded78.latwitter.repository.ImageRepository;
 import com.gmail.javacoded78.latwitter.repository.TweetRepository;

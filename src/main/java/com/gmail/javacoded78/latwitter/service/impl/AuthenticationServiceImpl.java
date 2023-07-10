@@ -140,6 +140,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     @Override
     public User findByPasswordResetCode(String code) {
         User user = userRepository.findByPasswordResetCode(code);
+
         if (user == null) {
             throw new ApiRequestException("Password reset code is invalid!", HttpStatus.BAD_REQUEST);
         }

@@ -1,13 +1,10 @@
 package com.gmail.javacoded78.latwitter.mapper;
 
-import com.gmail.javacoded78.latwitter.dto.request.RegistrationRequest;
 import com.gmail.javacoded78.latwitter.dto.response.AuthenticationResponse;
 import com.gmail.javacoded78.latwitter.dto.response.UserResponse;
 import com.gmail.javacoded78.latwitter.model.User;
 import com.gmail.javacoded78.latwitter.service.AuthenticationService;
-
 import lombok.RequiredArgsConstructor;
-import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 
 import java.util.Map;
