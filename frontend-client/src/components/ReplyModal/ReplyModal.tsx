@@ -100,6 +100,7 @@ const ReplyModal: FC<ReplyModalProps> = ({
             minRows={3}
             tweetId={tweetId}
             addressedUsername={user.username}
+            addressedId={user.id}
             title={"Tweet your reply"}
             buttonName={"Reply"}
           />

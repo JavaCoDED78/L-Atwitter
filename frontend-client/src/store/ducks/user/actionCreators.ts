@@ -1,7 +1,9 @@
 import { User, UserState } from "./contracts/state";
 import {
+  FetchPinTweetActionInterface,
   FetchSignInActionInterface,
   FetchSignUpActionInterface,
+  FetchUnpinTweetActionInterface,
   FetchUserDataActionInterface,
   FollowActionInterface,
   FollowUserActionInterface,
@@ -11,7 +13,6 @@ import {
   StartUseTwitterActionInterface,
   UnfollowActionInterface,
   UnfollowUserActionInterface,
-  UpdateUserDataActionInterface,
   UserActionsType,
 } from "./contracts/actionTypes";
 import { RegistrationProps } from "../../../pages/RegistrationModal/SetPasswordModal/SetPasswordModal";
@@ -21,13 +22,6 @@ export const setUserData = (
   payload: UserState["data"]
 ): SetUserDataActionInterface => ({
   type: UserActionsType.SET_USER_DATA,
-  payload,
-});
-
-export const updatedUserData = (
-  payload: User
-): UpdateUserDataActionInterface => ({
-  type: UserActionsType.UPDATE_USER_DATA,
   payload,
 });
 
@@ -77,6 +71,20 @@ export const follow = (payload: User): FollowActionInterface => ({
 
 export const unfollow = (payload: User): UnfollowActionInterface => ({
   type: UserActionsType.UNFOLLOW,
+  payload,
+});
+
+export const fetchPinTweet = (
+  payload: string
+): FetchPinTweetActionInterface => ({
+  type: UserActionsType.FETCH_PIN_TWEET,
+  payload,
+});
+
+export const fetchUnpinTweet = (
+  payload: string
+): FetchUnpinTweetActionInterface => ({
+  type: UserActionsType.FETCH_UNPIN_TWEET,
   payload,
 });
 

@@ -22,7 +22,7 @@ import {
   fetchTweetsByText,
 } from "../../store/ducks/tweets/actionCreators";
 import { BackButton } from "../../components/BackButton/BackButton";
-import Tweet from "../../components/Tweet/Tweet";
+import TweetComponent from "../../components/TweetComponent/TweetComponent";
 import {
   selectIsTweetsLoading,
   selectTweetsItems,
@@ -169,7 +169,7 @@ const Search: FC = (): ReactElement => {
           </div>
         ) : activeTab !== 2 ? (
           tweets.map((tweet) => (
-            <Tweet key={tweet.id} images={tweet.images} {...tweet} />
+            <TweetComponent key={tweet.id} images={tweet.images} {...tweet} />
           ))
         ) : (
           users?.map((user) => (

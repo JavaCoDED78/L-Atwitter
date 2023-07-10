@@ -5,7 +5,6 @@ import CircularProgress from "@material-ui/core/CircularProgress";
 import Paper from "@material-ui/core/Paper";
 import { Avatar, Divider, IconButton } from "@material-ui/core";
 import Typography from "@material-ui/core/Typography";
-import RepostIcon from "@material-ui/icons/RepeatOutlined";
 import format from "date-fns/format";
 import usLang from "date-fns/locale/en-US/index";
 
@@ -24,7 +23,7 @@ import {
 import { selectUserData } from "../../store/ducks/user/selectors";
 import UsersListModal from "../../components/UsersListModal/UsersListModal";
 import { AddTweetForm } from "../../components/AddTweetForm/AddTweetForm";
-import Tweet from "../../components/Tweet/Tweet";
+import TweetComponent from "../../components/TweetComponent/TweetComponent";
 import { useFullTweetStyles } from "./FullTweetStyles";
 import { DEFAULT_PROFILE_IMG } from "../../util/url";
 import {
@@ -33,6 +32,7 @@ import {
   ReplyIcon,
   RetweetIcon,
   RetweetOutlinedIcon,
+  RetweetOutlinedIconSm,
   ShareIcon,
 } from "../../icons";
 import { textFormatter } from "../../util/textFormatter";
@@ -93,7 +93,7 @@ export const FullTweet: FC = (): ReactElement | null => {
       <div style={{ paddingTop: 48 }}>
         {isTweetRetweeted ? (
           <div className={classes.retweetWrapper}>
-            <RepostIcon style={{ fontSize: 16 }} />
+            <span>{RetweetOutlinedIconSm}</span>
             <Typography>You Retweeted</Typography>
           </div>
         ) : null}
@@ -250,7 +250,7 @@ export const FullTweet: FC = (): ReactElement | null => {
         </Paper>
         <div className={classes.divider} />
         {tweetData.replies.map((tweet) => (
-          <Tweet key={tweet.id} images={tweet.images} {...tweet} />
+          <TweetComponent key={tweet.id} images={tweet.images} {...tweet} />
         ))}
       </div>
     );

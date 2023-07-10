@@ -4,7 +4,9 @@ import { Link, useHistory, useParams } from "react-router-dom";
 import { Avatar, Divider, IconButton } from "@material-ui/core";
 import classNames from "classnames";
 import Typography from "@material-ui/core/Typography";
+import grey from "@material-ui/core/colors/grey";
 import format from "date-fns/format";
+import ruLang from "date-fns/locale/ru";
 
 import {
   LikeOutlinedIcon,
@@ -18,7 +20,7 @@ import {
 import { selectUserData } from "../../store/ducks/user/selectors";
 import { AddTweetForm } from "../AddTweetForm/AddTweetForm";
 import UsersListModal from "../UsersListModal/UsersListModal";
-import Tweet from "../Tweet/Tweet";
+import TweetComponent from "../TweetComponent/TweetComponent";
 import {
   fetchLikeTweet,
   fetchRetweet,
@@ -230,7 +232,7 @@ const TweetImageModal: FC = (): ReactElement | null => {
             />
           )}
           {tweetData.replies.map((tweet: any) => (
-            <Tweet
+            <TweetComponent
               key={tweet.id}
               images={tweet.images}
               addressedUser={tweetData.user.username}

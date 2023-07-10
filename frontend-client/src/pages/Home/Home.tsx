@@ -8,7 +8,7 @@ import {
   Typography,
 } from "@material-ui/core";
 
-import Tweet from "../../components/Tweet/Tweet";
+import TweetComponent from "../../components/TweetComponent/TweetComponent";
 import { useHomeStyles } from "./HomeStyles";
 import { AddTweetForm } from "../../components/AddTweetForm/AddTweetForm";
 import { fetchTweets } from "../../store/ducks/tweets/actionCreators";
@@ -100,7 +100,7 @@ const Home: FC = (): ReactElement => {
           <Welcome />
         ) : (
           tweets.map((tweet) => (
-            <Tweet key={tweet.id} images={tweet.images} {...tweet} />
+            <TweetComponent key={tweet.id} images={tweet.images} {...tweet} />
           ))
         )}
       </Route>

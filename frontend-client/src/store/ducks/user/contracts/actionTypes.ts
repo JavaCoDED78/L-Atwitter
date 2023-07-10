@@ -9,7 +9,6 @@ export enum UserActionsType {
   FETCH_SIGN_IN = "user/FETCH_SIGN_IN",
   FETCH_SIGN_UP = "user/FETCH_SIGN_UP",
   SET_USER_DATA = "user/SET_USER_DATA",
-  UPDATE_USER_DATA = "user/UPDATE_USER_DATA",
   FETCH_USER_DATA = "user/FETCH_USER_DATA",
   SET_USER_LOADING_STATE = "user/SET_USER_LOADING_STATE",
   SIGN_OUT = "user/SIGN_OUT",
@@ -17,6 +16,8 @@ export enum UserActionsType {
   UNFOLLOW_USER = "user/UNFOLLOW_USER",
   FOLLOW = "user/FOLLOW",
   UNFOLLOW = "user/UNFOLLOW",
+  FETCH_PIN_TWEET = "user/FETCH_PIN_TWEET",
+  FETCH_UNPIN_TWEET = "user/FETCH_UNPIN_TWEET",
   START_USE_TWITTER = "user/START_USE_TWITTER",
 }
 
@@ -43,11 +44,6 @@ export interface SetUserDataActionInterface extends Action<UserActionsType> {
   payload: UserState["data"] | undefined;
 }
 
-export interface UpdateUserDataActionInterface extends Action<UserActionsType> {
-  type: UserActionsType.UPDATE_USER_DATA;
-  payload: User;
-}
-
 export interface SetUserLoadingStateActionInterface
   extends Action<UserActionsType> {
   type: UserActionsType.SET_USER_LOADING_STATE;
@@ -72,6 +68,17 @@ export interface FollowActionInterface extends Action<UserActionsType> {
 export interface UnfollowActionInterface extends Action<UserActionsType> {
   type: UserActionsType.UNFOLLOW;
   payload: User;
+}
+
+export interface FetchPinTweetActionInterface extends Action<UserActionsType> {
+  type: UserActionsType.FETCH_PIN_TWEET;
+  payload: string;
+}
+
+export interface FetchUnpinTweetActionInterface
+  extends Action<UserActionsType> {
+  type: UserActionsType.FETCH_UNPIN_TWEET;
+  payload: string;
 }
 
 export interface StartUseTwitterActionInterface

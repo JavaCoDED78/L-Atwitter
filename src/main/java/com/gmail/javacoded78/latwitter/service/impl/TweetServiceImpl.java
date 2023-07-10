@@ -1,12 +1,19 @@
 package com.gmail.javacoded78.latwitter.service.impl;
 
-import com.gmail.javacoded78.latwitter.model.*;
-import com.gmail.javacoded78.latwitter.repository.*;
+import com.gmail.javacoded78.latwitter.model.LikeTweet;
+import com.gmail.javacoded78.latwitter.model.Retweet;
+import com.gmail.javacoded78.latwitter.model.Tag;
+import com.gmail.javacoded78.latwitter.model.Tweet;
+import com.gmail.javacoded78.latwitter.model.User;
+import com.gmail.javacoded78.latwitter.repository.LikeTweetRepository;
+import com.gmail.javacoded78.latwitter.repository.RetweetRepository;
+import com.gmail.javacoded78.latwitter.repository.TagRepository;
+import com.gmail.javacoded78.latwitter.repository.TweetRepository;
+import com.gmail.javacoded78.latwitter.repository.UserRepository;
 import com.gmail.javacoded78.latwitter.service.TweetService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.security.Principal;
 import java.util.ArrayList;

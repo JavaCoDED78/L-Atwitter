@@ -33,9 +33,6 @@ public class TagMapper {
         return convertTagsListToResponseDto(tagService.getTags());
     }
 
-    public List<TweetResponse> getTweetsByTag(TagRequest tagRequest) {
-        return tweetMapper.convertListToResponseDto(tagService.getTweetsByTag(tagRequest.getTagName()));
-    }
 
     public List<TagResponse> getTrends() {
         return convertTagsListToResponseDto(tagService.getTrends());

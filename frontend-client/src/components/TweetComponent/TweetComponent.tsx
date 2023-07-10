@@ -4,16 +4,16 @@ import { Link, useHistory, useLocation } from "react-router-dom";
 import { Avatar, IconButton, Paper, Typography } from "@material-ui/core";
 
 import {
-  EditIcon,
   LikeIcon,
   LikeOutlinedIcon,
+  PinOutlinedIcon,
   ReplyIcon,
   RetweetIcon,
   RetweetOutlinedIcon,
   RetweetOutlinedIconSm,
   ShareIcon,
 } from "../../icons";
-import { useTweetStyles } from "./TweetStyles";
+import { useTweetComponentStyles } from "./TweetComponentStyles";
 import { formatDate } from "../../util/formatDate";
 import {
   fetchLikeTweet,
@@ -23,6 +23,7 @@ import {
   Image,
   Retweet,
   LikeTweet,
+  Tweet,
 } from "../../store/ducks/tweets/contracts/state";
 import { User } from "../../store/ducks/user/contracts/state";
 import { selectUserData } from "../../store/ducks/user/selectors";
@@ -30,8 +31,9 @@ import { DEFAULT_PROFILE_IMG } from "../../util/url";
 import ReplyModal from "../ReplyModal/ReplyModal";
 import { textFormatter } from "../../util/textFormatter";
 import { selectUserProfile } from "../../store/ducks/userProfile/selectors";
+import TweetComponentActions from "./TweetComponentActions/TweetComponentActions";
 
-interface TweetProps {
+interface TweetComponentProps {
   id: string;
   text: string;
   addressedUsername: string;
@@ -42,9 +44,10 @@ interface TweetProps {
   retweets: Retweet[];
   replies: any;
   user: User;
+  activeTab?: number;
 }
 
-const Tweet: FC<TweetProps> = ({
+const TweetComponent: FC<TweetComponentProps> = ({
   id,
   text,
   images,
@@ -55,8 +58,9 @@ const Tweet: FC<TweetProps> = ({
   replies,
   addressedUsername,
   addressedId,
+  activeTab,
 }): ReactElement => {
-  const classes = useTweetStyles();
+  const classes = useTweetComponentStyles();
   const dispatch = useDispatch();
   const myProfile = useSelector(selectUserData);
   const userProfile = useSelector(selectUserProfile);
@@ -74,12 +78,32 @@ const Tweet: FC<TweetProps> = ({
   );
   const isModal = location.pathname.includes("/modal");
   const image = images?.[0];
+  const tweetData: Tweet = {
+    id,
+    text,
+    images,
+    user,
+    dateTime,
+    likedTweets,
+    retweets,
+    replies,
+    addressedUsername,
+    addressedId: addressedId!,
+  };
 
   const handleClickTweet = (
     event: React.MouseEvent<HTMLAnchorElement>
   ): void => {
     event.preventDefault();
+    event.stopPropagation();
     history.push(`/home/tweet/${id}`);
+  };
+
+  const handleClickUser = (
+    event: React.MouseEvent<HTMLAnchorElement>
+  ): void => {
+    event.stopPropagation();
+    history.push(`/user/${user.id}`);
   };
 
   const onOpenReplyModalWindow = (): void => {
@@ -111,41 +135,47 @@ const Tweet: FC<TweetProps> = ({
           </Typography>
         </div>
       )}
+      {myProfile?.id === userProfile?.id &&
+        activeTab === 0 &&
+        myProfile?.pinnedTweet?.id === id && (
+          <div className={classes.retweetWrapper}>
+            <span>{PinOutlinedIcon}</span>
+            <Typography>Pinned Tweet</Typography>
+          </div>
+        )}
       <Paper className={classes.container} variant="outlined">
-        <Avatar
-          className={classes.avatar}
-          alt={`avatar ${user.id}`}
-          src={user.avatar?.src ? user.avatar?.src : DEFAULT_PROFILE_IMG}
-        />
+        <a onClick={handleClickUser}>
+          <Avatar
+            className={classes.avatar}
+            alt={`avatar ${user.id}`}
+            src={user.avatar?.src ? user.avatar?.src : DEFAULT_PROFILE_IMG}
+          />
+        </a>
         <div style={{ flex: 1 }}>
-          <a
-            onClick={handleClickTweet}
-            className={classes.headerWrapper}
-            href={`/home/tweet/${id}`}
+          <div className={classes.header}>
+            <a onClick={handleClickUser}>
+              <b>{user.fullName}</b>&nbsp;
+              <span className={classes.headerText}>@{user.username}</span>&nbsp;
+              <span className={classes.headerText}>·</span>&nbsp;
+              <span className={classes.headerText}>
+                {formatDate(new Date(dateTime))}
+              </span>
+            </a>
+            <TweetComponentActions
+              tweet={tweetData}
+              user={user}
+              activeTab={activeTab}
+            />
+          </div>
+          <Typography
+            style={
+              addressedUsername
+                ? { width: 250, marginBottom: 0 }
+                : { width: 500, marginBottom: 0 }
+            }
+            variant="body1"
+            gutterBottom
           >
-            <div className={classes.header}>
-              <div>
-                <b>{user.fullName}</b>&nbsp;
-                <span className={classes.headerText}>@{user.username}</span>
-                &nbsp;
-                <span className={classes.headerText}>·</span>&nbsp;
-                <span className={classes.headerText}>
-                  {formatDate(new Date(dateTime))}
-                </span>
-              </div>
-              <div>
-                <IconButton
-                  className={classes.headerIcon}
-                  aria-label="more"
-                  aria-controls="long-menu"
-                  aria-haspopup="true"
-                >
-                  <span>{EditIcon}</span>
-                </IconButton>
-              </div>
-            </div>
-          </a>
-          <Typography style={{ width: 500 }} variant="body1" gutterBottom>
             {addressedUsername && (
               <object>
                 <Typography className={classes.replyWrapper}>
@@ -248,4 +278,4 @@ const Tweet: FC<TweetProps> = ({
   );
 };
 
-export default Tweet;
+export default TweetComponent;

@@ -9,7 +9,6 @@ import com.gmail.javacoded78.latwitter.model.User;
 import com.gmail.javacoded78.latwitter.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -21,7 +20,6 @@ import java.util.stream.Collectors;
 public class UserMapper {
 
     private final ModelMapper modelMapper;
-    @Lazy
     private final TweetMapper tweetMapper;
     private final UserService userService;
 
@@ -93,5 +91,13 @@ public class UserMapper {
 
     public List<UserResponse> searchUsersByUsername(String username) {
         return convertListToResponseDto(userService.searchUsersByUsername(username));
+    }
+
+    public UserResponse pinTweet(Long tweetId) {
+        return convertToUserResponse(userService.pinTweet(tweetId));
+    }
+
+    public UserResponse unpinTweet(Long tweetId) {
+        return convertToUserResponse(userService.unpinTweet(tweetId));
     }
 }
