@@ -46,7 +46,6 @@ const SetPasswordModal: FC<SetPasswordProps> = ({
   const classes = useSetPasswordModalStyles();
   const dispatch = useDispatch();
   const history = useHistory();
-  const [password, setPassword] = useState<string>("");
   const {
     control,
     register,

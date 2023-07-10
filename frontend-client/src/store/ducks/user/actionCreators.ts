@@ -8,6 +8,7 @@ import {
   SetUserDataActionInterface,
   SetUserLoadingStateActionInterface,
   SignOutActionInterface,
+  StartUseTwitterActionInterface,
   UnfollowActionInterface,
   UnfollowUserActionInterface,
   UpdateUserDataActionInterface,
@@ -76,5 +77,12 @@ export const follow = (payload: User): FollowActionInterface => ({
 
 export const unfollow = (payload: User): UnfollowActionInterface => ({
   type: UserActionsType.UNFOLLOW,
+  payload,
+});
+
+export const startUseTwitter = (
+  payload: number
+): StartUseTwitterActionInterface => ({
+  type: UserActionsType.START_USE_TWITTER,
   payload,
 });

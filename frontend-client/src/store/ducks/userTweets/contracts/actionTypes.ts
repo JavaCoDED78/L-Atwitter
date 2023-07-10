@@ -1,7 +1,8 @@
 import { Action } from "redux";
 
 import { LoadingStatus } from "../../../types";
-import { Tweet, UserTweetsState } from "./state";
+import { Tweet } from "../../tweets/contracts/state";
+import { UserTweetsState } from "./state";
 
 export enum UserTweetsActionType {
   SET_TWEETS = "userTweets/SET_TWEETS",
@@ -10,6 +11,7 @@ export enum UserTweetsActionType {
   SET_LIKED_TWEET = "userTweets/SET_LIKED_TWEET",
   FETCH_LIKED_TWEETS = "userTweets/FETCH_LIKED_TWEETS",
   FETCH_MEDIA_TWEETS = "userTweets/FETCH_MEDIA_TWEETS",
+  FETCH_RETWEETS_AND_REPLIES = "userTweets/FETCH_RETWEETS_AND_REPLIES",
   SET_RETWEET = "userTweets/SET_RETWEET",
   SET_LOADING_STATUS = "userTweets/SET_LOADING_STATUS",
 }
@@ -47,6 +49,12 @@ export interface FetchUserLikedTweetsActionInterface
 export interface FetchUserMediaTweetsActionInterface
   extends Action<UserTweetsActionType> {
   type: UserTweetsActionType.FETCH_MEDIA_TWEETS;
+  payload: string;
+}
+
+export interface FetchUserRetweetsAndRepliesActionInterface
+  extends Action<UserTweetsActionType> {
+  type: UserTweetsActionType.FETCH_RETWEETS_AND_REPLIES;
   payload: string;
 }
 

@@ -39,7 +39,7 @@ const TweetImageModal: FC = (): ReactElement | null => {
   const myProfile = useSelector(selectUserData);
   const params: { id: string } = useParams();
   const history = useHistory();
-  const isTweetLiked = tweetData?.likes.find(
+  const isTweetLiked = tweetData?.likedTweets.find(
     (user) => user.id === myProfile?.id
   );
   const isTweetRetweeted = tweetData?.retweets.find(
@@ -140,7 +140,7 @@ const TweetImageModal: FC = (): ReactElement | null => {
             </Typography>
             <Divider />
             {(tweetData.retweets.length !== 0 ||
-              tweetData.likes.length !== 0) && (
+              tweetData.likedTweets.length !== 0) && (
               <div className={classes.content}>
                 {tweetData.retweets.length !== 0 && (
                   <a
@@ -153,13 +153,13 @@ const TweetImageModal: FC = (): ReactElement | null => {
                     </span>
                   </a>
                 )}
-                {tweetData.likes.length !== 0 && (
+                {tweetData.likedTweets.length !== 0 && (
                   <a
                     href={"javascript:void(0);"}
                     onClick={onOpenLikesModalWindow}
                   >
                     <span style={{ marginRight: 20 }}>
-                      <b>{tweetData.likes.length}</b>
+                      <b>{tweetData.likedTweets.length}</b>
                       <span className={classes.contentItem}>Likes</span>
                     </span>
                   </a>
@@ -218,7 +218,7 @@ const TweetImageModal: FC = (): ReactElement | null => {
           <div className={classes.divider} />
           {visibleModalWindow && modalWindowTitle === "Liked by" ? (
             <UsersListModal
-              users={tweetData.likes}
+              users={tweetData.likedTweets}
               title={modalWindowTitle}
               visible={visibleModalWindow}
               onClose={onCloseModalWindow}
@@ -281,11 +281,15 @@ const TweetImageModal: FC = (): ReactElement | null => {
                   <span>{LikeOutlinedIcon}</span>
                 )}
               </IconButton>
-              {tweetData.likes.length === 0 ||
-              tweetData.likes === null ? null : isTweetLiked ? (
-                <span style={{ color: "#fff" }}>{tweetData.likes.length}</span>
+              {tweetData.likedTweets.length === 0 ||
+              tweetData.likedTweets === null ? null : isTweetLiked ? (
+                <span style={{ color: "#fff" }}>
+                  {tweetData.likedTweets.length}
+                </span>
               ) : (
-                <span style={{ color: "#fff" }}>{tweetData.likes.length}</span>
+                <span style={{ color: "#fff" }}>
+                  {tweetData.likedTweets.length}
+                </span>
               )}
             </div>
             <div className={classes.tweetIcon}>

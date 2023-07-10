@@ -24,11 +24,14 @@ import { fetchTags } from "../../store/ducks/tags/actionCreators";
 import Connect from "../../components/Connect/Connect";
 import Trends from "../../components/Trends/Trends";
 import { TopTweets } from "../../icons";
+import { selectUserData } from "../../store/ducks/user/selectors";
+import Welcome from "../../components/Welcome/Welcome";
 
 const Home: FC = (): ReactElement => {
   const classes = useHomeStyles();
   const dispatch = useDispatch();
   const location = useLocation<{ background: Location }>();
+  const myProfile = useSelector(selectUserData);
   const tweets = useSelector(selectTweetsItems);
   const isLoading = useSelector(selectIsTweetsLoading);
 
@@ -93,6 +96,8 @@ const Home: FC = (): ReactElement => {
           <div className={classes.loading}>
             <CircularProgress />
           </div>
+        ) : !myProfile?.profileStarted ? (
+          <Welcome />
         ) : (
           tweets.map((tweet) => (
             <Tweet key={tweet.id} images={tweet.images} {...tweet} />

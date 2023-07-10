@@ -3,7 +3,17 @@ package com.gmail.javacoded78.latwitter.model;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -18,7 +28,7 @@ public class Tweet {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "text")
+    @Column(name = "text", length = 1337, columnDefinition = "text")
     private String text;
 
     @Column(name = "date_time")
@@ -36,17 +46,11 @@ public class Tweet {
     @OneToMany
     private List<Image> images;
 
-    @ManyToMany
-    @JoinTable(name = "tweet_likes",
-            joinColumns = @JoinColumn(name = "tweets_id"),
-            inverseJoinColumns = @JoinColumn(name = "users_id"))
-    private List<User> likes;
+    @OneToMany(mappedBy = "tweet")
+    private List<LikeTweet> likedTweets;
 
-    @ManyToMany
-    @JoinTable(name = "retweets",
-            joinColumns = @JoinColumn(name = "tweets_id"),
-            inverseJoinColumns = @JoinColumn(name = "users_id"))
-    private List<User> retweets;
+    @OneToMany(mappedBy = "tweet")
+    private List<Retweet> retweets;
 
     @ManyToMany
     @JoinTable(name = "replies",
@@ -56,7 +60,7 @@ public class Tweet {
 
     public Tweet() {
         this.dateTime = LocalDateTime.now().withNano(0);
-        this.likes = new ArrayList<>();
+        this.likedTweets = new ArrayList<>();
         this.retweets = new ArrayList<>();
     }
 }

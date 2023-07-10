@@ -1,22 +1,12 @@
-import {LoadingStatus} from "../../../types";
-import {User} from "../../user/contracts/state";
+import { LoadingStatus } from "../../../types";
+import { Tweet } from "../../tweets/contracts/state";
 
 export interface Image {
-    id: number;
-    src: string;
-}
-
-export interface Tweet {
-    id: string;
-    text: string;
-    dateTime: string;
-    images?: Image[];
-    likes: User[];
-    retweets: User[];
-    user: User;
+  id: number;
+  src: string;
 }
 
 export interface UserTweetsState {
-    items: Tweet[];
-    loadingState: LoadingStatus;
+  items: Tweet[];
+  loadingState: LoadingStatus;
 }

@@ -5,7 +5,7 @@ import React, {
   useEffect,
   useState,
 } from "react";
-import { RouteComponentProps, Link } from "react-router-dom";
+import { RouteComponentProps, Link, useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import Paper from "@material-ui/core/Paper";
 import {
@@ -39,6 +39,7 @@ import {
   fetchUserTweets,
   fetchUserLikedTweets,
   fetchUserMediaTweets,
+  fetchUserRetweetsAndReplies,
 } from "../../store/ducks/userTweets/actionCreators";
 import { selectUserProfile } from "../../store/ducks/userProfile/selectors";
 import {
@@ -59,6 +60,7 @@ const UserPage: FC<RouteComponentProps<{ id: string }>> = ({
   const myProfile = useSelector(selectUserData);
   const userProfile = useSelector(selectUserProfile);
   const isTweetsLoading = useSelector(selectIsUserTweetsLoading);
+  const location = useLocation<{ isRegistered: boolean }>();
   const [btnText, setBtnText] = useState<string>("Following");
   const [activeTab, setActiveTab] = useState<number>(0);
   const [visibleEditProfile, setVisibleEditProfile] = useState<boolean>(false);
@@ -82,6 +84,10 @@ const UserPage: FC<RouteComponentProps<{ id: string }>> = ({
   useEffect(() => {
     if (userProfile) {
       dispatch(fetchUserTweets(match.params.id));
+    }
+
+    if (location.state?.isRegistered) {
+      setVisibleSetupProfile(true);
     }
   }, [userProfile]);
 
@@ -117,6 +123,10 @@ const UserPage: FC<RouteComponentProps<{ id: string }>> = ({
 
   const handleShowUserTweets = (): void => {
     dispatch(fetchUserTweets(match.params.id));
+  };
+
+  const handleShowUserRetweetsAndReplies = (): void => {
+    dispatch(fetchUserRetweetsAndReplies(match.params.id));
   };
 
   const handleShowLikedTweets = (): void => {
@@ -283,7 +293,10 @@ const UserPage: FC<RouteComponentProps<{ id: string }>> = ({
             onChange={handleChange}
           >
             <Tab onClick={handleShowUserTweets} label="Tweets" />
-            <Tab onClick={handleShowUserTweets} label="Tweets & replies" />
+            <Tab
+              onClick={handleShowUserRetweetsAndReplies}
+              label="Tweets & replies"
+            />
             <Tab onClick={handleShowMediaTweets} label="Media" />
             <Tab onClick={handleShowLikedTweets} label="Likes" />
           </Tabs>

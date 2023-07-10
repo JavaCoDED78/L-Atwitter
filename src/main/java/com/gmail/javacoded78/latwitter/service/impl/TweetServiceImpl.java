@@ -1,11 +1,7 @@
 package com.gmail.javacoded78.latwitter.service.impl;
 
-import com.gmail.javacoded78.latwitter.model.Tag;
-import com.gmail.javacoded78.latwitter.model.Tweet;
-import com.gmail.javacoded78.latwitter.model.User;
-import com.gmail.javacoded78.latwitter.repository.TagRepository;
-import com.gmail.javacoded78.latwitter.repository.TweetRepository;
-import com.gmail.javacoded78.latwitter.repository.UserRepository;
+import com.gmail.javacoded78.latwitter.model.*;
+import com.gmail.javacoded78.latwitter.repository.*;
 import com.gmail.javacoded78.latwitter.service.TweetService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -13,11 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.security.Principal;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -27,6 +19,8 @@ public class TweetServiceImpl implements TweetService {
 
     private final TweetRepository tweetRepository;
     private final UserRepository userRepository;
+    private final RetweetRepository retweetRepository;
+    private final LikeTweetRepository likeTweetRepository;
     private final TagRepository tagRepository;
 
     @Override
@@ -126,13 +120,24 @@ public class TweetServiceImpl implements TweetService {
         Principal principal = SecurityContextHolder.getContext().getAuthentication();
         User user = userRepository.findByEmail(principal.getName());
         Tweet tweet = tweetRepository.getOne(tweetId);
-        List<User> tweetLikes = tweet.getLikes();
 
-        if (tweetLikes.contains(user)) {
-            tweetLikes.remove(user);
+        List<LikeTweet> likedTweets = user.getLikedTweets();
+        Optional<LikeTweet> likedTweet = likedTweets.stream()
+                .filter(t -> t.getTweet().equals(tweet))
+                .findFirst();
+
+        if (likedTweet.isPresent()) {
+            likedTweets.remove(likedTweet.get());
+            likeTweetRepository.delete(likedTweet.get());
         } else {
-            tweetLikes.add(user);
+            LikeTweet newLikedTweet = new LikeTweet();
+            newLikedTweet.setTweet(tweet);
+            newLikedTweet.setUser(user);
+            likeTweetRepository.save(newLikedTweet);
+            likedTweets.add(newLikedTweet);
         }
+
+        userRepository.save(user);
         return tweetRepository.save(tweet);
     }
 
@@ -140,20 +145,27 @@ public class TweetServiceImpl implements TweetService {
     public Tweet retweet(Long tweetId) {
         Principal principal = SecurityContextHolder.getContext().getAuthentication();
         User user = userRepository.findByEmail(principal.getName());
-        user.setTweetCount(user.getTweetCount() + 1);
-        userRepository.save(user);
-
         Tweet tweet = tweetRepository.getOne(tweetId);
-        List<Tweet> tweets = user.getTweets();
-        List<User> retweets = tweet.getRetweets();
 
-        if (tweets.contains(tweet)) {
-            tweets.remove(tweet);
-            retweets.remove(user);
+        List<Retweet> retweets = user.getRetweets();
+        Optional<Retweet> retweet = retweets.stream()
+                .filter(t -> t.getTweet().equals(tweet))
+                .findFirst();
+
+        if (retweet.isPresent()) {
+            retweets.remove(retweet.get());
+            retweetRepository.delete(retweet.get());
+            user.setTweetCount(user.getTweetCount() - 1);
         } else {
-            tweets.add(tweet);
-            retweets.add(user);
+            Retweet newRetweet = new Retweet();
+            newRetweet.setTweet(tweet);
+            newRetweet.setUser(user);
+            retweetRepository.save(newRetweet);
+            retweets.add(newRetweet);
+            user.setTweetCount(user.getTweetCount() + 1);
         }
+
+        userRepository.save(user);
         return tweetRepository.save(tweet);
     }
 

@@ -1,4 +1,10 @@
-import React, { ChangeEvent, FC, ReactElement, useState } from "react";
+import React, {
+  ChangeEvent,
+  FC,
+  ReactElement,
+  ReactNode,
+  useState,
+} from "react";
 import { Controller, useForm } from "react-hook-form";
 import { Button, Dialog, FormControl, InputLabel } from "@material-ui/core";
 import DialogContent from "@material-ui/core/DialogContent";
@@ -80,7 +86,7 @@ const RegistrationModal: FC<RegistrationModalProps> = ({
     setYear(event.target.value as number);
   };
 
-  const showDays = () => {
+  const showDays = (): ReactNode[] => {
     let days = [];
 
     for (let i = 1; i <= 31; i++) {
@@ -89,7 +95,7 @@ const RegistrationModal: FC<RegistrationModalProps> = ({
     return days;
   };
 
-  const showYears = () => {
+  const showYears = (): ReactNode[] => {
     let years = [];
 
     for (let i = 2021; i >= 1901; i--) {
@@ -102,12 +108,13 @@ const RegistrationModal: FC<RegistrationModalProps> = ({
     <>
       <Dialog
         transitionDuration={0}
+        style={{ height: 666, marginTop: 92 }}
         open={open}
         onClose={onClose}
         aria-labelledby="form-dialog-title"
       >
         <DialogContent
-          style={{ paddingTop: 0, paddingBottom: 30 }}
+          style={{ paddingTop: 0, paddingBottom: 0 }}
           className={classes.container}
         >
           <div className={classes.logoIcon}>
@@ -234,7 +241,6 @@ const RegistrationModal: FC<RegistrationModalProps> = ({
           </div>
         </DialogContent>
       </Dialog>
-      {/*<CustomizeModal open={visibleModal} onClose={onClose}/>*/}
     </>
   );
 };

@@ -11,6 +11,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import java.time.LocalDateTime;
@@ -71,8 +72,8 @@ public class User {
     @Column(name = "profile_customized", columnDefinition = "boolean default false")
     private boolean profileCustomized;
 
-    @ManyToMany
-    private List<Tweet> tweets;
+    @Column(name = "profile_started", columnDefinition = "boolean default false")
+    private boolean profileStarted;
 
     @OneToOne
     @JoinColumn(name = "avatar_id")
@@ -82,8 +83,14 @@ public class User {
     @JoinColumn(name = "wallpaper_id")
     private Image wallpaper;
 
-    @ManyToMany(mappedBy = "likes")
-    private List<Tweet> likedTweets;
+    @ManyToMany
+    private List<Tweet> tweets;
+
+    @OneToMany(mappedBy = "user")
+    private List<LikeTweet> likedTweets;
+
+    @OneToMany(mappedBy = "user")
+    private List<Retweet> retweets;
 
     @ManyToMany
     @JoinTable(name = "user_subscriptions",

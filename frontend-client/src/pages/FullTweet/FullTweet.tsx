@@ -44,12 +44,12 @@ export const FullTweet: FC = (): ReactElement | null => {
   const tweetData = useSelector(selectTweetData);
   const myProfile = useSelector(selectUserData);
   const isLoading = useSelector(selectIsTweetLoading);
-  const params: { id: string } = useParams();
-  const isTweetLiked = tweetData?.likes.find(
-    (user) => user.id === myProfile?.id
+  const params = useParams<{ id: string }>();
+  const isTweetLiked = tweetData?.likedTweets.find(
+    (like) => like.user.id === myProfile?.id
   );
   const isTweetRetweeted = tweetData?.retweets.find(
-    (user) => user.id === myProfile?.id
+    (retweet) => retweet.user.id === myProfile?.id
   );
   const [visibleModalWindow, setVisibleModalWindow] = useState<boolean>(false);
   const [modalWindowTitle, setModalWindowTitle] = useState<string>("");
@@ -155,7 +155,7 @@ export const FullTweet: FC = (): ReactElement | null => {
               </Typography>
               <Divider />
               {(tweetData.retweets.length !== 0 ||
-                tweetData.likes.length !== 0) && (
+                tweetData.likedTweets.length !== 0) && (
                 <div className={classes.content}>
                   {tweetData.retweets.length !== 0 && (
                     <a
@@ -168,13 +168,13 @@ export const FullTweet: FC = (): ReactElement | null => {
                       </span>
                     </a>
                   )}
-                  {tweetData.likes.length !== 0 && (
+                  {tweetData.likedTweets.length !== 0 && (
                     <a
                       href={"javascript:void(0);"}
                       onClick={onOpenLikesModalWindow}
                     >
                       <span style={{ marginRight: 20 }}>
-                        <b>{tweetData.likes.length}</b>
+                        <b>{tweetData.likedTweets.length}</b>
                         <span className={classes.contentItem}>Likes</span>
                       </span>
                     </a>
@@ -232,7 +232,7 @@ export const FullTweet: FC = (): ReactElement | null => {
               />
               {visibleModalWindow && modalWindowTitle === "Liked by" ? (
                 <UsersListModal
-                  users={tweetData.likes}
+                  users={tweetData.likedTweets}
                   title={modalWindowTitle}
                   visible={visibleModalWindow}
                   onClose={onCloseModalWindow}

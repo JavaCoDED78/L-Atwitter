@@ -3,6 +3,8 @@ package com.gmail.javacoded78.latwitter.service.impl;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.gmail.javacoded78.latwitter.model.Image;
+import com.gmail.javacoded78.latwitter.model.LikeTweet;
+import com.gmail.javacoded78.latwitter.model.Retweet;
 import com.gmail.javacoded78.latwitter.model.Tweet;
 import com.gmail.javacoded78.latwitter.model.User;
 import com.gmail.javacoded78.latwitter.repository.ImageRepository;
@@ -10,6 +12,7 @@ import com.gmail.javacoded78.latwitter.repository.TweetRepository;
 import com.gmail.javacoded78.latwitter.repository.UserRepository;
 import com.gmail.javacoded78.latwitter.service.UserService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -19,6 +22,8 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.security.Principal;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -60,17 +65,43 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public User startUseTwitter(Long userId) {
+        Principal principal = SecurityContextHolder.getContext().getAuthentication();
+        User user = userRepository.findByEmail(principal.getName());
+        user.setProfileStarted(true);
+        return userRepository.save(user);
+    }
+
+    @Override
     public List<Tweet> getUserTweets(Long userId) {
         User user = userRepository.getOne(userId);
-        return user.getTweets().stream()
-                .filter(tweet -> tweet.getAddressedUsername() == null)
+        List<Tweet> tweets = user.getTweets();
+        List<Retweet> retweets = user.getRetweets();
+        tweets.sort(Comparator.comparing(Tweet::getDateTime).reversed());
+        retweets.sort(Comparator.comparing(Retweet::getRetweetDate).reversed());
+        return combineTweetsArrays(tweets, retweets);
+    }
+
+    @Override
+    public List<Tweet> getUserRetweetsAndReplies(Long userId) {
+        User user = userRepository.getOne(userId);
+        List<Tweet> replies = user.getTweets().stream()
+                .filter(tweet -> tweet.getAddressedUsername() != null)
+                .sorted(Comparator.comparing(Tweet::getDateTime).reversed())
                 .collect(Collectors.toList());
+        List<Retweet> retweets = user.getRetweets();
+        retweets.sort(Comparator.comparing(Retweet::getRetweetDate).reversed());
+        return combineTweetsArrays(replies, retweets);
     }
 
     @Override
     public List<Tweet> getUserLikedTweets(Long userId) {
         User user = userRepository.getOne(userId);
-        return user.getLikedTweets();
+        List<LikeTweet> likedTweets = user.getLikedTweets();
+        likedTweets.sort(Comparator.comparing(LikeTweet::getLikeTweetDate).reversed());
+        List<Tweet> allTweets = new ArrayList<>();
+        likedTweets.forEach(likeTweet -> allTweets.add(likeTweet.getTweet()));
+        return allTweets;
     }
 
     @Override
@@ -134,5 +165,30 @@ public class UserServiceImpl implements UserService {
         user.getFollowers().remove(currentUser);
         userRepository.save(user);
         return currentUser;
+    }
+
+    private List<Tweet> combineTweetsArrays(List<Tweet> tweets, List<Retweet> retweets) {
+        List<Tweet> allTweets = new ArrayList<>();
+        int i = 0;
+        int j = 0;
+
+        while (i < tweets.size() && j < retweets.size()) {
+            if (tweets.get(i).getDateTime().isAfter(retweets.get(j).getRetweetDate())) {
+                allTweets.add(tweets.get(i));
+                i++;
+            } else {
+                allTweets.add(retweets.get(j).getTweet());
+                j++;
+            }
+        }
+        while (i < tweets.size()) {
+            allTweets.add(tweets.get(i));
+            i++;
+        }
+        while (j < retweets.size()) {
+            allTweets.add(retweets.get(j).getTweet());
+            j++;
+        }
+        return allTweets;
     }
 }
