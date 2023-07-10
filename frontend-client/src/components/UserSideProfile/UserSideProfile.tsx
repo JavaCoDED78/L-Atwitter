@@ -78,7 +78,7 @@ const UserSideProfile: FC = (): ReactElement | null => {
         />
         <div className={classes.info}>
           <b>{myProfile.fullName}</b>
-          <Typography style={{ color: colors.grey[500] }}>
+          <Typography style={{ color: "rgb(83, 100, 113)" }}>
             @{myProfile.username}
           </Typography>
         </div>

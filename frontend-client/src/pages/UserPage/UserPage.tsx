@@ -17,6 +17,7 @@ import {
 import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
 import Skeleton from "@material-ui/lab/Skeleton";
+import format from "date-fns/format";
 
 import { LocationIcon, LinkIcon, CalendarIcon } from "../../icons";
 import { useUserPageStyles } from "./UserPageStyles";
@@ -47,6 +48,7 @@ import {
 } from "../../store/ducks/userProfile/actionCreators";
 import UserPageTweets from "./UserPageTweets";
 import { DEFAULT_PROFILE_IMG } from "../../util/url";
+import SetupProfileModal from "../SetupProfileModal/SetupProfileModal";
 
 const UserPage: FC<RouteComponentProps<{ id: string }>> = ({
   match,
@@ -60,6 +62,8 @@ const UserPage: FC<RouteComponentProps<{ id: string }>> = ({
   const [btnText, setBtnText] = useState<string>("Following");
   const [activeTab, setActiveTab] = useState<number>(0);
   const [visibleEditProfile, setVisibleEditProfile] = useState<boolean>(false);
+  const [visibleSetupProfile, setVisibleSetupProfile] =
+    useState<boolean>(false);
   const follower = myProfile?.followers?.find(
     (user) => user.id === userProfile?.id
   );
@@ -91,6 +95,14 @@ const UserPage: FC<RouteComponentProps<{ id: string }>> = ({
 
   const onCloseEditProfile = (): void => {
     setVisibleEditProfile(false);
+  };
+
+  const onOpenSetupProfile = (): void => {
+    setVisibleSetupProfile(true);
+  };
+
+  const onCloseSetupProfile = (): void => {
+    setVisibleSetupProfile(false);
   };
 
   const handleFollow = (): void => {
@@ -146,11 +158,15 @@ const UserPage: FC<RouteComponentProps<{ id: string }>> = ({
           </div>
           {userProfile?.id === myProfile?.id ? (
             <Button
-              onClick={onOpenEditProfile}
+              onClick={
+                myProfile?.profileCustomized
+                  ? onOpenEditProfile
+                  : onOpenSetupProfile
+              }
               color="primary"
               className={classes.editButton}
             >
-              Edit profile
+              {myProfile?.profileCustomized ? "Edit profile" : "Setup profile"}
             </Button>
           ) : follower ? (
             <Button
@@ -201,14 +217,12 @@ const UserPage: FC<RouteComponentProps<{ id: string }>> = ({
             {userProfile?.dateOfBirth && (
               <li>Date of Birth: {userProfile?.dateOfBirth}</li>
             )}
-            {userProfile?.registration && (
+            {userProfile?.registrationDate && (
               <li>
-                <span>{CalendarIcon}</span> Joined: {userProfile?.registration}
+                <span>{CalendarIcon}</span> Joined:{" "}
+                {format(new Date(userProfile?.registrationDate), "MMMM yyyy")}
               </li>
             )}
-            <li>
-              <span>{CalendarIcon}</span> Joined: June 2021
-            </li>
           </ul>
           <ul className={classes.details}>
             <Link
@@ -294,6 +308,12 @@ const UserPage: FC<RouteComponentProps<{ id: string }>> = ({
         <EditProfileModal
           visible={visibleEditProfile}
           onClose={onCloseEditProfile}
+        />
+      )}
+      {visibleSetupProfile && (
+        <SetupProfileModal
+          visible={visibleSetupProfile}
+          onClose={onCloseSetupProfile}
         />
       )}
     </Paper>

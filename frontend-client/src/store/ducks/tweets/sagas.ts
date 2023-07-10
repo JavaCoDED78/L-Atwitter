@@ -16,8 +16,6 @@ import {
   FetchRetweetActionInterface,
   FetchTweetsByTagActionInterface,
   FetchTweetsByTextActionInterface,
-  FetchTweetsByUserActionInterface,
-  FetchUserTweetsActionInterface,
   TweetsActionType,
 } from "./contracts/actionTypes";
 import { LoadingStatus } from "../../types";
@@ -25,6 +23,7 @@ import { setTweetData } from "../tweet/actionCreators";
 import { TagApi } from "../../../services/api/tagApi";
 import { UserApi } from "../../../services/api/userApi";
 import {
+  setAddedUserTweet,
   setUserLikedTweet,
   setUserRetweet,
 } from "../userTweets/actionCreators";
@@ -44,18 +43,6 @@ export function* fetchMediaTweetsRequest() {
     yield put(setTweetsLoadingState(LoadingStatus.LOADING));
     const items: Tweet[] = yield call(TweetApi.fetchMediaTweets);
     yield put(setTweets(items));
-  } catch (e) {
-    yield put(setTweetsLoadingState(LoadingStatus.ERROR));
-  }
-}
-
-export function* fetchTweetsByUserRequest({
-  payload,
-}: FetchTweetsByUserActionInterface) {
-  try {
-    yield put(setTweetsLoadingState(LoadingStatus.LOADING));
-    const item: Tweet[] = yield call(TweetApi.fetchTweetsByUser, payload);
-    yield put(setTweets(item));
   } catch (e) {
     yield put(setTweetsLoadingState(LoadingStatus.ERROR));
   }
@@ -97,18 +84,6 @@ export function* fetchLikedTweetsRequest({
   }
 }
 
-export function* fetchUserTweetsRequest({
-  payload,
-}: FetchUserTweetsActionInterface) {
-  try {
-    yield put(setTweetsLoadingState(LoadingStatus.LOADING));
-    const item: Tweet[] = yield call(UserApi.getUserTweets, payload);
-    yield put(setTweets(item));
-  } catch (e) {
-    yield put(setTweetsLoadingState(LoadingStatus.ERROR));
-  }
-}
-
 export function* fetchAddTweetRequest({
   payload,
 }: FetchAddTweetActionInterface) {
@@ -116,6 +91,10 @@ export function* fetchAddTweetRequest({
     yield put(setTweetsLoadingState(LoadingStatus.LOADING));
     const item: Tweet = yield call(TweetApi.addTweet, payload);
     yield put(setTweet(item));
+
+    if (payload.profileId === item.user.id) {
+      yield put(setAddedUserTweet(item));
+    }
   } catch (e) {
     yield put(setTweetsLoadingState(LoadingStatus.ERROR));
   }
@@ -146,10 +125,6 @@ export function* tweetsSaga() {
   yield takeLatest(TweetsActionType.FETCH_ADD_TWEET, fetchAddTweetRequest);
   yield takeLatest(TweetsActionType.FETCH_LIKE_TWEET, fetchLikeTweetRequest);
   yield takeLatest(TweetsActionType.FETCH_RETWEET, fetchRetweetRequest);
-  yield takeLatest(
-    TweetsActionType.FETCH_TWEETS_BY_USER,
-    fetchUserTweetsRequest
-  );
   yield takeLatest(
     TweetsActionType.FETCH_TWEETS_BY_TAG,
     fetchTweetsByTagRequest

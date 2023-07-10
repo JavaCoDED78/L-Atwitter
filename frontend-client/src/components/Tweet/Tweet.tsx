@@ -3,7 +3,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { Link, useHistory, useLocation } from "react-router-dom";
 import { Avatar, IconButton, Paper, Typography } from "@material-ui/core";
 import RepostIcon from "@material-ui/icons/RepeatOutlined";
-import MoreVertIcon from "@material-ui/icons/MoreVert";
 
 import {
   EditIcon,
@@ -26,6 +25,7 @@ import { selectUserData } from "../../store/ducks/user/selectors";
 import { DEFAULT_PROFILE_IMG } from "../../util/url";
 import ReplyModal from "../ReplyModal/ReplyModal";
 import { textFormatter } from "../../util/textFormatter";
+import { selectUserProfile } from "../../store/ducks/userProfile/selectors";
 
 interface TweetProps {
   id: string;
@@ -55,11 +55,17 @@ const Tweet: FC<TweetProps> = ({
   const classes = useTweetStyles();
   const dispatch = useDispatch();
   const myProfile = useSelector(selectUserData);
+  const userProfile = useSelector(selectUserProfile);
   const history = useHistory();
   const location = useLocation();
   const [visibleModalWindow, setVisibleModalWindow] = useState<boolean>(false);
   const isTweetLiked = likes.find((user) => user.id === myProfile?.id);
-  const isTweetRetweeted = retweets.find((user) => user.id === myProfile?.id);
+  const isTweetRetweetedByMe = retweets.find(
+    (user) => user.id === myProfile?.id
+  );
+  const isTweetRetweetedByUser = retweets.find(
+    (user) => user.id === userProfile?.id
+  );
   const isModal = location.pathname.includes("/modal");
   const image = images?.[0];
 
@@ -83,15 +89,20 @@ const Tweet: FC<TweetProps> = ({
   };
 
   const handleRetweet = (): void => {
-    dispatch(fetchRetweet(id));
+    if (user.id !== myProfile?.id) {
+      dispatch(fetchRetweet(id));
+    }
   };
 
   return (
     <>
-      {isTweetRetweeted && (
+      {isTweetRetweetedByUser && (
         <div className={classes.retweetWrapper}>
           <RepostIcon />
-          <Typography>You Retweeted</Typography>
+          <Typography>
+            {myProfile?.id === userProfile?.id ? "You" : userProfile?.fullName}{" "}
+            Retweeted
+          </Typography>
         </div>
       )}
       <Paper className={classes.container} variant="outlined">
@@ -109,9 +120,12 @@ const Tweet: FC<TweetProps> = ({
             <div className={classes.header}>
               <div>
                 <b>{user.fullName}</b>&nbsp;
-                <span>@{user.username}</span>&nbsp;
-                <span>·</span>&nbsp;
-                <span>{formatDate(new Date(dateTime))}</span>
+                <span className={classes.headerText}>@{user.username}</span>
+                &nbsp;
+                <span className={classes.headerText}>·</span>&nbsp;
+                <span className={classes.headerText}>
+                  {formatDate(new Date(dateTime))}
+                </span>
               </div>
               <div>
                 <IconButton
@@ -125,7 +139,7 @@ const Tweet: FC<TweetProps> = ({
               </div>
             </div>
           </a>
-          <Typography variant="body1" gutterBottom>
+          <Typography style={{ width: 500 }} variant="body1" gutterBottom>
             {addressedUsername && (
               <object>
                 <Typography className={classes.replyWrapper}>
@@ -174,7 +188,7 @@ const Tweet: FC<TweetProps> = ({
             </div>
             <div className={classes.footerIcon}>
               <IconButton onClick={handleRetweet}>
-                {isTweetRetweeted ? (
+                {isTweetRetweetedByMe ? (
                   <span style={{ color: "rgb(23, 191, 99)" }}>
                     {RetweetIcon}
                   </span>
@@ -183,7 +197,7 @@ const Tweet: FC<TweetProps> = ({
                 )}
               </IconButton>
               {retweets.length === 0 ||
-              retweets === null ? null : isTweetRetweeted ? (
+              retweets === null ? null : isTweetRetweetedByMe ? (
                 <span style={{ color: "rgb(23, 191, 99)" }}>
                   {retweets.length}
                 </span>
