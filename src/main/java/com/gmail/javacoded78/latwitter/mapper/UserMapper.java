@@ -77,6 +77,14 @@ public class UserMapper {
         return tweetMapper.convertListToResponseDto(userService.getUserRetweetsAndReplies(userId));
     }
 
+    public List<TweetResponse> getUserBookmarks() {
+        return tweetMapper.convertListToResponseDto(userService.getUserBookmarks());
+    }
+
+    public UserResponse processUserBookmarks(Long tweetId) {
+        return convertToUserResponse(userService.processUserBookmarks(tweetId));
+    }
+
     public UserResponse follow(Long userId) {
         return convertToUserResponse(userService.follow(userId));
     }

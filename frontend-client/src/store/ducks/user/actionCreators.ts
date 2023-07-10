@@ -1,5 +1,6 @@
 import { User, UserState } from "./contracts/state";
 import {
+  AddTweetToBookmarksActionInterface,
   FetchPinTweetActionInterface,
   FetchSignInActionInterface,
   FetchSignUpActionInterface,
@@ -85,6 +86,13 @@ export const fetchUnpinTweet = (
   payload: string
 ): FetchUnpinTweetActionInterface => ({
   type: UserActionsType.FETCH_UNPIN_TWEET,
+  payload,
+});
+
+export const addTweetToBookmarks = (
+  payload: string
+): AddTweetToBookmarksActionInterface => ({
+  type: UserActionsType.ADD_TWEET_TO_BOOKMARKS,
   payload,
 });
 

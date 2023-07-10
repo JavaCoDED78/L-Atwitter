@@ -17,6 +17,7 @@ import {
   HomeIconFilled,
   ExploreIconFilled,
   ProfileIconFilled,
+  BookmarksIconFilled,
 } from "../../icons";
 import UserSideProfile from "../UserSideProfile/UserSideProfile";
 import { selectUserData } from "../../store/ducks/user/selectors";
@@ -99,13 +100,20 @@ const SideMenu: FC = (): ReactElement => {
           </div>
         </li>
         <li className={classes.itemWrapper}>
-          <div>
-            <Hidden smDown>
-              <Typography className={classes.label} variant="h6">
-                <span>{BookmarksIcon}</span> Bookmarks
-              </Typography>
-            </Hidden>
-          </div>
+          <NavLink to="/bookmarks" activeClassName={"selected"}>
+            <div>
+              <Hidden smDown>
+                <Typography className={classes.label} variant="h6">
+                  {location.pathname.includes("/bookmarks") ? (
+                    <span>{BookmarksIconFilled}</span>
+                  ) : (
+                    <span>{BookmarksIcon}</span>
+                  )}{" "}
+                  Bookmarks
+                </Typography>
+              </Hidden>
+            </div>
+          </NavLink>
         </li>
         <li className={classes.itemWrapper}>
           <div>

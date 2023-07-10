@@ -1,5 +1,6 @@
-import { AddTweet, Image, Tweet, TweetsState } from "./contracts/state";
+import { AddTweet, Tweet, TweetsState } from "./contracts/state";
 import {
+  FetchBookmarksActionInterface,
   FetchLikedTweetsActionInterface,
   FetchLikeTweetActionInterface,
   FetchMediaTweetsActionInterface,
@@ -7,6 +8,7 @@ import {
   FetchTweetsByTagActionInterface,
   FetchTweetsByTextActionInterface,
   LikeTweetActionInterface,
+  RemoveTweetFromBookmarksActionInterface,
   ReplyActionInterface,
   RetweetActionInterface,
   SetTweetActionInterface,
@@ -100,4 +102,15 @@ export const fetchTweets = (): FetchTweetsActionInterface => ({
 
 export const fetchMediaTweets = (): FetchMediaTweetsActionInterface => ({
   type: TweetsActionType.FETCH_MEDIA_TWEETS,
+});
+
+export const fetchUserBookmarks = (): FetchBookmarksActionInterface => ({
+  type: TweetsActionType.FETCH_BOOKMARKS,
+});
+
+export const removeTweetFromBookmarks = (
+  payload: string
+): RemoveTweetFromBookmarksActionInterface => ({
+  type: TweetsActionType.REMOVE_TWEET_FROM_BOOKMARKS,
+  payload,
 });

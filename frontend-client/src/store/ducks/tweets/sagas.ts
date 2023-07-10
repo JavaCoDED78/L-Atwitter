@@ -116,6 +116,16 @@ export function* fetchRetweetRequest({ payload }: FetchRetweetActionInterface) {
   yield put(setUserRetweet(item));
 }
 
+export function* fetchUserBookmarksRequest() {
+  try {
+    yield put(setTweetsLoadingState(LoadingStatus.LOADING));
+    const item: Tweet[] = yield call(UserApi.getUserBookmarks);
+    yield put(setTweets(item));
+  } catch (e) {
+    yield put(setTweetsLoadingState(LoadingStatus.ERROR));
+  }
+}
+
 export function* tweetsSaga() {
   yield takeLatest(TweetsActionType.FETCH_TWEETS, fetchTweetsRequest);
   yield takeLatest(
@@ -137,4 +147,5 @@ export function* tweetsSaga() {
     TweetsActionType.FETCH_LIKED_TWEETS,
     fetchLikedTweetsRequest
   );
+  yield takeLatest(TweetsActionType.FETCH_BOOKMARKS, fetchUserBookmarksRequest);
 }

@@ -24,6 +24,7 @@ const Connect: FC = (): ReactElement => {
 
   useEffect(() => {
     dispatch(fetchUsers());
+    window.scrollTo(0, 0);
   }, []);
 
   const handleFollow = (user: User): void => {
