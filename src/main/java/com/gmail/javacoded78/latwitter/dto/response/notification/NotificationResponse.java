@@ -1,4 +1,4 @@
-package com.gmail.javacoded78.latwitter.dto.response;
+package com.gmail.javacoded78.latwitter.dto.response.notification;
 
 import com.gmail.javacoded78.latwitter.model.NotificationType;
 import lombok.Data;

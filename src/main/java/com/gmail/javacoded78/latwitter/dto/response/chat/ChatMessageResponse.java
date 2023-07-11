@@ -1,4 +1,4 @@
-package com.gmail.javacoded78.latwitter.dto.response;
+package com.gmail.javacoded78.latwitter.dto.response.chat;
 
 import lombok.Data;
 

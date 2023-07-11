@@ -1,5 +1,6 @@
 package com.gmail.javacoded78.latwitter.dto.response;
 
+import com.gmail.javacoded78.latwitter.dto.response.chat.ChatMessageResponse;
 import lombok.Data;
 
 import java.time.LocalDateTime;

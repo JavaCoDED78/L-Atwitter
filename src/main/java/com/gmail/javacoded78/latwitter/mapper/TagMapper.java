@@ -1,7 +1,7 @@
 package com.gmail.javacoded78.latwitter.mapper;
 
 import com.gmail.javacoded78.latwitter.dto.response.TagResponse;
-import com.gmail.javacoded78.latwitter.dto.response.TweetResponse;
+import com.gmail.javacoded78.latwitter.dto.response.tweet.TweetResponse;
 import com.gmail.javacoded78.latwitter.model.Tag;
 import com.gmail.javacoded78.latwitter.service.TagService;
 import lombok.RequiredArgsConstructor;

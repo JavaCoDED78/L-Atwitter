@@ -1,8 +1,8 @@
 package com.gmail.javacoded78.latwitter.mapper;
 
 import com.gmail.javacoded78.latwitter.dto.request.TweetRequest;
-import com.gmail.javacoded78.latwitter.dto.response.NotificationResponse;
-import com.gmail.javacoded78.latwitter.dto.response.TweetResponse;
+import com.gmail.javacoded78.latwitter.dto.response.notification.NotificationResponse;
+import com.gmail.javacoded78.latwitter.dto.response.tweet.TweetResponse;
 import com.gmail.javacoded78.latwitter.model.ReplyType;
 import com.gmail.javacoded78.latwitter.model.Tweet;
 import com.gmail.javacoded78.latwitter.service.TweetService;
@@ -27,7 +27,7 @@ public class TweetMapper {
         return modelMapper.map(tweetRequest, Tweet.class);
     }
 
-    private TweetResponse convertToTweetResponse(Tweet tweet) {
+    protected TweetResponse convertToTweetResponse(Tweet tweet) {
         return modelMapper.map(tweet, TweetResponse.class);
     }
 

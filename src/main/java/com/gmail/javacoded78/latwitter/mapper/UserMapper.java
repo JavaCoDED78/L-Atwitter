@@ -2,8 +2,8 @@ package com.gmail.javacoded78.latwitter.mapper;
 
 import com.gmail.javacoded78.latwitter.dto.request.UserRequest;
 import com.gmail.javacoded78.latwitter.dto.response.ImageResponse;
-import com.gmail.javacoded78.latwitter.dto.response.NotificationResponse;
-import com.gmail.javacoded78.latwitter.dto.response.TweetResponse;
+import com.gmail.javacoded78.latwitter.dto.response.notification.NotificationResponse;
+import com.gmail.javacoded78.latwitter.dto.response.tweet.TweetResponse;
 import com.gmail.javacoded78.latwitter.dto.response.UserResponse;
 import com.gmail.javacoded78.latwitter.model.Image;
 import com.gmail.javacoded78.latwitter.model.Notification;

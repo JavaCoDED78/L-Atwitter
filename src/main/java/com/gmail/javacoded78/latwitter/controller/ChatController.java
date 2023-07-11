@@ -1,8 +1,8 @@
 package com.gmail.javacoded78.latwitter.controller;
 
 import com.gmail.javacoded78.latwitter.dto.request.ChatMessageRequest;
-import com.gmail.javacoded78.latwitter.dto.response.ChatMessageResponse;
-import com.gmail.javacoded78.latwitter.dto.response.ChatResponse;
+import com.gmail.javacoded78.latwitter.dto.response.chat.ChatMessageResponse;
+import com.gmail.javacoded78.latwitter.dto.response.chat.ChatResponse;
 import com.gmail.javacoded78.latwitter.dto.response.UserResponse;
 import com.gmail.javacoded78.latwitter.mapper.ChatMapper;
 import lombok.RequiredArgsConstructor;

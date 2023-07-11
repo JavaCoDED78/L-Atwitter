@@ -3,16 +3,7 @@ package com.gmail.javacoded78.latwitter.model;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -46,10 +37,10 @@ public class Lists {
     @JoinColumn(name = "user_id")
     private User listOwner;
 
-    @OneToMany
+    @ManyToMany
     private List<Tweet> tweets;
 
-    @OneToMany
+    @ManyToMany
     private List<User> members;
 
     @OneToMany

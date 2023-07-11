@@ -2,9 +2,9 @@ package com.gmail.javacoded78.latwitter.controller;
 
 import com.gmail.javacoded78.latwitter.dto.request.TweetRequest;
 import com.gmail.javacoded78.latwitter.dto.request.VoteRequest;
-import com.gmail.javacoded78.latwitter.dto.response.NotificationResponse;
-import com.gmail.javacoded78.latwitter.dto.response.NotificationTweetResponse;
-import com.gmail.javacoded78.latwitter.dto.response.TweetResponse;
+import com.gmail.javacoded78.latwitter.dto.response.notification.NotificationResponse;
+import com.gmail.javacoded78.latwitter.dto.response.notification.NotificationTweetResponse;
+import com.gmail.javacoded78.latwitter.dto.response.tweet.TweetResponse;
 import com.gmail.javacoded78.latwitter.mapper.TweetMapper;
 import com.gmail.javacoded78.latwitter.model.ReplyType;
 import lombok.RequiredArgsConstructor;

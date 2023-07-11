@@ -1,5 +1,9 @@
-package com.gmail.javacoded78.latwitter.dto.response;
+package com.gmail.javacoded78.latwitter.dto.response.notification;
 
+import com.gmail.javacoded78.latwitter.dto.response.*;
+import com.gmail.javacoded78.latwitter.dto.response.tweet.LikeTweetResponse;
+import com.gmail.javacoded78.latwitter.dto.response.tweet.RetweetResponse;
+import com.gmail.javacoded78.latwitter.dto.response.tweet.TweetReplyResponse;
 import com.gmail.javacoded78.latwitter.model.ReplyType;
 import lombok.Data;
 
