@@ -3,17 +3,7 @@ package com.gmail.javacoded78.latwitter.model;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -39,6 +29,9 @@ public class Tweet {
 
     @Column(name = "addressed_id")
     private Long addressedId;
+
+    @OneToOne
+    private Poll poll;
 
     @ManyToOne
     private User user;

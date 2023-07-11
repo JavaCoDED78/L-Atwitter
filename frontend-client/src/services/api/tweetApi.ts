@@ -1,5 +1,9 @@
 import { axios } from "../../core/axios";
-import { AddTweet, Tweet } from "../../store/ducks/tweets/contracts/state";
+import {
+  AddTweet,
+  Tweet,
+  Vote,
+} from "../../store/ducks/tweets/contracts/state";
 import { API_URL } from "../../util/url";
 import { ReplyTweet } from "../../store/ducks/tweet/contracts/state";
 
@@ -21,9 +25,16 @@ export const TweetApi = {
     const data = await axios.get<Response<Tweet>>(API_URL + "/tweets/" + id);
     return data.data;
   },
-  async addTweet(payload: AddTweet): Promise<Response<Tweet>> {
+  async createTweet(payload: AddTweet): Promise<Response<Tweet>> {
     const data = await axios.post<Response<Tweet>>(
       API_URL + "/tweets",
+      payload
+    );
+    return data.data;
+  },
+  async createPoll(payload: AddTweet): Promise<Response<Tweet>> {
+    const data = await axios.post<Response<Tweet>>(
+      API_URL + "/tweets/poll",
       payload
     );
     return data.data;
@@ -55,6 +66,13 @@ export const TweetApi = {
   async replyTweet(payload: ReplyTweet): Promise<Response<Tweet>> {
     const data = await axios.post<Response<Tweet>>(
       API_URL + `/tweets/reply/${payload.id}`,
+      payload
+    );
+    return data.data;
+  },
+  async voteInPoll(payload: Vote): Promise<Response<Tweet>> {
+    const data = await axios.post<Response<Tweet>>(
+      API_URL + "/tweets/vote",
       payload
     );
     return data.data;

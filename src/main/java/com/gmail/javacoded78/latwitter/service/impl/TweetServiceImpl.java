@@ -1,12 +1,6 @@
 package com.gmail.javacoded78.latwitter.service.impl;
 
-import com.gmail.javacoded78.latwitter.model.LikeTweet;
-import com.gmail.javacoded78.latwitter.model.Notification;
-import com.gmail.javacoded78.latwitter.model.NotificationType;
-import com.gmail.javacoded78.latwitter.model.Retweet;
-import com.gmail.javacoded78.latwitter.model.Tag;
-import com.gmail.javacoded78.latwitter.model.Tweet;
-import com.gmail.javacoded78.latwitter.model.User;
+import com.gmail.javacoded78.latwitter.model.*;
 import com.gmail.javacoded78.latwitter.repository.*;
 import com.gmail.javacoded78.latwitter.service.TweetService;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +8,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.security.Principal;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -35,6 +30,8 @@ public class TweetServiceImpl implements TweetService {
     private final NotificationRepository notificationRepository;
     private final ImageRepository imageRepository;
     private final TagRepository tagRepository;
+    private final PollRepository pollRepository;
+    private final PollChoiceRepository pollChoiceRepository;
 
     @Override
     public List<Tweet> getTweets() {
@@ -94,6 +91,26 @@ public class TweetServiceImpl implements TweetService {
     }
 
     @Override
+    public Tweet createPoll(Long pollDateTime, List<String> choices, Tweet tweet) {
+        Tweet createdTweet = createTweet(tweet);
+        LocalDateTime dateTime = LocalDateTime.now().plusMinutes(pollDateTime);
+        Poll poll = new Poll();
+        poll.setTweet(createdTweet);
+        poll.setDateTime(dateTime);
+        List<PollChoice> pollChoices = new ArrayList<>();
+        choices.forEach(choice -> {
+            PollChoice pollChoice = new PollChoice();
+            pollChoice.setChoice(choice);
+            pollChoiceRepository.save(pollChoice);
+            pollChoices.add(pollChoice);
+        });
+        poll.setPollChoices(pollChoices);
+        pollRepository.save(poll);
+        createdTweet.setPoll(poll);
+        return tweetRepository.save(createdTweet);
+    }
+
+    @Override
     public String deleteTweet(Long tweetId) {
         Principal principal = SecurityContextHolder.getContext().getAuthentication();
         User user = userRepository.findByEmail(principal.getName());
@@ -105,10 +122,9 @@ public class TweetServiceImpl implements TweetService {
         tweet.getRetweets().forEach(retweetRepository::delete);
         tweet.getReplies().forEach(reply -> reply.getUser().getTweets()
                 .removeIf(replyingTweet -> replyingTweet.equals(reply)));
+        List<Tweet> replies = new ArrayList<>(tweet.getReplies());
         tweet.getReplies().removeAll(tweet.getReplies());
-        tweet.getReplies().stream()
-                .filter(reply -> reply.getAddressedId().equals(user.getId()))
-                .forEach(tweetRepository::delete);
+        tweetRepository.deleteAll(replies);
         List<Notification> notifications = user.getNotifications().stream()
                 .filter(notification -> notification.getTweet().equals(tweet))
                 .collect(Collectors.toList());
@@ -240,6 +256,18 @@ public class TweetServiceImpl implements TweetService {
         Tweet replyTweet = createTweet(reply);
         Tweet tweet = tweetRepository.getOne(tweetId);
         tweet.getReplies().add(replyTweet);
+        return tweetRepository.save(tweet);
+    }
+
+    @Override
+    public Tweet voteInPoll(Long tweetId, Long pollChoiceId) {
+        Principal principal = SecurityContextHolder.getContext().getAuthentication();
+        User user = userRepository.findByEmail(principal.getName());
+        Tweet tweet = tweetRepository.getOne(tweetId);
+        PollChoice pollChoice = tweet.getPoll().getPollChoices().stream()
+                .filter(choice -> choice.getId().equals(pollChoiceId))
+                .findFirst().get();
+        pollChoice.getVotedUser().add(user);
         return tweetRepository.save(tweet);
     }
 }

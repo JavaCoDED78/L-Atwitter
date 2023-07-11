@@ -10,6 +10,7 @@ import {
 import { TweetApi } from "../../../services/api/tweetApi";
 import { Tweet } from "./contracts/state";
 import {
+  FetchAddPollActionInterface,
   FetchAddTweetActionInterface,
   FetchDeleteTweetActionInterface,
   FetchLikedTweetsActionInterface,
@@ -17,6 +18,7 @@ import {
   FetchRetweetActionInterface,
   FetchTweetsByTagActionInterface,
   FetchTweetsByTextActionInterface,
+  FetchVoteActionInterface,
   TweetsActionType,
 } from "./contracts/actionTypes";
 import { LoadingStatus } from "../../types";
@@ -90,12 +92,36 @@ export function* fetchAddTweetRequest({
 }: FetchAddTweetActionInterface) {
   try {
     yield put(setTweetsLoadingState(LoadingStatus.LOADING));
-    const item: Tweet = yield call(TweetApi.addTweet, payload);
+    const item: Tweet = yield call(TweetApi.createTweet, payload);
     yield put(setTweet(item));
 
     if (payload.profileId === item.user.id) {
       yield put(setAddedUserTweet(item));
     }
+  } catch (e) {
+    yield put(setTweetsLoadingState(LoadingStatus.ERROR));
+  }
+}
+
+export function* fetchAddPollRequest({ payload }: FetchAddPollActionInterface) {
+  try {
+    yield put(setTweetsLoadingState(LoadingStatus.LOADING));
+    const item: Tweet = yield call(TweetApi.createPoll, payload);
+    yield put(setTweet(item));
+
+    if (payload.profileId === item.user.id) {
+      yield put(setAddedUserTweet(item));
+    }
+  } catch (e) {
+    yield put(setTweetsLoadingState(LoadingStatus.ERROR));
+  }
+}
+
+export function* fetchVoteRequest({ payload }: FetchVoteActionInterface) {
+  try {
+    yield put(setTweetsLoadingState(LoadingStatus.LOADING));
+    const item: Tweet = yield call(TweetApi.voteInPoll, payload);
+    yield put(setTweet(item));
   } catch (e) {
     yield put(setTweetsLoadingState(LoadingStatus.ERROR));
   }
@@ -146,6 +172,8 @@ export function* tweetsSaga() {
     fetchMediaTweetsRequest
   );
   yield takeLatest(TweetsActionType.FETCH_ADD_TWEET, fetchAddTweetRequest);
+  yield takeLatest(TweetsActionType.FETCH_ADD_POLL, fetchAddPollRequest);
+  yield takeLatest(TweetsActionType.FETCH_VOTE, fetchVoteRequest);
   yield takeLatest(
     TweetsActionType.FETCH_DELETE_TWEET,
     fetchDeleteTweetRequest

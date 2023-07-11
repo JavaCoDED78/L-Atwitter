@@ -1,5 +1,6 @@
-import { AddTweet, Tweet, TweetsState } from "./contracts/state";
+import { AddTweet, Tweet, TweetsState, Vote } from "./contracts/state";
 import {
+  FetchAddPollActionInterface,
   FetchBookmarksActionInterface,
   FetchDeleteTweetActionInterface,
   FetchLikedTweetsActionInterface,
@@ -8,6 +9,7 @@ import {
   FetchRetweetActionInterface,
   FetchTweetsByTagActionInterface,
   FetchTweetsByTextActionInterface,
+  FetchVoteActionInterface,
   LikeTweetActionInterface,
   RemoveTweetFromBookmarksActionInterface,
   ReplyActionInterface,
@@ -39,6 +41,18 @@ export const fetchAddTweet = (
   payload: AddTweet
 ): FetchAddTweetActionInterface => ({
   type: TweetsActionType.FETCH_ADD_TWEET,
+  payload,
+});
+
+export const fetchAddPoll = (
+  payload: AddTweet
+): FetchAddPollActionInterface => ({
+  type: TweetsActionType.FETCH_ADD_POLL,
+  payload,
+});
+
+export const fetchVote = (payload: Vote): FetchVoteActionInterface => ({
+  type: TweetsActionType.FETCH_VOTE,
   payload,
 });
 
