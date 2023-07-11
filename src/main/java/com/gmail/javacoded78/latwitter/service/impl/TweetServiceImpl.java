@@ -7,12 +7,7 @@ import com.gmail.javacoded78.latwitter.model.Retweet;
 import com.gmail.javacoded78.latwitter.model.Tag;
 import com.gmail.javacoded78.latwitter.model.Tweet;
 import com.gmail.javacoded78.latwitter.model.User;
-import com.gmail.javacoded78.latwitter.repository.LikeTweetRepository;
-import com.gmail.javacoded78.latwitter.repository.NotificationRepository;
-import com.gmail.javacoded78.latwitter.repository.RetweetRepository;
-import com.gmail.javacoded78.latwitter.repository.TagRepository;
-import com.gmail.javacoded78.latwitter.repository.TweetRepository;
-import com.gmail.javacoded78.latwitter.repository.UserRepository;
+import com.gmail.javacoded78.latwitter.repository.*;
 import com.gmail.javacoded78.latwitter.service.TweetService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -27,6 +22,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -37,6 +33,7 @@ public class TweetServiceImpl implements TweetService {
     private final RetweetRepository retweetRepository;
     private final LikeTweetRepository likeTweetRepository;
     private final NotificationRepository notificationRepository;
+    private final ImageRepository imageRepository;
     private final TagRepository tagRepository;
 
     @Override
@@ -74,7 +71,7 @@ public class TweetServiceImpl implements TweetService {
         }
 
         if (!hashtags.isEmpty()) {
-            for (String hashtag : hashtags) {
+            hashtags.forEach(hashtag -> {
                 Tag tag = tagRepository.findByTagName(hashtag);
 
                 if (tag != null) {
@@ -91,9 +88,37 @@ public class TweetServiceImpl implements TweetService {
                     newTag.setTweets(Collections.singletonList(tweet));
                     tagRepository.save(newTag);
                 }
-            }
+            });
         }
         return createdTweet;
+    }
+
+    @Override
+    public String deleteTweet(Long tweetId) {
+        Principal principal = SecurityContextHolder.getContext().getAuthentication();
+        User user = userRepository.findByEmail(principal.getName());
+        Tweet tweet = user.getTweets().stream()
+                .filter(t -> t.getId().equals(tweetId))
+                .findFirst().get();
+        tweet.getImages().forEach(imageRepository::delete);
+        tweet.getLikedTweets().forEach(likeTweetRepository::delete);
+        tweet.getRetweets().forEach(retweetRepository::delete);
+        tweet.getReplies().forEach(reply -> reply.getUser().getTweets()
+                .removeIf(replyingTweet -> replyingTweet.equals(reply)));
+        tweet.getReplies().removeAll(tweet.getReplies());
+        tweet.getReplies().stream()
+                .filter(reply -> reply.getAddressedId().equals(user.getId()))
+                .forEach(tweetRepository::delete);
+        List<Notification> notifications = user.getNotifications().stream()
+                .filter(notification -> notification.getTweet().equals(tweet))
+                .collect(Collectors.toList());
+        notifications.forEach(notification -> {
+            user.getNotifications().remove(notification);
+            notificationRepository.delete(notification);
+        });
+        user.getTweets().remove(tweet);
+        tweetRepository.delete(tweet);
+        return "Tweet successfully deleted.";
     }
 
     @Override

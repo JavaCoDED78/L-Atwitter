@@ -54,6 +54,13 @@ export const tweetsReducer = produce(
         draft.loadingState = LoadingStatus.LOADED;
         break;
 
+      case TweetsActionType.FETCH_DELETE_TWEET:
+        draft.items = draft.items.filter(
+          (tweet) => tweet.id !== action.payload
+        );
+        draft.loadingState = LoadingStatus.LOADED;
+        break;
+
       default:
         break;
     }

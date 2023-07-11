@@ -14,6 +14,8 @@ public interface TweetService {
 
     Tweet createTweet(Tweet tweet);
 
+    String deleteTweet(Long tweetId);
+
     List<Tweet> searchTweets(String text);
 
     Notification likeTweet(Long tweetId);

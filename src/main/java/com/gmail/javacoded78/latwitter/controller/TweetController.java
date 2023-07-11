@@ -8,12 +8,7 @@ import com.gmail.javacoded78.latwitter.mapper.TweetMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -46,6 +41,12 @@ public class TweetController {
         messagingTemplate.convertAndSend("/topic/feed", tweet);
         return ResponseEntity.ok(tweet);
     }
+
+    @DeleteMapping("/{tweetId}")
+    public ResponseEntity<String> deleteTweet(@PathVariable Long tweetId) {
+        return ResponseEntity.ok(tweetMapper.deleteTweet(tweetId));
+    }
+
 
     @GetMapping("/search/{text}")
     public ResponseEntity<List<TweetResponse>> searchTweets(@PathVariable String text) {
