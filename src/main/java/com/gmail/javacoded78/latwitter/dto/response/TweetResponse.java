@@ -1,5 +1,6 @@
 package com.gmail.javacoded78.latwitter.dto.response;
 
+import com.gmail.javacoded78.latwitter.model.ReplyType;
 import lombok.Data;
 
 import java.time.LocalDateTime;
@@ -13,6 +14,7 @@ public class TweetResponse {
     private LocalDateTime dateTime;
     private String addressedUsername;
     private Long addressedId;
+    private ReplyType replyType;
     private UserResponse user;
     private PollResponse poll;
     private List<ImageResponse> images;

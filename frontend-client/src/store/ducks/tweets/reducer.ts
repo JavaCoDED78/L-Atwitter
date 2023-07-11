@@ -22,6 +22,13 @@ export const tweetsReducer = produce(
         draft.loadingState = LoadingStatus.SUCCESS;
         break;
 
+      case TweetsActionType.SET_VOTE:
+        const voteTweetIndex = draft.items.findIndex(
+          (tweet) => tweet.id === action.payload.id
+        );
+        draft.items[voteTweetIndex] = action.payload;
+        break;
+
       case TweetsActionType.SET_LOADING_STATE:
         draft.loadingState = action.payload;
         break;

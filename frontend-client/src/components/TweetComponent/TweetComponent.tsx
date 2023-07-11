@@ -4,6 +4,7 @@ import { Link, useHistory, useLocation } from "react-router-dom";
 import { Avatar, IconButton, Paper, Typography } from "@material-ui/core";
 
 import {
+  FollowReplyIcon,
   LikeIcon,
   LikeOutlinedIcon,
   PinOutlinedIcon,
@@ -20,10 +21,11 @@ import {
 } from "../../store/ducks/tweets/actionCreators";
 import {
   Image,
-  Retweet,
   LikeTweet,
-  Tweet,
   Poll,
+  ReplyType,
+  Retweet,
+  Tweet,
 } from "../../store/ducks/tweets/contracts/state";
 import { User } from "../../store/ducks/user/contracts/state";
 import { selectUserData } from "../../store/ducks/user/selectors";
@@ -33,7 +35,7 @@ import { textFormatter } from "../../util/textFormatter";
 import { selectUserProfile } from "../../store/ducks/userProfile/selectors";
 import TweetComponentActions from "./TweetComponentActions/TweetComponentActions";
 import ShareTweet from "./ShareTweet/ShareTweet";
-import Vote from "./Vote/Vote";
+import VoteComponent from "../VoteComponent/VoteComponent";
 
 interface TweetComponentProps {
   id: string;
@@ -41,6 +43,7 @@ interface TweetComponentProps {
   addressedUsername: string;
   addressedId?: number;
   dateTime: string;
+  replyType: ReplyType;
   images?: Image[];
   likedTweets: LikeTweet[];
   retweets: Retweet[];
@@ -57,6 +60,7 @@ const TweetComponent: FC<TweetComponentProps> = ({
   user,
   poll,
   dateTime,
+  replyType,
   likedTweets,
   retweets,
   replies,
@@ -80,6 +84,11 @@ const TweetComponent: FC<TweetComponentProps> = ({
   const isTweetRetweetedByUser = retweets.find(
     (retweet) => retweet.user.id === userProfile?.id
   );
+  const isFollower = myProfile?.followers?.find(
+    (follower) => follower.id === user?.id
+  );
+  // const isReplyFollow = !isFollowing && replyType === ReplyType.FOLLOW && myProfile?.id !== user.id;
+  // const isReplyMention = !isFollowing && replyType === ReplyType.MENTION && myProfile?.id !== user.id;
   const isModal = location.pathname.includes("/modal");
   const image = images?.[0];
   const tweetData: Tweet = {
@@ -88,6 +97,7 @@ const TweetComponent: FC<TweetComponentProps> = ({
     images,
     user,
     dateTime,
+    replyType,
     likedTweets,
     retweets,
     replies,
@@ -215,12 +225,41 @@ const TweetComponent: FC<TweetComponentProps> = ({
                 </div>
               </Link>
             )}
-            {poll && <Vote tweetId={id} poll={poll} />}
+            {poll && <VoteComponent tweetId={id} poll={poll} />}
+            {isFollower && replyType === ReplyType.FOLLOW && (
+              <>
+                <div className={classes.iconWrapper}>
+                  <div className={classes.iconCircle}>
+                    <span className={classes.icon}>{FollowReplyIcon}</span>
+                  </div>
+                </div>
+                <div className={classes.replyText}>
+                  You can reply to this conversation
+                </div>
+              </>
+            )}
           </Typography>
           <div className={classes.footer}>
             <div className={classes.footerIcon}>
-              <IconButton onClick={onOpenReplyModalWindow}>
-                <span>{ReplyIcon}</span>
+              <IconButton
+                disabled={
+                  replyType === ReplyType.MENTION ||
+                  myProfile?.id === user.id ||
+                  (isFollower && replyType !== ReplyType.FOLLOW)
+                }
+                onClick={onOpenReplyModalWindow}
+              >
+                <span
+                  style={
+                    replyType === ReplyType.MENTION ||
+                    myProfile?.id === user.id ||
+                    (isFollower && replyType !== ReplyType.FOLLOW)
+                      ? { color: "rgb(185, 192, 197)" }
+                      : {}
+                  }
+                >
+                  {ReplyIcon}
+                </span>
               </IconButton>
               {replies?.length === 0 || replies === null ? null : (
                 <span>{replies?.length}</span>
