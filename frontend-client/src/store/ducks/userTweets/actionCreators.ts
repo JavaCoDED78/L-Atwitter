@@ -1,84 +1,60 @@
-import { PinnedTweet, UserTweetsState } from "./contracts/state";
-import { LoadingStatus } from "../../types";
+import {UserTweetsState} from "./contracts/state";
+import {LoadingStatus} from "../../types";
 import {
-  DeleteTweetActionInterface,
-  FetchUserLikedTweetsActionInterface,
-  FetchUserMediaTweetsActionInterface,
-  FetchUserRetweetsAndRepliesActionInterface,
-  FetchUserTweetsActionInterface,
-  SetAddedUserTweetActionInterface,
-  SetUserLikedTweetActionInterface,
-  SetUserRetweetActionInterface,
-  SetUserTweetsActionInterface,
-  SetUserTweetsLoadingStatusInterface,
-  UserTweetsActionType,
+    DeleteUserTweetActionInterface,
+    FetchUserLikedTweetsActionInterface,
+    FetchUserMediaTweetsActionInterface,
+    FetchUserRetweetsAndRepliesActionInterface,
+    FetchUserTweetsActionInterface,
+    SetAddedUserTweetActionInterface,
+    SetUpdatedUserTweetActionInterface,
+    SetUserTweetsActionInterface,
+    SetUserTweetsLoadingStatusInterface,
+    UserTweetsActionType
 } from "./contracts/actionTypes";
-import { Tweet } from "../tweets/contracts/state";
+import {Tweet} from "../tweets/contracts/state";
 
-export const setUserTweets = (
-  payload: UserTweetsState["items"]
-): SetUserTweetsActionInterface => ({
-  type: UserTweetsActionType.SET_TWEETS,
-  payload,
+export const setUserTweets = (payload: UserTweetsState["items"]): SetUserTweetsActionInterface => ({
+    type: UserTweetsActionType.SET_TWEETS,
+    payload
 });
 
-export const setAddedUserTweet = (
-  payload: Tweet
-): SetAddedUserTweetActionInterface => ({
-  type: UserTweetsActionType.SET_ADDED_TWEET,
-  payload,
+export const setAddedUserTweet = (payload: Tweet): SetAddedUserTweetActionInterface => ({
+    type: UserTweetsActionType.SET_ADDED_TWEET,
+    payload
 });
 
-export const fetchUserTweets = (
-  payload: string
-): FetchUserTweetsActionInterface => ({
-  type: UserTweetsActionType.FETCH_TWEETS,
-  payload,
+export const setUpdatedUserTweet = (payload: Tweet): SetUpdatedUserTweetActionInterface => ({
+    type: UserTweetsActionType.SET_UPDATED_TWEET,
+    payload
 });
 
-export const setUserLikedTweet = (
-  payload: Tweet
-): SetUserLikedTweetActionInterface => ({
-  type: UserTweetsActionType.SET_LIKED_TWEET,
-  payload,
+export const deleteUserTweet = (payload: Tweet): DeleteUserTweetActionInterface => ({
+    type: UserTweetsActionType.DELETE_TWEET,
+    payload
 });
 
-export const fetchUserLikedTweets = (
-  payload: string
-): FetchUserLikedTweetsActionInterface => ({
-  type: UserTweetsActionType.FETCH_LIKED_TWEETS,
-  payload,
+export const fetchUserTweets = (payload: string): FetchUserTweetsActionInterface => ({
+    type: UserTweetsActionType.FETCH_TWEETS,
+    payload
 });
 
-export const fetchUserMediaTweets = (
-  payload: string
-): FetchUserMediaTweetsActionInterface => ({
-  type: UserTweetsActionType.FETCH_MEDIA_TWEETS,
-  payload,
+export const fetchUserLikedTweets = (payload: string): FetchUserLikedTweetsActionInterface => ({
+    type: UserTweetsActionType.FETCH_LIKED_TWEETS,
+    payload
 });
 
-export const fetchUserRetweetsAndReplies = (
-  payload: string
-): FetchUserRetweetsAndRepliesActionInterface => ({
-  type: UserTweetsActionType.FETCH_RETWEETS_AND_REPLIES,
-  payload,
+export const fetchUserMediaTweets = (payload: string): FetchUserMediaTweetsActionInterface => ({
+    type: UserTweetsActionType.FETCH_MEDIA_TWEETS,
+    payload
 });
 
-export const deleteTweet = (payload: string): DeleteTweetActionInterface => ({
-  type: UserTweetsActionType.DELETE_TWEET,
-  payload,
+export const fetchUserRetweetsAndReplies = (payload: string): FetchUserRetweetsAndRepliesActionInterface => ({
+    type: UserTweetsActionType.FETCH_RETWEETS_AND_REPLIES,
+    payload
 });
 
-export const setUserRetweet = (
-  payload: Tweet
-): SetUserRetweetActionInterface => ({
-  type: UserTweetsActionType.SET_RETWEET,
-  payload,
-});
-
-export const setUserTweetsLoadingStatus = (
-  payload: LoadingStatus
-): SetUserTweetsLoadingStatusInterface => ({
-  type: UserTweetsActionType.SET_LOADING_STATUS,
-  payload,
+export const setUserTweetsLoadingStatus = (payload: LoadingStatus): SetUserTweetsLoadingStatusInterface => ({
+    type: UserTweetsActionType.SET_LOADING_STATUS,
+    payload
 });

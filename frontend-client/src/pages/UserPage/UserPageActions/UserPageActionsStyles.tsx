@@ -1,34 +1,25 @@
 import {makeStyles, Theme} from "@material-ui/core";
 
-export const useShareTweetModalStyles = makeStyles((theme: Theme) => ({
-    root: {
+export const useUserPageActionsStyles = makeStyles((theme: Theme) => ({
+    container: {
         position: 'relative',
-        "& .MuiIconButton-root": {
-            padding: 7,
-            color: "rgb(83, 100, 113)",
-            "& .MuiIconButton-label": {
-                "& svg": {
-                    verticalAlign: "bottom",
-                    height: (props: { isFullTweet: boolean }) => props.isFullTweet ? "0.90em" : "0.80em",
-                },
-            },
-        },
+        display: "inline-block",
     },
     dropdown: {
-        padding: 0,
         position: 'absolute',
-        width: 280,
-        height: 208,
-        top: 10,
-        right: 10,
+        width: 358,
+        height: 468,
         zIndex: 2,
         borderRadius: 4,
         backgroundColor: theme.palette.background.paper,
         boxShadow: "rgb(101 119 134 / 20%) 0px 0px 15px, rgb(101 119 134 / 15%) 0px 0px 3px 1px",
         "& .MuiList-root": {
+            fontSize: 15,
             padding: 0,
+            margin: 0,
         },
         '& .MuiListItem-root': {
+            margin: 0,
             height: 52,
             '&:hover': {
                 cursor: 'pointer',
@@ -36,11 +27,25 @@ export const useShareTweetModalStyles = makeStyles((theme: Theme) => ({
             },
         },
     },
+    messageButton: {
+        marginTop: 84,
+        marginRight: 9,
+        fontSize: 15,
+        fontWeight: 700,
+        border: '1px solid',
+        borderRadius: '50%',
+        padding: 8,
+        "& svg": {
+            color: "rgb(27, 149, 224)",
+            height: "1.6em",
+        },
+    },
     text: {
         fontSize: 15,
         fontWeight: 400,
     },
     textIcon: {
+        marginRight: 12,
         "& svg": {
             verticalAlign: "bottom",
             marginRight: 15,

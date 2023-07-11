@@ -1,55 +1,45 @@
-import produce, { Draft } from "immer";
+import produce, {Draft} from 'immer';
 
-import { TweetsState } from "./contracts/state";
-import { TweetsActions, TweetsActionType } from "./contracts/actionTypes";
-import { LoadingStatus } from "../../types";
+import {TweetsState} from "./contracts/state";
+import {TweetsActions, TweetsActionType} from './contracts/actionTypes';
+import {LoadingStatus} from '../../types';
 
 const initialTweetsState: TweetsState = {
-  items: [],
-  loadingState: LoadingStatus.NEVER,
+    items: [],
+    loadingState: LoadingStatus.NEVER
 };
 
-export const tweetsReducer = produce(
-  (draft: Draft<TweetsState>, action: TweetsActions) => {
+export const tweetsReducer = produce((draft: Draft<TweetsState>, action: TweetsActions) => {
+
     switch (action.type) {
-      case TweetsActionType.SET_TWEETS:
-        draft.items = action.payload;
-        draft.loadingState = LoadingStatus.LOADED;
-        break;
+        case TweetsActionType.SET_TWEETS:
+            draft.items = action.payload;
+            draft.loadingState = LoadingStatus.LOADED;
+            break;
 
-      case TweetsActionType.SET_TWEET:
-        draft.items = [action.payload, ...draft.items];
-        break;
+        case TweetsActionType.SET_TWEET:
+            draft.items = [action.payload, ...draft.items];
+            break;
 
-      case TweetsActionType.SET_UPDATED_TWEET:
-        const updatedTweetIndex = draft.items.findIndex(
-          (tweet) => tweet.id === action.payload.id
-        );
-        if (updatedTweetIndex !== -1)
-          draft.items[updatedTweetIndex] = action.payload;
-        break;
+        case TweetsActionType.SET_UPDATED_TWEET:
+            const updatedTweetIndex = draft.items.findIndex((tweet) => tweet.id === action.payload.id);
+            if (updatedTweetIndex !== -1) draft.items[updatedTweetIndex] = action.payload;
+            break;
 
-      case TweetsActionType.SET_LOADING_STATE:
-        draft.loadingState = action.payload;
-        break;
+        case TweetsActionType.SET_LOADING_STATE:
+            draft.loadingState = action.payload;
+            break;
 
-      case TweetsActionType.REMOVE_TWEET_FROM_BOOKMARKS:
-        draft.items = draft.items.filter(
-          (tweet) => tweet.id !== action.payload
-        );
-        draft.loadingState = LoadingStatus.LOADED;
-        break;
+        case TweetsActionType.REMOVE_TWEET_FROM_BOOKMARKS:
+            draft.items = draft.items.filter((tweet) => tweet.id !== action.payload);
+            draft.loadingState = LoadingStatus.LOADED
+            break;
 
-      case TweetsActionType.FETCH_DELETE_TWEET:
-        draft.items = draft.items.filter(
-          (tweet) => tweet.id !== action.payload
-        );
-        draft.loadingState = LoadingStatus.LOADED;
-        break;
+        case TweetsActionType.DELETE_TWEET:
+            draft.items = draft.items.filter((tweet) => tweet.id !== action.payload.id);
+            break;
 
-      default:
-        break;
+        default:
+            break;
     }
-  },
-  initialTweetsState
-);
+}, initialTweetsState);

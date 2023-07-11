@@ -1,20 +1,20 @@
-import { LoadingStatus } from "../../../types";
-import { Chat, ChatParticipant } from "../../chats/contracts/state";
+import {LoadingStatus} from "../../../types";
+import {Chat, ChatParticipant} from "../../chats/contracts/state";
 
 export interface ChatMessage {
-  id: number;
-  text: string;
-  date: string;
-  author: ChatParticipant;
-  chat: Chat;
+    id: number;
+    text: string;
+    date: string;
+    author: ChatParticipant;
+    chat: Chat;
 }
 
 export interface ChatMessageRequest {
-  chatId: number;
-  text: string;
+    chatId: number;
+    text: string;
 }
 
 export interface ChatMessageState {
-  items: ChatMessage[];
-  loadingState: LoadingStatus;
+    items: ChatMessage[];
+    loadingState: LoadingStatus;
 }

@@ -23,4 +23,5 @@ public class TweetResponse {
     private List<LikeTweetResponse> likedTweets;
     private List<RetweetResponse> retweets;
     private List<TweetReplyResponse> replies;
+    private boolean isTweetDeleted;
 }

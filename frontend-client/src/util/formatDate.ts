@@ -12,49 +12,46 @@ import usLang from "date-fns/locale/en-US/index";
 import differenceInDays from "date-fns/differenceInDays";
 import differenceInHours from "date-fns/differenceInHours";
 import differenceInMinutes from "date-fns/differenceInMinutes";
-import { Poll } from "../store/ducks/tweets/contracts/state";
+import {Poll} from "../store/ducks/tweets/contracts/state";
 
 export const formatDate = (date: Date): string => {
-  return format(date, "MMM d");
+    return format(date, 'MMM d');
 };
 
 export const formatChatMessageDate = (date: Date): string => {
-  const datePattern = format(date, "hh:mm a", { locale: usLang });
+    const datePattern = format(date, 'hh:mm a', {locale: usLang});
 
-  if (isToday(date)) return datePattern;
+    if (isToday(date)) return datePattern;
 
-  if (isYesterday(date)) return `Yesterday at ${datePattern}`;
+    if (isYesterday(date)) return `Yesterday at ${datePattern}`;
 
-  if (isMonday(date)) return `Mon ${datePattern}`;
+    if (isMonday(date)) return `Mon ${datePattern}`;
 
-  if (isTuesday(date)) return `Tue ${datePattern}`;
+    if (isTuesday(date)) return `Tue ${datePattern}`;
 
-  if (isWednesday(date)) return `Wed ${datePattern}`;
+    if (isWednesday(date)) return `Wed ${datePattern}`;
 
-  if (isThursday(date)) return `Thu ${datePattern}`;
+    if (isThursday(date)) return `Thu ${datePattern}`;
 
-  if (isFriday(date)) return `Fri ${datePattern}`;
+    if (isFriday(date)) return `Fri ${datePattern}`;
 
-  if (isSaturday(date)) return `Sat ${datePattern}`;
+    if (isSaturday(date)) return `Sat ${datePattern}`;
 
-  if (isSunday(date)) return `Sun ${datePattern}`;
+    if (isSunday(date)) return `Sun ${datePattern}`;
 
-  return format(date, "MMM dd, hh:mm a", { locale: usLang });
+    return format(date, 'MMM dd, hh:mm a', {locale: usLang});
 };
 
 export const voteFormatDate = (poll: Poll): string => {
-  const diffInDays = differenceInDays(new Date(poll?.dateTime!), Date.now());
-  const diffInHours = differenceInHours(new Date(poll?.dateTime!), Date.now());
-  const diffInMinutes = differenceInMinutes(
-    new Date(poll?.dateTime!),
-    Date.now()
-  );
+    const diffInDays = differenceInDays(new Date(poll?.dateTime!), Date.now());
+    const diffInHours = differenceInHours(new Date(poll?.dateTime!), Date.now());
+    const diffInMinutes = differenceInMinutes(new Date(poll?.dateTime!), Date.now());
 
-  if (diffInDays !== 0) {
-    return diffInDays + " days";
-  } else if (diffInHours !== 0) {
-    return diffInHours + " hours";
-  } else {
-    return diffInMinutes + " minutes";
-  }
+    if (diffInDays !== 0) {
+        return diffInDays + " days";
+    } else if (diffInHours !== 0) {
+        return diffInHours + " hours";
+    } else {
+        return diffInMinutes + " minutes";
+    }
 };
