@@ -9,8 +9,6 @@ import {
   LikeOutlinedIcon,
   PinOutlinedIcon,
   ReplyIcon,
-  RetweetIcon,
-  RetweetOutlinedIcon,
   RetweetOutlinedIconSm,
 } from "../../icons";
 import { useTweetComponentStyles } from "./TweetComponentStyles";
@@ -36,6 +34,8 @@ import { selectUserProfile } from "../../store/ducks/userProfile/selectors";
 import TweetComponentActions from "../TweetComponentActions/TweetComponentActions";
 import ShareTweet from "../ShareTweet/ShareTweet";
 import VoteComponent from "../VoteComponent/VoteComponent";
+import QuoteTweet from "../QuoteTweet/QuoteTweet";
+import Quote from "../Quote/Quote";
 
 interface TweetComponentProps {
   id: string;
@@ -46,6 +46,7 @@ interface TweetComponentProps {
   replyType: ReplyType;
   images?: Image[];
   likedTweets: LikeTweet[];
+  quoteTweet?: Tweet;
   retweets: Retweet[];
   replies: any;
   user: User;
@@ -62,6 +63,7 @@ const TweetComponent: FC<TweetComponentProps> = ({
   dateTime,
   replyType,
   likedTweets,
+  quoteTweet,
   retweets,
   replies,
   addressedUsername,
@@ -149,15 +151,14 @@ const TweetComponent: FC<TweetComponentProps> = ({
           </Typography>
         </div>
       )}
-      {((myProfile?.id === userProfile?.id &&
+      {myProfile?.id === userProfile?.id &&
         activeTab === 0 &&
-        myProfile?.pinnedTweet?.id === id) ||
-        userProfile?.pinnedTweet?.id === id) && (
-        <div className={classes.retweetWrapper}>
-          <span>{PinOutlinedIcon}</span>
-          <Typography>Pinned Tweet</Typography>
-        </div>
-      )}
+        myProfile?.pinnedTweet?.id === id && (
+          <div className={classes.retweetWrapper}>
+            <span>{PinOutlinedIcon}</span>
+            <Typography>Pinned Tweet</Typography>
+          </div>
+        )}
       <Paper className={classes.container} variant="outlined">
         <a onClick={handleClickUser}>
           <Avatar
@@ -238,6 +239,9 @@ const TweetComponent: FC<TweetComponentProps> = ({
                 </div>
               </>
             )}
+            {quoteTweet && (
+              <Quote quoteTweet={quoteTweet} isTweetQuoted={true} />
+            )}
           </Typography>
           <div className={classes.footer}>
             <div className={classes.footerIcon}>
@@ -261,25 +265,12 @@ const TweetComponent: FC<TweetComponentProps> = ({
                 <span>{replies?.length}</span>
               )}
             </div>
-            <div className={classes.footerIcon}>
-              <IconButton onClick={handleRetweet}>
-                {isTweetRetweetedByMe ? (
-                  <span style={{ color: "rgb(23, 191, 99)" }}>
-                    {RetweetIcon}
-                  </span>
-                ) : (
-                  <span>{RetweetOutlinedIcon}</span>
-                )}
-              </IconButton>
-              {retweets.length === 0 ||
-              retweets === null ? null : isTweetRetweetedByMe ? (
-                <span style={{ color: "rgb(23, 191, 99)" }}>
-                  {retweets.length}
-                </span>
-              ) : (
-                <span>{retweets.length}</span>
-              )}
-            </div>
+            <QuoteTweet
+              quoteTweet={tweetData}
+              retweets={retweets}
+              isTweetRetweetedByMe={isTweetRetweetedByMe}
+              handleRetweet={handleRetweet}
+            />
             <div className={classes.footerIcon}>
               <IconButton onClick={handleLike}>
                 {isTweetLiked ? (

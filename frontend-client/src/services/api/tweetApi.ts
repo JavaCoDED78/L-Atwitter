@@ -1,5 +1,6 @@
 import { axios } from "../../core/axios";
 import {
+  AddQuoteTweet,
   AddTweet,
   ReplyType,
   Tweet,
@@ -67,6 +68,13 @@ export const TweetApi = {
   async replyTweet(payload: ReplyTweet): Promise<Response<Tweet>> {
     const data = await axios.post<Response<Tweet>>(
       API_URL + `/tweets/reply/${payload.id}`,
+      payload
+    );
+    return data.data;
+  },
+  async quoteTweet(payload: AddQuoteTweet): Promise<Response<Tweet>> {
+    const data = await axios.post<Response<Tweet>>(
+      API_URL + `/tweets/quote/${payload.tweetId}`,
       payload
     );
     return data.data;

@@ -3,6 +3,7 @@ package com.gmail.javacoded78.latwitter.mapper;
 import com.gmail.javacoded78.latwitter.dto.request.TweetRequest;
 import com.gmail.javacoded78.latwitter.dto.response.NotificationResponse;
 import com.gmail.javacoded78.latwitter.dto.response.TweetResponse;
+import com.gmail.javacoded78.latwitter.model.ReplyType;
 import com.gmail.javacoded78.latwitter.model.Tweet;
 import com.gmail.javacoded78.latwitter.service.TweetService;
 import lombok.RequiredArgsConstructor;
@@ -57,8 +58,8 @@ public class TweetMapper {
                 convertToTweetEntity(tweetRequest)));
     }
 
-    public String deleteTweet(Long tweetId) {
-        return tweetService.deleteTweet(tweetId);
+    public TweetResponse deleteTweet(Long tweetId) {
+        return convertToTweetResponse(tweetService.deleteTweet(tweetId));
     }
 
     public NotificationResponse likeTweet(Long tweetId) {
@@ -75,6 +76,10 @@ public class TweetMapper {
 
     public TweetResponse replyTweet(Long tweetId, TweetRequest tweetRequest) {
         return convertToTweetResponse(tweetService.replyTweet(tweetId, convertToTweetEntity(tweetRequest)));
+    }
+
+    public TweetResponse quoteTweet(Long tweetId, TweetRequest tweetRequest) {
+        return convertToTweetResponse(tweetService.quoteTweet(tweetId, convertToTweetEntity(tweetRequest)));
     }
 
     public TweetResponse changeTweetReplyType(Long tweetId, ReplyType replyType) {

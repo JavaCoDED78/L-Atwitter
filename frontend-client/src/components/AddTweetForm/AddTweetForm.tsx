@@ -18,18 +18,19 @@ import EmojiConvertor from "emoji-js";
 
 import {
   fetchAddPoll,
+  fetchAddQuoteTweet,
   fetchAddTweet,
-  setTweetsLoadingState,
 } from "../../store/ducks/tweets/actionCreators";
 import { selectIsTweetsLoading } from "../../store/ducks/tweets/selectors";
-import { Image, ReplyType } from "../../store/ducks/tweets/contracts/state";
+import {
+  Image,
+  ReplyType,
+  Tweet,
+} from "../../store/ducks/tweets/contracts/state";
 import UploadImages from "../UploadImages/UploadImages";
 import { uploadImage } from "../../util/uploadImage";
 import { selectUserData } from "../../store/ducks/user/selectors";
-import {
-  fetchReplyTweet,
-  setTweetLoadingState,
-} from "../../store/ducks/tweet/actionCreators";
+import { fetchReplyTweet } from "../../store/ducks/tweet/actionCreators";
 import { useAddTweetFormStyles } from "./AddTweetFormStyles";
 import { DEFAULT_PROFILE_IMG } from "../../util/url";
 import {
@@ -40,11 +41,12 @@ import {
   ScheduleIcon,
 } from "../../icons";
 import { selectIsTweetLoading } from "../../store/ducks/tweet/selectors";
-import { LoadingStatus } from "../../store/types";
 import Poll from "./Poll/Poll";
 import Reply from "./Reply/Reply";
+import Quote from "../Quote/Quote";
 
 interface AddTweetFormProps {
+  quoteTweet?: Tweet;
   maxRows?: number;
   minRows?: number;
   tweetId?: string;
@@ -52,6 +54,7 @@ interface AddTweetFormProps {
   buttonName: string;
   addressedUsername?: string;
   addressedId?: number;
+  onCloseModal?: () => void;
 }
 
 export interface ImageObj {
@@ -62,6 +65,7 @@ export interface ImageObj {
 const MAX_LENGTH = 280;
 
 export const AddTweetForm: FC<AddTweetFormProps> = ({
+  quoteTweet,
   maxRows,
   minRows,
   tweetId,
@@ -69,6 +73,7 @@ export const AddTweetForm: FC<AddTweetFormProps> = ({
   buttonName,
   addressedUsername,
   addressedId,
+  onCloseModal,
 }): ReactElement => {
   const classes = useAddTweetFormStyles();
   const dispatch = useDispatch();
@@ -117,7 +122,6 @@ export const AddTweetForm: FC<AddTweetFormProps> = ({
       location.pathname.substring(location.pathname.length - 1)
     );
 
-    dispatch(setTweetsLoadingState(LoadingStatus.LOADING));
     for (let i = 0; i < images.length; i++) {
       const file: File = images[i].file;
       const image: Image = await uploadImage(file);
@@ -151,9 +155,39 @@ export const AddTweetForm: FC<AddTweetFormProps> = ({
     setVisiblePoll(false);
   };
 
+  const handleClickQuoteTweet = async (): Promise<void> => {
+    let result: Array<Image> = [];
+    const profileId = parseInt(
+      location.pathname.substring(location.pathname.length - 1)
+    );
+
+    for (let i = 0; i < images.length; i++) {
+      const file: File = images[i].file;
+      const image: Image = await uploadImage(file);
+      result.push(image);
+    }
+
+    dispatch(
+      fetchAddQuoteTweet({
+        profileId: profileId,
+        text: textConverter(),
+        images: result,
+        replyType: replyType,
+        tweetId: quoteTweet!.id,
+      })
+    );
+
+    setText("");
+    setImages([]);
+
+    if (onCloseModal) {
+      onCloseModal();
+    }
+  };
+
   const handleClickReplyTweet = async (): Promise<void> => {
     let result: Array<Image> = [];
-    dispatch(setTweetLoadingState(LoadingStatus.LOADING));
+
     for (let i = 0; i < images.length; i++) {
       const file: File = images[i].file;
       const image: Image = await uploadImage(file);
@@ -167,10 +201,15 @@ export const AddTweetForm: FC<AddTweetFormProps> = ({
         addressedUsername: addressedUsername!,
         addressedId: addressedId!,
         images: result,
+        replyType: replyType,
       })
     );
     setText("");
     setImages([]);
+
+    if (onCloseModal) {
+      onCloseModal();
+    }
   };
 
   const handleOpenPopup = (event: MouseEvent<HTMLDivElement>): void => {
@@ -239,6 +278,7 @@ export const AddTweetForm: FC<AddTweetFormProps> = ({
           </IconButton>
         </div>
       )}
+      {quoteTweet && <Quote quoteTweet={quoteTweet} />}
       <Poll
         choice1={choice1}
         choice2={choice2}
@@ -266,10 +306,16 @@ export const AddTweetForm: FC<AddTweetFormProps> = ({
               <span>{GifIcon}</span>
             </IconButton>
           </div>
-          {!isModal && (
+          {buttonName !== "Reply" && (
             <div className={classes.footerImage}>
-              <IconButton onClick={onOpenPoll} color="primary">
-                <span>{PullIcon}</span>
+              <IconButton
+                disabled={!!quoteTweet}
+                onClick={onOpenPoll}
+                color="primary"
+              >
+                <span style={quoteTweet ? { color: "rgb(142, 205, 247)" } : {}}>
+                  {PullIcon}
+                </span>
               </IconButton>
             </div>
           )}
@@ -278,10 +324,12 @@ export const AddTweetForm: FC<AddTweetFormProps> = ({
               <span>{EmojiIcon}</span>
             </IconButton>
           </div>
-          {!isModal && (
+          {buttonName !== "Reply" && (
             <div className={classes.footerImage}>
-              <IconButton color="primary">
-                <span>{ScheduleIcon}</span>
+              <IconButton disabled={!!quoteTweet} color="primary">
+                <span style={quoteTweet ? { color: "rgb(142, 205, 247)" } : {}}>
+                  {ScheduleIcon}
+                </span>
               </IconButton>
             </div>
           )}
@@ -313,7 +361,9 @@ export const AddTweetForm: FC<AddTweetFormProps> = ({
           <Button
             onClick={
               buttonName === "Tweet"
-                ? handleClickAddTweet
+                ? quoteTweet
+                  ? handleClickQuoteTweet
+                  : handleClickAddTweet
                 : handleClickReplyTweet
             }
             disabled={

@@ -7,6 +7,8 @@ import { Avatar, Divider, IconButton } from "@material-ui/core";
 import Typography from "@material-ui/core/Typography";
 import format from "date-fns/format";
 import usLang from "date-fns/locale/en-US/index";
+import SockJS from "sockjs-client";
+import { CompatClient, Stomp } from "@stomp/stompjs";
 
 import {
   selectIsTweetLoading,
@@ -25,12 +27,13 @@ import UsersListModal from "../../components/UsersListModal/UsersListModal";
 import { AddTweetForm } from "../../components/AddTweetForm/AddTweetForm";
 import TweetComponent from "../../components/TweetComponent/TweetComponent";
 import { useFullTweetStyles } from "./FullTweetStyles";
-import { DEFAULT_PROFILE_IMG } from "../../util/url";
+import { DEFAULT_PROFILE_IMG, WS_URL } from "../../util/url";
 import {
   FollowReplyIcon,
   LikeIcon,
   LikeOutlinedIcon,
   MentionReplyIcon,
+  PinOutlinedIcon,
   ReplyIcon,
   RetweetIcon,
   RetweetOutlinedIcon,
@@ -41,6 +44,9 @@ import VoteComponent from "../../components/VoteComponent/VoteComponent";
 import { ReplyType } from "../../store/ducks/tweets/contracts/state";
 import ShareTweet from "../../components/ShareTweet/ShareTweet";
 import TweetComponentActions from "../../components/TweetComponentActions/TweetComponentActions";
+import Quote from "../../components/Quote/Quote";
+
+let stompClient: CompatClient | null = null;
 
 export const FullTweet: FC = (): ReactElement | null => {
   const classes = useFullTweetStyles();
@@ -69,8 +75,17 @@ export const FullTweet: FC = (): ReactElement | null => {
     window.scrollTo(0, 0);
     if (params.id) {
       dispatch(fetchTweetData(params.id));
+
+      stompClient = Stomp.over(new SockJS(WS_URL));
+      stompClient.connect({}, () => {
+        stompClient?.subscribe("/topic/tweet/" + params.id, (response) => {
+          dispatch(setTweetData(JSON.parse(response.body)));
+        });
+      });
     }
+
     return () => {
+      stompClient?.disconnect();
       dispatch(setTweetData(undefined));
     };
   }, [dispatch, params.id]);
@@ -101,12 +116,18 @@ export const FullTweet: FC = (): ReactElement | null => {
   if (tweetData) {
     return (
       <div style={{ paddingTop: 48 }}>
-        {isTweetRetweeted ? (
+        {isTweetRetweeted && (
           <div className={classes.retweetWrapper}>
             <span>{RetweetOutlinedIconSm}</span>
             <Typography>You Retweeted</Typography>
           </div>
-        ) : null}
+        )}
+        {myProfile?.pinnedTweet?.id === tweetData.id && (
+          <div className={classes.retweetWrapper}>
+            <span>{PinOutlinedIcon}</span>
+            <Typography>Pinned Tweet</Typography>
+          </div>
+        )}
         <Paper className={classes.container}>
           {isLoading ? (
             <div className={classes.loading}>
@@ -141,6 +162,13 @@ export const FullTweet: FC = (): ReactElement | null => {
               </div>
               <Typography className={classes.textWrapper} gutterBottom>
                 {textFormatter(tweetData.text)}
+                {tweetData.quoteTweet && (
+                  <Quote
+                    quoteTweet={tweetData.quoteTweet}
+                    isTweetQuoted={true}
+                    isFullTweet={true}
+                  />
+                )}
                 {tweetData.images?.length !== 0 && (
                   <Link
                     to={{

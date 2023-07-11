@@ -1,7 +1,7 @@
 import React, { FC, ReactElement, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Route, Switch, useHistory, useLocation } from "react-router-dom";
-import { CompatClient, Stomp } from "@stomp/stompjs";
+import { Stomp } from "@stomp/stompjs";
 import SockJS from "sockjs-client";
 
 import Authentication from "./pages/Authentication/Authentication";
@@ -33,16 +33,11 @@ import { WS_URL } from "./util/url";
 import { setNotification } from "./store/ducks/notifications/actionCreators";
 import { selectNotificationsItems } from "./store/ducks/notifications/selectors";
 import { setTweet, setUpdatedTweet } from "./store/ducks/tweets/actionCreators";
-import { selectTweetsItems } from "./store/ducks/tweets/selectors";
-import { tweetsReducer } from "./store/ducks/tweets/reducer";
-
-let stompClient: CompatClient | null = null;
 
 const App: FC = (): ReactElement => {
   const history = useHistory();
   const dispatch = useDispatch();
   const myProfile = useSelector(selectUserData);
-  const tweets = useSelector(selectTweetsItems);
   const notifications = useSelector(selectNotificationsItems);
   const isAuth = useSelector(selectIsAuth);
   const loadingStatus = useSelector(selectUserStatus);
@@ -70,8 +65,23 @@ const App: FC = (): ReactElement => {
   }, []);
 
   useEffect(() => {
+    let stompClient = Stomp.over(new SockJS(WS_URL));
+
+    stompClient.connect({}, () => {
+      stompClient?.subscribe("/topic/feed", (response) => {
+        dispatch(setUpdatedTweet(JSON.parse(response.body)));
+      });
+
+      stompClient?.subscribe("/topic/feed/add", (response) => {
+        dispatch(setTweet(JSON.parse(response.body)));
+      });
+    });
+  }, []);
+
+  useEffect(() => {
+    let stompClient = Stomp.over(new SockJS(WS_URL));
+
     if (myProfile) {
-      stompClient = Stomp.over(new SockJS(WS_URL));
       stompClient.connect({}, () => {
         stompClient?.subscribe("/topic/chat/" + myProfile.id, (response) => {
           dispatch(setChatMessage(JSON.parse(response.body)));
@@ -94,22 +104,9 @@ const App: FC = (): ReactElement => {
             }
           }
         );
-
-        stompClient?.subscribe("/topic/feed", (response) => {
-          const isTweetExist = tweets.find(
-            (tweet) => tweet.id === JSON.parse(response.body).id
-          );
-
-          if (isTweetExist) {
-            dispatch(setUpdatedTweet(JSON.parse(response.body)));
-          } else {
-            dispatch(setTweet(JSON.parse(response.body)));
-          }
-        });
       });
     }
-    return () => stompClient?.disconnect();
-  }, [myProfile]);
+  }, [myProfile?.id]);
 
   return (
     <div className="App">

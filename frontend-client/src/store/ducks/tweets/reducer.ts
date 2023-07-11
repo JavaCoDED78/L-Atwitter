@@ -19,40 +19,18 @@ export const tweetsReducer = produce(
 
       case TweetsActionType.SET_TWEET:
         draft.items = [action.payload, ...draft.items];
-        draft.loadingState = LoadingStatus.SUCCESS;
         break;
 
       case TweetsActionType.SET_UPDATED_TWEET:
         const updatedTweetIndex = draft.items.findIndex(
           (tweet) => tweet.id === action.payload.id
         );
-        console.log(updatedTweetIndex);
-        draft.items[updatedTweetIndex] = action.payload;
+        if (updatedTweetIndex !== -1)
+          draft.items[updatedTweetIndex] = action.payload;
         break;
 
       case TweetsActionType.SET_LOADING_STATE:
         draft.loadingState = action.payload;
-        break;
-
-      case TweetsActionType.LIKE_TWEET:
-        const tweetIndex = draft.items.findIndex(
-          (tweet) => tweet.id === action.payload.id
-        );
-        draft.items[tweetIndex] = action.payload;
-        break;
-
-      case TweetsActionType.RETWEET:
-        const retweetIndex = draft.items.findIndex(
-          (tweet) => tweet.id === action.payload.id
-        );
-        draft.items[retweetIndex] = action.payload;
-        break;
-
-      case TweetsActionType.REPLY:
-        const replyIndex = draft.items.findIndex(
-          (tweet) => tweet.id === action.payload.id
-        );
-        draft.items[replyIndex] = action.payload;
         break;
 
       case TweetsActionType.REMOVE_TWEET_FROM_BOOKMARKS:

@@ -30,16 +30,15 @@ import {
   followUser,
   unfollowUser,
 } from "../../store/ducks/user/actionCreators";
-import {
-  deleteTweet,
-  pinTweet,
-} from "../../store/ducks/userTweets/actionCreators";
+import { deleteTweet } from "../../store/ducks/userTweets/actionCreators";
 import TweetComponentActionsModal from "./TweetComponentActionsModal/TweetComponentActionsModal";
 import {
   fetchChangeReplyType,
   fetchDeleteTweet,
 } from "../../store/ducks/tweets/actionCreators";
 import TweetComponentChangeReply from "./TweetComponentChangeReply/TweetComponentChangeReply";
+import { selectTweetData } from "../../store/ducks/tweet/selectors";
+import { deleteTweetReply } from "../../store/ducks/tweet/actionCreators";
 
 interface TweetComponentActionsProps {
   tweet: Tweet;
@@ -53,9 +52,10 @@ const TweetComponentActions: FC<TweetComponentActionsProps> = ({
   activeTab,
 }): ReactElement => {
   const classes = useTweetComponentMoreStyles({ isFullTweet });
-  const ref = useRef<HTMLDivElement>(null);
   const dispatch = useDispatch();
+  const tweetData = useSelector(selectTweetData);
   const myProfile = useSelector(selectUserData);
+  const ref = useRef<HTMLDivElement>(null);
 
   const [openActionsDropdown, setOpenActionsDropdown] =
     useState<boolean>(false);
@@ -100,15 +100,22 @@ const TweetComponentActions: FC<TweetComponentActionsProps> = ({
       dispatch(fetchUnpinTweet(tweet.id));
     } else {
       dispatch(fetchPinTweet(tweet.id));
-      dispatch(pinTweet({ tweet, activeTab }));
     }
     setOpenActionsDropdown(false);
     setVisibleTweetPinModal(false);
   };
 
   const onDeleteUserTweet = (): void => {
-    dispatch(fetchDeleteTweet(tweet.id));
-    dispatch(deleteTweet(tweet.id));
+    const isTweetReply = tweetData?.replies.find(
+      (reply) => reply.id === tweet.id
+    );
+
+    if (isTweetReply) {
+      dispatch(deleteTweetReply(tweet.id));
+    } else {
+      dispatch(fetchDeleteTweet(tweet.id));
+      dispatch(deleteTweet(tweet.id));
+    }
     setOpenActionsDropdown(false);
     setVisibleTweetPinModal(false);
   };
@@ -123,6 +130,8 @@ const TweetComponentActions: FC<TweetComponentActionsProps> = ({
 
   const onChangeTweetReplyType = (replyType: ReplyType): void => {
     dispatch(fetchChangeReplyType({ tweetId: tweet.id, replyType }));
+    setChangeReplyDropdown(false);
+    setOpenActionsDropdown(false);
   };
 
   const onOpenTweetComponentActionsModal = (title: string): void => {

@@ -1,17 +1,11 @@
 import { call, put, takeLatest } from "redux-saga/effects";
 
-import {
-  likeTweet,
-  retweet,
-  setTweet,
-  setTweets,
-  setTweetsLoadingState,
-  setUpdatedTweet,
-} from "./actionCreators";
+import { setTweets, setTweetsLoadingState } from "./actionCreators";
 import { TweetApi } from "../../../services/api/tweetApi";
 import { Tweet } from "./contracts/state";
 import {
   FetchAddPollActionInterface,
+  FetchAddQuoteTweetActionInterface,
   FetchAddTweetActionInterface,
   FetchChangeReplyTypeActionInterface,
   FetchDeleteTweetActionInterface,
@@ -24,14 +18,9 @@ import {
   TweetsActionType,
 } from "./contracts/actionTypes";
 import { LoadingStatus } from "../../types";
-import { setTweetData } from "../tweet/actionCreators";
 import { TagApi } from "../../../services/api/tagApi";
 import { UserApi } from "../../../services/api/userApi";
-import {
-  setAddedUserTweet,
-  setUserLikedTweet,
-  setUserRetweet,
-} from "../userTweets/actionCreators";
+import { setAddedUserTweet } from "../userTweets/actionCreators";
 
 export function* fetchTweetsRequest() {
   try {
@@ -93,9 +82,8 @@ export function* fetchAddTweetRequest({
   payload,
 }: FetchAddTweetActionInterface) {
   try {
-    yield put(setTweetsLoadingState(LoadingStatus.LOADING));
     const item: Tweet = yield call(TweetApi.createTweet, payload);
-    yield put(setTweetsLoadingState(LoadingStatus.LOADED));
+
     if (payload.profileId === item.user.id) {
       yield put(setAddedUserTweet(item));
     }
@@ -106,9 +94,21 @@ export function* fetchAddTweetRequest({
 
 export function* fetchAddPollRequest({ payload }: FetchAddPollActionInterface) {
   try {
-    yield put(setTweetsLoadingState(LoadingStatus.LOADING));
     const item: Tweet = yield call(TweetApi.createPoll, payload);
-    yield put(setTweet(item));
+
+    if (payload.profileId === item.user.id) {
+      yield put(setAddedUserTweet(item));
+    }
+  } catch (e) {
+    yield put(setTweetsLoadingState(LoadingStatus.ERROR));
+  }
+}
+
+export function* fetchAddQuoteTweet({
+  payload,
+}: FetchAddQuoteTweetActionInterface) {
+  try {
+    const item: Tweet = yield call(TweetApi.quoteTweet, payload);
 
     if (payload.profileId === item.user.id) {
       yield put(setAddedUserTweet(item));
@@ -151,17 +151,11 @@ export function* fetchDeleteTweetRequest({
 export function* fetchLikeTweetRequest({
   payload,
 }: FetchLikeTweetActionInterface) {
-  const item: Tweet = yield call(TweetApi.likeTweet, payload);
-  yield put(likeTweet(item));
-  yield put(setTweetData(item));
-  yield put(setUserLikedTweet(item));
+  yield call(TweetApi.likeTweet, payload);
 }
 
 export function* fetchRetweetRequest({ payload }: FetchRetweetActionInterface) {
-  const item: Tweet = yield call(TweetApi.retweet, payload);
-  yield put(retweet(item));
-  yield put(setTweetData(item));
-  yield put(setUserRetweet(item));
+  yield call(TweetApi.retweet, payload);
 }
 
 export function* fetchUserBookmarksRequest() {
@@ -182,6 +176,7 @@ export function* tweetsSaga() {
   );
   yield takeLatest(TweetsActionType.FETCH_ADD_TWEET, fetchAddTweetRequest);
   yield takeLatest(TweetsActionType.FETCH_ADD_POLL, fetchAddPollRequest);
+  yield takeLatest(TweetsActionType.FETCH_ADD_QUOTE_TWEET, fetchAddQuoteTweet);
   yield takeLatest(TweetsActionType.FETCH_VOTE, fetchVoteRequest);
   yield takeLatest(
     TweetsActionType.FETCH_CHANGE_REPLY_TYPE,

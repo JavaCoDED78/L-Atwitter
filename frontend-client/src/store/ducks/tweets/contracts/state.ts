@@ -11,12 +11,14 @@ export interface Tweet {
   text: string;
   addressedUsername: string;
   addressedId: number;
+  addressedTweetId?: number;
   dateTime: string;
   replyType: ReplyType;
   images?: Image[];
   likedTweets: LikeTweet[];
   retweets: Retweet[];
   replies: Tweet[];
+  quoteTweet?: Tweet;
   user: User;
   poll?: Poll;
 }
@@ -54,6 +56,14 @@ export interface AddTweet {
   replyType: ReplyType;
   pollDateTime?: number;
   choices?: string[];
+}
+
+export interface AddQuoteTweet {
+  profileId: number;
+  text: string;
+  images: Image[];
+  replyType: ReplyType;
+  tweetId: string;
 }
 
 export enum ReplyType {

@@ -13,6 +13,7 @@ import { useHomeStyles } from "./HomeStyles";
 import { AddTweetForm } from "../../components/AddTweetForm/AddTweetForm";
 import {
   fetchTweets,
+  setTweets,
   setTweetsLoadingState,
 } from "../../store/ducks/tweets/actionCreators";
 import {
@@ -30,6 +31,7 @@ import { TopTweets } from "../../icons";
 import { selectUserData } from "../../store/ducks/user/selectors";
 import Welcome from "../../components/Welcome/Welcome";
 import { LoadingStatus } from "../../store/types";
+import { fetchNotifications } from "../../store/ducks/notifications/actionCreators";
 
 const Home: FC = (): ReactElement => {
   const classes = useHomeStyles();
@@ -42,6 +44,7 @@ const Home: FC = (): ReactElement => {
   useEffect(() => {
     dispatch(setTweetsLoadingState(LoadingStatus.NEVER));
     dispatch(fetchUserData());
+    dispatch(fetchNotifications());
     dispatch(fetchTags());
 
     if (location.pathname !== "/search") {
@@ -52,6 +55,10 @@ const Home: FC = (): ReactElement => {
     }
     document.body.style.overflow = "unset";
     window.scrollTo(0, 0);
+
+    return () => {
+      dispatch(setTweets([]));
+    };
   }, []);
 
   return (
