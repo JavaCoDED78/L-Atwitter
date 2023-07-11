@@ -114,11 +114,11 @@ export function* fetchAddTweetToBookmarksRequest({
   payload,
 }: AddTweetToBookmarksActionInterface) {
   try {
-    yield put(setTweetsLoadingState(LoadingStatus.LOADING));
+    yield put(setUserLoadingStatus(LoadingStatus.LOADING));
     const item: User = yield call(UserApi.addTweetToBookmarks, payload);
     yield put(setUserData(item));
   } catch (e) {
-    yield put(setTweetsLoadingState(LoadingStatus.ERROR));
+    yield put(setUserLoadingStatus(LoadingStatus.ERROR));
   }
 }
 
@@ -126,11 +126,11 @@ export function* fetchReadMessagesRequest({
   payload,
 }: FetchReadMessagesActionInterface) {
   try {
-    yield put(setTweetsLoadingState(LoadingStatus.LOADING));
+    yield put(setUserLoadingStatus(LoadingStatus.LOADING));
     const item: User = yield call(ChatApi.readChatMessages, payload);
     yield put(setUserData(item));
   } catch (e) {
-    yield put(setTweetsLoadingState(LoadingStatus.ERROR));
+    yield put(setUserLoadingStatus(LoadingStatus.ERROR));
   }
 }
 

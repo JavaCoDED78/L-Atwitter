@@ -33,8 +33,8 @@ import { DEFAULT_PROFILE_IMG } from "../../util/url";
 import ReplyModal from "../ReplyModal/ReplyModal";
 import { textFormatter } from "../../util/textFormatter";
 import { selectUserProfile } from "../../store/ducks/userProfile/selectors";
-import TweetComponentActions from "./TweetComponentActions/TweetComponentActions";
-import ShareTweet from "./ShareTweet/ShareTweet";
+import TweetComponentActions from "../TweetComponentActions/TweetComponentActions";
+import ShareTweet from "../ShareTweet/ShareTweet";
 import VoteComponent from "../VoteComponent/VoteComponent";
 
 interface TweetComponentProps {
@@ -74,7 +74,9 @@ const TweetComponent: FC<TweetComponentProps> = ({
   const userProfile = useSelector(selectUserProfile);
   const history = useHistory();
   const location = useLocation();
+
   const [visibleModalWindow, setVisibleModalWindow] = useState<boolean>(false);
+
   const isTweetLiked = likedTweets.find(
     (like) => like.user.id === myProfile?.id
   );
@@ -84,11 +86,9 @@ const TweetComponent: FC<TweetComponentProps> = ({
   const isTweetRetweetedByUser = retweets.find(
     (retweet) => retweet.user.id === userProfile?.id
   );
-  const isFollower = myProfile?.followers?.find(
+  const isFollower = myProfile?.following?.find(
     (follower) => follower.id === user?.id
   );
-  // const isReplyFollow = !isFollowing && replyType === ReplyType.FOLLOW && myProfile?.id !== user.id;
-  // const isReplyMention = !isFollowing && replyType === ReplyType.MENTION && myProfile?.id !== user.id;
   const isModal = location.pathname.includes("/modal");
   const image = images?.[0];
   const tweetData: Tweet = {
@@ -178,7 +178,7 @@ const TweetComponent: FC<TweetComponentProps> = ({
             </a>
             <TweetComponentActions
               tweet={tweetData}
-              user={user}
+              isFullTweet={false}
               activeTab={activeTab}
             />
           </div>
@@ -243,17 +243,13 @@ const TweetComponent: FC<TweetComponentProps> = ({
             <div className={classes.footerIcon}>
               <IconButton
                 disabled={
-                  replyType === ReplyType.MENTION ||
-                  myProfile?.id === user.id ||
-                  (isFollower && replyType !== ReplyType.FOLLOW)
+                  replyType === ReplyType.MENTION && myProfile?.id !== user.id
                 }
                 onClick={onOpenReplyModalWindow}
               >
                 <span
                   style={
-                    replyType === ReplyType.MENTION ||
-                    myProfile?.id === user.id ||
-                    (isFollower && replyType !== ReplyType.FOLLOW)
+                    replyType === ReplyType.MENTION && myProfile?.id !== user.id
                       ? { color: "rgb(185, 192, 197)" }
                       : {}
                   }
@@ -301,7 +297,7 @@ const TweetComponent: FC<TweetComponentProps> = ({
                 <span>{likedTweets.length}</span>
               )}
             </div>
-            <ShareTweet tweetId={id} />
+            <ShareTweet tweetId={id} isFullTweet={false} />
           </div>
         </div>
         <div className={classes.bottomLine} />

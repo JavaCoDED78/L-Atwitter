@@ -1,4 +1,4 @@
-import React, { FC, ReactElement, useState } from "react";
+import React, { FC, ReactElement, useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   ClickAwayListener,
@@ -21,54 +21,78 @@ import {
   ReportIcon,
   TweetActivityIcon,
   UnfollowIcon,
-} from "../../../icons";
-import { selectUserData } from "../../../store/ducks/user/selectors";
-import { Tweet } from "../../../store/ducks/tweets/contracts/state";
+} from "../../icons";
+import { selectUserData } from "../../store/ducks/user/selectors";
+import { ReplyType, Tweet } from "../../store/ducks/tweets/contracts/state";
 import {
   fetchPinTweet,
   fetchUnpinTweet,
   followUser,
   unfollowUser,
-} from "../../../store/ducks/user/actionCreators";
+} from "../../store/ducks/user/actionCreators";
 import {
   deleteTweet,
   pinTweet,
-} from "../../../store/ducks/userTweets/actionCreators";
+} from "../../store/ducks/userTweets/actionCreators";
 import TweetComponentActionsModal from "./TweetComponentActionsModal/TweetComponentActionsModal";
-import { User } from "../../../store/ducks/user/contracts/state";
-import { fetchDeleteTweet } from "../../../store/ducks/tweets/actionCreators";
+import {
+  fetchChangeReplyType,
+  fetchDeleteTweet,
+} from "../../store/ducks/tweets/actionCreators";
+import TweetComponentChangeReply from "./TweetComponentChangeReply/TweetComponentChangeReply";
 
 interface TweetComponentActionsProps {
   tweet: Tweet;
-  user: User;
+  isFullTweet: boolean;
   activeTab?: number;
 }
 
 const TweetComponentActions: FC<TweetComponentActionsProps> = ({
   tweet,
-  user,
+  isFullTweet,
   activeTab,
 }): ReactElement => {
-  const classes = useTweetComponentMoreStyles();
+  const classes = useTweetComponentMoreStyles({ isFullTweet });
+  const ref = useRef<HTMLDivElement>(null);
   const dispatch = useDispatch();
   const myProfile = useSelector(selectUserData);
 
-  const [open, setOpen] = useState<boolean>(false);
+  const [openActionsDropdown, setOpenActionsDropdown] =
+    useState<boolean>(false);
+  const [openChangeReplyDropdown, setChangeReplyDropdown] =
+    useState<boolean>(false);
   const [visibleTweetPinModal, setVisibleTweetPinModal] =
     useState<boolean>(false);
   const [modalTitle, setModalTitle] = useState<string>("");
 
   const follower = myProfile?.followers?.find(
-    (follower) => follower.id === user.id
+    (follower) => follower.id === tweet.user.id
   );
   const isTweetPinned = myProfile?.pinnedTweet?.id === tweet.id;
 
-  const handleClick = (): void => {
-    setOpen((prev) => !prev);
+  useEffect(() => {
+    document.addEventListener("click", handleClickOutside, true);
+
+    return () =>
+      document.removeEventListener("click", handleClickOutside, true);
+  }, []);
+
+  const handleClickOutside = (event: any): void => {
+    if (ref.current && !ref.current.contains(event.target)) {
+      setChangeReplyDropdown(false);
+    }
   };
 
-  const handleClickAway = (): void => {
-    setOpen(false);
+  const handleClickReplyDropdown = (): void => {
+    setChangeReplyDropdown(true);
+  };
+
+  const handleClickActionsDropdown = (): void => {
+    setOpenActionsDropdown((prev) => !prev);
+  };
+
+  const handleClickAwayActionsDropdown = (): void => {
+    setOpenActionsDropdown(false);
   };
 
   const onPinUserTweet = (): void => {
@@ -78,23 +102,27 @@ const TweetComponentActions: FC<TweetComponentActionsProps> = ({
       dispatch(fetchPinTweet(tweet.id));
       dispatch(pinTweet({ tweet, activeTab }));
     }
-    setOpen(false);
+    setOpenActionsDropdown(false);
     setVisibleTweetPinModal(false);
   };
 
   const onDeleteUserTweet = (): void => {
     dispatch(fetchDeleteTweet(tweet.id));
     dispatch(deleteTweet(tweet.id));
-    setOpen(false);
+    setOpenActionsDropdown(false);
     setVisibleTweetPinModal(false);
   };
 
   const handleFollow = (): void => {
     if (follower) {
-      dispatch(unfollowUser(user!));
+      dispatch(unfollowUser(tweet.user!));
     } else {
-      dispatch(followUser(user!));
+      dispatch(followUser(tweet.user!));
     }
+  };
+
+  const onChangeTweetReplyType = (replyType: ReplyType): void => {
+    dispatch(fetchChangeReplyType({ tweetId: tweet.id, replyType }));
   };
 
   const onOpenTweetComponentActionsModal = (title: string): void => {
@@ -107,16 +135,16 @@ const TweetComponentActions: FC<TweetComponentActionsProps> = ({
   };
 
   return (
-    <div>
-      <ClickAwayListener onClickAway={handleClickAway}>
+    <div ref={ref}>
+      <ClickAwayListener onClickAway={handleClickAwayActionsDropdown}>
         <div className={classes.root}>
-          <IconButton onClick={handleClick}>
+          <IconButton onClick={handleClickActionsDropdown}>
             <span>{EditIcon}</span>
           </IconButton>
-          {open ? (
+          {openActionsDropdown ? (
             <div className={classes.dropdown}>
               <List>
-                {myProfile?.id === user.id ? (
+                {myProfile?.id === tweet.user.id ? (
                   <>
                     <ListItem
                       className={classes.delete}
@@ -137,11 +165,11 @@ const TweetComponentActions: FC<TweetComponentActionsProps> = ({
                     </ListItem>
                     <ListItem>
                       <span className={classes.textIcon}>{AddListsIcon}</span>
-                      <span
-                        className={classes.text}
-                      >{`Add/remove @${user.username} from Lists`}</span>
+                      <span className={classes.text}>
+                        {`Add/remove @${tweet.user.username} from Lists`}
+                      </span>
                     </ListItem>
-                    <ListItem>
+                    <ListItem onClick={handleClickReplyDropdown}>
                       <span className={classes.textIcon}>{ReplyIcon}</span>
                       <span className={classes.text}>Change who can reply</span>
                     </ListItem>
@@ -164,36 +192,36 @@ const TweetComponentActions: FC<TweetComponentActionsProps> = ({
                           <span className={classes.textIcon}>
                             {UnfollowIcon}
                           </span>
-                          <span
-                            className={classes.text}
-                          >{`Unfollow @${user.username}`}</span>
+                          <span className={classes.text}>
+                            {`Unfollow @${tweet.user.username}`}
+                          </span>
                         </>
                       ) : (
                         <>
                           <span className={classes.textIcon}>{FollowIcon}</span>
-                          <span
-                            className={classes.text}
-                          >{`Follow @${user.username}`}</span>
+                          <span className={classes.text}>
+                            {`Follow @${tweet.user.username}`}
+                          </span>
                         </>
                       )}
                     </ListItem>
                     <ListItem>
                       <span className={classes.textIcon}>{AddListsIcon}</span>
-                      <span
-                        className={classes.text}
-                      >{`Add/remove @${user.username} from Lists`}</span>
+                      <span className={classes.text}>
+                        {`Add/remove @${tweet.user.username} from Lists`}
+                      </span>
                     </ListItem>
                     <ListItem>
                       <span className={classes.textIcon}>{MuteIcon}</span>
-                      <span
-                        className={classes.text}
-                      >{`Mute @${user.username}`}</span>
+                      <span className={classes.text}>
+                        {`Mute @${tweet.user.username}`}
+                      </span>
                     </ListItem>
                     <ListItem>
                       <span className={classes.textIcon}>{BlockIcon}</span>
-                      <span
-                        className={classes.text}
-                      >{`Block @${user.username}`}</span>
+                      <span className={classes.text}>
+                        {`Block @${tweet.user.username}`}
+                      </span>
                     </ListItem>
                     <ListItem>
                       <span className={classes.textIcon}>{EmbedTweetIcon}</span>
@@ -208,6 +236,11 @@ const TweetComponentActions: FC<TweetComponentActionsProps> = ({
               </List>
             </div>
           ) : null}
+          <TweetComponentChangeReply
+            replyType={tweet.replyType}
+            openChangeReplyDropdown={openChangeReplyDropdown}
+            onChangeTweetReplyType={onChangeTweetReplyType}
+          />
         </div>
       </ClickAwayListener>
       <TweetComponentActionsModal

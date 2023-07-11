@@ -15,6 +15,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -128,5 +129,6 @@ public class User {
 
     public User() {
         this.registrationDate = LocalDateTime.now().withNano(0);
+        this.bookmarks = new ArrayList<>();
     }
 }

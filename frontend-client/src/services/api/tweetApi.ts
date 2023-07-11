@@ -1,6 +1,7 @@
 import { axios } from "../../core/axios";
 import {
   AddTweet,
+  ReplyType,
   Tweet,
   Vote,
 } from "../../store/ducks/tweets/contracts/state";
@@ -67,6 +68,16 @@ export const TweetApi = {
     const data = await axios.post<Response<Tweet>>(
       API_URL + `/tweets/reply/${payload.id}`,
       payload
+    );
+    return data.data;
+  },
+  async changeTweetReplyType(payload: {
+    tweetId: string;
+    replyType: ReplyType;
+  }): Promise<Response<Tweet>> {
+    const data = await axios.get<Response<Tweet>>(
+      API_URL + `/tweets/reply/change/${payload.tweetId}`,
+      { params: { replyType: payload.replyType } }
     );
     return data.data;
   },

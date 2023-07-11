@@ -77,6 +77,10 @@ public class TweetMapper {
         return convertToTweetResponse(tweetService.replyTweet(tweetId, convertToTweetEntity(tweetRequest)));
     }
 
+    public TweetResponse changeTweetReplyType(Long tweetId, ReplyType replyType) {
+        return convertToTweetResponse(tweetService.changeTweetReplyType(tweetId, replyType));
+    }
+
     public TweetResponse voteInPoll(Long tweetId, Long pollChoiceId) {
         return convertToTweetResponse(tweetService.voteInPoll(tweetId, pollChoiceId));
     }

@@ -80,8 +80,17 @@ public class TweetController {
         return ResponseEntity.ok(tweetMapper.replyTweet(tweetId, tweetRequest));
     }
 
+    @GetMapping("/reply/change/{tweetId}")
+    public ResponseEntity<TweetResponse> changeTweetReplyType(@PathVariable Long tweetId, @RequestParam ReplyType replyType) {
+        TweetResponse tweet = tweetMapper.changeTweetReplyType(tweetId, replyType);
+        messagingTemplate.convertAndSend("/topic/feed", tweet);
+        return ResponseEntity.ok(tweet);
+    }
+
     @PostMapping("/vote")
     public ResponseEntity<TweetResponse> voteInPoll(@RequestBody VoteRequest voteRequest) {
-        return ResponseEntity.ok(tweetMapper.voteInPoll(voteRequest.getTweetId(), voteRequest.getPollChoiceId()));
+        TweetResponse tweet = tweetMapper.voteInPoll(voteRequest.getTweetId(), voteRequest.getPollChoiceId());
+        messagingTemplate.convertAndSend("/topic/feed", tweet);
+        return ResponseEntity.ok(tweet);
     }
 }

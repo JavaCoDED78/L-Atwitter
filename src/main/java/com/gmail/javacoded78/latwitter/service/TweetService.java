@@ -1,6 +1,7 @@
 package com.gmail.javacoded78.latwitter.service;
 
 import com.gmail.javacoded78.latwitter.model.Notification;
+import com.gmail.javacoded78.latwitter.model.ReplyType;
 import com.gmail.javacoded78.latwitter.model.Tweet;
 
 import java.util.List;
@@ -25,6 +26,8 @@ public interface TweetService {
     Notification retweet(Long tweetId);
 
     Tweet replyTweet(Long tweetId, Tweet reply);
+
+    Tweet changeTweetReplyType(Long tweetId, ReplyType replyType);
 
     Tweet voteInPoll(Long tweetId, Long pollChoiceId);
 }
