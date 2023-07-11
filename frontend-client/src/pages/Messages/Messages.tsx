@@ -1,4 +1,4 @@
-import React, { FC, ReactElement, useEffect, useState } from "react";
+import React, { FC, ReactElement, useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   Avatar,
@@ -18,7 +18,6 @@ import MessagesModal from "./MessagesModal/MessagesModal";
 import { fetchChats } from "../../store/ducks/chats/actionCreators";
 import { selectUserData } from "../../store/ducks/user/selectors";
 import { selectChatsItems } from "../../store/ducks/chats/selectors";
-import { selectUsers } from "../../store/ducks/users/selectors";
 import { PeopleSearchInput } from "./PeopleSearchInput/PeopleSearchInput";
 import { DEFAULT_PROFILE_IMG } from "../../util/url";
 import {
@@ -35,14 +34,17 @@ import {
   fetchChatMessages,
 } from "../../store/ducks/chatMessages/actionCreators";
 import { selectChatMessagesItems } from "../../store/ducks/chatMessages/selectors";
+import { fetchReadMessages } from "../../store/ducks/user/actionCreators";
+import { formatChatMessageDate } from "../../util/formatDate";
 
 const Messages: FC = (): ReactElement => {
   const classes = useMessagesStyles();
   const dispatch = useDispatch();
   const myProfile = useSelector(selectUserData);
   const chats = useSelector(selectChatsItems);
-  const users = useSelector(selectUsers);
   const messages = useSelector(selectChatMessagesItems);
+  const chatEndRef = useRef<HTMLDivElement>(null);
+
   const [text, setText] = useState<string>("");
   const [message, setMessage] = useState<string>("");
   const [visibleModalWindow, setVisibleModalWindow] = useState<boolean>(false);
@@ -51,7 +53,18 @@ const Messages: FC = (): ReactElement => {
 
   useEffect(() => {
     dispatch(fetchChats());
+    scrollToBottom();
   }, []);
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
+
+  const scrollToBottom = () => {
+    if (chatEndRef.current) {
+      chatEndRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  };
 
   const onOpenModalWindow = (): void => {
     setVisibleModalWindow(true);
@@ -63,6 +76,7 @@ const Messages: FC = (): ReactElement => {
 
   const handleListItemClick = (chat: Chat): void => {
     dispatch(fetchChatMessages(chat?.id!));
+    dispatch(fetchReadMessages(chat?.id!));
     setParticipant(chat.participants[1]);
     setChat(chat);
   };
@@ -224,7 +238,9 @@ const Messages: FC = (): ReactElement => {
                       </div>
                       <div className={classes.myMessageDate}>
                         <span>{CheckIcon}</span>
-                        <span>{message.date}</span>
+                        <span>
+                          {formatChatMessageDate(new Date(message.date))}
+                        </span>
                       </div>
                     </>
                   ) : (
@@ -245,11 +261,12 @@ const Messages: FC = (): ReactElement => {
                         <span>{message.text}</span>
                       </div>
                       <div className={classes.participantMessageDate}>
-                        {message.date}
+                        {formatChatMessageDate(new Date(message.date))}
                       </div>
                     </>
                   )
                 )}
+                <div ref={chatEndRef}></div>
               </Paper>
               <Paper className={classes.chatFooter}>
                 <div className={classes.chatIcon}>

@@ -10,6 +10,7 @@ import { userProfileSaga } from "./ducks/userProfile/sagas";
 import { usersSearchSaga } from "./ducks/usersSearch/sagas";
 import { chatsSaga } from "./ducks/chats/sagas";
 import { chatMessagesSaga } from "./ducks/chatMessages/sagas";
+import { notificationsSaga } from "./ducks/notifications/sagas";
 
 export default function* rootSaga() {
   yield all([
@@ -23,5 +24,6 @@ export default function* rootSaga() {
     usersSearchSaga(),
     chatsSaga(),
     chatMessagesSaga(),
+    notificationsSaga(),
   ]);
 }

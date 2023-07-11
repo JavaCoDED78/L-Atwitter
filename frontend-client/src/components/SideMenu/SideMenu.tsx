@@ -1,4 +1,4 @@
-import React, { FC, ReactElement, useState } from "react";
+import React, { FC, ReactElement, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { NavLink, useLocation } from "react-router-dom";
 import { Button, Hidden, IconButton, Typography } from "@material-ui/core";
@@ -7,38 +7,52 @@ import CreateIcon from "@material-ui/icons/Create";
 
 import {
   BookmarksIcon,
+  BookmarksIconFilled,
+  ExploreIcon,
+  ExploreIconFilled,
   HomeIcon,
+  HomeIconFilled,
   ListsIcon,
   MessagesIcon,
+  MessagesIconFilled,
   MoreIcon,
   NotificationsIcon,
-  ProfileIcon,
-  ExploreIcon,
-  HomeIconFilled,
-  ExploreIconFilled,
-  ProfileIconFilled,
-  BookmarksIconFilled,
   NotificationsIconFilled,
-  MessagesIconFilled,
+  ProfileIcon,
+  ProfileIconFilled,
 } from "../../icons";
 import UserSideProfile from "../UserSideProfile/UserSideProfile";
 import { selectUserData } from "../../store/ducks/user/selectors";
 import { useSideMenuStyles } from "./SideMenuStyles";
 import AddTweetModal from "../AddTweetModal/AddTweetModal";
+import { selectLoadingState } from "../../store/ducks/tweets/selectors";
+import { LoadingStatus } from "../../store/types";
 
 const SideMenu: FC = (): ReactElement => {
   const classes = useSideMenuStyles();
   const location = useLocation();
   const myProfile = useSelector(selectUserData);
   const userData = useSelector(selectUserData);
-  const [visibleAddTweet, setSetVisibleAddTweet] = useState<boolean>(false);
+  const loadingStatus = useSelector(selectLoadingState);
+
+  const [visibleAddTweet, setVisibleAddTweet] = useState<boolean>(false);
+  const [visibleHomeNotification, setVisibleHomeNotification] =
+    useState<boolean>(false);
+
+  useEffect(() => {
+    if (loadingStatus === LoadingStatus.SUCCESS) {
+      setVisibleHomeNotification(true);
+    } else {
+      setVisibleHomeNotification(false);
+    }
+  }, [loadingStatus]);
 
   const handleClickOpenAddTweet = (): void => {
-    setSetVisibleAddTweet(true);
+    setVisibleAddTweet(true);
   };
 
   const onCloseAddTweet = (): void => {
-    setSetVisibleAddTweet(false);
+    setVisibleAddTweet(false);
   };
 
   return (
@@ -56,6 +70,9 @@ const SideMenu: FC = (): ReactElement => {
             <div>
               <Hidden smDown>
                 <Typography className={classes.label} variant="h6">
+                  {visibleHomeNotification && (
+                    <span className={classes.homeNotification}></span>
+                  )}
                   {location.pathname.includes("/home") ? (
                     <span>{HomeIconFilled}</span>
                   ) : (
@@ -109,6 +126,11 @@ const SideMenu: FC = (): ReactElement => {
             <div>
               <Hidden smDown>
                 <Typography className={classes.label} variant="h6">
+                  {myProfile?.unreadMessages?.length !== 0 ? (
+                    <span className={classes.count}>
+                      {myProfile?.unreadMessages?.length}
+                    </span>
+                  ) : null}
                   {location.pathname.includes("/messages") ? (
                     <span>{MessagesIconFilled}</span>
                   ) : (

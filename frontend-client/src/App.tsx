@@ -1,15 +1,24 @@
 import React, { FC, ReactElement, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Route, Switch, useHistory, useLocation } from "react-router-dom";
-import { makeStyles, Theme } from "@material-ui/core";
+import { CompatClient, Stomp } from "@stomp/stompjs";
+import SockJS from "sockjs-client";
 
 import Authentication from "./pages/Authentication/Authentication";
 import Home from "./pages/Home/Home";
 import { Layout } from "./pages/Layout";
 import UserPage from "./pages/UserPage/UserPage";
-import { selectIsAuth, selectUserStatus } from "./store/ducks/user/selectors";
+import {
+  selectIsAuth,
+  selectUserData,
+  selectUserStatus,
+} from "./store/ducks/user/selectors";
 import { LoadingStatus } from "./store/types";
-import { fetchUserData } from "./store/ducks/user/actionCreators";
+import {
+  fetchUserData,
+  setNewNotification,
+  setUnreadMessage,
+} from "./store/ducks/user/actionCreators";
 import Search from "./pages/Search/Search";
 import FollowingFollowers from "./pages/FollowingFollowers/FollowingFollowers";
 import TweetImageModal from "./components/TweetImageModal/TweetImageModal";
@@ -19,24 +28,19 @@ import Bookmarks from "./pages/Bookmarks/Bookmarks";
 import Notifications from "./pages/Notifications/Notifications";
 import NotificationInfo from "./pages/Notifications/NotificationInfo/NotificationInfo";
 import Messages from "./pages/Messages/Messages";
+import { setChatMessage } from "./store/ducks/chatMessages/actionCreators";
+import { WS_URL } from "./util/url";
+import { setNotification } from "./store/ducks/notifications/actionCreators";
+import { selectNotificationsItems } from "./store/ducks/notifications/selectors";
+import { setTweet } from "./store/ducks/tweets/actionCreators";
 
-export const useAppStyles = makeStyles((theme: Theme) => ({
-  centered: {
-    position: "absolute",
-    left: "50%",
-    top: "50%",
-    transform: "translate(-50%, -50%)",
-    "& svg": {
-      width: 80,
-      height: 80,
-    },
-  },
-}));
+let stompClient: CompatClient | null = null;
 
 const App: FC = (): ReactElement => {
-  const classes = useAppStyles();
   const history = useHistory();
   const dispatch = useDispatch();
+  const myProfile = useSelector(selectUserData);
+  const notifications = useSelector(selectNotificationsItems);
   const isAuth = useSelector(selectIsAuth);
   const loadingStatus = useSelector(selectUserStatus);
   const isReady =
@@ -62,13 +66,39 @@ const App: FC = (): ReactElement => {
     }
   }, []);
 
-  // if (!isReady) {
-  //     return (
-  //         <div className={classes.centered}>
-  //             <TwitterIcon color="primary" />
-  //         </div>
-  //     );
-  // }
+  useEffect(() => {
+    if (myProfile) {
+      stompClient = Stomp.over(new SockJS(WS_URL));
+      stompClient.connect({}, () => {
+        stompClient?.subscribe("/topic/chat/" + myProfile.id, (response) => {
+          dispatch(setChatMessage(JSON.parse(response.body)));
+
+          if (myProfile.id !== JSON.parse(response.body).author.id) {
+            dispatch(setUnreadMessage(JSON.parse(response.body)));
+          }
+        });
+
+        stompClient?.subscribe(
+          "/topic/notifications/" + myProfile.id,
+          (response) => {
+            const isExist = notifications.find(
+              (notification) => notification.id === JSON.parse(response.body).id
+            );
+
+            if (!isExist) {
+              dispatch(setNotification(JSON.parse(response.body)));
+              dispatch(setNewNotification());
+            }
+          }
+        );
+
+        stompClient?.subscribe("/topic/feed", (response) => {
+          dispatch(setTweet(JSON.parse(response.body)));
+        });
+      });
+    }
+    return () => stompClient?.disconnect();
+  }, [myProfile]);
 
   return (
     <div className="App">
