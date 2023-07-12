@@ -37,6 +37,11 @@ public class TweetController {
         return ResponseEntity.ok(tweetMapper.getMediaTweets());
     }
 
+    @GetMapping("/video")
+    public ResponseEntity<List<TweetResponse>> getTweetsWithVideo() {
+        return ResponseEntity.ok(tweetMapper.getTweetsWithVideo());
+    }
+
     @PostMapping
     public ResponseEntity<TweetResponse> createTweet(@RequestBody TweetRequest tweetRequest) {
         TweetResponse tweet = tweetMapper.createTweet(tweetRequest);
@@ -70,8 +75,11 @@ public class TweetController {
     @GetMapping("/like/{tweetId}")
     public ResponseEntity<NotificationTweetResponse> likeTweet(@PathVariable Long tweetId) {
         NotificationResponse notification = tweetMapper.likeTweet(tweetId);
+
+        if (notification.getId() != null) {
+            messagingTemplate.convertAndSend("/topic/notifications/" + notification.getTweet().getUser().getId(), notification);
+        }
         messagingTemplate.convertAndSend("/topic/feed", notification.getTweet());
-        messagingTemplate.convertAndSend("/topic/notifications/" + notification.getTweet().getUser().getId(), notification);
         messagingTemplate.convertAndSend("/topic/tweet/" + notification.getTweet().getId(), notification.getTweet());
         messagingTemplate.convertAndSend("/topic/user/update/tweet/" + notification.getTweet().getUser().getId(), notification.getTweet());
         return ResponseEntity.ok(notification.getTweet());
@@ -80,8 +88,11 @@ public class TweetController {
     @GetMapping("/retweet/{tweetId}")
     public ResponseEntity<NotificationTweetResponse> retweet(@PathVariable Long tweetId) {
         NotificationResponse notification = tweetMapper.retweet(tweetId);
+
+        if (notification.getId() != null) {
+            messagingTemplate.convertAndSend("/topic/notifications/" + notification.getTweet().getUser().getId(), notification);
+        }
         messagingTemplate.convertAndSend("/topic/feed", notification.getTweet());
-        messagingTemplate.convertAndSend("/topic/notifications/" + notification.getTweet().getUser().getId(), notification);
         messagingTemplate.convertAndSend("/topic/tweet/" + notification.getTweet().getId(), notification.getTweet());
         messagingTemplate.convertAndSend("/topic/user/update/tweet/" + notification.getTweet().getUser().getId(), notification.getTweet());
         return ResponseEntity.ok(notification.getTweet());

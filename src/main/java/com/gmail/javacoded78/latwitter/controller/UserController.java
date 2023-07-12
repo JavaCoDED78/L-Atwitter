@@ -2,11 +2,13 @@ package com.gmail.javacoded78.latwitter.controller;
 import com.gmail.javacoded78.latwitter.dto.request.UserRequest;
 import com.gmail.javacoded78.latwitter.dto.response.ImageResponse;
 import com.gmail.javacoded78.latwitter.dto.response.notification.NotificationResponse;
+import com.gmail.javacoded78.latwitter.dto.response.notification.NotificationUserResponse;
 import com.gmail.javacoded78.latwitter.dto.response.tweet.TweetResponse;
 import com.gmail.javacoded78.latwitter.dto.response.UserResponse;
 import com.gmail.javacoded78.latwitter.mapper.UserMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -25,6 +27,7 @@ import java.util.List;
 public class UserController {
 
     private final UserMapper userMapper;
+    private final SimpMessagingTemplate messagingTemplate;
 
     @GetMapping("/{userId}")
     public ResponseEntity<UserResponse> getUserById(@PathVariable Long userId) {
@@ -97,13 +100,13 @@ public class UserController {
     }
 
     @GetMapping("/follow/{userId}")
-    public ResponseEntity<UserResponse> follow(@PathVariable Long userId) {
-        return ResponseEntity.ok(userMapper.follow(userId));
-    }
+    public ResponseEntity<NotificationUserResponse> follow(@PathVariable Long userId) {
+        NotificationResponse notification = userMapper.follow(userId);
 
-    @GetMapping("/unfollow/{userId}")
-    public ResponseEntity<UserResponse> unfollow(@PathVariable Long userId) {
-        return ResponseEntity.ok(userMapper.unfollow(userId));
+        if (notification.getId() != null) {
+            messagingTemplate.convertAndSend("/topic/notifications/" + notification.getUserToFollow().getId(), notification);
+        }
+        return ResponseEntity.ok(notification.getUserToFollow());
     }
 
     @GetMapping("/pin/tweet/{tweetId}")

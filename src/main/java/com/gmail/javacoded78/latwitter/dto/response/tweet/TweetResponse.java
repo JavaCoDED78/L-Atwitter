@@ -4,6 +4,7 @@ import com.gmail.javacoded78.latwitter.dto.response.ImageResponse;
 import com.gmail.javacoded78.latwitter.dto.response.QuoteTweetResponse;
 import com.gmail.javacoded78.latwitter.dto.response.UserResponse;
 import com.gmail.javacoded78.latwitter.dto.response.poll.PollResponse;
+import com.gmail.javacoded78.latwitter.model.LinkCoverSize;
 import com.gmail.javacoded78.latwitter.model.ReplyType;
 import lombok.Data;
 
@@ -24,6 +25,7 @@ public class TweetResponse {
     private String linkTitle;
     private String linkDescription;
     private String linkCover;
+    private LinkCoverSize linkCoverSize;
     private QuoteTweetResponse quoteTweet;
     private UserResponse user;
     private PollResponse poll;

@@ -135,7 +135,7 @@ const Follower: FC<FollowerProps<User>> = ({
                   onClick={onCloseUnfollowModal}
                   variant="contained"
                 >
-                  ! Cancel
+                  Cancel
                 </Button>
                 <Button
                   className={classes.modalUnfollowButton}

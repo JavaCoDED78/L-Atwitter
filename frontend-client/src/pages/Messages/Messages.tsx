@@ -140,6 +140,7 @@ const Messages: FC = (): ReactElement => {
                 >
                   {chats.map((chat) => (
                     <ListItem
+                      key={chat.id}
                       button
                       className={classes.listItem}
                       id={
@@ -232,7 +233,7 @@ const Messages: FC = (): ReactElement => {
               <Paper className={classes.chat}>
                 {messages.map((message) =>
                   message.author.id === myProfile?.id ? (
-                    <>
+                    <React.Fragment key={message.id}>
                       <div className={classes.myMessage}>
                         <span>{message.text}</span>
                       </div>
@@ -242,9 +243,9 @@ const Messages: FC = (): ReactElement => {
                           {formatChatMessageDate(new Date(message.date))}
                         </span>
                       </div>
-                    </>
+                    </React.Fragment>
                   ) : (
-                    <>
+                    <React.Fragment key={message.id}>
                       <div className={classes.participantMessage}>
                         <Avatar
                           className={classes.participantAvatar}
@@ -263,7 +264,7 @@ const Messages: FC = (): ReactElement => {
                       <div className={classes.participantMessageDate}>
                         {formatChatMessageDate(new Date(message.date))}
                       </div>
-                    </>
+                    </React.Fragment>
                   )
                 )}
                 <div ref={chatEndRef}></div>

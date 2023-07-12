@@ -2,17 +2,8 @@ package com.gmail.javacoded78.latwitter.service.impl;
 
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.PutObjectRequest;
-import com.gmail.javacoded78.latwitter.model.Bookmark;
-import com.gmail.javacoded78.latwitter.model.Image;
-import com.gmail.javacoded78.latwitter.model.LikeTweet;
-import com.gmail.javacoded78.latwitter.model.Notification;
-import com.gmail.javacoded78.latwitter.model.Retweet;
-import com.gmail.javacoded78.latwitter.model.Tweet;
-import com.gmail.javacoded78.latwitter.model.User;
-import com.gmail.javacoded78.latwitter.repository.BookmarkRepository;
-import com.gmail.javacoded78.latwitter.repository.ImageRepository;
-import com.gmail.javacoded78.latwitter.repository.TweetRepository;
-import com.gmail.javacoded78.latwitter.repository.UserRepository;
+import com.gmail.javacoded78.latwitter.model.*;
+import com.gmail.javacoded78.latwitter.repository.*;
 import com.gmail.javacoded78.latwitter.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -24,7 +15,11 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.security.Principal;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -35,6 +30,7 @@ public class UserServiceImpl implements UserService {
     private final TweetRepository tweetRepository;
     private final ImageRepository imageRepository;
     private final BookmarkRepository bookmarkRepository;
+    private final NotificationRepository notificationRepository;
     private final AmazonS3 amazonS3client;
 
     @Value("${amazon.s3.bucket.name}")
@@ -201,23 +197,43 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User follow(Long userId) {
+    public Notification follow(Long userId) {
         Principal principal = SecurityContextHolder.getContext().getAuthentication();
         User user = userRepository.findByEmail(principal.getName());
         User currentUser = userRepository.getOne(userId);
-        user.getFollowers().add(currentUser);
-        userRepository.save(user);
-        return currentUser;
-    }
 
-    @Override
-    public User unfollow(Long userId) {
-        Principal principal = SecurityContextHolder.getContext().getAuthentication();
-        User user = userRepository.findByEmail(principal.getName());
-        User currentUser = userRepository.getOne(userId);
-        user.getFollowers().remove(currentUser);
+        List<User> followers = user.getFollowers();
+        Optional<User> follower = followers.stream()
+                .filter(f -> f.getId().equals(currentUser.getId()))
+                .findFirst();
+
+        if (follower.isPresent()) {
+            followers.remove(follower.get());
+        } else {
+            followers.add(currentUser);
+        }
         userRepository.save(user);
-        return currentUser;
+
+        Notification notification = new Notification();
+        notification.setNotificationType(NotificationType.FOLLOW);
+        notification.setUser(user);
+        notification.setUserToFollow(currentUser);
+
+        if (!currentUser.getId().equals(user.getId())) {
+            Optional<Notification> userNotification = currentUser.getNotifications().stream()
+                    .filter(n -> n.getNotificationType().equals(NotificationType.FOLLOW) && n.getUser().equals(user))
+                    .findFirst();
+
+            if (userNotification.isEmpty()) {
+                Notification newNotification = notificationRepository.save(notification);
+                currentUser.setNotificationsCount(currentUser.getNotificationsCount() + 1);
+                List<Notification> notifications = currentUser.getNotifications();
+                notifications.add(newNotification);
+                userRepository.save(currentUser);
+                return newNotification;
+            }
+        }
+        return notification;
     }
 
     @Override

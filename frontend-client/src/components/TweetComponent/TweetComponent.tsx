@@ -17,7 +17,11 @@ import {
   fetchLikeTweet,
   fetchRetweet,
 } from "../../store/ducks/tweets/actionCreators";
-import { ReplyType, Tweet } from "../../store/ducks/tweets/contracts/state";
+import {
+  LinkCoverSize,
+  ReplyType,
+  Tweet,
+} from "../../store/ducks/tweets/contracts/state";
 import { selectUserData } from "../../store/ducks/user/selectors";
 import { DEFAULT_PROFILE_IMG } from "../../util/url";
 import ReplyModal from "../ReplyModal/ReplyModal";
@@ -30,9 +34,9 @@ import QuoteTweet from "../QuoteTweet/QuoteTweet";
 import Quote from "../Quote/Quote";
 import PopperUserWindow from "../PopperUserWindow/PopperUserWindow";
 import { withHover } from "../../hoc/withHover";
-import YouTubeVideoPreview from "./YouTubeVideoPreview/YouTubeVideoPreview";
-import YouTubeVideo from "./YouTubeVideo/YouTubeVideo";
-import LinkPreview from "./LinkPreview/LinkPreview";
+import YouTubeVideo from "../YouTubeVideo/YouTubeVideo";
+import LargeLinkPreview from "../LargeLinkPreview/LargeLinkPreview";
+import SmallLinkPreview from "../SmallLinkPreview/SmallLinkPreview";
 
 interface TweetComponentProps<T> {
   item?: T;
@@ -55,7 +59,6 @@ const TweetComponent: FC<TweetComponentProps<Tweet>> = ({
   const userProfile = useSelector(selectUserProfile);
   const history = useHistory();
   const location = useLocation();
-
   const [visibleModalWindow, setVisibleModalWindow] = useState<boolean>(false);
   const [openYouTubeVideo, setOpenYouTubeVideo] = useState<boolean>(false);
 
@@ -147,12 +150,12 @@ const TweetComponent: FC<TweetComponentProps<Tweet>> = ({
           />
         </a>
         <div style={{ flex: 1 }}>
-          <div className={classes.header}>
-            <a
-              onClick={handleClickUser}
-              onMouseEnter={handleHover}
-              onMouseLeave={handleLeave}
-            >
+          <div
+            className={classes.header}
+            onMouseEnter={handleHover}
+            onMouseLeave={handleLeave}
+          >
+            <a onClick={handleClickUser}>
               <b>{tweet?.user.fullName}</b>&nbsp;
               <span className={classes.headerText}>
                 @{tweet?.user.username}
@@ -238,13 +241,15 @@ const TweetComponent: FC<TweetComponentProps<Tweet>> = ({
                 openYouTubeVideo ? (
                   <YouTubeVideo tweet={tweet!} />
                 ) : (
-                  <YouTubeVideoPreview
+                  <SmallLinkPreview
                     tweet={tweet!}
                     onOpenYouTubeVideo={onOpenYouTubeVideo}
                   />
                 )
+              ) : tweet?.linkCoverSize === LinkCoverSize.LARGE ? (
+                <LargeLinkPreview tweet={tweet!} />
               ) : (
-                <LinkPreview tweet={tweet!} />
+                <SmallLinkPreview tweet={tweet!} />
               )
             ) : null}
           </Typography>
