@@ -2,7 +2,6 @@ import { Action } from "redux";
 
 import {
   AddLists,
-  AddTweetToLists,
   AddUserToLists,
   Lists,
   ListsState,
@@ -24,7 +23,6 @@ export enum ListsActionType {
   FETCH_LISTS = "lists/FETCH_LISTS",
   FETCH_USER_LISTS = "lists/FETCH_USER_LISTS",
   FETCH_PINNED_LISTS = "lists/FETCH_PINNED_LISTS",
-  ADD_TWEET_TO_LISTS = "lists/ADD_TWEET_TO_LISTS",
   ADD_USER_TO_LISTS = "lists/ADD_USER_TO_LISTS",
   PROCESS_LIST_MEMBER = "lists/PROCESS_LIST_MEMBER",
   PIN_LIST = "lists/PIN_LIST",
@@ -97,12 +95,6 @@ export interface FetchUserListsActionInterface extends Action<ListsActionType> {
 export interface FetchPinnedListsActionInterface
   extends Action<ListsActionType> {
   type: ListsActionType.FETCH_PINNED_LISTS;
-}
-
-export interface AddTweetToListsActionInterface
-  extends Action<ListsActionType> {
-  type: ListsActionType.ADD_TWEET_TO_LISTS;
-  payload: AddTweetToLists;
 }
 
 export interface AddUserToListsActionInterface extends Action<ListsActionType> {

@@ -79,10 +79,7 @@ const QuoteTweet: FC<QuoteTweetProps> = ({
             />
           )}
         </IconButton>
-        {retweets.length === 0 ||
-        retweets === null ? null : isTweetRetweetedByMe ? (
-          <span id={"retweets"}>{retweets.length}</span>
-        ) : (
+        {retweets.length !== 0 && (
           <span id={"retweets"}>{retweets.length}</span>
         )}
         {open && (

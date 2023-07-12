@@ -282,8 +282,7 @@ const TweetComponent: FC<
                 <>{ReplyIcon}</>
                 {visibleReplyAction && <HoverAction actionText={"Reply"} />}
               </IconButton>
-              {tweet?.replies?.length === 0 ||
-              tweet?.replies === null ? null : (
+              {tweet?.replies?.length !== 0 && (
                 <span>{tweet?.replies?.length}</span>
               )}
             </div>
@@ -307,10 +306,7 @@ const TweetComponent: FC<
                   <HoverAction actionText={isTweetLiked ? "Unlike" : "Like"} />
                 )}
               </IconButton>
-              {tweet?.likedTweets.length === 0 ||
-              tweet?.likedTweets === null ? null : isTweetLiked ? (
-                <span>{tweet?.likedTweets.length}</span>
-              ) : (
+              {tweet?.likedTweets.length !== 0 && (
                 <span>{tweet?.likedTweets.length}</span>
               )}
             </div>

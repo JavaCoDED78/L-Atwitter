@@ -3,7 +3,20 @@ package com.gmail.javacoded78.latwitter.model;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -54,9 +67,15 @@ public class Tweet {
     private LinkCoverSize linkCoverSize;
 
     @OneToOne
+    @JoinTable(name = "tweet_quote",
+            joinColumns = @JoinColumn(name = "tweets_id"),
+            inverseJoinColumns = @JoinColumn(name = "quote_tweet_id"))
     private Tweet quoteTweet;
 
     @OneToOne
+    @JoinTable(name = "tweet_pool",
+            joinColumns = @JoinColumn(name = "tweet_id"),
+            inverseJoinColumns = @JoinColumn(name = "pool_id"))
     private Poll poll;
 
     @ManyToOne

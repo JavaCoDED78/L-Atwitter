@@ -235,7 +235,7 @@ const TweetComponentActions: FC<TweetComponentActionsProps> = ({
                         </>
                       )}
                     </ListItem>
-                    <ListItem>
+                    <ListItem onClick={onOpenListsModal}>
                       <span className={classes.textIcon}>{AddListsIcon}</span>
                       <span className={classes.text}>
                         {`Add/remove @${tweet.user.username} from Lists`}
@@ -283,7 +283,7 @@ const TweetComponentActions: FC<TweetComponentActionsProps> = ({
       />
       {visibleListsModal && (
         <ListsModal
-          tweet={tweet}
+          user={tweet.user}
           visible={visibleListsModal}
           onClose={onCloseListsModal}
         />

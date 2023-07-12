@@ -3,6 +3,7 @@ package com.gmail.javacoded78.latwitter.service.impl;
 import com.gmail.javacoded78.latwitter.model.Lists;
 import com.gmail.javacoded78.latwitter.model.Tweet;
 import com.gmail.javacoded78.latwitter.model.User;
+import com.gmail.javacoded78.latwitter.repository.ImageRepository;
 import com.gmail.javacoded78.latwitter.repository.ListsRepository;
 import com.gmail.javacoded78.latwitter.repository.TweetRepository;
 import com.gmail.javacoded78.latwitter.repository.UserRepository;
@@ -25,7 +26,7 @@ public class ListsServiceImpl implements ListsService {
 
     private final ListsRepository listsRepository;
     private final UserRepository userRepository;
-    private final TweetRepository tweetRepository;
+    private final ImageRepository imageRepository;
 
     @Override
     public List<Lists> getAllTweetLists() {
@@ -52,8 +53,7 @@ public class ListsServiceImpl implements ListsService {
     @Override
     public Lists getListById(Long listId) {
         Lists list = listsRepository.getOne(listId);
-        List<Tweet> sortedTweets = mergeTweets(list);
-        list.setTweets(sortedTweets);
+        list.setTweets(mergeTweets(list));
         return list;
     }
 
@@ -67,6 +67,35 @@ public class ListsServiceImpl implements ListsService {
         userLists.add(userTweetList);
         userRepository.save(user);
         return userTweetList;
+    }
+
+    @Override
+    public Lists editTweetList(Lists listInfo) {
+        Lists listFromDb = listsRepository.getOne(listInfo.getId());
+        listFromDb.setName(listInfo.getName());
+        listFromDb.setDescription(listInfo.getDescription());
+        listFromDb.setWallpaper(listInfo.getWallpaper());
+        listFromDb.setPrivate(listInfo.isPrivate());
+        Lists list = listsRepository.save(listFromDb);
+        list.setTweets(mergeTweets(list));
+        return list;
+    }
+
+    @Override
+    public String deleteList(Long listId) {
+        Principal principal = SecurityContextHolder.getContext().getAuthentication();
+        User user = userRepository.findByEmail(principal.getName());
+        Lists list = listsRepository.getOne(listId);
+        list.getTweets().removeAll(list.getTweets());
+        list.getMembers().removeAll(list.getMembers());
+        list.getFollowers().removeAll(list.getFollowers());
+
+        if (list.getWallpaper() != null) {
+            imageRepository.delete(list.getWallpaper());
+        }
+        user.getUserLists().remove(list);
+        listsRepository.delete(list);
+        return "List id:" + list.getId() + " deleted.";
     }
 
     @Override
@@ -103,36 +132,6 @@ public class ListsServiceImpl implements ListsService {
             list.setPinnedDate(null);
         }
         return listsRepository.save(list);
-    }
-
-    @Override
-    public List<Lists> addTweetToLists(Long tweetId, List<Lists> lists) {
-        Tweet tweet = tweetRepository.getOne(tweetId);
-        List<Lists> userLists = getUserTweetLists();
-
-        lists.forEach((list) -> {
-            Optional<Tweet> tweetInList = list.getTweets().stream()
-                    .filter(t -> t.getId().equals(tweet.getId()))
-                    .findFirst();
-
-            userLists.forEach((userList) -> {
-                Optional<Tweet> tweetInUserList = userList.getTweets().stream()
-                        .filter(t -> t.getId().equals(tweet.getId()))
-                        .findFirst();
-
-                if (list.getId().equals(userList.getId())) {
-                    if (tweetInList.isPresent() && tweetInUserList.isEmpty()) {
-                        userList.getTweets().add(tweet);
-                        listsRepository.save(userList);
-                    }
-                    if (tweetInList.isEmpty() && tweetInUserList.isPresent()) {
-                        userList.getTweets().remove(tweet);
-                        listsRepository.save(userList);
-                    }
-                }
-            });
-        });
-        return userLists;
     }
 
     @Override
@@ -179,8 +178,7 @@ public class ListsServiceImpl implements ListsService {
             list.getMembers().add(user);
         }
         listsRepository.save(list);
-        List<Tweet> sortedTweets = mergeTweets(list);
-        list.setTweets(sortedTweets);
+        list.setTweets(mergeTweets(list));
         return list;
     }
 

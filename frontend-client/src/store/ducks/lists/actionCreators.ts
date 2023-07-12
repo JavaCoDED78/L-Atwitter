@@ -1,5 +1,4 @@
 import {
-  AddTweetToListsActionInterface,
   AddUserToListsActionInterface,
   CreateListActionInterface,
   FetchListsActionInterface,
@@ -25,7 +24,6 @@ import {
 } from "./contracts/actionTypes";
 import {
   AddLists,
-  AddTweetToLists,
   AddUserToLists,
   Lists,
   ListsState,
@@ -87,13 +85,6 @@ export const setUnfollowList = (
   payload: Lists
 ): SetUnfollowListActionInterface => ({
   type: ListsActionType.SET_UNFOLLOW_LIST,
-  payload,
-});
-
-export const addTweetToLists = (
-  payload: AddTweetToLists
-): AddTweetToListsActionInterface => ({
-  type: ListsActionType.ADD_TWEET_TO_LISTS,
   payload,
 });
 

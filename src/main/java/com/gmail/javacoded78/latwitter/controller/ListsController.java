@@ -1,18 +1,12 @@
 package com.gmail.javacoded78.latwitter.controller;
 
 import com.gmail.javacoded78.latwitter.dto.request.ListsRequest;
-import com.gmail.javacoded78.latwitter.dto.request.TweetToListsRequest;
 import com.gmail.javacoded78.latwitter.dto.request.UserToListsRequest;
 import com.gmail.javacoded78.latwitter.dto.response.ListsResponse;
 import com.gmail.javacoded78.latwitter.mapper.ListsMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -48,6 +42,16 @@ public class ListsController {
         return ResponseEntity.ok(listsMapper.createTweetList(listsRequest));
     }
 
+    @PutMapping
+    public ResponseEntity<ListsResponse> editTweetList(@RequestBody ListsRequest listsRequest) {
+        return ResponseEntity.ok(listsMapper.editTweetList(listsRequest));
+    }
+
+    @DeleteMapping("/{listId}")
+    public ResponseEntity<String> deleteList(@PathVariable Long listId) {
+        return ResponseEntity.ok(listsMapper.deleteList(listId));
+    }
+
     @GetMapping("/follow/{listId}")
     public ResponseEntity<ListsResponse> followList(@PathVariable Long listId) {
         return ResponseEntity.ok(listsMapper.followList(listId));
@@ -56,11 +60,6 @@ public class ListsController {
     @GetMapping("/pin/{listId}")
     public ResponseEntity<ListsResponse> pinList(@PathVariable Long listId) {
         return ResponseEntity.ok(listsMapper.pinList(listId));
-    }
-
-    @PostMapping("/add/tweet")
-    public ResponseEntity<List<ListsResponse>> addTweetToLists(@RequestBody TweetToListsRequest tweetToListsRequest) {
-        return ResponseEntity.ok(listsMapper.addTweetToLists(tweetToListsRequest.getTweetId(), tweetToListsRequest.getLists()));
     }
 
     @PostMapping("/add/user")

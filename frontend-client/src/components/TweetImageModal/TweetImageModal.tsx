@@ -13,6 +13,8 @@ import Typography from "@material-ui/core/Typography";
 import format from "date-fns/format";
 import usLang from "date-fns/locale/en-US/index";
 import { compose } from "recompose";
+import { CompatClient, Stomp } from "@stomp/stompjs";
+import SockJS from "sockjs-client";
 
 import {
   CloseIcon,
@@ -32,9 +34,12 @@ import {
   fetchRetweet,
 } from "../../store/ducks/tweets/actionCreators";
 import { useTweetImageStyles } from "./TweetImageModalStyles";
-import { fetchTweetData } from "../../store/ducks/tweet/actionCreators";
+import {
+  fetchTweetData,
+  setTweetData,
+} from "../../store/ducks/tweet/actionCreators";
 import { selectTweetData } from "../../store/ducks/tweet/selectors";
-import { DEFAULT_PROFILE_IMG } from "../../util/url";
+import { DEFAULT_PROFILE_IMG, WS_URL } from "../../util/url";
 import { textFormatter } from "../../util/textFormatter";
 import { HoverProps, withHoverUser } from "../../hoc/withHoverUser";
 import { HoverActionProps, withHoverAction } from "../../hoc/withHoverAction";
@@ -42,6 +47,9 @@ import { Tweet } from "../../store/ducks/tweets/contracts/state";
 import HoverAction from "../HoverAction/HoverAction";
 import PopperUserWindow from "../PopperUserWindow/PopperUserWindow";
 import ShareTweet from "../ShareTweet/ShareTweet";
+import ReplyModal from "../ReplyModal/ReplyModal";
+
+let stompClient: CompatClient | null = null;
 
 const TweetImageModal: FC<HoverProps<Tweet> & HoverActionProps> = ({
   visiblePopperWindow,
@@ -59,22 +67,32 @@ const TweetImageModal: FC<HoverProps<Tweet> & HoverActionProps> = ({
   const myProfile = useSelector(selectUserData);
   const params: { id: string } = useParams();
   const history = useHistory();
+  const [visibleTweetImageModalWindow, setVisibleTweetImageModalWindow] =
+    useState<boolean>(false);
+  const [visibleUsersListModalWindow, setVisibleUsersListModalWindow] =
+    useState<boolean>(false);
+  const [visibleReplyModalWindow, setVisibleReplyModalWindow] =
+    useState<boolean>(false);
+  const [modalWindowTitle, setModalWindowTitle] = useState<string>("");
   const isTweetLiked = tweetData?.likedTweets.find(
     (like) => like.user.id === myProfile?.id
   );
   const isTweetRetweeted = tweetData?.retweets.find(
     (retweet) => retweet.user.id === myProfile?.id
   );
-  const [visibleTweetImageModalWindow, setVisibleTweetImageModalWindow] =
-    useState<boolean>(false);
-  const [visibleModalWindow, setVisibleModalWindow] = useState<boolean>(false);
-  const [modalWindowTitle, setModalWindowTitle] = useState<string>("");
   const classes = useTweetImageStyles({ isTweetRetweeted, isTweetLiked });
 
   useEffect(() => {
     dispatch(fetchTweetData(params.id));
     setVisibleTweetImageModalWindow(true);
     document.body.style.overflow = "hidden";
+
+    stompClient = Stomp.over(new SockJS(WS_URL));
+    stompClient.connect({}, () => {
+      stompClient?.subscribe("/topic/tweet/" + params.id, (response) => {
+        dispatch(setTweetData(JSON.parse(response.body)));
+      });
+    });
   }, []);
 
   const onCloseImageModalWindow = (event: any): void => {
@@ -88,18 +106,26 @@ const TweetImageModal: FC<HoverProps<Tweet> & HoverActionProps> = ({
   };
 
   const onOpenLikesModalWindow = (): void => {
-    setVisibleModalWindow(true);
+    setVisibleUsersListModalWindow(true);
     setModalWindowTitle("Liked by");
   };
 
   const onOpenRetweetsModalWindow = (): void => {
-    setVisibleModalWindow(true);
+    setVisibleUsersListModalWindow(true);
     setModalWindowTitle("Retweeted by");
   };
 
-  const onCloseModalWindow = (): void => {
-    setVisibleModalWindow(false);
+  const onCloseUsersListModalWindow = (): void => {
+    setVisibleUsersListModalWindow(false);
     setModalWindowTitle("");
+  };
+
+  const onOpenReplyModalWindow = (): void => {
+    setVisibleReplyModalWindow(true);
+  };
+
+  const onCloseReplyModalWindow = (): void => {
+    setVisibleReplyModalWindow(false);
   };
 
   const handleLike = (): void => {
@@ -204,6 +230,7 @@ const TweetImageModal: FC<HoverProps<Tweet> & HoverActionProps> = ({
             <div className={classes.tweetFooter}>
               <div className={classes.tweetIcon}>
                 <IconButton
+                  onClick={onOpenReplyModalWindow}
                   onMouseEnter={() => handleHoverAction?.(TweetActions.REPLY)}
                   onMouseLeave={handleLeaveAction}
                 >
@@ -267,30 +294,33 @@ const TweetImageModal: FC<HoverProps<Tweet> & HoverActionProps> = ({
             />
           </div>
           <div className={classes.divider} />
-          {visibleModalWindow && modalWindowTitle === "Liked by" ? (
+          {visibleUsersListModalWindow && modalWindowTitle === "Liked by" ? (
             <UsersListModal
               users={tweetData.likedTweets}
               title={modalWindowTitle}
-              visible={visibleModalWindow}
-              onClose={onCloseModalWindow}
+              visible={visibleUsersListModalWindow}
+              onClose={onCloseUsersListModalWindow}
             />
           ) : (
             <UsersListModal
               users={tweetData.retweets}
               title={modalWindowTitle}
-              visible={visibleModalWindow}
-              onClose={onCloseModalWindow}
+              visible={visibleUsersListModalWindow}
+              onClose={onCloseUsersListModalWindow}
             />
           )}
           {tweetData.replies.map((tweet: any) => (
-            <TweetComponent
-              key={tweet.id}
-              images={tweet.images}
-              addressedUser={tweetData.user.username}
-              addressedId={tweetData.user.id}
-              {...tweet}
-            />
+            <TweetComponent key={tweet.id} item={tweet} />
           ))}
+          <ReplyModal
+            user={tweetData.user}
+            tweetId={tweetData.id}
+            text={tweetData.text}
+            image={tweetData?.images?.[0]}
+            dateTime={tweetData.dateTime}
+            visible={visibleReplyModalWindow}
+            onClose={onCloseReplyModalWindow}
+          />
         </div>
         <div className={classes.imageFooterContainer}>
           <div className={classNames(classes.imageFooterWrapper)}>
@@ -311,12 +341,9 @@ const TweetImageModal: FC<HoverProps<Tweet> & HoverActionProps> = ({
                   <>{RetweetOutlinedIcon}</>
                 )}
               </IconButton>
-              {tweetData.retweets.length === 0 ||
-              tweetData.retweets === null ? null : isTweetRetweeted ? (
-                <span>{tweetData.retweets.length}</span>
-              ) : (
-                <span>{tweetData.retweets.length}</span>
-              )}
+              {tweetData.retweets.length === 0 || tweetData.retweets === null
+                ? null
+                : isTweetRetweeted && <span>{tweetData.retweets.length}</span>}
             </div>
             <div className={classes.imageFooterIcon}>
               <IconButton onClick={handleLike}>

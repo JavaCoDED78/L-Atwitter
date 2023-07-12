@@ -6,7 +6,7 @@ import { ListModalInputField } from "./ListsModalInputField";
 
 interface CreateListsModalInputProps {
   onChange: (...event: any[]) => void;
-  value: string;
+  value?: string;
   label: string;
   maxTextLength: number;
   helperText?: string;

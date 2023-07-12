@@ -1,9 +1,7 @@
 package com.gmail.javacoded78.latwitter.mapper;
 
 import com.gmail.javacoded78.latwitter.dto.request.ListsRequest;
-import com.gmail.javacoded78.latwitter.dto.request.TweetToListsRequest;
 import com.gmail.javacoded78.latwitter.dto.response.ListsResponse;
-import com.gmail.javacoded78.latwitter.dto.response.tweet.TweetResponse;
 import com.gmail.javacoded78.latwitter.model.Lists;
 import com.gmail.javacoded78.latwitter.service.ListsService;
 import lombok.RequiredArgsConstructor;
@@ -60,16 +58,20 @@ public class ListsMapper {
         return convertToListsResponse(listsService.createTweetList(convertToListsEntity(listsRequest)));
     }
 
+    public ListsResponse editTweetList(ListsRequest listsRequest) {
+        return convertToListsResponse(listsService.editTweetList(convertToListsEntity(listsRequest)));
+    }
+
+    public String deleteList(Long listId) {
+        return listsService.deleteList(listId);
+    }
+
     public ListsResponse followList(Long listId) {
         return convertToListsResponse(listsService.followList(listId));
     }
 
     public ListsResponse pinList(Long listId) {
         return convertToListsResponse(listsService.pinList(listId));
-    }
-
-    public List<ListsResponse> addTweetToLists(Long tweetId, List<ListsResponse> listsResponse) {
-        return convertListToResponse(listsService.addTweetToLists(tweetId, convertListsResponseToEntity(listsResponse)));
     }
 
     public List<ListsResponse> addUserToLists(Long userId, List<ListsResponse> listsResponse) {
