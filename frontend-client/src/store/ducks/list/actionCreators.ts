@@ -1,14 +1,11 @@
 import {
-  AddUserToListActionInterface,
   FetchListByIdActionInterface,
-  FollowListActionInterface,
   ListActionType,
   SetListActionInterface,
   SetListLoadingStateInterface,
 } from "./contracts/actionTypes";
 import { LoadingStatus } from "../../types";
 import { Lists } from "../lists/contracts/state";
-import { AddUserToList } from "./contracts/state";
 
 export const setList = (payload: Lists): SetListActionInterface => ({
   type: ListActionType.SET_LIST,
@@ -19,18 +16,6 @@ export const fetchListById = (
   payload: string
 ): FetchListByIdActionInterface => ({
   type: ListActionType.FETCH_LIST_BY_ID,
-  payload,
-});
-
-export const followList = (payload: number): FollowListActionInterface => ({
-  type: ListActionType.FOLLOW_LIST,
-  payload,
-});
-
-export const addUserToList = (
-  payload: AddUserToList
-): AddUserToListActionInterface => ({
-  type: ListActionType.ADD_USER_TO_LIST,
   payload,
 });
 

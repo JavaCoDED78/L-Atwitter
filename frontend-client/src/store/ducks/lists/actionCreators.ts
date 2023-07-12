@@ -1,15 +1,27 @@
 import {
+  AddTweetToListsActionInterface,
+  AddUserToListsActionInterface,
   CreateListActionInterface,
   FetchListsActionInterface,
+  FetchPinnedListsActionInterface,
   FetchUserListsActionInterface,
+  FollowListActionInterface,
+  ListsActionType,
+  PinListActionInterface,
+  ProcessListMemberActionInterface,
+  SetFollowListActionInterface,
   SetListActionInterface,
   SetListsActionInterface,
   SetListsLoadingStateInterface,
-  ListsActionType,
+  SetPinedListActionInterface,
+  SetPinedListToUserListActionInterface,
+  SetPinnedListsActionInterface,
+  SetUnfollowListActionInterface,
+  SetUnpinListActionInterface,
+  SetUpdatedListActionInterface,
   SetUserListsActionInterface,
-  SetFollowListActionInterface,
-  AddTweetToListsActionInterface,
-  AddUserToListsActionInterface,
+  UnfollowListActionInterface,
+  UnpinListActionInterface,
 } from "./contracts/actionTypes";
 import {
   AddLists,
@@ -17,6 +29,7 @@ import {
   AddUserToLists,
   Lists,
   ListsState,
+  MemberToList,
 } from "./contracts/state";
 import { LoadingStatus } from "../../types";
 
@@ -34,8 +47,32 @@ export const setUserLists = (
   payload,
 });
 
+export const setPinnedLists = (
+  payload: ListsState["pinnedLists"]
+): SetPinnedListsActionInterface => ({
+  type: ListsActionType.SET_PINNED_LISTS,
+  payload,
+});
+
 export const setList = (payload: Lists): SetListActionInterface => ({
   type: ListsActionType.SET_LIST,
+  payload,
+});
+
+export const setUpdatedList = (
+  payload: Lists
+): SetUpdatedListActionInterface => ({
+  type: ListsActionType.SET_UPDATED_LISTS,
+  payload,
+});
+
+export const followList = (payload: number): FollowListActionInterface => ({
+  type: ListsActionType.FOLLOW_LIST,
+  payload,
+});
+
+export const unfollowList = (payload: number): UnfollowListActionInterface => ({
+  type: ListsActionType.UNFOLLOW_LIST,
   payload,
 });
 
@@ -43,6 +80,13 @@ export const setFollowList = (
   payload: Lists
 ): SetFollowListActionInterface => ({
   type: ListsActionType.SET_FOLLOW_LIST,
+  payload,
+});
+
+export const setUnfollowList = (
+  payload: Lists
+): SetUnfollowListActionInterface => ({
+  type: ListsActionType.SET_UNFOLLOW_LIST,
   payload,
 });
 
@@ -60,6 +104,13 @@ export const addUserToLists = (
   payload,
 });
 
+export const processListMember = (
+  payload: MemberToList
+): ProcessListMemberActionInterface => ({
+  type: ListsActionType.PROCESS_LIST_MEMBER,
+  payload,
+});
+
 export const createList = (payload: AddLists): CreateListActionInterface => ({
   type: ListsActionType.CREATE_LIST,
   payload,
@@ -71,6 +122,37 @@ export const fetchLists = (): FetchListsActionInterface => ({
 
 export const fetchUserLists = (): FetchUserListsActionInterface => ({
   type: ListsActionType.FETCH_USER_LISTS,
+});
+
+export const fetchPinnedLists = (): FetchPinnedListsActionInterface => ({
+  type: ListsActionType.FETCH_PINNED_LISTS,
+});
+
+export const pinList = (payload: number): PinListActionInterface => ({
+  type: ListsActionType.PIN_LIST,
+  payload,
+});
+
+export const unpinList = (payload: number): UnpinListActionInterface => ({
+  type: ListsActionType.UNPIN_LIST,
+  payload,
+});
+
+export const setPinedList = (payload: Lists): SetPinedListActionInterface => ({
+  type: ListsActionType.SET_PINED_LIST,
+  payload,
+});
+
+export const setUnpinList = (payload: Lists): SetUnpinListActionInterface => ({
+  type: ListsActionType.SET_UNPIN_LIST,
+  payload,
+});
+
+export const setPinedListToUserList = (
+  payload: Lists
+): SetPinedListToUserListActionInterface => ({
+  type: ListsActionType.SET_PINED_LIST_TO_USER_LIST,
+  payload,
 });
 
 export const setListsLoadingState = (

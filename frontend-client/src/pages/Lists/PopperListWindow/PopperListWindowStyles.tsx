@@ -1,71 +1,53 @@
 import { makeStyles, Theme } from "@material-ui/core";
 
-export const useFullListStyles = makeStyles((theme: Theme) => ({
-  container: {
-    borderRadius: 0,
-    minHeight: "100vh",
-    marginBottom: 500,
-    borderTop: 0,
-    borderBottom: 0,
+export const usePopperListWindowStyles = makeStyles((theme: Theme) => ({
+  popperListWindow: {
+    position: "absolute",
+    width: 300,
+    minHeight: 213,
+    zIndex: 2,
+    borderRadius: 16,
+    backgroundColor: "#fff",
+    cursor: "default",
+    boxShadow:
+      "rgb(101 119 134 / 20%) 0px 0px 15px, rgb(101 119 134 / 15%) 0px 0px 3px 1px",
   },
-  loading: {
-    paddingTop: 250,
-    textAlign: "center",
+  wallpaperListImg: {
+    borderRadius: "16px 16px 0px 0px",
+    width: "100%",
+    height: "100%",
+    inset: 0,
   },
-  header: {
-    position: "fixed",
-    width: 602,
-    height: 53,
-    zIndex: 1,
-    display: "flex",
-    alignItems: "center",
-    flex: 1,
-    borderTop: 0,
-    borderLeft: 0,
-    borderRight: 0,
-    borderRadius: 0,
-    "& h6": {
-      fontWeight: 800,
-    },
-  },
-  wallpaper: {
-    height: 200,
-    "& img": {
-      objectFit: "cover",
-      position: "absolute",
-      width: 601,
-      height: 200,
-    },
-  },
-  listInfo: {
+  popperListInfo: {
+    borderRadius: 16,
     borderTop: 0,
     borderLeft: 0,
     borderRight: 0,
     padding: 12,
     textAlign: "center",
   },
-  listTitle: {
+  popperListTitle: {
     marginBottom: 12,
     fontSize: 20,
     fontWeight: 700,
   },
-  listDescription: {
+  popperListDescription: {
     marginBottom: 12,
     fontSize: 15,
   },
-  listOwnerLink: {
+  popperListOwnerLink: {
     color: "black",
     textDecoration: "none",
   },
-  listOwnerWrapper: {
+  popperListOwnerWrapper: {
     display: "inline-block",
   },
-  listOwnerAvatar: {
+  popperListOwnerAvatar: {
     marginRight: 4,
     width: "20px !important",
     height: "20px !important",
   },
-  listOwnerFullName: {
+  popperListOwnerFullName: {
     verticalAlign: "top",
     fontSize: 15,
     fontWeight: 700,
@@ -74,12 +56,12 @@ export const useFullListStyles = makeStyles((theme: Theme) => ({
       textDecoration: "underline",
     },
   },
-  listOwnerUsername: {
+  popperListOwnerUsername: {
     verticalAlign: "top",
     color: "rgb(83, 100, 113)",
     fontSize: 15,
   },
-  listMembers: {
+  popperListMembers: {
     marginLeft: 20,
     color: "rgb(83, 100, 113)",
     fontSize: 15,
@@ -126,20 +108,5 @@ export const useFullListStyles = makeStyles((theme: Theme) => ({
     "&:hover": {
       backgroundColor: "rgb(202, 32, 85)",
     },
-  },
-  listInfoWrapper: {
-    width: 350,
-    margin: "0 auto",
-    marginTop: 32,
-    textAlign: "center",
-  },
-  listInfoTitle: {
-    fontSize: 31,
-    fontWeight: 800,
-    marginBottom: 8,
-  },
-  listInfoText: {
-    fontSize: 15,
-    color: "rgb(83, 100, 113)",
   },
 }));
