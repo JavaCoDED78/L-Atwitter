@@ -1,5 +1,5 @@
 import { makeStyles, Theme } from "@material-ui/core";
-import { LikeTweet, Retweet } from "../../store/ducks/tweets/contracts/state";
+import { LikeTweet } from "../../store/ducks/tweets/contracts/state";
 
 interface TweetComponentStylesProps {
   isTweetLiked?: LikeTweet;
@@ -87,6 +87,7 @@ export const useTweetComponentStyles = makeStyles<
       objectFit: "cover",
       marginTop: 10,
       width: 504,
+      height: 252,
       borderRadius: 20,
       borderColor: "#5b7083",
     },

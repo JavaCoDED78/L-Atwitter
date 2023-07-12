@@ -28,6 +28,7 @@ import {
   followUser,
   unfollowUser,
 } from "../../store/ducks/user/actionCreators";
+import { BackButton } from "../../components/BackButton/BackButton";
 
 const FollowingFollowers: FC = (): ReactElement => {
   const classes = useFollowingFollowersStyles();
@@ -76,9 +77,7 @@ const FollowingFollowers: FC = (): ReactElement => {
   return (
     <Paper className={classes.container} variant="outlined">
       <Paper className={classes.header}>
-        <IconButton onClick={handleClickBack} color="primary">
-          <ArrowBackIcon />
-        </IconButton>
+        <BackButton />
         <div>
           <Typography variant="h6">{userProfile?.fullName}</Typography>
           <Typography variant="caption" display="block" gutterBottom>
@@ -111,8 +110,7 @@ const FollowingFollowers: FC = (): ReactElement => {
             <CircularProgress />
           </div>
         ) : activeTab === 0 ? (
-          userProfile?.followers?.length !== 0 ||
-          myProfile?.followers?.length !== 0 ? (
+          userProfile?.followers?.length !== 0 ? (
             userProfile?.id === myProfile?.id ? (
               myProfile?.followers?.map((user) => (
                 <Follower

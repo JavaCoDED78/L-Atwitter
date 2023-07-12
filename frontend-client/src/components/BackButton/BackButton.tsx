@@ -1,23 +1,41 @@
-import React, {FC, ReactElement} from 'react';
-import {useHistory} from 'react-router-dom';
-import IconButton from '@material-ui/core/IconButton';
-import ArrowBackIcon from '@material-ui/icons/ArrowBack';
+import React, { FC, ReactElement, useState } from "react";
+import { useHistory } from "react-router-dom";
+import IconButton from "@material-ui/core/IconButton";
+import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 
-import {useBackButtonStyles} from "./BackButtonStyles";
+import { useBackButtonStyles } from "./BackButtonStyles";
+import HoverAction from "../HoverAction/HoverAction";
 
 export const BackButton: FC = (): ReactElement => {
-    const classes = useBackButtonStyles();
-    const history = useHistory();
+  const classes = useBackButtonStyles();
+  const history = useHistory();
+  const [visibleBackAction, setVisibleBackAction] = useState<boolean>(false);
+  const [delayHandler, setDelayHandler] = useState<any>(null);
 
-    const handleClickButton = () => {
-        history.goBack();
-    };
+  const handleClickButton = () => {
+    history.goBack();
+  };
 
-    return (
-        <div className={classes.container}>
-            <IconButton onClick={handleClickButton} color="primary">
-                <ArrowBackIcon />
-            </IconButton>
-        </div>
-    );
+  const handleHoverAction = (): void => {
+    setDelayHandler(setTimeout(() => setVisibleBackAction(true), 500));
+  };
+
+  const handleLeaveAction = (): void => {
+    clearTimeout(delayHandler);
+    setVisibleBackAction(false);
+  };
+
+  return (
+    <div className={classes.container}>
+      <IconButton
+        onClick={handleClickButton}
+        onMouseEnter={handleHoverAction}
+        onMouseLeave={handleLeaveAction}
+        color="primary"
+      >
+        <ArrowBackIcon />
+        {visibleBackAction && <HoverAction actionText={"Back"} />}
+      </IconButton>
+    </div>
+  );
 };

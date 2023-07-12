@@ -1,11 +1,10 @@
 import React, { useState } from "react";
 
-import {
-  TweetActions,
-  TweetComponentProps,
-} from "../components/TweetComponent/TweetComponent";
+import { TweetActions } from "../components/TweetComponent/TweetComponent";
+import { Tweet } from "../store/ducks/tweets/contracts/state";
 
 export interface HoverActionProps {
+  item?: Tweet;
   visibleReplyAction?: boolean;
   visibleRetweetAction?: boolean;
   visibleLikeAction?: boolean;
@@ -15,11 +14,11 @@ export interface HoverActionProps {
   handleLeaveAction?: () => void;
 }
 
+const HOVER_DELAY = 500;
+
 export const withHoverAction =
-  <T extends object>(
-    Component: React.ComponentType<HoverActionProps & TweetComponentProps<T>>
-  ) =>
-  (props: HoverActionProps & TweetComponentProps<T>) => {
+  <T extends object>(Component: React.ComponentType<HoverActionProps>) =>
+  (props: HoverActionProps) => {
     const [visibleReplyAction, setVisibleReplyAction] =
       useState<boolean>(false);
     const [visibleRetweetAction, setVisibleRetweetAction] =
@@ -32,15 +31,25 @@ export const withHoverAction =
 
     const handleHoverAction = (action: TweetActions): void => {
       if (action === TweetActions.REPLY) {
-        setDelayHandler(setTimeout(() => setVisibleReplyAction(true), 500));
+        setDelayHandler(
+          setTimeout(() => setVisibleReplyAction(true), HOVER_DELAY)
+        );
       } else if (action === TweetActions.RETWEET) {
-        setDelayHandler(setTimeout(() => setVisibleRetweetAction(true), 500));
+        setDelayHandler(
+          setTimeout(() => setVisibleRetweetAction(true), HOVER_DELAY)
+        );
       } else if (action === TweetActions.LIKE) {
-        setDelayHandler(setTimeout(() => setVisibleLikeAction(true), 500));
+        setDelayHandler(
+          setTimeout(() => setVisibleLikeAction(true), HOVER_DELAY)
+        );
       } else if (action === TweetActions.SHARE) {
-        setDelayHandler(setTimeout(() => setVisibleShareAction(true), 500));
+        setDelayHandler(
+          setTimeout(() => setVisibleShareAction(true), HOVER_DELAY)
+        );
       } else if (action === TweetActions.MORE) {
-        setDelayHandler(setTimeout(() => setVisibleMoreAction(true), 500));
+        setDelayHandler(
+          setTimeout(() => setVisibleMoreAction(true), HOVER_DELAY)
+        );
       }
     };
 
@@ -55,6 +64,7 @@ export const withHoverAction =
 
     return (
       <Component
+        {...(props as HoverActionProps)}
         item={props.item}
         visibleReplyAction={visibleReplyAction}
         visibleRetweetAction={visibleRetweetAction}

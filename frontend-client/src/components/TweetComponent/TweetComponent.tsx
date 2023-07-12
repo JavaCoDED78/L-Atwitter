@@ -2,7 +2,7 @@ import React, { ComponentType, FC, ReactElement, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useHistory, useLocation } from "react-router-dom";
 import { Avatar, IconButton, Paper, Typography } from "@material-ui/core";
-import { compose } from "redux";
+import { compose } from "recompose";
 
 import {
   FollowReplyIcon,
@@ -54,7 +54,7 @@ export interface TweetComponentProps<T> {
 }
 
 const TweetComponent: FC<
-  HoverProps & TweetComponentProps<Tweet> & HoverActionProps
+  HoverProps<Tweet> & TweetComponentProps<Tweet> & HoverActionProps
 > = ({
   item: tweet,
   activeTab,
@@ -133,29 +133,6 @@ const TweetComponent: FC<
     setOpenYouTubeVideo(true);
   };
 
-  // const handleHoverAction = (action: TweetActions): void => {
-  //     if (action === TweetActions.REPLY) {
-  //         setDelayHandler(setTimeout(() => setVisibleReplyAction(true), 500));
-  //     } else if (action === TweetActions.RETWEET) {
-  //         setDelayHandler(setTimeout(() => setVisibleRetweetAction(true), 500));
-  //     } else if (action === TweetActions.LIKE) {
-  //         setDelayHandler(setTimeout(() => setVisibleLikeAction(true), 500));
-  //     } else if (action === TweetActions.SHARE) {
-  //         setDelayHandler(setTimeout(() => setVisibleShareAction(true), 500));
-  //     } else if (action === TweetActions.MORE) {
-  //         setDelayHandler(setTimeout(() => setVisibleMoreAction(true), 500));
-  //     }
-  // };
-  //
-  // const handleLeaveAction = (): void => {
-  //     clearTimeout(delayHandler);
-  //     setVisibleReplyAction(false);
-  //     setVisibleRetweetAction(false);
-  //     setVisibleLikeAction(false);
-  //     setVisibleShareAction(false);
-  //     setVisibleMoreAction(false);
-  // };
-
   return (
     <>
       {isTweetRetweetedByUser && (
@@ -188,12 +165,12 @@ const TweetComponent: FC<
           />
         </a>
         <div style={{ flex: 1 }}>
-          <div
-            className={classes.header}
-            onMouseEnter={handleHoverPopper}
-            onMouseLeave={handleLeavePopper}
-          >
-            <a onClick={handleClickUser}>
+          <div className={classes.header}>
+            <a
+              onClick={handleClickUser}
+              onMouseEnter={handleHoverPopper}
+              onMouseLeave={handleLeavePopper}
+            >
               <b>{tweet?.user.fullName}</b>&nbsp;
               <span className={classes.headerText}>
                 @{tweet?.user.username}
@@ -203,6 +180,9 @@ const TweetComponent: FC<
               <span className={classes.headerText}>
                 {formatDate(new Date(tweet!.dateTime))}
               </span>
+              {visiblePopperWindow && (
+                <PopperUserWindow user={tweet!.user} isTweetComponent={true} />
+              )}
             </a>
             <TweetComponentActions
               tweet={tweet!}
@@ -212,9 +192,6 @@ const TweetComponent: FC<
               handleHoverAction={handleHoverAction}
               handleLeaveAction={handleLeaveAction}
             />
-            {visiblePopperWindow && (
-              <PopperUserWindow user={tweet!.user} isTweetComponent={true} />
-            )}
           </div>
           <Typography
             style={
@@ -299,11 +276,7 @@ const TweetComponent: FC<
               <IconButton
                 disabled={isUserCanReply}
                 onClick={onOpenReplyModalWindow}
-                onMouseEnter={() =>
-                  handleHoverAction
-                    ? handleHoverAction(TweetActions.REPLY)
-                    : null
-                }
+                onMouseEnter={() => handleHoverAction?.(TweetActions.REPLY)}
                 onMouseLeave={handleLeaveAction}
               >
                 <>{ReplyIcon}</>
@@ -326,11 +299,7 @@ const TweetComponent: FC<
             <div className={classes.likeIcon}>
               <IconButton
                 onClick={handleLike}
-                onMouseEnter={() =>
-                  handleHoverAction
-                    ? handleHoverAction(TweetActions.LIKE)
-                    : null
-                }
+                onMouseEnter={() => handleHoverAction?.(TweetActions.LIKE)}
                 onMouseLeave={handleLeaveAction}
               >
                 {isTweetLiked ? <>{LikeIcon}</> : <>{LikeOutlinedIcon}</>}
@@ -372,7 +341,6 @@ const TweetComponent: FC<
 export default compose(
   withHoverUser,
   withHoverAction
-)(TweetComponent) as React.ComponentType<
-  HoverProps & TweetComponentProps<Tweet> & HoverActionProps
+)(TweetComponent) as ComponentType<
+  HoverProps<Tweet> & TweetComponentProps<Tweet> & HoverActionProps
 >;
-// export default withHoverUser(TweetComponent);

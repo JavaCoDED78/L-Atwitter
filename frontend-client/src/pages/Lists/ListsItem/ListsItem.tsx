@@ -16,6 +16,7 @@ import {
 } from "../../../store/ducks/lists/actionCreators";
 import PopperListWindow from "../PopperListWindow/PopperListWindow";
 import { withHoverUser } from "../../../hoc/withHoverUser";
+import HoverAction from "../../../components/HoverAction/HoverAction";
 
 interface ListsItemProps<T> {
   item?: T;
@@ -40,8 +41,9 @@ const ListsItem: FC<ListsItemProps<Lists>> = ({
   const follower = list?.followers.find(
     (follower) => follower.id === myProfile?.id
   );
-
   const [btnText, setBtnText] = useState<string>("Following");
+  const [visiblePinAction, setVisiblePinAction] = useState<boolean>(false);
+  const [delayHandler, setDelayHandler] = useState<any>(null);
 
   const onClickFollow = (
     event: React.MouseEvent<HTMLButtonElement, MouseEvent>
@@ -67,6 +69,15 @@ const ListsItem: FC<ListsItemProps<Lists>> = ({
     } else {
       dispatch(pinList(list!.id));
     }
+  };
+
+  const handleHoverAction = (): void => {
+    setDelayHandler(setTimeout(() => setVisiblePinAction(true), 500));
+  };
+
+  const handleLeaveAction = (): void => {
+    clearTimeout(delayHandler);
+    setVisiblePinAction(false);
   };
 
   return (
@@ -112,9 +123,16 @@ const ListsItem: FC<ListsItemProps<Lists>> = ({
             <div className={classes.listPinWrapper}>
               <IconButton
                 onClick={(event) => onClickPinList(event)}
+                onMouseEnter={handleHoverAction}
+                onMouseLeave={handleLeaveAction}
                 color="primary"
               >
                 {list?.pinnedDate ? <>{PinIconFilled}</> : <>{PinIcon}</>}
+                {visiblePinAction && (
+                  <HoverAction
+                    actionText={list?.pinnedDate ? "Unpin" : "Pin"}
+                  />
+                )}
               </IconButton>
             </div>
           )}

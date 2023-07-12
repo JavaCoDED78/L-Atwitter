@@ -1,16 +1,13 @@
 import React, { useState } from "react";
 
 import { User } from "../store/ducks/user/contracts/state";
-import { TweetComponentProps } from "../components/TweetComponent/TweetComponent";
-import { UsersItemProps } from "../components/Users/UsersItem/UsersItem";
-import { HoverActionProps } from "./withHoverAction";
 
-export interface HoverProps
+export interface HoverProps<T>
   extends ListHover,
     TweetHover,
     FollowerHover,
     MemberHover {
-  // item?: T;
+  item?: T;
   visiblePopperWindow?: boolean;
   handleHoverPopper?: () => void;
   handleLeavePopper?: () => void;
@@ -36,12 +33,8 @@ interface MemberHover {
 }
 
 export const withHoverUser =
-  <T extends object>(
-    Component: React.ComponentType<
-      HoverProps & TweetComponentProps<T> & UsersItemProps<T>
-    >
-  ) =>
-  (props: HoverProps & TweetComponentProps<T> & UsersItemProps<T>) => {
+  <T extends object>(Component: React.ComponentType<HoverProps<T>>) =>
+  (props: HoverProps<T>) => {
     const [visiblePopperWindow, setVisiblePopperWindow] =
       useState<boolean>(false);
     const [delayHandler, setDelayHandler] = useState<any>(null);
@@ -57,6 +50,7 @@ export const withHoverUser =
 
     return (
       <Component
+        {...(props as HoverProps<T>)}
         item={props.item}
         visiblePopperWindow={visiblePopperWindow}
         handleHoverPopper={handleHoverPopper}

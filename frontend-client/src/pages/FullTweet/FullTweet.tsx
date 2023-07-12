@@ -69,7 +69,7 @@ interface FullTweetProps {
   handleLeave?: () => void;
 }
 
-const FullTweet: FC<HoverProps & FullTweetProps & HoverActionProps> = ({
+const FullTweet: FC<HoverProps<Tweet> & FullTweetProps & HoverActionProps> = ({
   visiblePopperWindow,
   handleHoverPopper,
   handleLeavePopper,
@@ -297,11 +297,7 @@ const FullTweet: FC<HoverProps & FullTweetProps & HoverActionProps> = ({
           <div className={classes.info}>
             <div className={classes.infoIcon}>
               <IconButton
-                onMouseEnter={() =>
-                  handleHoverAction
-                    ? handleHoverAction(TweetActions.REPLY)
-                    : null
-                }
+                onMouseEnter={() => handleHoverAction?.(TweetActions.REPLY)}
                 onMouseLeave={handleLeaveAction}
               >
                 <>{ReplyIcon}</>
@@ -311,11 +307,7 @@ const FullTweet: FC<HoverProps & FullTweetProps & HoverActionProps> = ({
             <div className={classes.retweetIcon}>
               <IconButton
                 onClick={handleRetweet}
-                onMouseEnter={() =>
-                  handleHoverAction
-                    ? handleHoverAction(TweetActions.RETWEET)
-                    : null
-                }
+                onMouseEnter={() => handleHoverAction?.(TweetActions.RETWEET)}
                 onMouseLeave={handleLeaveAction}
               >
                 {isTweetRetweeted ? (
@@ -333,11 +325,7 @@ const FullTweet: FC<HoverProps & FullTweetProps & HoverActionProps> = ({
             <div className={classes.likeIcon}>
               <IconButton
                 onClick={handleLike}
-                onMouseEnter={() =>
-                  handleHoverAction
-                    ? handleHoverAction(TweetActions.LIKE)
-                    : null
-                }
+                onMouseEnter={() => handleHoverAction?.(TweetActions.LIKE)}
                 onMouseLeave={handleLeaveAction}
               >
                 {isTweetLiked ? <>{LikeIcon}</> : <>{LikeOutlinedIcon}</>}
@@ -437,4 +425,4 @@ const FullTweet: FC<HoverProps & FullTweetProps & HoverActionProps> = ({
 export default compose(
   withHoverUser,
   withHoverAction
-)(FullTweet) as React.ComponentType<HoverProps & FullTweetProps>;
+)(FullTweet) as React.ComponentType<HoverProps<Tweet> & FullTweetProps>;
