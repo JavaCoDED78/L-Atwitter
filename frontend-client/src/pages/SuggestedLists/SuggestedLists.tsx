@@ -50,7 +50,7 @@ const SuggestedLists: FC = (): ReactElement => {
           <CircularProgress />
         </div>
       ) : (
-        lists.map((list) => <ListsItem key={list.id} list={list} />)
+        lists.map((list) => <ListsItem key={list.id} item={list} />)
       )}
     </Paper>
   );

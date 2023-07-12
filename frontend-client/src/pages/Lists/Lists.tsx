@@ -2,6 +2,7 @@ import React, { FC, ReactElement, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   CircularProgress,
+  ClickAwayListener,
   IconButton,
   Paper,
   Typography,
@@ -11,7 +12,7 @@ import { Link } from "react-router-dom";
 import { useListsStyles } from "./ListsStyles";
 import { BackButton } from "../../components/BackButton/BackButton";
 import { selectUserData } from "../../store/ducks/user/selectors";
-import { AddListsIcon, EditIcon } from "../../icons";
+import { AddListsIcon, EditIcon, ListsIcon } from "../../icons";
 import CreateListsModal from "./CreateListsModal/CreateListsModal";
 import {
   fetchLists,
@@ -41,6 +42,7 @@ const Lists: FC = (): ReactElement => {
 
   const [visibleCreateListModal, setVisibleCreateListModal] =
     useState<boolean>(false);
+  const [openPopover, setOpenPopover] = useState<boolean>(false);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -63,6 +65,14 @@ const Lists: FC = (): ReactElement => {
     setVisibleCreateListModal(false);
   };
 
+  const handleClick = (): void => {
+    setOpenPopover((prev) => !prev);
+  };
+
+  const handleClickAway = (): void => {
+    setOpenPopover(false);
+  };
+
   return (
     <Paper className={classes.container} variant="outlined">
       <Paper className={classes.header} variant="outlined">
@@ -75,14 +85,29 @@ const Lists: FC = (): ReactElement => {
         </div>
         <div className={classes.iconGroup}>
           <div className={classes.icon}>
-            <IconButton color="primary" onClick={onOpenCreateListModal}>
+            <IconButton onClick={onOpenCreateListModal}>
               <>{AddListsIcon}</>
             </IconButton>
           </div>
           <div className={classes.icon}>
-            <IconButton color="primary">
-              <>{EditIcon}</>
-            </IconButton>
+            <ClickAwayListener onClickAway={handleClickAway}>
+              <div>
+                <IconButton onClick={handleClick}>
+                  <>{EditIcon}</>
+                </IconButton>
+                {openPopover ? (
+                  <Link
+                    to={`/lists/memberships/${myProfile?.id}`}
+                    className={classes.dropdownLink}
+                  >
+                    <div className={classes.dropdown}>
+                      <span className={classes.textIcon}>{ListsIcon}</span>
+                      <span className={classes.text}>Lists you’re on</span>
+                    </div>
+                  </Link>
+                ) : null}
+              </div>
+            </ClickAwayListener>
           </div>
         </div>
       </Paper>
@@ -102,7 +127,7 @@ const Lists: FC = (): ReactElement => {
             ) : (
               <div className={classes.pinnedListsWrapper}>
                 {pinnedLists.map((pinnedList) => (
-                  <PinnedListsItem pinnedList={pinnedList} />
+                  <PinnedListsItem item={pinnedList} />
                 ))}
               </div>
             )}
@@ -110,7 +135,7 @@ const Lists: FC = (): ReactElement => {
           <Paper className={classes.newLists} variant="outlined">
             <Typography variant="h6">Discover new Lists</Typography>
             {lists.slice(0, 3).map((list, index) => (
-              <ListsItem key={list.id} list={list} listIndex={index} />
+              <ListsItem key={list.id} item={list} listIndex={index} />
             ))}
             <Link to={"/suggested"} className={classes.link}>
               <div className={classes.showMore}>Show more</div>
@@ -119,7 +144,7 @@ const Lists: FC = (): ReactElement => {
           <Paper className={classes.myLists} variant="outlined">
             <Typography variant="h6">Your Lists</Typography>
             {userLists.map((list) => (
-              <ListsItem isMyList={true} key={list.id} list={list} />
+              <ListsItem isMyList={true} key={list.id} item={list} />
             ))}
           </Paper>
           {visibleCreateListModal && (

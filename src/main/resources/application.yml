@@ -39,6 +39,10 @@ spring:
           starttls:
             enable: true
 
+google:
+  api:
+    key: AIzaSyAyhB6MnJNlOGXJkibk-07VgGSxmn72-vU
+
 jwt:
   header: Authorization
   secret:  dejavudejavudejavudejavudejavudejavudejavudejavudejavudejavu

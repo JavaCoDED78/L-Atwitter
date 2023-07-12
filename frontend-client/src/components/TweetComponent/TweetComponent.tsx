@@ -17,15 +17,7 @@ import {
   fetchLikeTweet,
   fetchRetweet,
 } from "../../store/ducks/tweets/actionCreators";
-import {
-  Image,
-  LikeTweet,
-  Poll,
-  ReplyType,
-  Retweet,
-  Tweet,
-} from "../../store/ducks/tweets/contracts/state";
-import { User } from "../../store/ducks/user/contracts/state";
+import { ReplyType, Tweet } from "../../store/ducks/tweets/contracts/state";
 import { selectUserData } from "../../store/ducks/user/selectors";
 import { DEFAULT_PROFILE_IMG } from "../../util/url";
 import ReplyModal from "../ReplyModal/ReplyModal";
@@ -37,39 +29,23 @@ import VoteComponent from "../VoteComponent/VoteComponent";
 import QuoteTweet from "../QuoteTweet/QuoteTweet";
 import Quote from "../Quote/Quote";
 import PopperUserWindow from "../PopperUserWindow/PopperUserWindow";
+import { withHover } from "../../hoc/withHover";
 
-interface TweetComponentProps {
-  id: string;
-  text: string;
-  addressedUsername: string;
-  addressedId?: number;
-  dateTime: string;
-  replyType: ReplyType;
-  images?: Image[];
-  likedTweets: LikeTweet[];
-  quoteTweet?: Tweet;
-  retweets: Retweet[];
-  replies: any;
-  user: User;
-  poll?: Poll;
+interface TweetComponentProps<T> {
+  item?: T;
   activeTab?: number;
+  userProfileId?: number;
+  visiblePopperWindow?: boolean;
+  handleHover?: () => void;
+  handleLeave?: () => void;
 }
 
-const TweetComponent: FC<TweetComponentProps> = ({
-  id,
-  text,
-  images,
-  user,
-  poll,
-  dateTime,
-  replyType,
-  likedTweets,
-  quoteTweet,
-  retweets,
-  replies,
-  addressedUsername,
-  addressedId,
+const TweetComponent: FC<TweetComponentProps<Tweet>> = ({
+  item: tweet,
   activeTab,
+  visiblePopperWindow,
+  handleHover,
+  handleLeave,
 }): ReactElement => {
   const dispatch = useDispatch();
   const myProfile = useSelector(selectUserData);
@@ -78,55 +54,39 @@ const TweetComponent: FC<TweetComponentProps> = ({
   const location = useLocation();
 
   const [visibleModalWindow, setVisibleModalWindow] = useState<boolean>(false);
-  const [visiblePopperUserWindow, setVisiblePopperUserWindow] =
-    useState<boolean>(false);
-  const [delayHandler, setDelayHandler] = useState<any>(null);
 
-  const isTweetLiked = likedTweets.find(
+  const isTweetLiked = tweet?.likedTweets.find(
     (like) => like.user.id === myProfile?.id
   );
-  const isTweetRetweetedByMe = retweets.find(
+  const isTweetRetweetedByMe = tweet?.retweets.find(
     (retweet) => retweet.user.id === myProfile?.id
   );
-  const isTweetRetweetedByUser = retweets.find(
+  const isTweetRetweetedByUser = tweet?.retweets.find(
     (retweet) => retweet.user.id === userProfile?.id
   );
   const isFollower = myProfile?.following?.find(
-    (follower) => follower.id === user?.id
+    (follower) => follower.id === tweet?.user?.id
   );
   const isModal = location.pathname.includes("/modal");
   const isUserCanReply =
-    replyType === ReplyType.MENTION && myProfile?.id !== user.id;
+    tweet?.replyType === ReplyType.MENTION && myProfile?.id !== tweet?.user.id;
   const classes = useTweetComponentStyles({ isTweetLiked, isUserCanReply });
 
-  const image = images?.[0];
-  const tweetData: Tweet = {
-    id,
-    text,
-    images,
-    user,
-    dateTime,
-    replyType,
-    likedTweets,
-    retweets,
-    replies,
-    addressedUsername,
-    addressedId: addressedId!,
-  };
+  const image = tweet?.images?.[0];
 
   const handleClickTweet = (
     event: React.MouseEvent<HTMLAnchorElement>
   ): void => {
     event.preventDefault();
     event.stopPropagation();
-    history.push(`/home/tweet/${id}`);
+    history.push(`/home/tweet/${tweet?.id}`);
   };
 
   const handleClickUser = (
     event: React.MouseEvent<HTMLAnchorElement>
   ): void => {
     event.stopPropagation();
-    history.push(`/user/${user.id}`);
+    history.push(`/user/${tweet?.user.id}`);
   };
 
   const onOpenReplyModalWindow = (): void => {
@@ -138,22 +98,13 @@ const TweetComponent: FC<TweetComponentProps> = ({
   };
 
   const handleLike = (): void => {
-    dispatch(fetchLikeTweet(id));
+    dispatch(fetchLikeTweet(tweet!.id));
   };
 
   const handleRetweet = (): void => {
-    if (user.id !== myProfile?.id) {
-      dispatch(fetchRetweet(id));
+    if (tweet?.user.id !== myProfile?.id) {
+      dispatch(fetchRetweet(tweet!.id));
     }
-  };
-
-  const handleHover = (): void => {
-    setDelayHandler(setTimeout(() => setVisiblePopperUserWindow(true), 1337));
-  };
-
-  const handleLeave = (): void => {
-    clearTimeout(delayHandler);
-    setVisiblePopperUserWindow(false);
   };
 
   return (
@@ -169,7 +120,7 @@ const TweetComponent: FC<TweetComponentProps> = ({
       )}
       {myProfile?.id === userProfile?.id &&
         activeTab === 0 &&
-        myProfile?.pinnedTweet?.id === id && (
+        myProfile?.pinnedTweet?.id === tweet?.id && (
           <div className={classes.retweetWrapper}>
             <span>{PinOutlinedIcon}</span>
             <Typography>Pinned Tweet</Typography>
@@ -179,8 +130,12 @@ const TweetComponent: FC<TweetComponentProps> = ({
         <a onClick={handleClickUser}>
           <Avatar
             className={classes.avatar}
-            alt={`avatar ${user.id}`}
-            src={user.avatar?.src ? user.avatar?.src : DEFAULT_PROFILE_IMG}
+            alt={`avatar ${tweet?.user.id}`}
+            src={
+              tweet?.user.avatar?.src
+                ? tweet?.user.avatar?.src
+                : DEFAULT_PROFILE_IMG
+            }
           />
         </a>
         <div style={{ flex: 1 }}>
@@ -190,53 +145,56 @@ const TweetComponent: FC<TweetComponentProps> = ({
               onMouseEnter={handleHover}
               onMouseLeave={handleLeave}
             >
-              <b>{user.fullName}</b>&nbsp;
-              <span className={classes.headerText}>@{user.username}</span>&nbsp;
+              <b>{tweet?.user.fullName}</b>&nbsp;
+              <span className={classes.headerText}>
+                @{tweet?.user.username}
+              </span>
+              &nbsp;
               <span className={classes.headerText}>·</span>&nbsp;
               <span className={classes.headerText}>
-                {formatDate(new Date(dateTime))}
+                {formatDate(new Date(tweet!.dateTime))}
               </span>
             </a>
             <TweetComponentActions
-              tweet={tweetData}
+              tweet={tweet!}
               isFullTweet={false}
               activeTab={activeTab}
             />
-            {visiblePopperUserWindow && (
-              <PopperUserWindow user={user} isTweetComponent={true} />
+            {visiblePopperWindow && (
+              <PopperUserWindow user={tweet!.user} isTweetComponent={true} />
             )}
           </div>
           <Typography
             style={
-              addressedUsername
+              tweet?.addressedUsername
                 ? { width: 250, marginBottom: 0 }
                 : { width: 500, marginBottom: 0 }
             }
             variant="body1"
             gutterBottom
           >
-            {addressedUsername && (
+            {tweet?.addressedUsername && (
               <object>
                 <Typography className={classes.replyWrapper}>
                   Replying to{" "}
                   <Link
-                    to={`/user/${addressedId}`}
+                    to={`/user/${tweet?.addressedId}`}
                     className={classes.replyLink}
                   >
-                    @{addressedUsername}
+                    @{tweet?.addressedUsername}
                   </Link>
                 </Typography>
               </object>
             )}
             <div className={classes.text}>
-              <a onClick={handleClickTweet} href={`/home/tweet/${id}`}>
-                {textFormatter(text)}
+              <a onClick={handleClickTweet} href={`/home/tweet/${tweet?.id}`}>
+                {textFormatter(tweet!.text)}
               </a>
             </div>
-            {images?.length !== 0 && (
+            {tweet?.images?.length !== 0 && (
               <Link
                 to={{
-                  pathname: `/modal/${id}`,
+                  pathname: `/modal/${tweet?.id}`,
                   state: { background: location },
                 }}
               >
@@ -249,8 +207,10 @@ const TweetComponent: FC<TweetComponentProps> = ({
                 </div>
               </Link>
             )}
-            {poll && <VoteComponent tweetId={id} poll={poll} />}
-            {isFollower && replyType === ReplyType.FOLLOW && (
+            {tweet?.poll && (
+              <VoteComponent tweetId={tweet?.id} poll={tweet?.poll} />
+            )}
+            {isFollower && tweet?.replyType === ReplyType.FOLLOW && (
               <>
                 <div className={classes.iconWrapper}>
                   <div className={classes.iconCircle}>
@@ -262,8 +222,8 @@ const TweetComponent: FC<TweetComponentProps> = ({
                 </div>
               </>
             )}
-            {quoteTweet && (
-              <Quote quoteTweet={quoteTweet} isTweetQuoted={true} />
+            {tweet?.quoteTweet && (
+              <Quote quoteTweet={tweet?.quoteTweet} isTweetQuoted={true} />
             )}
           </Typography>
           <div className={classes.footer}>
@@ -274,13 +234,14 @@ const TweetComponent: FC<TweetComponentProps> = ({
               >
                 <>{ReplyIcon}</>
               </IconButton>
-              {replies?.length === 0 || replies === null ? null : (
-                <span>{replies?.length}</span>
+              {tweet?.replies?.length === 0 ||
+              tweet?.replies === null ? null : (
+                <span>{tweet?.replies?.length}</span>
               )}
             </div>
             <QuoteTweet
-              quoteTweet={tweetData}
-              retweets={retweets}
+              quoteTweet={tweet!}
+              retweets={tweet!.retweets}
               isTweetRetweetedByMe={isTweetRetweetedByMe}
               handleRetweet={handleRetweet}
             />
@@ -288,23 +249,23 @@ const TweetComponent: FC<TweetComponentProps> = ({
               <IconButton onClick={handleLike}>
                 {isTweetLiked ? <>{LikeIcon}</> : <>{LikeOutlinedIcon}</>}
               </IconButton>
-              {likedTweets.length === 0 ||
-              likedTweets === null ? null : isTweetLiked ? (
-                <span>{likedTweets.length}</span>
+              {tweet?.likedTweets.length === 0 ||
+              tweet?.likedTweets === null ? null : isTweetLiked ? (
+                <span>{tweet?.likedTweets.length}</span>
               ) : (
-                <span>{likedTweets.length}</span>
+                <span>{tweet?.likedTweets.length}</span>
               )}
             </div>
-            <ShareTweet tweetId={id} isFullTweet={false} />
+            <ShareTweet tweetId={tweet!.id} isFullTweet={false} />
           </div>
         </div>
         <div className={classes.bottomLine} />
         <ReplyModal
-          user={user}
-          tweetId={id}
-          text={text}
+          user={tweet!.user}
+          tweetId={tweet!.id}
+          text={tweet!.text}
           image={image}
-          dateTime={dateTime}
+          dateTime={tweet!.dateTime}
           visible={visibleModalWindow}
           onClose={onCloseReplyModalWindow}
         />
@@ -313,4 +274,4 @@ const TweetComponent: FC<TweetComponentProps> = ({
   );
 };
 
-export default TweetComponent;
+export default withHover(TweetComponent);

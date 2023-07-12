@@ -2,6 +2,7 @@ package com.gmail.javacoded78.latwitter.model;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -22,6 +23,7 @@ import java.util.List;
 @Setter
 @Entity
 @Table(name = "users")
+@ToString(of = {"id"})
 public class User {
 
     @Id

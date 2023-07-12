@@ -4,7 +4,9 @@ import {
   IconButton,
   List,
   ListItem,
+  Snackbar,
 } from "@material-ui/core";
+import { Link, useLocation } from "react-router-dom";
 
 import { useUserPageActionsStyles } from "./UserPageActionsStyles";
 import {
@@ -21,6 +23,8 @@ import {
 } from "../../../icons";
 import { User } from "../../../store/ducks/user/contracts/state";
 import ListsModal from "../../../components/ListsModal/ListsModal";
+import CopyToClipboard from "react-copy-to-clipboard";
+import { CLIENT_URL } from "../../../util/url";
 
 interface UserPageActionsProps {
   user: User;
@@ -28,8 +32,10 @@ interface UserPageActionsProps {
 
 const UserPageActions: FC<UserPageActionsProps> = ({ user }): ReactElement => {
   const classes = useUserPageActionsStyles();
+  const location = useLocation();
 
   const [open, setOpen] = useState<boolean>(false);
+  const [openSnackBar, setOpenSnackBar] = useState<boolean>(false);
   const [visibleListsModal, setVisibleListsModal] = useState<boolean>(false);
 
   const handleClick = (): void => {
@@ -46,6 +52,15 @@ const UserPageActions: FC<UserPageActionsProps> = ({ user }): ReactElement => {
 
   const onCloseListsModal = (): void => {
     setVisibleListsModal(false);
+  };
+
+  const onCopyLinkToProfile = (): void => {
+    setOpenSnackBar(true);
+    setOpen(false);
+  };
+
+  const onCloseSnackBar = (): void => {
+    setOpenSnackBar(false);
   };
 
   return (
@@ -71,10 +86,15 @@ const UserPageActions: FC<UserPageActionsProps> = ({ user }): ReactElement => {
                   Add/remove @{user.username} from Lists
                 </span>
               </ListItem>
-              <ListItem>
-                <span className={classes.textIcon}>{ListsIcon}</span>
-                <span className={classes.text}>View Lists</span>
-              </ListItem>
+              <Link
+                to={`/lists/memberships/${user?.id}`}
+                className={classes.link}
+              >
+                <ListItem>
+                  <span className={classes.textIcon}>{ListsIcon}</span>
+                  <span className={classes.text}>View Lists</span>
+                </ListItem>
+              </Link>
               <ListItem>
                 <span className={classes.textIcon}>{MomentsIcon}</span>
                 <span className={classes.text}>View Moments</span>
@@ -83,10 +103,12 @@ const UserPageActions: FC<UserPageActionsProps> = ({ user }): ReactElement => {
                 <span className={classes.textIcon}>{ShareIcon}</span>
                 <span className={classes.text}>Share profile via...</span>
               </ListItem>
-              <ListItem>
-                <span className={classes.textIcon}>{LinkIcon}</span>
-                <span className={classes.text}>Copy link to profile</span>
-              </ListItem>
+              <CopyToClipboard text={CLIENT_URL + location.pathname}>
+                <ListItem onClick={onCopyLinkToProfile}>
+                  <span className={classes.textIcon}>{LinkIcon}</span>
+                  <span className={classes.text}>Copy link to profile</span>
+                </ListItem>
+              </CopyToClipboard>
               <ListItem>
                 <span className={classes.textIcon}>{MuteIcon}</span>
                 <span className={classes.text}>Mute @{user.username}</span>
@@ -109,6 +131,14 @@ const UserPageActions: FC<UserPageActionsProps> = ({ user }): ReactElement => {
             onClose={onCloseListsModal}
           />
         )}
+        <Snackbar
+          className={classes.snackBar}
+          anchorOrigin={{ horizontal: "center", vertical: "bottom" }}
+          open={openSnackBar}
+          message="Copied to clipboard"
+          onClose={onCloseSnackBar}
+          autoHideDuration={3000}
+        />
       </div>
     </ClickAwayListener>
   );

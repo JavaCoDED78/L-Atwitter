@@ -15,17 +15,24 @@ import {
   unpinList,
 } from "../../../store/ducks/lists/actionCreators";
 import PopperListWindow from "../PopperListWindow/PopperListWindow";
+import { withHover } from "../../../hoc/withHover";
 
-interface ListsItemProps {
-  list: Lists;
+interface ListsItemProps<T> {
+  item?: T;
   listIndex?: number;
   isMyList?: boolean;
+  visiblePopperWindow?: boolean;
+  handleHover?: () => void;
+  handleLeave?: () => void;
 }
 
-const ListsItem: FC<ListsItemProps> = ({
-  list,
+const ListsItem: FC<ListsItemProps<Lists>> = ({
+  item: list,
   listIndex,
   isMyList,
+  visiblePopperWindow,
+  handleHover,
+  handleLeave,
 }): ReactElement => {
   const classes = useListsItemStyles();
   const dispatch = useDispatch();
@@ -35,9 +42,6 @@ const ListsItem: FC<ListsItemProps> = ({
   );
 
   const [btnText, setBtnText] = useState<string>("Following");
-  const [visiblePopperListWindow, setVisiblePopperListWindow] =
-    useState<boolean>(false);
-  const [delayHandler, setDelayHandler] = useState<any>(null);
 
   const onClickFollow = (
     event: React.MouseEvent<HTMLButtonElement, MouseEvent>
@@ -58,24 +62,15 @@ const ListsItem: FC<ListsItemProps> = ({
     event.preventDefault();
     event.stopPropagation();
 
-    if (list.pinnedDate) {
-      dispatch(unpinList(list.id));
+    if (list?.pinnedDate) {
+      dispatch(unpinList(list!.id));
     } else {
-      dispatch(pinList(list.id));
+      dispatch(pinList(list!.id));
     }
   };
 
-  const handleHover = (): void => {
-    setDelayHandler(setTimeout(() => setVisiblePopperListWindow(true), 1337));
-  };
-
-  const handleLeave = (): void => {
-    clearTimeout(delayHandler);
-    setVisiblePopperListWindow(false);
-  };
-
   return (
-    <Link to={`/lists/${list.id}`} className={classes.link}>
+    <Link to={`/lists/${list?.id}`} className={classes.link}>
       <Paper
         className={classes.container}
         style={{ border: listIndex === 2 ? 0 : 1 }}
@@ -84,7 +79,7 @@ const ListsItem: FC<ListsItemProps> = ({
         <Avatar
           variant="square"
           className={classes.listAvatar}
-          src={list.wallpaper?.src ? list.wallpaper?.src : list.altWallpaper}
+          src={list?.wallpaper?.src ? list?.wallpaper?.src : list?.altWallpaper}
         />
         <div className={classes.listInfoContainer}>
           <div
@@ -92,26 +87,26 @@ const ListsItem: FC<ListsItemProps> = ({
             onMouseEnter={handleHover}
             onMouseLeave={handleLeave}
           >
-            <div className={classes.listTitle}>{list.name}</div>
+            <div className={classes.listTitle}>{list?.name}</div>
             <div className={classes.listOwnerWrapper}>
               <Avatar
                 className={classes.listOwnerAvatar}
                 src={
-                  list.listOwner.avatar?.src
-                    ? list.listOwner.avatar?.src
+                  list?.listOwner.avatar?.src
+                    ? list?.listOwner.avatar?.src
                     : DEFAULT_PROFILE_IMG
                 }
               />
             </div>
             <div className={classes.listOwnerInfoWrapper}>
               <span className={classes.listOwnerFullName}>
-                {list.listOwner.fullName}
+                {list?.listOwner.fullName}
               </span>
               <span className={classes.listOwnerUsername}>
-                @{list.listOwner.username}
+                @{list?.listOwner.username}
               </span>
             </div>
-            {visiblePopperListWindow && <PopperListWindow list={list} />}
+            {visiblePopperWindow && <PopperListWindow list={list!} />}
           </div>
           {isMyList && (
             <div className={classes.listPinWrapper}>
@@ -119,7 +114,7 @@ const ListsItem: FC<ListsItemProps> = ({
                 onClick={(event) => onClickPinList(event)}
                 color="primary"
               >
-                {list.pinnedDate ? <>{PinIconFilled}</> : <>{PinIcon}</>}
+                {list?.pinnedDate ? <>{PinIconFilled}</> : <>{PinIcon}</>}
               </IconButton>
             </div>
           )}
@@ -151,4 +146,4 @@ const ListsItem: FC<ListsItemProps> = ({
   );
 };
 
-export default ListsItem;
+export default withHover(ListsItem);
