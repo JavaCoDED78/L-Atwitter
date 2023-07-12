@@ -21,15 +21,23 @@ import { useLocation } from "react-router-dom";
 import { removeTweetFromBookmarks } from "../../store/ducks/tweets/actionCreators";
 import { CLIENT_URL } from "../../util/url";
 import CopyToClipboard from "react-copy-to-clipboard";
+import { TweetActions } from "../TweetComponent/TweetComponent";
+import HoverAction from "../HoverAction/HoverAction";
 
 interface ShareTweetProps {
   tweetId: string;
   isFullTweet: boolean;
+  visibleShareAction?: boolean;
+  handleHoverAction?: (action: TweetActions) => void;
+  handleLeaveAction?: () => void;
 }
 
 const ShareTweet: FC<ShareTweetProps> = ({
   tweetId,
   isFullTweet,
+  visibleShareAction,
+  handleHoverAction,
+  handleLeaveAction,
 }): ReactElement => {
   const classes = useShareTweetModalStyles({ isFullTweet });
   const dispatch = useDispatch();
@@ -71,8 +79,15 @@ const ShareTweet: FC<ShareTweetProps> = ({
     <>
       <ClickAwayListener onClickAway={handleClickAway}>
         <div className={classes.root}>
-          <IconButton onClick={handleClick}>
+          <IconButton
+            onClick={handleClick}
+            onMouseEnter={() =>
+              handleHoverAction ? handleHoverAction(TweetActions.SHARE) : null
+            }
+            onMouseLeave={handleLeaveAction}
+          >
             <>{ShareIcon}</>
+            {visibleShareAction && <HoverAction actionText={"Share"} />}
           </IconButton>
           {open ? (
             <div className={classes.dropdown}>

@@ -1,11 +1,19 @@
 import React, { useState } from "react";
-import { User } from "../store/ducks/user/contracts/state";
 
-interface Hover<T> extends ListHover, TweetHover, FollowerHover, MemberHover {
-  item?: T;
+import { User } from "../store/ducks/user/contracts/state";
+import { TweetComponentProps } from "../components/TweetComponent/TweetComponent";
+import { UsersItemProps } from "../components/Users/UsersItem/UsersItem";
+import { HoverActionProps } from "./withHoverAction";
+
+export interface HoverProps
+  extends ListHover,
+    TweetHover,
+    FollowerHover,
+    MemberHover {
+  // item?: T;
   visiblePopperWindow?: boolean;
-  handleHover?: () => void;
-  handleLeave?: () => void;
+  handleHoverPopper?: () => void;
+  handleLeavePopper?: () => void;
 }
 
 interface ListHover {
@@ -27,19 +35,22 @@ interface MemberHover {
   member?: User;
 }
 
-export const withHover = <T extends object>(
-  Component: React.FC<Hover<T>>
-): React.FC<Hover<T>> => {
-  return (props: Hover<T>) => {
+export const withHoverUser =
+  <T extends object>(
+    Component: React.ComponentType<
+      HoverProps & TweetComponentProps<T> & UsersItemProps<T>
+    >
+  ) =>
+  (props: HoverProps & TweetComponentProps<T> & UsersItemProps<T>) => {
     const [visiblePopperWindow, setVisiblePopperWindow] =
       useState<boolean>(false);
     const [delayHandler, setDelayHandler] = useState<any>(null);
 
-    const handleHover = (): void => {
-      setDelayHandler(setTimeout(() => setVisiblePopperWindow(true), 1337));
+    const handleHoverPopper = (): void => {
+      setDelayHandler(setTimeout(() => setVisiblePopperWindow(true), 337));
     };
 
-    const handleLeave = (): void => {
+    const handleLeavePopper = (): void => {
       clearTimeout(delayHandler);
       setVisiblePopperWindow(false);
     };
@@ -48,8 +59,8 @@ export const withHover = <T extends object>(
       <Component
         item={props.item}
         visiblePopperWindow={visiblePopperWindow}
-        handleHover={handleHover}
-        handleLeave={handleLeave}
+        handleHoverPopper={handleHoverPopper}
+        handleLeavePopper={handleLeavePopper}
         listIndex={props.listIndex}
         isMyList={props.isMyList}
         activeTab={props.activeTab}
@@ -60,4 +71,3 @@ export const withHover = <T extends object>(
       />
     );
   };
-};

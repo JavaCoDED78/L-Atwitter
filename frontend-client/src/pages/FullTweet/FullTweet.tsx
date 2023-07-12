@@ -25,7 +25,10 @@ import {
 import { selectUserData } from "../../store/ducks/user/selectors";
 import UsersListModal from "../../components/UsersListModal/UsersListModal";
 import { AddTweetForm } from "../../components/AddTweetForm/AddTweetForm";
-import TweetComponent from "../../components/TweetComponent/TweetComponent";
+import TweetComponent, {
+  TweetActions,
+  TweetComponentProps,
+} from "../../components/TweetComponent/TweetComponent";
 import { useFullTweetStyles } from "./FullTweetStyles";
 import { DEFAULT_PROFILE_IMG, WS_URL } from "../../util/url";
 import {
@@ -44,15 +47,19 @@ import VoteComponent from "../../components/VoteComponent/VoteComponent";
 import {
   LinkCoverSize,
   ReplyType,
+  Tweet,
 } from "../../store/ducks/tweets/contracts/state";
 import ShareTweet from "../../components/ShareTweet/ShareTweet";
 import TweetComponentActions from "../../components/TweetComponentActions/TweetComponentActions";
 import Quote from "../../components/Quote/Quote";
 import PopperUserWindow from "../../components/PopperUserWindow/PopperUserWindow";
-import { withHover } from "../../hoc/withHover";
+import { HoverProps, withHoverUser } from "../../hoc/withHoverUser";
 import YouTubeVideo from "../../components/YouTubeVideo/YouTubeVideo";
 import SmallLinkPreview from "../../components/SmallLinkPreview/SmallLinkPreview";
 import LargeLinkPreview from "../../components/LargeLinkPreview/LargeLinkPreview";
+import HoverAction from "../../components/HoverAction/HoverAction";
+import { compose } from "redux";
+import { HoverActionProps, withHoverAction } from "../../hoc/withHoverAction";
 
 let stompClient: CompatClient | null = null;
 
@@ -62,10 +69,17 @@ interface FullTweetProps {
   handleLeave?: () => void;
 }
 
-const FullTweet: FC<FullTweetProps> = ({
+const FullTweet: FC<HoverProps & FullTweetProps & HoverActionProps> = ({
   visiblePopperWindow,
-  handleHover,
-  handleLeave,
+  handleHoverPopper,
+  handleLeavePopper,
+  visibleReplyAction,
+  visibleRetweetAction,
+  visibleLikeAction,
+  visibleShareAction,
+  visibleMoreAction,
+  handleHoverAction,
+  handleLeaveAction,
 }): ReactElement | null => {
   const dispatch = useDispatch();
   const location = useLocation();
@@ -73,7 +87,6 @@ const FullTweet: FC<FullTweetProps> = ({
   const myProfile = useSelector(selectUserData);
   const isLoading = useSelector(selectIsTweetLoading);
   const params = useParams<{ id: string }>();
-
   const [visibleModalWindow, setVisibleModalWindow] = useState<boolean>(false);
   const [modalWindowTitle, setModalWindowTitle] = useState<string>("");
   const [openYouTubeVideo, setOpenYouTubeVideo] = useState<boolean>(false);
@@ -174,8 +187,8 @@ const FullTweet: FC<FullTweetProps> = ({
               />
               <Typography
                 style={{ position: "relative" }}
-                onMouseEnter={handleHover}
-                onMouseLeave={handleLeave}
+                onMouseEnter={handleHoverPopper}
+                onMouseLeave={handleLeavePopper}
               >
                 <Link to={`/user/${tweetData.user.id}`}>
                   <b>{tweetData.user.fullName}</b>&nbsp;
@@ -191,7 +204,13 @@ const FullTweet: FC<FullTweetProps> = ({
                 )}
               </Typography>
             </div>
-            <TweetComponentActions tweet={tweetData} isFullTweet={true} />
+            <TweetComponentActions
+              tweet={tweetData}
+              isFullTweet={true}
+              visibleMoreAction={visibleMoreAction}
+              handleHoverAction={handleHoverAction}
+              handleLeaveAction={handleLeaveAction}
+            />
           </div>
           <Typography className={classes.textWrapper} gutterBottom>
             {textFormatter(tweetData.text)}
@@ -277,25 +296,63 @@ const FullTweet: FC<FullTweetProps> = ({
           )}
           <div className={classes.info}>
             <div className={classes.infoIcon}>
-              <IconButton>
+              <IconButton
+                onMouseEnter={() =>
+                  handleHoverAction
+                    ? handleHoverAction(TweetActions.REPLY)
+                    : null
+                }
+                onMouseLeave={handleLeaveAction}
+              >
                 <>{ReplyIcon}</>
+                {visibleReplyAction && <HoverAction actionText={"Reply"} />}
               </IconButton>
             </div>
             <div className={classes.retweetIcon}>
-              <IconButton onClick={handleRetweet}>
+              <IconButton
+                onClick={handleRetweet}
+                onMouseEnter={() =>
+                  handleHoverAction
+                    ? handleHoverAction(TweetActions.RETWEET)
+                    : null
+                }
+                onMouseLeave={handleLeaveAction}
+              >
                 {isTweetRetweeted ? (
                   <>{RetweetIcon}</>
                 ) : (
                   <>{RetweetOutlinedIcon}</>
                 )}
+                {visibleRetweetAction && (
+                  <HoverAction
+                    actionText={isTweetRetweeted ? "Undo Retweet" : "Retweet"}
+                  />
+                )}
               </IconButton>
             </div>
             <div className={classes.likeIcon}>
-              <IconButton onClick={handleLike}>
+              <IconButton
+                onClick={handleLike}
+                onMouseEnter={() =>
+                  handleHoverAction
+                    ? handleHoverAction(TweetActions.LIKE)
+                    : null
+                }
+                onMouseLeave={handleLeaveAction}
+              >
                 {isTweetLiked ? <>{LikeIcon}</> : <>{LikeOutlinedIcon}</>}
+                {visibleLikeAction && (
+                  <HoverAction actionText={isTweetLiked ? "Unlike" : "Like"} />
+                )}
               </IconButton>
             </div>
-            <ShareTweet tweetId={tweetData.id} isFullTweet={true} />
+            <ShareTweet
+              tweetId={tweetData.id}
+              isFullTweet={true}
+              visibleShareAction={visibleShareAction}
+              handleHoverAction={handleHoverAction}
+              handleLeaveAction={handleLeaveAction}
+            />
           </div>
           <Divider />
           {(tweetData.replyType === ReplyType.FOLLOW ||
@@ -377,4 +434,7 @@ const FullTweet: FC<FullTweetProps> = ({
   );
 };
 
-export default withHover(FullTweet);
+export default compose(
+  withHoverUser,
+  withHoverAction
+)(FullTweet) as React.ComponentType<HoverProps & FullTweetProps>;
