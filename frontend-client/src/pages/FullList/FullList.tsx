@@ -5,6 +5,7 @@ import {
   Avatar,
   Button,
   CircularProgress,
+  IconButton,
   Paper,
   Typography,
 } from "@material-ui/core";
@@ -22,6 +23,9 @@ import TweetComponent from "../../components/TweetComponent/TweetComponent";
 import EditListModal from "./EditListModal/EditListModal";
 import MembersAndFollowersModal from "./EditListModal/MembersAndFollowersModal/MembersAndFollowersModal";
 import { followList } from "../../store/ducks/lists/actionCreators";
+import { EditIcon, ShareIcon } from "../../icons";
+import ShareActionsModal from "./ShareActionsModal/ShareActionsModal";
+import TopTweetsActionsModal from "./TopTweetsActionsModal/TopTweetsActionsModal";
 
 const FullList: FC<RouteComponentProps<{ listId: string }>> = ({
   match,
@@ -85,6 +89,10 @@ const FullList: FC<RouteComponentProps<{ listId: string }>> = ({
           <Typography variant="caption" display="block" gutterBottom>
             @{list?.listOwner.username}
           </Typography>
+        </div>
+        <div className={classes.iconGroup}>
+          <ShareActionsModal />
+          <TopTweetsActionsModal />
         </div>
       </Paper>
       {isLoading ? (
