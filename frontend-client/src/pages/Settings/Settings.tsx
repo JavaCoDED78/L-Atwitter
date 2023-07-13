@@ -27,6 +27,10 @@ import AccountAccessHistory from "./SecurityAndAccountAccess/AppsAndSessions/Acc
 import LoggedDevices from "./SecurityAndAccountAccess/AppsAndSessions/LoggedDevices/LoggedDevices";
 import CurrentSession from "./SecurityAndAccountAccess/AppsAndSessions/Sessions/CurrentSession/CurrentSession";
 import PrivacyAndSafety from "./PrivacyAndSafety/PrivacyAndSafety";
+import Notifications from "./Notifications/Notifications";
+import Accessibility from "./Accessibility/Accessibility";
+import AdditionalResources from "./AdditionalResources/AdditionalResources";
+import AudienceAndTagging from "./PrivacyAndSafety/AudienceAndTagging/AudienceAndTagging";
 
 const Settings: FC = (): ReactElement => {
   const classes = useSettingsStyles();
@@ -79,31 +83,37 @@ const Settings: FC = (): ReactElement => {
                     {ArrowRightIcon}
                   </ListItem>
                 </NavLink>
-                <ListItem
-                  selected={selectedIndex === 4}
-                  onClick={() => handleListItemClick(4)}
-                >
-                  <Typography component={"span"}>Notifications</Typography>
-                  {ArrowRightIcon}
-                </ListItem>
-                <ListItem
-                  selected={selectedIndex === 5}
-                  onClick={() => handleListItemClick(5)}
-                >
-                  <Typography component={"span"}>
-                    Accessibility, display, and languages
-                  </Typography>
-                  {ArrowRightIcon}
-                </ListItem>
-                <ListItem
-                  selected={selectedIndex === 6}
-                  onClick={() => handleListItemClick(6)}
-                >
-                  <Typography component={"span"}>
-                    Additional resources
-                  </Typography>
-                  {ArrowRightIcon}
-                </ListItem>
+                <NavLink to={"/settings/notification"}>
+                  <ListItem
+                    selected={selectedIndex === 4}
+                    onClick={() => handleListItemClick(4)}
+                  >
+                    <Typography component={"span"}>Notifications</Typography>
+                    {ArrowRightIcon}
+                  </ListItem>
+                </NavLink>
+                <NavLink to={"/settings/accessibility_display_and_languages"}>
+                  <ListItem
+                    selected={selectedIndex === 5}
+                    onClick={() => handleListItemClick(5)}
+                  >
+                    <Typography component={"span"}>
+                      Accessibility, display, and languages
+                    </Typography>
+                    {ArrowRightIcon}
+                  </ListItem>
+                </NavLink>
+                <NavLink to={"/settings/about"}>
+                  <ListItem
+                    selected={selectedIndex === 6}
+                    onClick={() => handleListItemClick(6)}
+                  >
+                    <Typography component={"span"}>
+                      Additional resources
+                    </Typography>
+                    {ArrowRightIcon}
+                  </ListItem>
+                </NavLink>
               </List>
             </div>
           </Paper>
@@ -196,73 +206,146 @@ const Settings: FC = (): ReactElement => {
           <Route exact path="/settings/privacy_and_safety">
             <Typography variant="h6">Privacy and safety</Typography>
           </Route>
+          <Route exact path="/settings/privacy_and_safety/audience">
+            <BackButton />
+            <Typography variant="h6">Audience and tagging</Typography>
+          </Route>
+          <Route exact path="/settings/privacy_and_safety/tagging">
+            <BackButton />
+            <Typography variant="h6">Photo tagging</Typography>
+          </Route>
+          <Route exact path="/settings/notification">
+            <Typography variant="h6">Notifications</Typography>
+          </Route>
+          <Route exact path="/settings/accessibility_display_and_languages">
+            <Typography variant="h6">
+              Accessibility, display and languages
+            </Typography>
+          </Route>
+          <Route exact path="/settings/about">
+            <Typography variant="h6">Additional resources</Typography>
+          </Route>
         </Paper>
-        <Route exact path="/settings" component={Account} />
-        <Route exact path="/settings/info" component={AccountInformation} />
-        <Route
-          exact
-          path="/settings/info/username"
-          component={ChangeUsername}
-        />
-        <Route exact path="/settings/info/phone" component={ChangePhone} />
-        <Route exact path="/settings/info/email" component={ChangeEmail} />
-        <Route exact path="/settings/info/country" component={ChangeCountry} />
-        <Route
-          exact
-          path="/settings/info/languages"
-          component={ChangeLanguage}
-        />
-        <Route exact path="/settings/info/gender" component={ChangeGender} />
-        <Route exact path="/settings/info/age" component={ChangeAge} />
-        <Route exact path="/settings/password" component={ChangeYourPassword} />
-        <Route exact path="/settings/teams" component={TweetDeckTeams} />
-        <Route
-          exact
-          path="/settings/deactivate"
-          component={DeactivateAccount}
-        />
-        <Route
-          exact
-          path="/settings/security_and_account_access"
-          component={SecurityAndAccountAccess}
-        />
-        <Route exact path="/settings/security" component={Security} />
-        <Route
-          exact
-          path="/settings/security/login_verification"
-          component={TwoFactorAuthentication}
-        />
-        <Route
-          exact
-          path="/settings/security/apps_and_sessions"
-          component={AppsAndSessions}
-        />
-        <Route
-          exact
-          path="/settings/security/connected_apps"
-          component={ConnectedApps}
-        />
-        <Route exact path="/settings/security/sessions" component={Sessions} />
-        <Route
-          exact
-          path="/settings/security/sessions/current"
-          component={CurrentSession}
-        />
-        <Route
-          exact
-          path="/settings/security/login_history"
-          component={AccountAccessHistory}
-        />
-        <Route
-          exact
-          path="/settings/security/devices"
-          component={LoggedDevices}
-        />
-        <Route
-          exact
-          path="/settings/privacy_and_safety"
-          component={PrivacyAndSafety}
-        />
+        <div className={classes.pageContainer}>
+          <Paper variant="outlined">
+            <div className={classes.pageInfoWrapper}>
+              <Route exact path="/settings" component={Account} />
+              <Route
+                exact
+                path="/settings/info"
+                component={AccountInformation}
+              />
+              <Route
+                exact
+                path="/settings/info/username"
+                component={ChangeUsername}
+              />
+              <Route
+                exact
+                path="/settings/info/phone"
+                component={ChangePhone}
+              />
+              <Route
+                exact
+                path="/settings/info/email"
+                component={ChangeEmail}
+              />
+              <Route
+                exact
+                path="/settings/info/country"
+                component={ChangeCountry}
+              />
+              <Route
+                exact
+                path="/settings/info/languages"
+                component={ChangeLanguage}
+              />
+              <Route
+                exact
+                path="/settings/info/gender"
+                component={ChangeGender}
+              />
+              <Route exact path="/settings/info/age" component={ChangeAge} />
+              <Route
+                exact
+                path="/settings/password"
+                component={ChangeYourPassword}
+              />
+              <Route exact path="/settings/teams" component={TweetDeckTeams} />
+              <Route
+                exact
+                path="/settings/deactivate"
+                component={DeactivateAccount}
+              />
+              <Route
+                exact
+                path="/settings/security_and_account_access"
+                component={SecurityAndAccountAccess}
+              />
+              <Route exact path="/settings/security" component={Security} />
+              <Route
+                exact
+                path="/settings/security/login_verification"
+                component={TwoFactorAuthentication}
+              />
+              <Route
+                exact
+                path="/settings/security/apps_and_sessions"
+                component={AppsAndSessions}
+              />
+              <Route
+                exact
+                path="/settings/security/connected_apps"
+                component={ConnectedApps}
+              />
+              <Route
+                exact
+                path="/settings/security/sessions"
+                component={Sessions}
+              />
+              <Route
+                exact
+                path="/settings/security/sessions/current"
+                component={CurrentSession}
+              />
+              <Route
+                exact
+                path="/settings/security/login_history"
+                component={AccountAccessHistory}
+              />
+              <Route
+                exact
+                path="/settings/security/devices"
+                component={LoggedDevices}
+              />
+              <Route
+                exact
+                path="/settings/privacy_and_safety"
+                component={PrivacyAndSafety}
+              />
+              <Route
+                exact
+                path="/settings/privacy_and_safety/audience"
+                component={AudienceAndTagging}
+              />
+              <Route
+                exact
+                path="/settings/notification"
+                component={Notifications}
+              />
+              <Route
+                exact
+                path="/settings/accessibility_display_and_languages"
+                component={Accessibility}
+              />
+              <Route
+                exact
+                path="/settings/about"
+                component={AdditionalResources}
+              />
+            </div>
+          </Paper>
+        </div>
       </Grid>
     </>
   );

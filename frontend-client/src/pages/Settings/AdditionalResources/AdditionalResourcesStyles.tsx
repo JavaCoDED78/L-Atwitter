@@ -1,6 +1,6 @@
 import { makeStyles, Theme } from "@material-ui/core";
 
-export const usePrivacyAndSafetyStyles = makeStyles((theme: Theme) => ({
+export const useAdditionalResourcesStyles = makeStyles((theme: Theme) => ({
   infoItemWrapper: {
     padding: "12px 16px",
   },
@@ -21,6 +21,10 @@ export const usePrivacyAndSafetyStyles = makeStyles((theme: Theme) => ({
     color: "rgb(15, 20, 25)",
     fontWeight: 400,
     lineHeight: "20px",
+  },
+  divider: {
+    height: 1,
+    backgroundColor: "rgb(239, 243, 244)",
   },
   listWrapper: {
     paddingBottom: 64,
@@ -47,9 +51,5 @@ export const usePrivacyAndSafetyStyles = makeStyles((theme: Theme) => ({
   },
   arrowIcon: {
     marginLeft: "auto",
-  },
-  divider: {
-    height: 1,
-    backgroundColor: "rgb(239, 243, 244)",
   },
 }));

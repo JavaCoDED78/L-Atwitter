@@ -1,6 +1,6 @@
 import { makeStyles, Theme } from "@material-ui/core";
 
-export const usePrivacyAndSafetyStyles = makeStyles((theme: Theme) => ({
+export const useAccessibilityStyles = makeStyles((theme: Theme) => ({
   infoItemWrapper: {
     padding: "12px 16px",
   },
@@ -10,20 +10,7 @@ export const usePrivacyAndSafetyStyles = makeStyles((theme: Theme) => ({
     fontSize: 13,
     lineHeight: "16px",
   },
-  title: {
-    fontSize: 20,
-    color: "rgb(15, 20, 25)",
-    fontWeight: 800,
-    lineHeight: "24px",
-  },
-  subtitle: {
-    fontSize: 15,
-    color: "rgb(15, 20, 25)",
-    fontWeight: 400,
-    lineHeight: "20px",
-  },
   listWrapper: {
-    paddingBottom: 64,
     "& a": {
       textDecoration: "none",
     },
@@ -42,14 +29,16 @@ export const usePrivacyAndSafetyStyles = makeStyles((theme: Theme) => ({
       height: "1.3em",
     },
   },
+  subtitle: {
+    fontSize: 15,
+    color: "rgb(15, 20, 25)",
+    fontWeight: 400,
+    lineHeight: "20px",
+  },
   icon: {
     margin: "15px 30px 15px 15px",
   },
   arrowIcon: {
     marginLeft: "auto",
-  },
-  divider: {
-    height: 1,
-    backgroundColor: "rgb(239, 243, 244)",
   },
 }));
