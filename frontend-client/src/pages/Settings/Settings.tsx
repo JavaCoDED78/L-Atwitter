@@ -18,6 +18,15 @@ import ChangeYourPassword from "./Account/ChangeYourPassword/ChangeYourPassword"
 import TweetDeckTeams from "./Account/TweetDeckTeams/TweetDeckTeams";
 import SecurityAndAccountAccess from "./SecurityAndAccountAccess/SecurityAndAccountAccess";
 import DeactivateAccount from "./Account/DeactivateAccount/DeactivateAccount";
+import Security from "./SecurityAndAccountAccess/Security/Security";
+import TwoFactorAuthentication from "./SecurityAndAccountAccess/Security/TwoFactorAuthentication/TwoFactorAuthentication";
+import AppsAndSessions from "./SecurityAndAccountAccess/AppsAndSessions/AppsAndSessions";
+import ConnectedApps from "./SecurityAndAccountAccess/AppsAndSessions/ConnectedApps/ConnectedApps";
+import Sessions from "./SecurityAndAccountAccess/AppsAndSessions/Sessions/Sessions";
+import AccountAccessHistory from "./SecurityAndAccountAccess/AppsAndSessions/AccountAccessHistory/AccountAccessHistory";
+import LoggedDevices from "./SecurityAndAccountAccess/AppsAndSessions/LoggedDevices/LoggedDevices";
+import CurrentSession from "./SecurityAndAccountAccess/AppsAndSessions/Sessions/CurrentSession/CurrentSession";
+import PrivacyAndSafety from "./PrivacyAndSafety/PrivacyAndSafety";
 
 const Settings: FC = (): ReactElement => {
   const classes = useSettingsStyles();
@@ -59,13 +68,17 @@ const Settings: FC = (): ReactElement => {
                     {ArrowRightIcon}
                   </ListItem>
                 </NavLink>
-                <ListItem
-                  selected={selectedIndex === 3}
-                  onClick={() => handleListItemClick(3)}
-                >
-                  <Typography component={"span"}>Privacy and safety</Typography>
-                  {ArrowRightIcon}
-                </ListItem>
+                <NavLink to={"/settings/privacy_and_safety"}>
+                  <ListItem
+                    selected={selectedIndex === 3}
+                    onClick={() => handleListItemClick(3)}
+                  >
+                    <Typography component={"span"}>
+                      Privacy and safety
+                    </Typography>
+                    {ArrowRightIcon}
+                  </ListItem>
+                </NavLink>
                 <ListItem
                   selected={selectedIndex === 4}
                   onClick={() => handleListItemClick(4)}
@@ -148,6 +161,41 @@ const Settings: FC = (): ReactElement => {
           <Route exact path="/settings/security_and_account_access">
             <Typography variant="h6">Security and account access</Typography>
           </Route>
+          <Route exact path="/settings/security">
+            <BackButton />
+            <Typography variant="h6">Security</Typography>
+          </Route>
+          <Route exact path="/settings/security/login_verification">
+            <BackButton />
+            <Typography variant="h6">Two-factor authentication</Typography>
+          </Route>
+          <Route exact path="/settings/security/apps_and_sessions">
+            <BackButton />
+            <Typography variant="h6">Apps and sessions</Typography>
+          </Route>
+          <Route exact path="/settings/security/connected_apps">
+            <BackButton />
+            <Typography variant="h6">Connected apps</Typography>
+          </Route>
+          <Route exact path="/settings/security/sessions">
+            <BackButton />
+            <Typography variant="h6">Sessions</Typography>
+          </Route>
+          <Route exact path="/settings/security/sessions/current">
+            <BackButton />
+            <Typography variant="h6">Current session</Typography>
+          </Route>
+          <Route exact path="/settings/security/login_history">
+            <BackButton />
+            <Typography variant="h6">Account access history</Typography>
+          </Route>
+          <Route exact path="/settings/security/devices">
+            <BackButton />
+            <Typography variant="h6">Logged-in devices and apps</Typography>
+          </Route>
+          <Route exact path="/settings/privacy_and_safety">
+            <Typography variant="h6">Privacy and safety</Typography>
+          </Route>
         </Paper>
         <Route exact path="/settings" component={Account} />
         <Route exact path="/settings/info" component={AccountInformation} />
@@ -177,6 +225,43 @@ const Settings: FC = (): ReactElement => {
           exact
           path="/settings/security_and_account_access"
           component={SecurityAndAccountAccess}
+        />
+        <Route exact path="/settings/security" component={Security} />
+        <Route
+          exact
+          path="/settings/security/login_verification"
+          component={TwoFactorAuthentication}
+        />
+        <Route
+          exact
+          path="/settings/security/apps_and_sessions"
+          component={AppsAndSessions}
+        />
+        <Route
+          exact
+          path="/settings/security/connected_apps"
+          component={ConnectedApps}
+        />
+        <Route exact path="/settings/security/sessions" component={Sessions} />
+        <Route
+          exact
+          path="/settings/security/sessions/current"
+          component={CurrentSession}
+        />
+        <Route
+          exact
+          path="/settings/security/login_history"
+          component={AccountAccessHistory}
+        />
+        <Route
+          exact
+          path="/settings/security/devices"
+          component={LoggedDevices}
+        />
+        <Route
+          exact
+          path="/settings/privacy_and_safety"
+          component={PrivacyAndSafety}
         />
       </Grid>
     </>
