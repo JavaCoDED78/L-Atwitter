@@ -185,8 +185,8 @@ const FullTweet: FC<HoverProps<Tweet> & FullTweetProps & HoverActionProps> = ({
                     : DEFAULT_PROFILE_IMG
                 }
               />
-              <Typography
-                style={{ position: "relative" }}
+              <div
+                className={classes.headerUserInfo}
                 onMouseEnter={handleHoverPopper}
                 onMouseLeave={handleLeavePopper}
               >
@@ -194,15 +194,15 @@ const FullTweet: FC<HoverProps<Tweet> & FullTweetProps & HoverActionProps> = ({
                   <b>{tweetData.user.fullName}</b>&nbsp;
                 </Link>
                 <div>
-                  <span className={classes.username}>
+                  <Typography component={"span"} className={classes.username}>
                     @{tweetData.user.username}
-                  </span>
+                  </Typography>
                   &nbsp;
                 </div>
                 {visiblePopperWindow && (
                   <PopperUserWindow user={tweetData.user} />
                 )}
-              </Typography>
+              </div>
             </div>
             <TweetComponentActions
               tweet={tweetData}
@@ -254,45 +254,47 @@ const FullTweet: FC<HoverProps<Tweet> & FullTweetProps & HoverActionProps> = ({
               )
             ) : null}
           </Typography>
-          <Typography style={{ marginBottom: 16 }}>
-            <span className={classes.date}>
+          <div className={classes.dateWrapper}>
+            <Typography component={"span"} className={classes.date}>
               {format(new Date(tweetData.dateTime), "hh:mm a", {
                 locale: usLang,
               })}{" "}
               ·
-            </span>
-            <span className={classes.date}>
+            </Typography>
+            <Typography component={"span"} className={classes.date}>
               {format(new Date(tweetData.dateTime), " MMM dd, yyyy")} · Twitter
               Web App
-            </span>
-          </Typography>
-          <Divider />
+            </Typography>
+          </div>
           {(tweetData.retweets.length !== 0 ||
             tweetData.likedTweets.length !== 0) && (
-            <div className={classes.content}>
-              {tweetData.retweets.length !== 0 && (
-                <a
-                  href={"javascript:void(0);"}
-                  onClick={onOpenRetweetsModalWindow}
-                >
-                  <span style={{ marginRight: 20 }}>
-                    <b>{tweetData.retweets.length}</b>
-                    <span className={classes.contentItem}>Retweets</span>
-                  </span>
-                </a>
-              )}
-              {tweetData.likedTweets.length !== 0 && (
-                <a
-                  href={"javascript:void(0);"}
-                  onClick={onOpenLikesModalWindow}
-                >
-                  <span style={{ marginRight: 20 }}>
-                    <b>{tweetData.likedTweets.length}</b>
-                    <span className={classes.contentItem}>Likes</span>
-                  </span>
-                </a>
-              )}
-            </div>
+            <>
+              <Divider />
+              <div className={classes.content}>
+                {tweetData.retweets.length !== 0 && (
+                  <a
+                    href={"javascript:void(0);"}
+                    onClick={onOpenRetweetsModalWindow}
+                  >
+                    <div className={classes.contentItem}>
+                      <b>{tweetData.retweets.length}</b>
+                      <Typography component={"span"}>Retweets</Typography>
+                    </div>
+                  </a>
+                )}
+                {tweetData.likedTweets.length !== 0 && (
+                  <a
+                    href={"javascript:void(0);"}
+                    onClick={onOpenLikesModalWindow}
+                  >
+                    <div className={classes.contentItem}>
+                      <b>{tweetData.likedTweets.length}</b>
+                      <Typography component={"span"}>Likes</Typography>
+                    </div>
+                  </a>
+                )}
+              </div>
+            </>
           )}
           <div className={classes.info}>
             <div className={classes.infoIcon}>
@@ -358,14 +360,22 @@ const FullTweet: FC<HoverProps<Tweet> & FullTweetProps & HoverActionProps> = ({
                   </div>
                 </div>
                 <div className={classes.replyTextInfoWrapper}>
-                  <div className={classes.replyInfoTitle}>Who can reply?</div>
-                  <div className={classes.replyInfoText}>
+                  <Typography
+                    component={"div"}
+                    className={classes.replyInfoTitle}
+                  >
+                    Who can reply?
+                  </Typography>
+                  <Typography
+                    component={"div"}
+                    className={classes.replyInfoText}
+                  >
                     People @{tweetData.user.fullName}
                     {tweetData.replyType === ReplyType.FOLLOW
                       ? " follows or "
                       : " "}
                     mentioned can reply
-                  </div>
+                  </Typography>
                 </div>
               </div>
             </Paper>
@@ -376,7 +386,7 @@ const FullTweet: FC<HoverProps<Tweet> & FullTweetProps & HoverActionProps> = ({
           (isFollower && tweetData.replyType === ReplyType.FOLLOW) ? (
             <>
               <Typography className={classes.replyWrapper}>
-                Replying to{" "}
+                {"Replying to "}
                 <Link to={`/user/${tweetData.user.id}`}>
                   @{tweetData.user.username}
                 </Link>
@@ -415,10 +425,10 @@ const FullTweet: FC<HoverProps<Tweet> & FullTweetProps & HoverActionProps> = ({
     );
   }
   return (
-    <div className={classes.error}>
+    <Typography component={"div"} className={classes.error}>
       Hmm...this page doesn’t exist. <br />
       Try searching for something else.
-    </div>
+    </Typography>
   );
 };
 

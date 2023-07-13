@@ -205,7 +205,7 @@ const TweetComponent: FC<
             {tweet?.addressedUsername && (
               <object>
                 <Typography className={classes.replyWrapper}>
-                  Replying to{" "}
+                  {"Replying to "}
                   <Link
                     to={`/user/${tweet?.addressedId}`}
                     className={classes.replyLink}

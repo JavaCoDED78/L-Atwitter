@@ -17,7 +17,7 @@ import { User } from "../../store/ducks/user/contracts/state";
 import { useConnectStyles } from "./ConnetsStyles";
 
 const Connect: FC = (): ReactElement => {
-  const classes2 = useConnectStyles();
+  const classes = useConnectStyles();
   const dispatch = useDispatch();
   const users = useSelector(selectUsers);
   const isUsersLoading = useSelector(selectUsersIsLoading);
@@ -37,20 +37,21 @@ const Connect: FC = (): ReactElement => {
 
   return (
     <>
-      <div style={{ paddingTop: 48 }}>
+      <div className={classes.container}>
         {isUsersLoading ? (
-          <div className={classes2.loading}>
+          <div className={classes.loading}>
             <CircularProgress />
           </div>
         ) : (
           <>
-            <Paper className={classes2.header} variant="outlined">
+            <Paper className={classes.header} variant="outlined">
               <Typography variant="h6">Suggested for you</Typography>
             </Paper>
-            <Paper className={classes2.content} variant="outlined">
+            <Paper className={classes.content} variant="outlined">
               {users &&
                 users.map((user) => (
                   <Follower
+                    key={user.id}
                     item={user}
                     follow={handleFollow}
                     unfollow={handleUnfollow}

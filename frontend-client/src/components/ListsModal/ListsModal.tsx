@@ -1,4 +1,5 @@
 import React, { FC, FormEvent, ReactElement, useEffect, useState } from "react";
+import { RouteComponentProps, useLocation, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import {
   Button,
@@ -21,7 +22,6 @@ import { CheckIcon } from "../../icons";
 import { Lists } from "../../store/ducks/lists/contracts/state";
 import { Tweet } from "../../store/ducks/tweets/contracts/state";
 import { User } from "../../store/ducks/user/contracts/state";
-import { RouteComponentProps, useLocation, useParams } from "react-router-dom";
 
 interface ListsModalProps {
   tweet?: Tweet;
@@ -49,7 +49,6 @@ const ListsModal: FC<ListsModalProps> = ({
   }, []);
 
   useEffect(() => {
-    // TODO REWRITE THIS CRA... CRUTCH
     const set = new Set([...checkedListsIndexes]);
 
     userLists.forEach((list, index) => {
@@ -129,10 +128,7 @@ const ListsModal: FC<ListsModalProps> = ({
       aria-labelledby="form-dialog-title"
     >
       <form onSubmit={onSubmit}>
-        <DialogTitle
-          id="form-dialog-title"
-          style={{ borderBottom: "1px solid rgb(239, 243, 244)" }}
-        >
+        <DialogTitle id="form-dialog-title">
           <IconButton onClick={onClose} color="secondary" aria-label="close">
             <CloseIcon style={{ fontSize: 26 }} color="secondary" />
           </IconButton>

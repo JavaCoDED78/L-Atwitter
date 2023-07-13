@@ -81,11 +81,13 @@ const Notifications: FC = (): ReactElement => {
         ) : activeTab === 0 ? (
           notifications.length === 0 ? (
             <div>
-              <div className={classes.title}>Nothing to see here — yet</div>
-              <div className={classes.text}>
+              <Typography component={"div"} className={classes.title}>
+                Nothing to see here — yet
+              </Typography>
+              <Typography component={"div"} className={classes.text}>
                 From like to Retweets and whole lot more, this is where all the
                 actions happens.
-              </div>
+              </Typography>
             </div>
           ) : (
             <div>
@@ -153,10 +155,12 @@ const Notifications: FC = (): ReactElement => {
           )
         ) : (
           <div>
-            <div className={classes.title}>Nothing to see here — yet</div>
-            <div className={classes.text}>
+            <Typography component={"div"} className={classes.title}>
+              Nothing to see here — yet
+            </Typography>
+            <Typography component={"div"} className={classes.text}>
               When someone mentions you, you’ll find it here.
-            </div>
+            </Typography>
           </div>
         )}
       </div>

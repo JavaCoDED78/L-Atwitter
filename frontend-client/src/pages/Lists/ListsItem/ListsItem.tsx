@@ -1,7 +1,13 @@
 import React, { FC, ReactElement, useState } from "react";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { Avatar, Button, IconButton, Paper } from "@material-ui/core";
+import {
+  Avatar,
+  Button,
+  IconButton,
+  Paper,
+  Typography,
+} from "@material-ui/core";
 
 import { Lists } from "../../../store/ducks/lists/contracts/state";
 import { useListsItemStyles } from "./ListsItemStyles";
@@ -22,18 +28,15 @@ interface ListsItemProps<T> {
   item?: T;
   listIndex?: number;
   isMyList?: boolean;
-  visiblePopperWindow?: boolean;
-  handleHover?: () => void;
-  handleLeave?: () => void;
+  // visiblePopperWindow?: boolean;
+  // handleHover?: () => void;
+  // handleLeave?: () => void;
 }
 
 const ListsItem: FC<ListsItemProps<Lists>> = ({
   item: list,
   listIndex,
   isMyList,
-  visiblePopperWindow,
-  handleHover,
-  handleLeave,
 }): ReactElement => {
   const classes = useListsItemStyles();
   const dispatch = useDispatch();
@@ -43,6 +46,8 @@ const ListsItem: FC<ListsItemProps<Lists>> = ({
   );
   const [btnText, setBtnText] = useState<string>("Following");
   const [visiblePinAction, setVisiblePinAction] = useState<boolean>(false);
+  const [visiblePopperListWindow, setVisiblePopperListWindow] =
+    useState<boolean>(false);
   const [delayHandler, setDelayHandler] = useState<any>(null);
 
   const onClickFollow = (
@@ -80,6 +85,15 @@ const ListsItem: FC<ListsItemProps<Lists>> = ({
     setVisiblePinAction(false);
   };
 
+  const handleHoverList = (): void => {
+    setDelayHandler(setTimeout(() => setVisiblePopperListWindow(true), 1000));
+  };
+
+  const handleLeaveList = (): void => {
+    clearTimeout(delayHandler);
+    setVisiblePopperListWindow(false);
+  };
+
   return (
     <Link to={`/lists/${list?.id}`} className={classes.link}>
       <Paper
@@ -95,10 +109,12 @@ const ListsItem: FC<ListsItemProps<Lists>> = ({
         <div className={classes.listInfoContainer}>
           <div
             className={classes.listInfoWrapper}
-            onMouseEnter={handleHover}
-            onMouseLeave={handleLeave}
+            onMouseEnter={handleHoverList}
+            onMouseLeave={handleLeaveList}
           >
-            <div className={classes.listTitle}>{list?.name}</div>
+            <Typography component={"div"} className={classes.listTitle}>
+              {list?.name}
+            </Typography>
             <div className={classes.listOwnerWrapper}>
               <Avatar
                 className={classes.listOwnerAvatar}
@@ -110,14 +126,20 @@ const ListsItem: FC<ListsItemProps<Lists>> = ({
               />
             </div>
             <div className={classes.listOwnerInfoWrapper}>
-              <span className={classes.listOwnerFullName}>
+              <Typography
+                component={"span"}
+                className={classes.listOwnerFullName}
+              >
                 {list?.listOwner.fullName}
-              </span>
-              <span className={classes.listOwnerUsername}>
+              </Typography>
+              <Typography
+                component={"span"}
+                className={classes.listOwnerUsername}
+              >
                 @{list?.listOwner.username}
-              </span>
+              </Typography>
             </div>
-            {visiblePopperWindow && <PopperListWindow list={list!} />}
+            {visiblePopperListWindow && <PopperListWindow list={list!} />}
           </div>
           {isMyList && (
             <div className={classes.listPinWrapper}>
@@ -164,4 +186,4 @@ const ListsItem: FC<ListsItemProps<Lists>> = ({
   );
 };
 
-export default withHoverUser(ListsItem);
+export default ListsItem;

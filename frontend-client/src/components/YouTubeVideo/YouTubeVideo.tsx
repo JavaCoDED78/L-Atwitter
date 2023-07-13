@@ -1,4 +1,5 @@
 import React, { FC, ReactElement } from "react";
+import { Typography } from "@material-ui/core";
 
 import { useYouTubeVideoStyles } from "./YouTubeVideoStyles";
 import { Tweet } from "../../store/ducks/tweets/contracts/state";
@@ -30,11 +31,18 @@ const YouTubeVideo: FC<YouTubeVideoProps> = ({ tweet }): ReactElement => {
       ></iframe>
       <a className={classes.youtubeLink} target="_blank" href={tweet.link}>
         <div className={classes.videoInfoWrapper}>
-          <div className={classes.videoInfoTitle}>{tweet.linkTitle}</div>
-          <div className={classes.videoInfoDescription}>
+          <Typography component={"div"} className={classes.videoInfoTitle}>
+            {tweet.linkTitle}
+          </Typography>
+          <Typography
+            component={"div"}
+            className={classes.videoInfoDescription}
+          >
             {tweet.linkDescription}
-          </div>
-          <div className={classes.youtubeTitle}>{LinkIcon}youtube.com</div>
+          </Typography>
+          <Typography component={"div"} className={classes.youtubeTitle}>
+            {LinkIcon}youtube.com
+          </Typography>
         </div>
       </a>
     </div>

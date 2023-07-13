@@ -119,7 +119,7 @@ const UsersItem: FC<HoverProps<User> & UsersItemProps<User>> = ({
         onClose={onCloseUnfollowModal}
         aria-labelledby="form-dialog-title"
       >
-        <DialogContent style={{ padding: "0px 0px" }}>
+        <DialogContent style={{ padding: 0 }}>
           <div className={classes.modalWrapper}>
             <Typography className={classes.modalFullName}>
               Unfollow {user?.fullName}?

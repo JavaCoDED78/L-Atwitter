@@ -280,7 +280,7 @@ const TweetImageModal: FC<HoverProps<Tweet> & HoverActionProps> = ({
             </div>
             <Divider />
             <Typography className={classes.replyWrapper}>
-              Replying to{" "}
+              {"Replying to "}
               <Link to={`/user/${tweetData.user.id}`}>
                 @{tweetData.user.username}
               </Link>

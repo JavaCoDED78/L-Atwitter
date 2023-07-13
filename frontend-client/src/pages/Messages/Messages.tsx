@@ -38,6 +38,7 @@ import {
 import { selectChatMessagesItems } from "../../store/ducks/chatMessages/selectors";
 import { fetchReadMessages } from "../../store/ducks/user/actionCreators";
 import { formatChatMessageDate, formatDate } from "../../util/formatDate";
+import { textFormatter } from "../../util/textFormatter";
 
 const Messages: FC = (): ReactElement => {
   const classes = useMessagesStyles();
@@ -262,7 +263,7 @@ const Messages: FC = (): ReactElement => {
                                   )}
                                 </span>
                               </div>
-                              <span>{message.tweet?.text}</span>
+                              <span>{textFormatter(message.tweet?.text)}</span>
                             </div>
                           </Link>
                         </div>
@@ -352,7 +353,9 @@ const Messages: FC = (): ReactElement => {
                                       )}
                                     </span>
                                   </div>
-                                  <span>{message.tweet?.text}</span>
+                                  <span>
+                                    {textFormatter(message.tweet?.text)}
+                                  </span>
                                 </div>
                               </Link>
                             </div>

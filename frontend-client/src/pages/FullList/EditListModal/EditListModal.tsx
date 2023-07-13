@@ -7,6 +7,7 @@ import {
   Dialog,
   DialogContent,
   DialogTitle,
+  Typography,
 } from "@material-ui/core";
 import CloseIcon from "@material-ui/icons/Close";
 import IconButton from "@material-ui/core/IconButton";
@@ -198,7 +199,9 @@ const EditListModal: FC<EditListModalProps> = ({
             />
             <div className={classes.footer}>
               <div className={classes.footerWrapper}>
-                <div className={classes.footerTitle}>Make private</div>
+                <Typography component={"div"} className={classes.footerTitle}>
+                  Make private
+                </Typography>
                 <Checkbox
                   checked={isListPrivate}
                   onChange={handleChange}
@@ -206,20 +209,25 @@ const EditListModal: FC<EditListModalProps> = ({
                   color="primary"
                 />
               </div>
-              <div className={classes.footerText}>
+              <Typography component={"div"} className={classes.footerText}>
                 When you make a List private, only you can see it.
-              </div>
+              </Typography>
             </div>
-            <div
+            <Typography
+              component={"div"}
               className={classes.manageMembers}
               onClick={onOpenManageMembersModal}
             >
               Manage members
               <>{ForwardArrowIcon}</>
-            </div>
-            <div className={classes.deleteList} onClick={onOpenDeleteListModal}>
+            </Typography>
+            <Typography
+              component={"div"}
+              className={classes.deleteList}
+              onClick={onOpenDeleteListModal}
+            >
               Delete List
-            </div>
+            </Typography>
           </div>
         </DialogContent>
       </form>

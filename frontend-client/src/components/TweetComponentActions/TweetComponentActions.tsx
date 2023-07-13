@@ -6,6 +6,7 @@ import {
   List,
   ListItem,
   Snackbar,
+  Typography,
 } from "@material-ui/core";
 
 import { useTweetComponentMoreStyles } from "./TweetComponentActionsStyles";
@@ -197,41 +198,43 @@ const TweetComponentActions: FC<TweetComponentActionsProps> = ({
                 {myProfile?.id === tweet.user.id ? (
                   <>
                     <ListItem
-                      className={classes.delete}
+                      id={"delete"}
                       onClick={() => onOpenTweetComponentActionsModal("Delete")}
                     >
-                      <span>{DeleteIcon}</span>
-                      <span className={classes.text}>Delete</span>
+                      <>{DeleteIcon}</>
+                      <Typography component={"span"}>Delete</Typography>
                     </ListItem>
                     <ListItem
                       onClick={() => onOpenTweetComponentActionsModal("Pin")}
                     >
-                      <span className={classes.textIcon}>{PinIcon}</span>
-                      <span className={classes.text}>
+                      <>{PinIcon}</>
+                      <Typography component={"span"}>
                         {isTweetPinned
                           ? "Unpin from profile"
                           : "Pin to your profile"}
-                      </span>
+                      </Typography>
                     </ListItem>
                     <ListItem onClick={onOpenListsModal}>
-                      <span className={classes.textIcon}>{AddListsIcon}</span>
-                      <span className={classes.text}>
+                      <>{AddListsIcon}</>
+                      <Typography component={"span"}>
                         {`Add/remove @${tweet.user.username} from Lists`}
-                      </span>
+                      </Typography>
                     </ListItem>
                     <ListItem onClick={handleClickReplyDropdown}>
-                      <span className={classes.textIcon}>{ReplyIcon}</span>
-                      <span className={classes.text}>Change who can reply</span>
+                      <>{ReplyIcon}</>
+                      <Typography component={"span"}>
+                        Change who can reply
+                      </Typography>
                     </ListItem>
                     <ListItem>
-                      <span className={classes.textIcon}>{EmbedTweetIcon}</span>
-                      <span className={classes.text}>Embed Tweet</span>
+                      <>{EmbedTweetIcon}</>
+                      <Typography component={"span"}>Embed Tweet</Typography>
                     </ListItem>
                     <ListItem>
-                      <span className={classes.textIcon}>
-                        {TweetActivityIcon}
-                      </span>
-                      <span className={classes.text}>View Tweet activity</span>
+                      <>{TweetActivityIcon}</>
+                      <Typography component={"span"}>
+                        View Tweet activity
+                      </Typography>
                     </ListItem>
                   </>
                 ) : (
@@ -239,47 +242,45 @@ const TweetComponentActions: FC<TweetComponentActionsProps> = ({
                     <ListItem onClick={handleFollow}>
                       {follower ? (
                         <>
-                          <span className={classes.textIcon}>
-                            {UnfollowIcon}
-                          </span>
-                          <span className={classes.text}>
+                          <>{UnfollowIcon}</>
+                          <Typography component={"span"}>
                             {`Unfollow @${tweet.user.username}`}
-                          </span>
+                          </Typography>
                         </>
                       ) : (
                         <>
-                          <span className={classes.textIcon}>{FollowIcon}</span>
-                          <span className={classes.text}>
+                          <>{FollowIcon}</>
+                          <Typography component={"span"}>
                             {`Follow @${tweet.user.username}`}
-                          </span>
+                          </Typography>
                         </>
                       )}
                     </ListItem>
                     <ListItem onClick={onOpenListsModal}>
-                      <span className={classes.textIcon}>{AddListsIcon}</span>
-                      <span className={classes.text}>
+                      <>{AddListsIcon}</>
+                      <Typography component={"span"}>
                         {`Add/remove @${tweet.user.username} from Lists`}
-                      </span>
+                      </Typography>
                     </ListItem>
                     <ListItem>
-                      <span className={classes.textIcon}>{MuteIcon}</span>
-                      <span className={classes.text}>
+                      <>{MuteIcon}</>
+                      <Typography component={"span"}>
                         {`Mute @${tweet.user.username}`}
-                      </span>
+                      </Typography>
                     </ListItem>
                     <ListItem>
-                      <span className={classes.textIcon}>{BlockIcon}</span>
-                      <span className={classes.text}>
+                      <>{BlockIcon}</>
+                      <Typography component={"span"}>
                         {`Block @${tweet.user.username}`}
-                      </span>
+                      </Typography>
                     </ListItem>
                     <ListItem>
-                      <span className={classes.textIcon}>{EmbedTweetIcon}</span>
-                      <span className={classes.text}>Embed Tweet</span>
+                      <>{EmbedTweetIcon}</>
+                      <Typography component={"span"}>Embed Tweet</Typography>
                     </ListItem>
                     <ListItem>
-                      <span className={classes.textIcon}>{ReportIcon}</span>
-                      <span className={classes.text}>Report Tweet</span>
+                      <>{ReportIcon}</>
+                      <Typography component={"span"}>Report Tweet</Typography>
                     </ListItem>
                   </>
                 )}

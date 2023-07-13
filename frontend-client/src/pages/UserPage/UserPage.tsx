@@ -18,6 +18,8 @@ import {
   Button,
   CircularProgress,
   IconButton,
+  List,
+  ListItem,
   Typography,
 } from "@material-ui/core";
 import Tabs from "@material-ui/core/Tabs";
@@ -200,8 +202,10 @@ const UserPage: FC<RouteComponentProps<{ id: string }>> = ({
       <Paper className={classes.header} variant="outlined">
         <BackButton />
         <div>
-          <Typography variant="h6">{userProfile?.fullName}</Typography>
-          <Typography variant="caption" display="block" gutterBottom>
+          <Typography component={"div"} className={classes.headerFullName}>
+            {userProfile?.fullName}
+          </Typography>
+          <Typography component={"div"} className={classes.headerTweetCount}>
             {userProfile?.tweetCount} Tweets
           </Typography>
         </div>
@@ -271,89 +275,90 @@ const UserPage: FC<RouteComponentProps<{ id: string }>> = ({
           {!userProfile ? (
             <Skeleton variant="text" width={250} height={30} />
           ) : (
-            <h2 className={classes.fullName}>{userProfile.fullName}</h2>
+            <Typography className={classes.fullName}>
+              {userProfile.fullName}
+            </Typography>
           )}
           {!userProfile ? (
             <Skeleton variant="text" width={60} />
           ) : (
-            <span className={classes.username}>@{userProfile.username}</span>
+            <Typography className={classes.username}>
+              @{userProfile.username}
+            </Typography>
           )}
-          <p className={classes.description}>{userProfile?.about}</p>
-          <ul className={classes.details}>
-            {userProfile?.location && (
-              <li>
-                <span>{LocationIcon}</span>
-                <span>{userProfile?.location}</span>
-              </li>
-            )}
-            {userProfile?.website && (
-              <li>
-                <span>{LinkIcon}</span>
-                <a className="link" href={userProfile?.website}>
-                  {userProfile?.website}
-                </a>
-              </li>
-            )}
-            {userProfile?.dateOfBirth && (
-              <li>Date of Birth: {userProfile?.dateOfBirth}</li>
-            )}
-            {userProfile?.registrationDate && (
-              <li>
-                <span>{CalendarIcon}</span> Joined:{" "}
-                {format(new Date(userProfile?.registrationDate), "MMMM yyyy")}
-              </li>
-            )}
-          </ul>
-          <ul className={classes.details}>
-            <Link
-              to={`/user/${userProfile?.id}/following`}
-              className={classes.followLink}
-            >
-              {userProfile?.id === myProfile?.id ? (
-                <li>
+          <Typography className={classes.description}>
+            {userProfile?.about}
+          </Typography>
+          <div className={classes.infoList}>
+            <List>
+              {userProfile?.location && (
+                <ListItem>
+                  <>{LocationIcon}</>
+                  <Typography component={"span"}>
+                    {userProfile?.location}
+                  </Typography>
+                </ListItem>
+              )}
+              {userProfile?.website && (
+                <ListItem>
+                  <>{LinkIcon}</>
+                  <a className="link" href={userProfile?.website}>
+                    {userProfile?.website}
+                  </a>
+                </ListItem>
+              )}
+              {userProfile?.dateOfBirth && (
+                <ListItem>
+                  <Typography component={"span"}>
+                    Date of Birth: {userProfile?.dateOfBirth}
+                  </Typography>
+                </ListItem>
+              )}
+              {userProfile?.registrationDate && (
+                <ListItem>
+                  <>{CalendarIcon}</>
+                  Joined:{" "}
+                  {format(new Date(userProfile?.registrationDate), "MMMM yyyy")}
+                </ListItem>
+              )}
+            </List>
+            <List className={classes.details}>
+              <Link
+                to={`/user/${userProfile?.id}/following`}
+                className={classes.followLink}
+              >
+                <ListItem>
                   <b>
-                    {myProfile?.followers?.length
+                    {userProfile?.id === myProfile?.id
                       ? myProfile?.followers?.length
-                      : 0}
-                  </b>{" "}
-                  Following
-                </li>
-              ) : (
-                <li>
-                  <b>
-                    {userProfile?.followers?.length
+                        ? myProfile?.followers?.length
+                        : 0
+                      : userProfile?.followers?.length
                       ? userProfile?.followers?.length
                       : 0}
-                  </b>{" "}
-                  Following
-                </li>
-              )}
-            </Link>
-            <Link
-              to={`/user/${userProfile?.id}/followers`}
-              className={classes.followLink}
-            >
-              {userProfile?.id === myProfile?.id ? (
-                <li>
+                  </b>
+                  <Typography component={"span"}>{" Following"}</Typography>
+                </ListItem>
+              </Link>
+              <Link
+                to={`/user/${userProfile?.id}/followers`}
+                className={classes.followLink}
+              >
+                <ListItem>
                   <b>
-                    {myProfile?.following?.length
+                    {userProfile?.id === myProfile?.id
                       ? myProfile?.following?.length
-                      : 0}
-                  </b>{" "}
-                  Followers
-                </li>
-              ) : (
-                <li>
-                  <b>
-                    {userProfile?.following?.length
+                        ? myProfile?.following?.length
+                        : 0
+                      : userProfile?.following?.length
                       ? userProfile?.following?.length
                       : 0}
-                  </b>{" "}
-                  Followers
-                </li>
-              )}
-            </Link>
-          </ul>
+                  </b>
+                  <Typography component={"span"}>{" Followers"}</Typography>
+                </ListItem>
+              </Link>
+            </List>
+          </div>
         </div>
         <div className={classes.tabs}>
           <Tabs

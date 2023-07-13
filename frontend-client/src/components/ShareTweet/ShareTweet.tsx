@@ -8,6 +8,7 @@ import {
   List,
   ListItem,
   Snackbar,
+  Typography,
 } from "@material-ui/core";
 
 import { useShareTweetModalStyles } from "./ShareTweetStyles";
@@ -121,26 +122,32 @@ const ShareTweet: FC<ShareTweetProps> = ({
             <div className={classes.dropdown}>
               <List>
                 <ListItem onClick={onClickSendViaDirectMessage}>
-                  <span className={classes.textIcon}>{MessagesIcon}</span>
-                  <span className={classes.text}>Send via Direct Message</span>
+                  <>{MessagesIcon}</>
+                  <Typography component={"span"}>
+                    Send via Direct Message
+                  </Typography>
                 </ListItem>
                 <ListItem onClick={onClickAddTweetToBookmarks}>
-                  <span className={classes.textIcon}>{AddBookmarksIcon}</span>
-                  <span className={classes.text}>
+                  <>{AddBookmarksIcon}</>
+                  <Typography component={"span"}>
                     {isBookmarked
                       ? "Remove Tweet from Bookmarks"
                       : "Add Tweet to Bookmarks"}
-                  </span>
+                  </Typography>
                 </ListItem>
                 <CopyToClipboard text={CLIENT_URL + location.pathname}>
                   <ListItem onClick={onCopyLinkToTweet}>
-                    <span className={classes.textIcon}>{LinkIcon}</span>
-                    <span className={classes.text}>Copy link to Tweet</span>
+                    <>{LinkIcon}</>
+                    <Typography component={"span"}>
+                      Copy link to Tweet
+                    </Typography>
                   </ListItem>
                 </CopyToClipboard>
                 <ListItem>
-                  <span className={classes.textIcon}>{ShareIcon}</span>
-                  <span className={classes.text}>Share Tweet via ...</span>
+                  <>{ShareIcon}</>
+                  <Typography component={"span"}>
+                    Share Tweet via ...
+                  </Typography>
                 </ListItem>
               </List>
             </div>
