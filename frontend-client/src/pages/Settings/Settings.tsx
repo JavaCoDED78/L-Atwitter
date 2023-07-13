@@ -4,22 +4,26 @@ import { Grid, List, ListItem, Paper, Typography } from "@material-ui/core";
 
 import { useSettingsStyles } from "./SettingsStyles";
 import { ArrowRightIcon } from "../../icons";
+import { BackButton } from "../../components/BackButton/BackButton";
 import Account from "./Account/Account";
 import AccountInformation from "./Account/AccountInformation/AccountInformation";
-import { BackButton } from "../../components/BackButton/BackButton";
 import ChangeUsername from "./Account/AccountInformation/ChangeUsername/ChangeUsername";
 import ChangePhone from "./Account/AccountInformation/ChangePhone/ChangePhone";
 import ChangeEmail from "./Account/AccountInformation/ChangeEmail/ChangeEmail";
 import ChangeCountry from "./Account/AccountInformation/ChangeCountry/ChangeCountry";
+import ChangeLanguage from "./Account/AccountInformation/ChangeLanguage/ChangeLanguage";
+import ChangeGender from "./Account/AccountInformation/ChangeGender/ChangeGender";
+import ChangeAge from "./Account/AccountInformation/ChangeAge/ChangeAge";
+import ChangeYourPassword from "./Account/ChangeYourPassword/ChangeYourPassword";
+import TweetDeckTeams from "./Account/TweetDeckTeams/TweetDeckTeams";
+import SecurityAndAccountAccess from "./SecurityAndAccountAccess/SecurityAndAccountAccess";
+import DeactivateAccount from "./Account/DeactivateAccount/DeactivateAccount";
 
 const Settings: FC = (): ReactElement => {
   const classes = useSettingsStyles();
   const [selectedIndex, setSelectedIndex] = React.useState(1);
 
-  const handleListItemClick = (
-    event: React.MouseEvent<HTMLLIElement, MouseEvent>,
-    index: number
-  ) => {
+  const handleListItemClick = (index: number) => {
     setSelectedIndex(index);
   };
 
@@ -38,38 +42,40 @@ const Settings: FC = (): ReactElement => {
                 <NavLink to={"/settings"}>
                   <ListItem
                     selected={selectedIndex === 1}
-                    onClick={(event) => handleListItemClick(event, 1)}
+                    onClick={() => handleListItemClick(1)}
                   >
                     <Typography component={"span"}>Your account</Typography>
                     {ArrowRightIcon}
                   </ListItem>
                 </NavLink>
-                <ListItem
-                  selected={selectedIndex === 2}
-                  onClick={(event) => handleListItemClick(event, 2)}
-                >
-                  <Typography component={"span"}>
-                    Security and account access
-                  </Typography>
-                  {ArrowRightIcon}
-                </ListItem>
+                <NavLink to={"/settings/security_and_account_access"}>
+                  <ListItem
+                    selected={selectedIndex === 2}
+                    onClick={() => handleListItemClick(2)}
+                  >
+                    <Typography component={"span"}>
+                      Security and account access
+                    </Typography>
+                    {ArrowRightIcon}
+                  </ListItem>
+                </NavLink>
                 <ListItem
                   selected={selectedIndex === 3}
-                  onClick={(event) => handleListItemClick(event, 3)}
+                  onClick={() => handleListItemClick(3)}
                 >
                   <Typography component={"span"}>Privacy and safety</Typography>
                   {ArrowRightIcon}
                 </ListItem>
                 <ListItem
                   selected={selectedIndex === 4}
-                  onClick={(event) => handleListItemClick(event, 4)}
+                  onClick={() => handleListItemClick(4)}
                 >
                   <Typography component={"span"}>Notifications</Typography>
                   {ArrowRightIcon}
                 </ListItem>
                 <ListItem
                   selected={selectedIndex === 5}
-                  onClick={(event) => handleListItemClick(event, 5)}
+                  onClick={() => handleListItemClick(5)}
                 >
                   <Typography component={"span"}>
                     Accessibility, display, and languages
@@ -78,7 +84,7 @@ const Settings: FC = (): ReactElement => {
                 </ListItem>
                 <ListItem
                   selected={selectedIndex === 6}
-                  onClick={(event) => handleListItemClick(event, 6)}
+                  onClick={() => handleListItemClick(6)}
                 >
                   <Typography component={"span"}>
                     Additional resources
@@ -115,6 +121,33 @@ const Settings: FC = (): ReactElement => {
             <BackButton />
             <Typography variant="h6">Change country</Typography>
           </Route>
+          <Route exact path="/settings/info/languages">
+            <BackButton />
+            <Typography variant="h6">Languages</Typography>
+          </Route>
+          <Route exact path="/settings/info/gender">
+            <BackButton />
+            <Typography variant="h6">Gender</Typography>
+          </Route>
+          <Route exact path="/settings/info/age">
+            <BackButton />
+            <Typography variant="h6">Age</Typography>
+          </Route>
+          <Route exact path="/settings/password">
+            <BackButton />
+            <Typography variant="h6">Change your password</Typography>
+          </Route>
+          <Route exact path="/settings/teams">
+            <BackButton />
+            <Typography variant="h6">TweetDeck Teams</Typography>
+          </Route>
+          <Route exact path="/settings/deactivate">
+            <BackButton />
+            <Typography variant="h6">Deactivate account</Typography>
+          </Route>
+          <Route exact path="/settings/security_and_account_access">
+            <Typography variant="h6">Security and account access</Typography>
+          </Route>
         </Paper>
         <Route exact path="/settings" component={Account} />
         <Route exact path="/settings/info" component={AccountInformation} />
@@ -126,6 +159,25 @@ const Settings: FC = (): ReactElement => {
         <Route exact path="/settings/info/phone" component={ChangePhone} />
         <Route exact path="/settings/info/email" component={ChangeEmail} />
         <Route exact path="/settings/info/country" component={ChangeCountry} />
+        <Route
+          exact
+          path="/settings/info/languages"
+          component={ChangeLanguage}
+        />
+        <Route exact path="/settings/info/gender" component={ChangeGender} />
+        <Route exact path="/settings/info/age" component={ChangeAge} />
+        <Route exact path="/settings/password" component={ChangeYourPassword} />
+        <Route exact path="/settings/teams" component={TweetDeckTeams} />
+        <Route
+          exact
+          path="/settings/deactivate"
+          component={DeactivateAccount}
+        />
+        <Route
+          exact
+          path="/settings/security_and_account_access"
+          component={SecurityAndAccountAccess}
+        />
       </Grid>
     </>
   );

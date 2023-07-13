@@ -94,28 +94,32 @@ const AccountInformation: FC = (): ReactElement => {
                 <div className={classes.arrowIcon}>{ArrowRightIcon}</div>
               </ListItem>
             </NavLink>
-            <ListItem>
-              <div>
-                <Typography component={"div"} className={classes.title}>
-                  Languages
-                </Typography>
-                <Typography component={"div"} className={classes.text}>
-                  English
-                </Typography>
-              </div>
-              <div className={classes.arrowIcon}>{ArrowRightIcon}</div>
-            </ListItem>
-            <ListItem>
-              <div>
-                <Typography component={"div"} className={classes.title}>
-                  Gender
-                </Typography>
-                <Typography component={"div"} className={classes.text}>
-                  Male
-                </Typography>
-              </div>
-              <div className={classes.arrowIcon}>{ArrowRightIcon}</div>
-            </ListItem>
+            <NavLink to={"/settings/info/languages"}>
+              <ListItem>
+                <div>
+                  <Typography component={"div"} className={classes.title}>
+                    Languages
+                  </Typography>
+                  <Typography component={"div"} className={classes.text}>
+                    English
+                  </Typography>
+                </div>
+                <div className={classes.arrowIcon}>{ArrowRightIcon}</div>
+              </ListItem>
+            </NavLink>
+            <NavLink to={"/settings/info/gender"}>
+              <ListItem>
+                <div>
+                  <Typography component={"div"} className={classes.title}>
+                    Gender
+                  </Typography>
+                  <Typography component={"div"} className={classes.text}>
+                    Male
+                  </Typography>
+                </div>
+                <div className={classes.arrowIcon}>{ArrowRightIcon}</div>
+              </ListItem>
+            </NavLink>
             <div className={classes.informationItem}>
               <Typography component={"div"} className={classes.title}>
                 Birth date
@@ -126,17 +130,19 @@ const AccountInformation: FC = (): ReactElement => {
               </Typography>
             </div>
             <div className={classes.divider} />
-            <ListItem>
-              <div>
-                <Typography component={"div"} className={classes.title}>
-                  Age
-                </Typography>
-                <Typography component={"div"} className={classes.text}>
-                  13-64
-                </Typography>
-              </div>
-              <div className={classes.arrowIcon}>{ArrowRightIcon}</div>
-            </ListItem>
+            <NavLink to={"/settings/info/age"}>
+              <ListItem>
+                <div>
+                  <Typography component={"div"} className={classes.title}>
+                    Age
+                  </Typography>
+                  <Typography component={"div"} className={classes.text}>
+                    13-64
+                  </Typography>
+                </div>
+                <div className={classes.arrowIcon}>{ArrowRightIcon}</div>
+              </ListItem>
+            </NavLink>
           </List>
         </div>
       </Paper>

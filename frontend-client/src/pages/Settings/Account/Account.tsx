@@ -40,18 +40,20 @@ const Account: FC = (): ReactElement => {
                   <div className={classes.arrowIcon}>{ArrowRightIcon}</div>
                 </ListItem>
               </NavLink>
-              <ListItem>
-                <div className={classes.icon}>{KeyIcon}</div>
-                <div>
-                  <Typography component={"div"} className={classes.title}>
-                    Change your password
-                  </Typography>
-                  <Typography component={"div"} className={classes.text}>
-                    Change your password at any time.
-                  </Typography>
-                </div>
-                <div className={classes.arrowIcon}>{ArrowRightIcon}</div>
-              </ListItem>
+              <NavLink to={"/settings/password"}>
+                <ListItem>
+                  <div className={classes.icon}>{KeyIcon}</div>
+                  <div>
+                    <Typography component={"div"} className={classes.title}>
+                      Change your password
+                    </Typography>
+                    <Typography component={"div"} className={classes.text}>
+                      Change your password at any time.
+                    </Typography>
+                  </div>
+                  <div className={classes.arrowIcon}>{ArrowRightIcon}</div>
+                </ListItem>
+              </NavLink>
               <ListItem>
                 <div className={classes.icon}>{DownloadIcon}</div>
                 <div>
@@ -65,31 +67,35 @@ const Account: FC = (): ReactElement => {
                 </div>
                 <div className={classes.arrowIcon}>{ArrowRightIcon}</div>
               </ListItem>
-              <ListItem>
-                <div className={classes.icon}>{CommunityIcon}</div>
-                <div>
-                  <Typography component={"div"} className={classes.title}>
-                    TweetDeck Teams
-                  </Typography>
-                  <Typography component={"div"} className={classes.text}>
-                    Invite anyone to Tweet from this account using the Teams
-                    feature in TweetDeck.
-                  </Typography>
-                </div>
-                <div className={classes.arrowIcon}>{ArrowRightIcon}</div>
-              </ListItem>
-              <ListItem>
-                <div className={classes.icon}>{DeleteAccountIcon}</div>
-                <div>
-                  <Typography component={"div"} className={classes.title}>
-                    Deactivate your account
-                  </Typography>
-                  <Typography component={"div"} className={classes.text}>
-                    Find out how you can deactivate your account.
-                  </Typography>
-                </div>
-                <div className={classes.arrowIcon}>{ArrowRightIcon}</div>
-              </ListItem>
+              <NavLink to={"/settings/teams"}>
+                <ListItem>
+                  <div className={classes.icon}>{CommunityIcon}</div>
+                  <div>
+                    <Typography component={"div"} className={classes.title}>
+                      TweetDeck Teams
+                    </Typography>
+                    <Typography component={"div"} className={classes.text}>
+                      Invite anyone to Tweet from this account using the Teams
+                      feature in TweetDeck.
+                    </Typography>
+                  </div>
+                  <div className={classes.arrowIcon}>{ArrowRightIcon}</div>
+                </ListItem>
+              </NavLink>
+              <NavLink to={"/settings/deactivate"}>
+                <ListItem>
+                  <div className={classes.icon}>{DeleteAccountIcon}</div>
+                  <div>
+                    <Typography component={"div"} className={classes.title}>
+                      Deactivate your account
+                    </Typography>
+                    <Typography component={"div"} className={classes.text}>
+                      Find out how you can deactivate your account.
+                    </Typography>
+                  </div>
+                  <div className={classes.arrowIcon}>{ArrowRightIcon}</div>
+                </ListItem>
+              </NavLink>
             </List>
           </div>
         </div>
