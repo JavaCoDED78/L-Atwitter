@@ -126,7 +126,7 @@ export const useTweetComponentStyles = makeStyles<
     position: "relative",
     paddingTop: 5,
     paddingBottom: 5,
-    left: -13,
+    left: -8,
     justifyContent: "space-between",
     maxWidth: 450,
   },

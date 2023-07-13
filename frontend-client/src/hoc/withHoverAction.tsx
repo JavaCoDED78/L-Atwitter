@@ -9,6 +9,7 @@ export interface HoverActionProps {
   visibleRetweetAction?: boolean;
   visibleLikeAction?: boolean;
   visibleShareAction?: boolean;
+  visibleAnalyticsAction?: boolean;
   visibleMoreAction?: boolean;
   handleHoverAction?: (action: TweetActions) => void;
   handleLeaveAction?: () => void;
@@ -25,6 +26,8 @@ export const withHoverAction =
       useState<boolean>(false);
     const [visibleLikeAction, setVisibleLikeAction] = useState<boolean>(false);
     const [visibleShareAction, setVisibleShareAction] =
+      useState<boolean>(false);
+    const [visibleAnalyticsAction, setVisibleAnalyticsAction] =
       useState<boolean>(false);
     const [visibleMoreAction, setVisibleMoreAction] = useState<boolean>(false);
     const [delayHandler, setDelayHandler] = useState<any>(null);
@@ -46,6 +49,10 @@ export const withHoverAction =
         setDelayHandler(
           setTimeout(() => setVisibleShareAction(true), HOVER_DELAY)
         );
+      } else if (action === TweetActions.ANALYTICS) {
+        setDelayHandler(
+          setTimeout(() => setVisibleAnalyticsAction(true), HOVER_DELAY)
+        );
       } else if (action === TweetActions.MORE) {
         setDelayHandler(
           setTimeout(() => setVisibleMoreAction(true), HOVER_DELAY)
@@ -59,6 +66,7 @@ export const withHoverAction =
       setVisibleRetweetAction(false);
       setVisibleLikeAction(false);
       setVisibleShareAction(false);
+      setVisibleAnalyticsAction(false);
       setVisibleMoreAction(false);
     };
 
@@ -70,6 +78,7 @@ export const withHoverAction =
         visibleRetweetAction={visibleRetweetAction}
         visibleLikeAction={visibleLikeAction}
         visibleShareAction={visibleShareAction}
+        visibleAnalyticsAction={visibleAnalyticsAction}
         visibleMoreAction={visibleMoreAction}
         handleHoverAction={handleHoverAction}
         handleLeaveAction={handleLeaveAction}
