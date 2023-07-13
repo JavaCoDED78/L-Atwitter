@@ -1,5 +1,6 @@
 package com.gmail.javacoded78.latwitter.repository;
 
+import com.gmail.javacoded78.latwitter.model.Tweet;
 import com.gmail.javacoded78.latwitter.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.repository.query.Param;
@@ -12,11 +13,15 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     User findByEmail(String email);
 
-    List<User> findByFullNameOrUsernameContaining(@Param("fullName") String fullName, @Param("username") String username);
+    List<User> findByFullNameOrUsernameContainingIgnoreCase(
+            @Param("fullName") String fullName,
+            @Param("username") String username);
 
     User findByActivationCode(String code);
 
     User findByPasswordResetCode(String code);
 
     List<User> findTop5By();
+
+    List<User> findByUnreadMessages_Tweet(Tweet tweet);
 }

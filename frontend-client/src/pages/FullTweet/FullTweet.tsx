@@ -335,7 +335,7 @@ const FullTweet: FC<HoverProps<Tweet> & FullTweetProps & HoverActionProps> = ({
               </IconButton>
             </div>
             <ShareTweet
-              tweetId={tweetData.id}
+              tweet={tweetData}
               isFullTweet={true}
               visibleShareAction={visibleShareAction}
               handleHoverAction={handleHoverAction}

@@ -2,6 +2,9 @@ package com.gmail.javacoded78.latwitter.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gmail.javacoded78.latwitter.dto.request.ChatMessageRequest;
+import com.gmail.javacoded78.latwitter.dto.request.MessageWithTweetRequest;
+import com.gmail.javacoded78.latwitter.model.Tweet;
+import com.gmail.javacoded78.latwitter.model.User;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -11,6 +14,8 @@ import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
+
+import java.util.Collections;
 
 import static com.gmail.javacoded78.latwitter.util.TestConstants.ABOUT;
 import static com.gmail.javacoded78.latwitter.util.TestConstants.AVATAR_ID;
@@ -121,5 +126,28 @@ public class ChatControllerTest {
                 .andExpect(jsonPath("$.date").isNotEmpty())
                 .andExpect(jsonPath("$.author.id").value(2))
                 .andExpect(jsonPath("$.chat.id").value(8));
+    }
+
+    @Test
+    @WithUserDetails(USER_EMAIL)
+    public void addMessageWithTweet() throws Exception {
+        Tweet tweet = new Tweet();
+        tweet.setId(40L);
+        User user = new User();
+        user.setId(1L);
+        MessageWithTweetRequest request = new MessageWithTweetRequest();
+        request.setText("test text");
+        request.setTweet(tweet);
+        request.setUsers(Collections.singletonList(user));
+
+        mockMvc.perform(post(URL_CHAT_BASIC + "/add/message/tweet")
+                        .content(mapper.writeValueAsString(request))
+                        .contentType(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[*].id").isNotEmpty())
+                .andExpect(jsonPath("$[*].text").isNotEmpty())
+                .andExpect(jsonPath("$[*].date").isNotEmpty())
+                .andExpect(jsonPath("$[*].author.id").value(2))
+                .andExpect(jsonPath("$[*].chat.id").value(8));
     }
 }

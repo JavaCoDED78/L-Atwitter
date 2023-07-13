@@ -1,4 +1,5 @@
 import React, { FC, ReactElement, useEffect, useRef, useState } from "react";
+import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import {
   Avatar,
@@ -11,7 +12,7 @@ import {
   Paper,
   Typography,
 } from "@material-ui/core";
-import SearchIcon from "@material-ui/icons/SearchOutlined";
+import classNames from "classnames";
 
 import { useMessagesStyles } from "./MessagesStyles";
 import MessagesModal from "./MessagesModal/MessagesModal";
@@ -26,6 +27,7 @@ import {
   GifIcon,
   MediaIcon,
   SandMessageIcon,
+  SearchIcon,
 } from "../../icons";
 import { MessageInput } from "./MessageInput/MessageInput";
 import { Chat, ChatParticipant } from "../../store/ducks/chats/contracts/state";
@@ -35,7 +37,7 @@ import {
 } from "../../store/ducks/chatMessages/actionCreators";
 import { selectChatMessagesItems } from "../../store/ducks/chatMessages/selectors";
 import { fetchReadMessages } from "../../store/ducks/user/actionCreators";
-import { formatChatMessageDate } from "../../util/formatDate";
+import { formatChatMessageDate, formatDate } from "../../util/formatDate";
 
 const Messages: FC = (): ReactElement => {
   const classes = useMessagesStyles();
@@ -77,7 +79,7 @@ const Messages: FC = (): ReactElement => {
   const handleListItemClick = (chat: Chat): void => {
     dispatch(fetchChatMessages(chat?.id!));
     dispatch(fetchReadMessages(chat?.id!));
-    setParticipant(chat.participants[0]);
+    setParticipant(chat.participants[1]);
     setChat(chat);
   };
 
@@ -127,7 +129,7 @@ const Messages: FC = (): ReactElement => {
                     InputProps={{
                       startAdornment: (
                         <InputAdornment position="start">
-                          <SearchIcon />
+                          {SearchIcon}
                         </InputAdornment>
                       ),
                     }}
@@ -234,9 +236,49 @@ const Messages: FC = (): ReactElement => {
                 {messages.map((message) =>
                   message.author.id === myProfile?.id ? (
                     <React.Fragment key={message.id}>
-                      <div className={classes.myMessage}>
-                        <span>{message.text}</span>
-                      </div>
+                      {message.tweet && (
+                        <div className={classes.tweetContainer}>
+                          <Link to={`/home/tweet/${message.tweet.id}`}>
+                            <div className={classes.tweetWrapper}>
+                              <div className={classes.tweetUserInfoWrapper}>
+                                <Avatar
+                                  className={classes.tweetAvatar}
+                                  src={
+                                    message.tweet?.user.avatar?.src
+                                      ? message.tweet?.user.avatar?.src
+                                      : DEFAULT_PROFILE_IMG
+                                  }
+                                />
+                                <span className={classes.tweetUserFullName}>
+                                  {message.tweet?.user.fullName}
+                                </span>
+                                <span className={classes.tweetUsername}>
+                                  @{message.tweet?.user.username}
+                                </span>
+                                <span className={classes.tweetUsername}>·</span>
+                                <span className={classes.tweetUsername}>
+                                  {formatDate(
+                                    new Date(message.tweet?.dateTime!)
+                                  )}
+                                </span>
+                              </div>
+                              <span>{message.tweet?.text}</span>
+                            </div>
+                          </Link>
+                        </div>
+                      )}
+                      {message.text && (
+                        <div
+                          className={classNames(
+                            classes.myMessage,
+                            message.tweet
+                              ? classes.myMessageWithTweet
+                              : classes.myMessageCommon
+                          )}
+                        >
+                          <span>{message.text}</span>
+                        </div>
+                      )}
                       <div className={classes.myMessageDate}>
                         <span>{CheckIcon}</span>
                         <span>
@@ -246,7 +288,7 @@ const Messages: FC = (): ReactElement => {
                     </React.Fragment>
                   ) : (
                     <React.Fragment key={message.id}>
-                      <div className={classes.participantMessage}>
+                      <div className={classes.participantContainer}>
                         <Avatar
                           className={classes.participantAvatar}
                           src={
@@ -259,7 +301,75 @@ const Messages: FC = (): ReactElement => {
                               : DEFAULT_PROFILE_IMG
                           }
                         />
-                        <span>{message.text}</span>
+                        <div>
+                          {message.tweet && (
+                            <div className={classes.participantTweetContainer}>
+                              <Link to={`/home/tweet/${message.tweet.id}`}>
+                                <div
+                                  className={classes.participantTweetWrapper}
+                                >
+                                  <div
+                                    className={
+                                      classes.participantTweetInfoWrapper
+                                    }
+                                  >
+                                    <Avatar
+                                      className={classes.participantTweetAvatar}
+                                      src={
+                                        message.tweet?.user.avatar?.src
+                                          ? message.tweet?.user.avatar?.src
+                                          : DEFAULT_PROFILE_IMG
+                                      }
+                                    />
+                                    <span
+                                      className={
+                                        classes.participantTweetFullName
+                                      }
+                                    >
+                                      {message.tweet?.user.fullName}
+                                    </span>
+                                    <span
+                                      className={
+                                        classes.participantTweetUsername
+                                      }
+                                    >
+                                      @{message.tweet?.user.username}
+                                    </span>
+                                    <span
+                                      className={
+                                        classes.participantTweetUsername
+                                      }
+                                    >
+                                      ·
+                                    </span>
+                                    <span
+                                      className={
+                                        classes.participantTweetUsername
+                                      }
+                                    >
+                                      {formatDate(
+                                        new Date(message.tweet?.dateTime!)
+                                      )}
+                                    </span>
+                                  </div>
+                                  <span>{message.tweet?.text}</span>
+                                </div>
+                              </Link>
+                            </div>
+                          )}
+                          {message.text && (
+                            <div
+                              className={classNames(
+                                classes.participantMessage,
+                                message.tweet
+                                  ? classes.participantMessageWithTweet
+                                  : classes.participantMessageCommon
+                              )}
+                            >
+                              <span>{message.text}</span>
+                            </div>
+                          )}
+                        </div>
                       </div>
                       <div className={classes.participantMessageDate}>
                         {formatChatMessageDate(new Date(message.date))}

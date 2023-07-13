@@ -2,6 +2,7 @@ package com.gmail.javacoded78.latwitter.service;
 
 import com.gmail.javacoded78.latwitter.model.Chat;
 import com.gmail.javacoded78.latwitter.model.ChatMessage;
+import com.gmail.javacoded78.latwitter.model.Tweet;
 import com.gmail.javacoded78.latwitter.model.User;
 
 import java.util.List;
@@ -17,4 +18,6 @@ public interface ChatService {
     User readChatMessages(Long chatId);
 
     ChatMessage addMessage(ChatMessage chatMessage, Long chatId);
+
+    List<ChatMessage> addMessageWithTweet(String text, Tweet tweet, List<User> users);
 }

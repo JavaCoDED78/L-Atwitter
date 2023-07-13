@@ -1,6 +1,7 @@
 package com.gmail.javacoded78.latwitter.mapper;
 
 import com.gmail.javacoded78.latwitter.dto.request.ChatMessageRequest;
+import com.gmail.javacoded78.latwitter.dto.request.MessageWithTweetRequest;
 import com.gmail.javacoded78.latwitter.dto.response.chat.ChatMessageResponse;
 import com.gmail.javacoded78.latwitter.dto.response.chat.ChatResponse;
 import com.gmail.javacoded78.latwitter.dto.response.UserResponse;
@@ -65,5 +66,10 @@ public class ChatMapper {
     public ChatMessageResponse addMessage(ChatMessageRequest chatMessageRequest) {
         return convertToChatMessageResponse(chatService.addMessage(
                 convertToChatMessageEntity(chatMessageRequest), chatMessageRequest.getChatId()));
+    }
+
+    public List<ChatMessageResponse> addMessageWithTweet(MessageWithTweetRequest request) {
+        return convertListToChatMessageResponse(chatService.addMessageWithTweet(
+                request.getText(), request.getTweet(), request.getUsers()));
     }
 }

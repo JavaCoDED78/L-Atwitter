@@ -2,6 +2,7 @@ package com.gmail.javacoded78.latwitter.service.impl;
 
 import com.gmail.javacoded78.latwitter.model.Chat;
 import com.gmail.javacoded78.latwitter.model.ChatMessage;
+import com.gmail.javacoded78.latwitter.model.Tweet;
 import com.gmail.javacoded78.latwitter.model.User;
 import com.gmail.javacoded78.latwitter.repository.ChatMessageRepository;
 import com.gmail.javacoded78.latwitter.repository.ChatRepository;
@@ -12,6 +13,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.security.Principal;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -38,7 +40,7 @@ public class ChatServiceImpl implements ChatService {
         User user = userRepository.findByEmail(principal.getName());
         User participant = userRepository.getOne(userId);
         Optional<Chat> chatWithParticipant = user.getChats().stream()
-                .filter(chat1 -> chat1.getParticipants().get(0).getId().equals(participant.getId()))
+                .filter(chat -> chat.getParticipants().get(1).getId().equals(participant.getId()))
                 .findFirst();
 
         if (chatWithParticipant.isEmpty()) {
@@ -75,6 +77,44 @@ public class ChatServiceImpl implements ChatService {
         List<ChatMessage> messages = chat.getMessages();
         messages.add(chatMessage);
         chatRepository.save(chat);
+        notifyChatParticipants(chatMessage, author);
+        return chatMessage;
+    }
+
+    @Override
+    public List<ChatMessage> addMessageWithTweet(String text, Tweet tweet, List<User> users) {
+        Principal principal = SecurityContextHolder.getContext().getAuthentication();
+        User author = userRepository.findByEmail(principal.getName());
+        List<ChatMessage> chatMessages = new ArrayList<>();
+        ChatMessage chatMessage = new ChatMessage();
+        chatMessage.setAuthor(author);
+        chatMessage.setText(text);
+        chatMessage.setTweet(tweet);
+        users.forEach(user -> {
+            Optional<Chat> chatWithParticipant = author.getChats().stream()
+                    .filter(c -> c.getParticipants().get(1).getId().equals(user.getId()))
+                    .findFirst();
+
+            if (chatWithParticipant.isEmpty()) {
+                Chat chat = new Chat();
+                chat.setParticipants(Arrays.asList(author, user));
+                Chat newChat = chatRepository.save(chat);
+                chatMessage.setChat(newChat);
+                chatMessageRepository.save(chatMessage);
+            } else {
+                chatMessage.setChat(chatWithParticipant.get());
+                ChatMessage newChatMessage = chatMessageRepository.save(chatMessage);
+                List<ChatMessage> messages = chatWithParticipant.get().getMessages();
+                messages.add(newChatMessage);
+                chatRepository.save(chatWithParticipant.get());
+            }
+            chatMessages.add(chatMessage);
+            notifyChatParticipants(chatMessage, author);
+        });
+        return chatMessages;
+    }
+
+    private void notifyChatParticipants(ChatMessage chatMessage, User author) {
         chatMessage.getChat().getParticipants()
                 .forEach(user -> {
                     if (!user.getUsername().equals(author.getUsername())) {
@@ -84,6 +124,5 @@ public class ChatServiceImpl implements ChatService {
                         userRepository.save(user);
                     }
                 });
-        return chatMessage;
     }
 }

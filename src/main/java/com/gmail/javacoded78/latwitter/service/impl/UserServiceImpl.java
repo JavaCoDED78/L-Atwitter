@@ -68,7 +68,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<User> searchUsersByUsername(String text) {
-        return userRepository.findByFullNameOrUsernameContaining(text, text);
+        return userRepository.findByFullNameOrUsernameContainingIgnoreCase(text, text);
     }
 
     @Override

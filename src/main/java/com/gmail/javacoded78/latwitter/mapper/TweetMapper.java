@@ -1,6 +1,7 @@
 package com.gmail.javacoded78.latwitter.mapper;
 
 import com.gmail.javacoded78.latwitter.dto.request.TweetRequest;
+import com.gmail.javacoded78.latwitter.dto.request.VoteRequest;
 import com.gmail.javacoded78.latwitter.dto.response.notification.NotificationResponse;
 import com.gmail.javacoded78.latwitter.dto.response.tweet.TweetResponse;
 import com.gmail.javacoded78.latwitter.model.ReplyType;
@@ -92,7 +93,7 @@ public class TweetMapper {
         return convertToTweetResponse(tweetService.changeTweetReplyType(tweetId, replyType));
     }
 
-    public TweetResponse voteInPoll(Long tweetId, Long pollChoiceId) {
-        return convertToTweetResponse(tweetService.voteInPoll(tweetId, pollChoiceId));
+    public TweetResponse voteInPoll(VoteRequest voteRequest) {
+        return convertToTweetResponse(tweetService.voteInPoll(voteRequest.getTweetId(), voteRequest.getPollChoiceId()));
     }
 }

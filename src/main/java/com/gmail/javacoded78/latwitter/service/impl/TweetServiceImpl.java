@@ -2,6 +2,7 @@ package com.gmail.javacoded78.latwitter.service.impl;
 
 import com.gmail.javacoded78.latwitter.exception.ApiRequestException;
 import com.gmail.javacoded78.latwitter.model.Bookmark;
+import com.gmail.javacoded78.latwitter.model.ChatMessage;
 import com.gmail.javacoded78.latwitter.model.LikeTweet;
 import com.gmail.javacoded78.latwitter.model.LinkCoverSize;
 import com.gmail.javacoded78.latwitter.model.Notification;
@@ -14,6 +15,7 @@ import com.gmail.javacoded78.latwitter.model.Tag;
 import com.gmail.javacoded78.latwitter.model.Tweet;
 import com.gmail.javacoded78.latwitter.model.User;
 import com.gmail.javacoded78.latwitter.repository.BookmarkRepository;
+import com.gmail.javacoded78.latwitter.repository.ChatMessageRepository;
 import com.gmail.javacoded78.latwitter.repository.ImageRepository;
 import com.gmail.javacoded78.latwitter.repository.LikeTweetRepository;
 import com.gmail.javacoded78.latwitter.repository.NotificationRepository;
@@ -67,6 +69,7 @@ public class TweetServiceImpl implements TweetService {
     private final PollRepository pollRepository;
     private final PollChoiceRepository pollChoiceRepository;
     private final BookmarkRepository bookmarkRepository;
+    private final ChatMessageRepository chatMessageRepository;
     private final RestTemplate restTemplate;
 
     @Value("${google.api.key}")
@@ -134,9 +137,9 @@ public class TweetServiceImpl implements TweetService {
         Tweet tweet = user.getTweets().stream()
                 .filter(t -> t.getId().equals(tweetId))
                 .findFirst().get();
-        tweet.getImages().forEach(imageRepository::delete);
-        tweet.getLikedTweets().forEach(likeTweetRepository::delete);
-        tweet.getRetweets().forEach(retweetRepository::delete);
+        imageRepository.deleteAll(tweet.getImages());
+        likeTweetRepository.deleteAll(tweet.getLikedTweets());
+        retweetRepository.deleteAll(tweet.getRetweets());
         tweet.getReplies().forEach(reply -> reply.getUser().getTweets()
                 .removeIf(replyingTweet -> replyingTweet.equals(reply)));
         List<Tweet> replies = new ArrayList<>(tweet.getReplies());
@@ -169,6 +172,27 @@ public class TweetServiceImpl implements TweetService {
             tweetRepository.delete(tweet);
             return addressedTweet;
         }
+        List<Tag> tags = tagRepository.findByTweets_Id(tweetId);
+        tags.forEach(tag -> {
+            tag.getTweets().remove(tweet);
+            long tweetsQuantity = tag.getTweetsQuantity() - 1;
+
+            if (tweetsQuantity == 0) {
+                tagRepository.delete(tag);
+            } else {
+                tag.setTweetsQuantity(tweetsQuantity);
+            }
+        });
+        List<User> unreadMessagesWithTweet = userRepository.findByUnreadMessages_Tweet(tweet);
+        unreadMessagesWithTweet
+                .forEach(user1 -> user1.getUnreadMessages()
+                        .removeIf(chatMessage -> chatMessage.getTweet() != null
+                                && chatMessage.getTweet().getId().equals(tweet.getId())));
+        List<ChatMessage> messagesWithTweet = chatMessageRepository.findByTweet(tweet);
+        chatMessageRepository.deleteAll(messagesWithTweet);
+
+        List<Tweet> tweetsWithQuote = tweetRepository.findByQuoteTweet_Id(tweetId);
+        tweetsWithQuote.forEach(quote -> quote.setQuoteTweet(null));
 
         if (user.getPinnedTweet() != null) {
             user.setPinnedTweet(null);
@@ -183,7 +207,7 @@ public class TweetServiceImpl implements TweetService {
         Set<Tweet> tweets = new HashSet<>();
         List<Tweet> tweetsByText = tweetRepository.findAllByTextIgnoreCaseContaining(text);
         List<Tag> tagsByText = tagRepository.findByTagNameContaining(text);
-        List<User> usersByText = userRepository.findByFullNameOrUsernameContaining(text, text);
+        List<User> usersByText = userRepository.findByFullNameOrUsernameContainingIgnoreCase(text, text);
 
         if (tweetsByText != null) {
             tweets.addAll(tweetsByText);

@@ -138,5 +138,6 @@ public class User {
         this.registrationDate = LocalDateTime.now().withNano(0);
         this.bookmarks = new ArrayList<>();
         this.userLists = new ArrayList<>();
+        this.unreadMessages = new ArrayList<>();
     }
 }

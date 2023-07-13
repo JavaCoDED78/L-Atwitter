@@ -1,6 +1,7 @@
 package com.gmail.javacoded78.latwitter.controller;
 
 import com.gmail.javacoded78.latwitter.dto.request.ChatMessageRequest;
+import com.gmail.javacoded78.latwitter.dto.request.MessageWithTweetRequest;
 import com.gmail.javacoded78.latwitter.dto.response.chat.ChatMessageResponse;
 import com.gmail.javacoded78.latwitter.dto.response.chat.ChatResponse;
 import com.gmail.javacoded78.latwitter.dto.response.UserResponse;
@@ -46,5 +47,13 @@ public class ChatController {
         message.getChat().getParticipants()
                 .forEach(user -> messagingTemplate.convertAndSend("/topic/chat/" + user.getId(), message));
         return ResponseEntity.ok(message);
+    }
+
+    @PostMapping("/add/message/tweet")
+    public ResponseEntity<List<ChatMessageResponse>> addMessageWithTweet(@RequestBody MessageWithTweetRequest request) {
+        List<ChatMessageResponse> chatMessages = chatMapper.addMessageWithTweet(request);
+        chatMessages.forEach(chatMessage -> chatMessage.getChat().getParticipants()
+                .forEach(user -> messagingTemplate.convertAndSend("/topic/chat/" + user.getId(), chatMessage)));
+        return ResponseEntity.ok(chatMessages);
     }
 }

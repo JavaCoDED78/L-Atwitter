@@ -1,6 +1,7 @@
 package com.gmail.javacoded78.latwitter.mapper;
 
 import com.gmail.javacoded78.latwitter.dto.request.ListsRequest;
+import com.gmail.javacoded78.latwitter.dto.request.UserToListsRequest;
 import com.gmail.javacoded78.latwitter.dto.response.ListsResponse;
 import com.gmail.javacoded78.latwitter.model.Lists;
 import com.gmail.javacoded78.latwitter.service.ListsService;
@@ -74,8 +75,9 @@ public class ListsMapper {
         return convertToListsResponse(listsService.pinList(listId));
     }
 
-    public List<ListsResponse> addUserToLists(Long userId, List<ListsResponse> listsResponse) {
-        return convertListToResponse(listsService.addUserToLists(userId, convertListsResponseToEntity(listsResponse)));
+    public List<ListsResponse> addUserToLists(UserToListsRequest userToListsRequest) {
+        return convertListToResponse(listsService.addUserToLists(
+                userToListsRequest.getUserId(), convertListsResponseToEntity(userToListsRequest.getLists())));
     }
 
     public ListsResponse addUserToList(Long userId, Long listId) {

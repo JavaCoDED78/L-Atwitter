@@ -31,6 +31,7 @@ export const tweetsReducer = produce(
           draft.items[updatedTweetIndex].retweets = action.payload.retweets;
           draft.items[updatedTweetIndex].replies = action.payload.replies;
           draft.items[updatedTweetIndex].poll = action.payload.poll;
+          draft.items[updatedTweetIndex].replyType = action.payload.replyType;
         }
         break;
 

@@ -311,7 +311,7 @@ const TweetComponent: FC<
               )}
             </div>
             <ShareTweet
-              tweetId={tweet!.id}
+              tweet={tweet!}
               isFullTweet={false}
               visibleShareAction={visibleShareAction}
               handleHoverAction={handleHoverAction}
