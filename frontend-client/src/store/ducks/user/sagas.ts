@@ -7,7 +7,6 @@ import {
   FetchReadMessagesActionInterface,
   FetchSignInActionInterface,
   FetchSignUpActionInterface,
-  FetchUnpinTweetActionInterface,
   FollowUserActionInterface,
   StartUseTwitterActionInterface,
   UnfollowUserActionInterface,
@@ -99,16 +98,6 @@ export function* fetchPinTweet({ payload }: FetchPinTweetActionInterface) {
   }
 }
 
-export function* fetchUnpinTweet({ payload }: FetchUnpinTweetActionInterface) {
-  try {
-    yield put(setUserLoadingStatus(LoadingStatus.LOADING));
-    const item: User = yield call(UserApi.unpinTweet, payload);
-    yield put(setUserData(item));
-  } catch (e) {
-    yield put(setUserLoadingStatus(LoadingStatus.ERROR));
-  }
-}
-
 export function* fetchAddTweetToBookmarksRequest({
   payload,
 }: AddTweetToBookmarksActionInterface) {
@@ -141,7 +130,6 @@ export function* userSaga() {
   yield takeLatest(UserActionsType.UNFOLLOW_USER, fetchUnfollowUserRequest);
   yield takeLatest(UserActionsType.START_USE_TWITTER, fetchStartUseTwitter);
   yield takeLatest(UserActionsType.FETCH_PIN_TWEET, fetchPinTweet);
-  yield takeLatest(UserActionsType.FETCH_UNPIN_TWEET, fetchUnpinTweet);
   yield takeLatest(
     UserActionsType.ADD_TWEET_TO_BOOKMARKS,
     fetchAddTweetToBookmarksRequest

@@ -65,6 +65,7 @@ export const listsReducer = produce(
 
       case ListsActionType.SET_LIST:
         draft.lists = [action.payload, ...draft.lists];
+        draft.userLists = [action.payload, ...draft.userLists];
         draft.loadingState = LoadingStatus.LOADED;
         break;
 

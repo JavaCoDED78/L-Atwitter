@@ -2,8 +2,19 @@ package com.gmail.javacoded78.latwitter.service.impl;
 
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.PutObjectRequest;
-import com.gmail.javacoded78.latwitter.model.*;
-import com.gmail.javacoded78.latwitter.repository.*;
+import com.gmail.javacoded78.latwitter.model.Bookmark;
+import com.gmail.javacoded78.latwitter.model.Image;
+import com.gmail.javacoded78.latwitter.model.LikeTweet;
+import com.gmail.javacoded78.latwitter.model.Notification;
+import com.gmail.javacoded78.latwitter.model.NotificationType;
+import com.gmail.javacoded78.latwitter.model.Retweet;
+import com.gmail.javacoded78.latwitter.model.Tweet;
+import com.gmail.javacoded78.latwitter.model.User;
+import com.gmail.javacoded78.latwitter.repository.BookmarkRepository;
+import com.gmail.javacoded78.latwitter.repository.ImageRepository;
+import com.gmail.javacoded78.latwitter.repository.NotificationRepository;
+import com.gmail.javacoded78.latwitter.repository.TweetRepository;
+import com.gmail.javacoded78.latwitter.repository.UserRepository;
 import com.gmail.javacoded78.latwitter.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -197,7 +208,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Notification follow(Long userId) {
+    public Notification processFollow(Long userId) {
         Principal principal = SecurityContextHolder.getContext().getAuthentication();
         User user = userRepository.findByEmail(principal.getName());
         User currentUser = userRepository.getOne(userId);
@@ -237,20 +248,16 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User pinTweet(Long tweetId) {
+    public User processPinTweet(Long tweetId) {
         Principal principal = SecurityContextHolder.getContext().getAuthentication();
         User user = userRepository.findByEmail(principal.getName());
         Tweet tweet = tweetRepository.getOne(tweetId);
-        user.setPinnedTweet(tweet);
-        userRepository.save(user);
-        return userRepository.save(user);
-    }
 
-    @Override
-    public User unpinTweet(Long tweetId) {
-        Principal principal = SecurityContextHolder.getContext().getAuthentication();
-        User user = userRepository.findByEmail(principal.getName());
-        user.setPinnedTweet(null);
+        if (user.getPinnedTweet() == null || !user.getPinnedTweet().getId().equals(tweet.getId())) {
+            user.setPinnedTweet(tweet);
+        } else {
+            user.setPinnedTweet(null);
+        }
         return userRepository.save(user);
     }
 

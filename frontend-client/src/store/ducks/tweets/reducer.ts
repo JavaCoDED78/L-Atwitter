@@ -30,6 +30,7 @@ export const tweetsReducer = produce(
             action.payload.likedTweets;
           draft.items[updatedTweetIndex].retweets = action.payload.retweets;
           draft.items[updatedTweetIndex].replies = action.payload.replies;
+          draft.items[updatedTweetIndex].poll = action.payload.poll;
         }
         break;
 

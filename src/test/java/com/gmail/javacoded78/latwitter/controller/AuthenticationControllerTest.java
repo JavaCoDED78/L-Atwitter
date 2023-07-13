@@ -1,6 +1,10 @@
 package com.gmail.javacoded78.latwitter.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.gmail.javacoded78.latwitter.dto.request.AuthenticationRequest;
+import com.gmail.javacoded78.latwitter.dto.request.PasswordResetRequest;
+import com.gmail.javacoded78.latwitter.dto.request.RegistrationRequest;
+import com.gmail.javacoded78.latwitter.security.JwtAuthenticationException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -11,11 +15,26 @@ import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.jdbc.Sql;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
+import static com.gmail.javacoded78.latwitter.util.TestConstants.ABOUT;
+import static com.gmail.javacoded78.latwitter.util.TestConstants.AVATAR_ID;
+import static com.gmail.javacoded78.latwitter.util.TestConstants.BIRTHDAY;
+import static com.gmail.javacoded78.latwitter.util.TestConstants.FULL_NAME;
+import static com.gmail.javacoded78.latwitter.util.TestConstants.LOCATION;
+import static com.gmail.javacoded78.latwitter.util.TestConstants.PASSWORD;
+import static com.gmail.javacoded78.latwitter.util.TestConstants.REGISTRATION_DATE;
+import static com.gmail.javacoded78.latwitter.util.TestConstants.TWEET_COUNT;
+import static com.gmail.javacoded78.latwitter.util.TestConstants.URL_AUTH_BASIC;
+import static com.gmail.javacoded78.latwitter.util.TestConstants.URL_AUTH_FORGOT;
+import static com.gmail.javacoded78.latwitter.util.TestConstants.URL_AUTH_REGISTRATION;
+import static com.gmail.javacoded78.latwitter.util.TestConstants.URL_AUTH_RESET;
+import static com.gmail.javacoded78.latwitter.util.TestConstants.USERNAME;
+import static com.gmail.javacoded78.latwitter.util.TestConstants.USER_EMAIL;
+import static com.gmail.javacoded78.latwitter.util.TestConstants.USER_ID;
+import static com.gmail.javacoded78.latwitter.util.TestConstants.WALLPAPER_ID;
+import static com.gmail.javacoded78.latwitter.util.TestConstants.WEBSITE;
 import static org.hamcrest.Matchers.is;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -70,7 +89,7 @@ public class AuthenticationControllerTest {
     }
 
     @Test
-    public void checkEmail() throws Exception {
+    public void checkEmail() throws Exception { // ++
         mockMvc.perform(post(URL_AUTH_REGISTRATION + "/check")
                         .content(mapper.writeValueAsString(registrationRequest))
                         .contentType(MediaType.APPLICATION_JSON_VALUE))
@@ -90,8 +109,8 @@ public class AuthenticationControllerTest {
     }
 
     @Test
-    public void sendRegistrationCode() throws Exception {
-        registrationRequest.setEmail("test2021@test.test");
+    public void sendRegistrationCode() throws Exception { // ++
+        registrationRequest.setEmail(USER_EMAIL);
 
         mockMvc.perform(post(URL_AUTH_REGISTRATION + "/code")
                         .content(mapper.writeValueAsString(registrationRequest))
@@ -101,7 +120,7 @@ public class AuthenticationControllerTest {
     }
 
     @Test
-    public void checkRegistrationCode() throws Exception {
+    public void checkRegistrationCode() throws Exception { // ++
         mockMvc.perform(get(URL_AUTH_REGISTRATION + "/activate/1234567890"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", is("User successfully activated.")));
@@ -193,7 +212,7 @@ public class AuthenticationControllerTest {
     }
 
     @Test
-    public void sendPasswordResetCode() throws Exception {
+    public void sendPasswordResetCode() throws Exception { // ++
         PasswordResetRequest passwordResetRequest = new PasswordResetRequest();
         passwordResetRequest.setEmail(USER_EMAIL);
 
@@ -205,11 +224,11 @@ public class AuthenticationControllerTest {
     }
 
     @Test
-    public void getUserByResetCode() throws Exception {
+    public void getUserByResetCode() throws Exception { // ++
         mockMvc.perform(get(URL_AUTH_RESET + "/1234567890"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(USER_ID))
-                .andExpect(jsonPath("$.email").value(USER_EMAIL))
+                .andExpect(jsonPath("$.id").value(3))
+                .andExpect(jsonPath("$.email").value("test2016@test.test"))
                 .andExpect(jsonPath("$.fullName").value(FULL_NAME))
                 .andExpect(jsonPath("$.username").value(USERNAME))
                 .andExpect(jsonPath("$.location").value(LOCATION))

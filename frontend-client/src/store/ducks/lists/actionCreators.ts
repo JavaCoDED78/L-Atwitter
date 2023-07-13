@@ -52,7 +52,7 @@ export const setPinnedLists = (
   payload,
 });
 
-export const setList = (payload: Lists): SetListActionInterface => ({
+export const setCreatedList = (payload: Lists): SetListActionInterface => ({
   type: ListsActionType.SET_LIST,
   payload,
 });

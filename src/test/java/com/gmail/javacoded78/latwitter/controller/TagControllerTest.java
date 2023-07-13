@@ -1,7 +1,5 @@
 package com.gmail.javacoded78.latwitter.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.Test;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -11,8 +9,7 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 
-import static com.gmail.javacoded78.latwitter.util.TestConstants.URL_TAG_BASIC;
-import static com.gmail.javacoded78.latwitter.util.TestConstants.USER_EMAIL;
+import static com.gmail.javacoded78.latwitter.util.TestConstants.*;
 import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -53,7 +50,7 @@ public class TagControllerTest {
     @Test
     @WithUserDetails(USER_EMAIL)
     public void getTweetsByTag() throws Exception {
-        mockMvc.perform(get(URL_TAG_BASIC + "/#tweet"))
+        mockMvc.perform(get(URL_TAG_BASIC + "/" + HASHTAG))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[*]", hasSize(1)))
                 .andExpect(jsonPath("$[*].id").isNotEmpty())

@@ -26,7 +26,6 @@ import { selectUserData } from "../../store/ducks/user/selectors";
 import { ReplyType, Tweet } from "../../store/ducks/tweets/contracts/state";
 import {
   fetchPinTweet,
-  fetchUnpinTweet,
   followUser,
   unfollowUser,
 } from "../../store/ducks/user/actionCreators";
@@ -105,11 +104,7 @@ const TweetComponentActions: FC<TweetComponentActionsProps> = ({
   };
 
   const onPinUserTweet = (): void => {
-    if (isTweetPinned) {
-      dispatch(fetchUnpinTweet(tweet.id));
-    } else {
-      dispatch(fetchPinTweet(tweet.id));
-    }
+    dispatch(fetchPinTweet(tweet.id));
     setOpenActionsDropdown(false);
     setVisibleTweetPinModal(false);
   };
