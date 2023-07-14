@@ -236,6 +236,7 @@ const UserPage: FC<RouteComponentProps<{ id: string }>> = ({
 
   return (
     <InfiniteScroll
+      style={{ overflow: "unset" }}
       dataLength={tweets.length}
       next={loadUserTweets}
       hasMore={page < pagesCount}

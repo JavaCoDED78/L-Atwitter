@@ -10,9 +10,11 @@ import {
   DeleteTweetActionInterface,
   FetchAddPollActionInterface,
   FetchAddQuoteTweetActionInterface,
+  FetchAddScheduledTweetActionInterface,
   FetchAddTweetActionInterface,
   FetchBookmarksActionInterface,
   FetchChangeReplyTypeActionInterface,
+  FetchDeleteScheduledTweetsActionInterface,
   FetchDeleteTweetActionInterface,
   FetchLikedTweetsActionInterface,
   FetchLikeTweetActionInterface,
@@ -22,11 +24,13 @@ import {
   FetchTweetsByTagActionInterface,
   FetchTweetsByTextActionInterface,
   FetchTweetsWithVideoActionInterface,
+  FetchUpdateScheduledTweetActionInterface,
   FetchVoteActionInterface,
   RemoveTweetFromBookmarksActionInterface,
   ResetTweetsActionInterface,
+  SetPageableTweetsActionInterface,
+  SetScheduledTweetsActionInterface,
   SetTweetActionInterface,
-  SetTweets2ActionInterface,
   SetTweetsActionInterface,
   SetTweetsLoadingStateInterface,
   SetUpdatedTweetActionInterface,
@@ -41,11 +45,18 @@ export const setTweets = (
   payload,
 });
 
-export const setTweets2 = (payload: {
+export const setScheduledTweets = (
+  payload: TweetsState["items"]
+): SetScheduledTweetsActionInterface => ({
+  type: TweetsActionType.SET_SCHEDULED_TWEETS,
+  payload,
+});
+
+export const setPageableTweets = (payload: {
   items: TweetsState["items"];
   pagesCount: TweetsState["pagesCount"];
-}): SetTweets2ActionInterface => ({
-  type: TweetsActionType.SET_TWEETS2,
+}): SetPageableTweetsActionInterface => ({
+  type: TweetsActionType.SET_PAGEABLE_TWEETS,
   payload,
 });
 
@@ -69,6 +80,20 @@ export const fetchAddPoll = (
   payload: AddTweet
 ): FetchAddPollActionInterface => ({
   type: TweetsActionType.FETCH_ADD_POLL,
+  payload,
+});
+
+export const fetchAddScheduledTweet = (
+  payload: AddTweet
+): FetchAddScheduledTweetActionInterface => ({
+  type: TweetsActionType.FETCH_ADD_SCHEDULED_TWEET,
+  payload,
+});
+
+export const fetchUpdateScheduledTweet = (
+  payload: AddTweet
+): FetchUpdateScheduledTweetActionInterface => ({
+  type: TweetsActionType.FETCH_UPDATE_SCHEDULED_TWEET,
   payload,
 });
 
@@ -103,6 +128,13 @@ export const fetchDeleteTweet = (
   payload: string
 ): FetchDeleteTweetActionInterface => ({
   type: TweetsActionType.FETCH_DELETE_TWEET,
+  payload,
+});
+
+export const fetchDeleteScheduledTweets = (payload: {
+  tweetsIds: number[];
+}): FetchDeleteScheduledTweetsActionInterface => ({
+  type: TweetsActionType.FETCH_DELETE_SCHEDULED_TWEETS,
   payload,
 });
 

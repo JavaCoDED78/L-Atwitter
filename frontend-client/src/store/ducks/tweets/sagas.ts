@@ -1,14 +1,21 @@
 import { call, put, takeLatest } from "redux-saga/effects";
 
-import { setTweets, setTweets2, setTweetsLoadingState } from "./actionCreators";
+import {
+  fetchAddScheduledTweet,
+  setPageableTweets,
+  setTweets,
+  setTweetsLoadingState,
+} from "./actionCreators";
 import { TweetApi } from "../../../services/api/tweetApi";
 import { Tweet } from "./contracts/state";
 import {
   FetchAddPollActionInterface,
   FetchAddQuoteTweetActionInterface,
+  FetchAddScheduledTweetActionInterface,
   FetchAddTweetActionInterface,
   FetchBookmarksActionInterface,
   FetchChangeReplyTypeActionInterface,
+  FetchDeleteScheduledTweetsActionInterface,
   FetchDeleteTweetActionInterface,
   FetchLikedTweetsActionInterface,
   FetchLikeTweetActionInterface,
@@ -18,6 +25,7 @@ import {
   FetchTweetsByTagActionInterface,
   FetchTweetsByTextActionInterface,
   FetchTweetsWithVideoActionInterface,
+  FetchUpdateScheduledTweetActionInterface,
   FetchVoteActionInterface,
   TweetsActionType,
 } from "./contracts/actionTypes";
@@ -34,7 +42,7 @@ export function* fetchTweetsRequest({ payload }: FetchTweetsActionInterface) {
       payload
     );
     yield put(
-      setTweets2({
+      setPageableTweets({
         items: response.data,
         pagesCount: parseInt(response.headers["page-total-count"]),
       })
@@ -54,7 +62,7 @@ export function* fetchMediaTweetsRequest({
       payload
     );
     yield put(
-      setTweets2({
+      setPageableTweets({
         items: response.data,
         pagesCount: parseInt(response.headers["page-total-count"]),
       })
@@ -74,7 +82,7 @@ export function* fetchTweetsWithVideoRequest({
       payload
     );
     yield put(
-      setTweets2({
+      setPageableTweets({
         items: response.data,
         pagesCount: parseInt(response.headers["page-total-count"]),
       })
@@ -138,6 +146,26 @@ export function* fetchAddPollRequest({ payload }: FetchAddPollActionInterface) {
   }
 }
 
+export function* fetchAddScheduledTweetRequest({
+  payload,
+}: FetchAddScheduledTweetActionInterface) {
+  try {
+    yield call(TweetApi.createScheduledTweet, payload);
+  } catch (e) {
+    yield put(setTweetsLoadingState(LoadingStatus.ERROR));
+  }
+}
+
+export function* fetchUpdateScheduledTweetRequest({
+  payload,
+}: FetchUpdateScheduledTweetActionInterface) {
+  try {
+    yield call(TweetApi.updateScheduledTweet, payload);
+  } catch (e) {
+    yield put(setTweetsLoadingState(LoadingStatus.ERROR));
+  }
+}
+
 export function* fetchAddQuoteTweet({
   payload,
 }: FetchAddQuoteTweetActionInterface) {
@@ -176,6 +204,16 @@ export function* fetchDeleteTweetRequest({
   }
 }
 
+export function* fetchDeleteScheduledTweetsTweetRequest({
+  payload,
+}: FetchDeleteScheduledTweetsActionInterface) {
+  try {
+    yield call(TweetApi.deleteScheduledTweets, payload);
+  } catch (e) {
+    yield put(setTweetsLoadingState(LoadingStatus.ERROR));
+  }
+}
+
 export function* fetchLikeTweetRequest({
   payload,
 }: FetchLikeTweetActionInterface) {
@@ -196,7 +234,7 @@ export function* fetchUserBookmarksRequest({
       payload
     );
     yield put(
-      setTweets2({
+      setPageableTweets({
         items: response.data,
         pagesCount: parseInt(response.headers["page-total-count"]),
       })
@@ -218,6 +256,14 @@ export function* tweetsSaga() {
   );
   yield takeLatest(TweetsActionType.FETCH_ADD_TWEET, fetchAddTweetRequest);
   yield takeLatest(TweetsActionType.FETCH_ADD_POLL, fetchAddPollRequest);
+  yield takeLatest(
+    TweetsActionType.FETCH_ADD_SCHEDULED_TWEET,
+    fetchAddScheduledTweetRequest
+  );
+  yield takeLatest(
+    TweetsActionType.FETCH_UPDATE_SCHEDULED_TWEET,
+    fetchUpdateScheduledTweetRequest
+  );
   yield takeLatest(TweetsActionType.FETCH_ADD_QUOTE_TWEET, fetchAddQuoteTweet);
   yield takeLatest(TweetsActionType.FETCH_VOTE, fetchVoteRequest);
   yield takeLatest(
@@ -227,6 +273,10 @@ export function* tweetsSaga() {
   yield takeLatest(
     TweetsActionType.FETCH_DELETE_TWEET,
     fetchDeleteTweetRequest
+  );
+  yield takeLatest(
+    TweetsActionType.FETCH_DELETE_SCHEDULED_TWEETS,
+    fetchDeleteScheduledTweetsTweetRequest
   );
   yield takeLatest(TweetsActionType.FETCH_LIKE_TWEET, fetchLikeTweetRequest);
   yield takeLatest(TweetsActionType.FETCH_RETWEET, fetchRetweetRequest);

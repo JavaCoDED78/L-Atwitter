@@ -1,5 +1,6 @@
 package com.gmail.javacoded78.latwitter.controller;
 
+import com.gmail.javacoded78.latwitter.dto.request.TweetDeleteRequest;
 import com.gmail.javacoded78.latwitter.dto.request.TweetRequest;
 import com.gmail.javacoded78.latwitter.dto.request.VoteRequest;
 import com.gmail.javacoded78.latwitter.dto.response.TweetHeaderResponse;
@@ -13,14 +14,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -44,7 +38,7 @@ public class TweetController {
     }
 
     @GetMapping("/media")
-    public ResponseEntity<List<TweetResponse>> getMediaTweetsPageable(@PageableDefault(size = 10) Pageable pageable) {
+    public ResponseEntity<List<TweetResponse>> getMediaTweets(@PageableDefault(size = 10) Pageable pageable) {
         TweetHeaderResponse response = tweetMapper.getMediaTweets(pageable);
         return ResponseEntity.ok().headers(response.getHeaders()).body(response.getTweets());
     }
@@ -53,6 +47,11 @@ public class TweetController {
     public ResponseEntity<List<TweetResponse>> getTweetsWithVideo(@PageableDefault(size = 10) Pageable pageable) {
         TweetHeaderResponse response = tweetMapper.getTweetsWithVideo(pageable);
         return ResponseEntity.ok().headers(response.getHeaders()).body(response.getTweets());
+    }
+
+    @GetMapping("/schedule")
+    public ResponseEntity<List<TweetResponse>> getScheduledTweets() {
+        return ResponseEntity.ok(tweetMapper.getScheduledTweets());
     }
 
     @PostMapping
@@ -69,6 +68,21 @@ public class TweetController {
         messagingTemplate.convertAndSend("/topic/feed/add", tweet);
         messagingTemplate.convertAndSend("/topic/user/add/tweet/" + tweet.getUser().getId(), tweet);
         return ResponseEntity.ok(tweet);
+    }
+
+    @PostMapping("/schedule")
+    public ResponseEntity<TweetResponse> createScheduledTweet(@RequestBody TweetRequest tweetRequest) {
+        return ResponseEntity.ok(tweetMapper.createTweet(tweetRequest));
+    }
+
+    @PutMapping("/schedule")
+    public ResponseEntity<TweetResponse> updateScheduledTweet(@RequestBody TweetRequest tweetRequest) {
+        return ResponseEntity.ok(tweetMapper.updateScheduledTweet(tweetRequest));
+    }
+
+    @DeleteMapping("/schedule")
+    public ResponseEntity<String> deleteScheduledTweets(@RequestBody TweetDeleteRequest tweetRequest) {
+        return ResponseEntity.ok(tweetMapper.deleteScheduledTweets(tweetRequest));
     }
 
     @DeleteMapping("/{tweetId}")

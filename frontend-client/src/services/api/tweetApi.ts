@@ -32,6 +32,10 @@ export const TweetApi = {
       params: { page: payload },
     });
   },
+  async fetchScheduledTweets(): Promise<Tweet[]> {
+    const data = await axios.get<Tweet[]>(API_URL + "/tweets/schedule");
+    return data.data;
+  },
   async fetchTweetData(id: string): Promise<Response<Tweet>> {
     const data = await axios.get<Response<Tweet>>(API_URL + "/tweets/" + id);
     return data.data;
@@ -47,6 +51,29 @@ export const TweetApi = {
     const data = await axios.post<Response<Tweet>>(
       API_URL + "/tweets/poll",
       payload
+    );
+    return data.data;
+  },
+  async createScheduledTweet(payload: AddTweet): Promise<Response<Tweet>> {
+    const data = await axios.post<Response<Tweet>>(
+      API_URL + "/tweets/schedule",
+      payload
+    );
+    return data.data;
+  },
+  async updateScheduledTweet(payload: AddTweet): Promise<Response<Tweet>> {
+    const data = await axios.put<Response<Tweet>>(
+      API_URL + "/tweets/schedule",
+      payload
+    );
+    return data.data;
+  },
+  async deleteScheduledTweets(payload: {
+    tweetsIds: number[];
+  }): Promise<Response<string>> {
+    const data = await axios.delete<Response<string>>(
+      API_URL + "/tweets/schedule",
+      { data: payload }
     );
     return data.data;
   },

@@ -19,9 +19,14 @@ interface ReplyProps {
   setReplyType: (
     value: ReplyType | ((prevVar: ReplyType) => ReplyType)
   ) => void;
+  isUnsentTweet: boolean;
 }
 
-const Reply: FC<ReplyProps> = ({ replyType, setReplyType }): ReactElement => {
+const Reply: FC<ReplyProps> = ({
+  replyType,
+  setReplyType,
+  isUnsentTweet,
+}): ReactElement => {
   const classes = useReplyStyles();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open1 = Boolean(anchorEl);
@@ -43,7 +48,11 @@ const Reply: FC<ReplyProps> = ({ replyType, setReplyType }): ReactElement => {
   return (
     <>
       <div className={classes.reply}>
-        <Button onClick={handleOpenPopup} type="submit" color="primary">
+        <Button
+          onClick={handleOpenPopup}
+          color="primary"
+          disabled={isUnsentTweet}
+        >
           <span>
             {replyType === ReplyType.EVERYONE && EveryoneReplyIcon}
             {replyType === ReplyType.FOLLOW && FollowReplyIcon}

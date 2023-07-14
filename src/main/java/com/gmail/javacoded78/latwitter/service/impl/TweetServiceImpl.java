@@ -79,7 +79,7 @@ public class TweetServiceImpl implements TweetService {
 
     @Override
     public Page<Tweet> getTweets(Pageable pageable) {
-        return tweetRepository.findByAddressedUsernameIsNullOrderByDateTimeDesc(pageable);
+        return tweetRepository.findByAddressedUsernameIsNullAndScheduledDateIsNullOrderByDateTimeDesc(pageable);
     }
 
     @Override
@@ -90,12 +90,19 @@ public class TweetServiceImpl implements TweetService {
 
     @Override
     public Page<Tweet> getMediaTweets(Pageable pageable) {
-        return tweetRepository.findByImagesIsNotNullOrderByDateTimeDesc(pageable);
+        return tweetRepository.findByScheduledDateIsNullAndImagesIsNotNullOrderByDateTimeDesc(pageable);
     }
 
     @Override
     public Page<Tweet> getTweetsWithVideo(Pageable pageable) {
-        return tweetRepository.findAllByTextIgnoreCaseContaining("youtu", pageable);
+        return tweetRepository.findAllByScheduledDateIsNullAndTextIgnoreCaseContaining("youtu", pageable);
+    }
+
+    @Override
+    public List<Tweet> getScheduledTweets() {
+        Principal principal = SecurityContextHolder.getContext().getAuthentication();
+        User user = userRepository.findByEmail(principal.getName());
+        return tweetRepository.findByUserAndScheduledDateIsNotNullOrderByScheduledDateDesc(user);
     }
 
     @Override
@@ -130,6 +137,20 @@ public class TweetServiceImpl implements TweetService {
         pollRepository.save(poll);
         createdTweet.setPoll(poll);
         return tweetRepository.save(createdTweet);
+    }
+
+    @Override
+    public Tweet updateScheduledTweet(Tweet tweetInfo) {
+        Tweet tweet = tweetRepository.getOne(tweetInfo.getId());
+        tweet.setText(tweetInfo.getText());
+        tweet.setImages(tweetInfo.getImages());
+        return tweetRepository.save(tweet);
+    }
+
+    @Override
+    public String deleteScheduledTweets(List<Long> tweetsIds) {
+        tweetsIds.forEach(this::deleteTweet);
+        return "Scheduled tweets deleted.";
     }
 
     @Override
@@ -207,7 +228,7 @@ public class TweetServiceImpl implements TweetService {
     @Override
     public List<Tweet> searchTweets(String text) {
         Set<Tweet> tweets = new HashSet<>();
-        List<Tweet> tweetsByText = tweetRepository.findAllByTextIgnoreCaseContaining(text);
+        List<Tweet> tweetsByText = tweetRepository.findAllByScheduledDateIsNullAndTextIgnoreCaseContaining(text);
         List<Tag> tagsByText = tagRepository.findByTagNameContaining(text);
         List<User> usersByText = userRepository.findByFullNameOrUsernameContainingIgnoreCase(text, text);
 
@@ -218,7 +239,7 @@ public class TweetServiceImpl implements TweetService {
             tagsByText.forEach(tag -> tweets.addAll(tag.getTweets()));
         }
         if (usersByText != null) {
-            usersByText.forEach(user -> tweets.addAll(tweetRepository.findAllByUser(user)));
+            usersByText.forEach(user -> tweets.addAll(tweetRepository.findAllByUserAndScheduledDateIsNull(user)));
         }
         return List.copyOf(tweets);
     }

@@ -15,9 +15,7 @@ const Places: FC = (): ReactElement => {
       .then((response) => {
         setCountryName(response.data.country_name);
       })
-      .catch((error) => {
-        console.log(error);
-      });
+      .catch((error) => console.log(error));
   }, []);
 
   return (

@@ -3,6 +3,7 @@ import React, {
   FormEvent,
   MouseEvent,
   ReactElement,
+  useEffect,
   useState,
 } from "react";
 import { useLocation } from "react-router-dom";
@@ -11,7 +12,7 @@ import Avatar from "@material-ui/core/Avatar";
 import Button from "@material-ui/core/Button";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import TextareaAutosize from "@material-ui/core/TextareaAutosize";
-import { IconButton, Popover, Snackbar } from "@material-ui/core";
+import { IconButton, Popover, Snackbar, Typography } from "@material-ui/core";
 import { EmojiData, Picker } from "emoji-mart";
 import "emoji-mart/css/emoji-mart.css";
 import EmojiConvertor from "emoji-js";
@@ -19,7 +20,9 @@ import EmojiConvertor from "emoji-js";
 import {
   fetchAddPoll,
   fetchAddQuoteTweet,
+  fetchAddScheduledTweet,
   fetchAddTweet,
+  fetchUpdateScheduledTweet,
 } from "../../store/ducks/tweets/actionCreators";
 import { selectIsTweetsLoading } from "../../store/ducks/tweets/selectors";
 import {
@@ -45,6 +48,9 @@ import Poll from "./Poll/Poll";
 import Reply from "./Reply/Reply";
 import Quote from "../Quote/Quote";
 import HoverAction from "../HoverAction/HoverAction";
+import ScheduleModal from "./ScheduleModal/ScheduleModal";
+import { formatScheduleDate } from "../../util/formatDate";
+import UnsentTweetsModal from "./UnsentTweetsModal/UnsentTweetsModal";
 
 export enum AddTweetFormAction {
   MEDIA = "MEDIA",
@@ -55,6 +61,7 @@ export enum AddTweetFormAction {
 }
 
 interface AddTweetFormProps {
+  unsentTweet?: Tweet;
   quoteTweet?: Tweet;
   maxRows?: number;
   minRows?: number;
@@ -75,6 +82,7 @@ const MAX_LENGTH = 280;
 const HOVER_DELAY = 500;
 
 export const AddTweetForm: FC<AddTweetFormProps> = ({
+  unsentTweet,
   quoteTweet,
   maxRows,
   minRows,
@@ -85,7 +93,6 @@ export const AddTweetForm: FC<AddTweetFormProps> = ({
   addressedId,
   onCloseModal,
 }): ReactElement => {
-  const classes = useAddTweetFormStyles({ quoteTweet });
   const dispatch = useDispatch();
   const location = useLocation();
   const isTweetsLoading = useSelector(selectIsTweetsLoading);
@@ -107,6 +114,13 @@ export const AddTweetForm: FC<AddTweetFormProps> = ({
     useState<boolean>(false);
   const [delayHandler, setDelayHandler] = useState<any>(null);
   const [openSnackBar, setOpenSnackBar] = useState<boolean>(false);
+  const [visibleScheduleModal, setVisibleScheduleModal] =
+    useState<boolean>(false);
+  const [visibleUnsentTweetsModal, setVisibleUnsentTweetsModal] =
+    useState<boolean>(false);
+  const [selectedScheduleDate, setSelectedScheduleDate] = useState<Date | null>(
+    null
+  );
   const [snackBarMessage, setSnackBarMessage] = useState<string>("");
   // Popover
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -122,8 +136,26 @@ export const AddTweetForm: FC<AddTweetFormProps> = ({
   const [hour, setHour] = useState<number>(0);
   const [minute, setMinute] = useState<number>(0);
 
+  const classes = useAddTweetFormStyles({
+    quoteTweet,
+    isScheduled: selectedScheduleDate !== null,
+  });
   const textLimitPercent = Math.round((text.length / 280) * 100);
   const textCount = MAX_LENGTH - text.length;
+
+  useEffect(() => {
+    if (unsentTweet) {
+      setText(unsentTweet.text);
+      setSelectedScheduleDate(new Date(unsentTweet.scheduledDate!));
+      if (unsentTweet.images?.length !== 0) {
+        const newImages = [...images];
+        const newImage = { ...images[0] };
+        newImage.src = unsentTweet.images![0].src;
+        newImages[0] = newImage;
+        setImages(newImages);
+      }
+    }
+  }, [unsentTweet]);
 
   const handleChangeTextarea = (e: FormEvent<HTMLTextAreaElement>): void => {
     if (e.currentTarget) {
@@ -159,6 +191,25 @@ export const AddTweetForm: FC<AddTweetFormProps> = ({
           replyType: replyType,
         })
       );
+    } else if (selectedScheduleDate !== null && unsentTweet === undefined) {
+      dispatch(
+        fetchAddScheduledTweet({
+          text: textConverter(),
+          images: result,
+          replyType: replyType,
+          scheduledDate: selectedScheduleDate,
+        })
+      );
+    } else if (unsentTweet) {
+      dispatch(
+        fetchUpdateScheduledTweet({
+          id: unsentTweet?.id,
+          text: textConverter(),
+          images: result,
+          replyType: replyType,
+        })
+      );
+      if (onCloseModal) onCloseModal();
     } else {
       dispatch(
         fetchAddTweet({
@@ -169,11 +220,18 @@ export const AddTweetForm: FC<AddTweetFormProps> = ({
       );
     }
 
-    setSnackBarMessage("Your tweet was added.");
+    setSnackBarMessage(
+      selectedScheduleDate
+        ? `Your Tweet will be sent on ${formatScheduleDate(
+            selectedScheduleDate
+          )}`
+        : "Your tweet was sent."
+    );
     setOpenSnackBar(true);
     setText("");
     setImages([]);
     setVisiblePoll(false);
+    setSelectedScheduleDate(null);
   };
 
   const handleClickQuoteTweet = async (): Promise<void> => {
@@ -199,9 +257,7 @@ export const AddTweetForm: FC<AddTweetFormProps> = ({
     setText("");
     setImages([]);
 
-    if (onCloseModal) {
-      onCloseModal();
-    }
+    if (onCloseModal) onCloseModal();
   };
 
   const handleClickReplyTweet = async (): Promise<void> => {
@@ -229,9 +285,7 @@ export const AddTweetForm: FC<AddTweetFormProps> = ({
     setText("");
     setImages([]);
 
-    if (onCloseModal) {
-      onCloseModal();
-    }
+    if (onCloseModal) onCloseModal();
   };
 
   const handleOpenPopup = (event: MouseEvent<HTMLDivElement>): void => {
@@ -304,6 +358,33 @@ export const AddTweetForm: FC<AddTweetFormProps> = ({
     setOpenSnackBar(false);
   };
 
+  const onOpenScheduleModal = (): void => {
+    setVisibleScheduleModal(true);
+  };
+
+  const onCloseScheduleModal = (): void => {
+    setVisibleScheduleModal(false);
+  };
+
+  const handleScheduleDate = (date: Date): void => {
+    setSelectedScheduleDate(date);
+    onClosePoll();
+  };
+
+  const clearScheduleDate = (): void => {
+    setSelectedScheduleDate(null);
+  };
+
+  const onOpenUnsentTweetsModal = (): void => {
+    setVisibleUnsentTweetsModal(true);
+    setVisibleScheduleModal(false);
+  };
+
+  const onCloseUnsentTweetsModal = (): void => {
+    setVisibleScheduleModal(true);
+    setVisibleUnsentTweetsModal(false);
+  };
+
   return (
     <div>
       <div className={classes.content}>
@@ -314,14 +395,24 @@ export const AddTweetForm: FC<AddTweetFormProps> = ({
             userData?.avatar?.src ? userData?.avatar?.src : DEFAULT_PROFILE_IMG
           }
         />
-        <TextareaAutosize
-          onChange={handleChangeTextarea}
-          className={classes.contentTextarea}
-          placeholder={visiblePoll ? "Ask a question..." : title}
-          value={text}
-          rowsMax={maxRows}
-          rowsMin={images.length !== 0 ? 1 : minRows}
-        />
+        <div>
+          {selectedScheduleDate && (
+            <div className={classes.infoWrapper}>
+              {ScheduleIcon}
+              <Typography component={"span"} className={classes.text}>
+                {`Will send on ${formatScheduleDate(selectedScheduleDate)}`}
+              </Typography>
+            </div>
+          )}
+          <TextareaAutosize
+            onChange={handleChangeTextarea}
+            className={classes.contentTextarea}
+            placeholder={visiblePoll ? "Ask a question..." : title}
+            value={text}
+            rowsMax={maxRows}
+            rowsMin={images.length !== 0 ? 1 : minRows}
+          />
+        </div>
       </div>
       {images.length !== 0 && (
         <div
@@ -356,7 +447,11 @@ export const AddTweetForm: FC<AddTweetFormProps> = ({
         visiblePoll={visiblePoll}
         onClose={onClosePoll}
       />
-      <Reply replyType={replyType} setReplyType={setReplyType} />
+      <Reply
+        replyType={replyType}
+        setReplyType={setReplyType}
+        isUnsentTweet={!!unsentTweet}
+      />
       <div className={classes.footer}>
         <div className={classes.footerWrapper}>
           <UploadImages
@@ -378,7 +473,7 @@ export const AddTweetForm: FC<AddTweetFormProps> = ({
           {buttonName !== "Reply" && (
             <div className={classes.quoteImage}>
               <IconButton
-                disabled={!!quoteTweet}
+                disabled={!!quoteTweet || selectedScheduleDate !== null}
                 onClick={onOpenPoll}
                 onMouseEnter={() => handleHoverAction(AddTweetFormAction.POLL)}
                 onMouseLeave={handleLeaveAction}
@@ -400,9 +495,10 @@ export const AddTweetForm: FC<AddTweetFormProps> = ({
             </IconButton>
           </div>
           {buttonName !== "Reply" && (
-            <div className={classes.quoteImage}>
+            <div className={classes.footerImage}>
               <IconButton
                 disabled={!!quoteTweet}
+                onClick={onOpenScheduleModal}
                 onMouseEnter={() =>
                   handleHoverAction(AddTweetFormAction.SCHEDULE)
                 }
@@ -443,7 +539,7 @@ export const AddTweetForm: FC<AddTweetFormProps> = ({
           )}
           <Button
             onClick={
-              buttonName === "Tweet"
+              buttonName === "Tweet" || "Schedule"
                 ? quoteTweet
                   ? handleClickQuoteTweet
                   : handleClickAddTweet
@@ -490,6 +586,22 @@ export const AddTweetForm: FC<AddTweetFormProps> = ({
           onClose={onCloseSnackBar}
           autoHideDuration={3000}
         />
+        {visibleScheduleModal && (
+          <ScheduleModal
+            visible={visibleScheduleModal}
+            selectedScheduleDate={selectedScheduleDate}
+            onClose={onCloseScheduleModal}
+            handleScheduleDate={handleScheduleDate}
+            clearScheduleDate={clearScheduleDate}
+            onOpenUnsentTweetsModal={onOpenUnsentTweetsModal}
+          />
+        )}
+        {visibleUnsentTweetsModal && (
+          <UnsentTweetsModal
+            visible={visibleUnsentTweetsModal}
+            onClose={onCloseUnsentTweetsModal}
+          />
+        )}
       </div>
     </div>
   );

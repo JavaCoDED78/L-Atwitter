@@ -3,6 +3,7 @@ import { Tweet } from "../../store/ducks/tweets/contracts/state";
 
 interface AddTweetFormStyles {
   quoteTweet?: Tweet;
+  isScheduled?: boolean;
 }
 
 export const useAddTweetFormStyles = makeStyles<Theme, AddTweetFormStyles>(
@@ -15,6 +16,21 @@ export const useAddTweetFormStyles = makeStyles<Theme, AddTweetFormStyles>(
       width: "46px !important",
       height: "46px !important",
       marginRight: 15,
+    },
+    infoWrapper: {
+      marginBottom: 10,
+      "& svg": {
+        verticalAlign: "bottom",
+        marginRight: 12,
+        fill: "rgb(83, 100, 113)",
+        height: "1.30em",
+      },
+    },
+    text: {
+      fontSize: 13,
+      fontWeight: 400,
+      lineHeight: "16px",
+      color: "rgb(83, 100, 113)",
     },
     contentTextarea: {
       width: "100%",
@@ -95,7 +111,7 @@ export const useAddTweetFormStyles = makeStyles<Theme, AddTweetFormStyles>(
         padding: 7,
         "& svg": {
           color: (props) =>
-            props.quoteTweet
+            props.quoteTweet || props.isScheduled
               ? "rgb(142, 205, 247)"
               : theme.palette.primary.main,
           verticalAlign: "bottom",

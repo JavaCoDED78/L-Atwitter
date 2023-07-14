@@ -5,11 +5,13 @@ import com.gmail.javacoded78.latwitter.model.LinkCoverSize;
 import com.gmail.javacoded78.latwitter.model.ReplyType;
 import lombok.Data;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
 public class TweetRequest {
 
+    private Long id;
     private String text;
     private String addressedUsername;
     private Long addressedId;
@@ -18,4 +20,5 @@ public class TweetRequest {
     private List<Image> images;
     private Long pollDateTime;
     private List<String> choices;
+    private LocalDateTime scheduledDate;
 }

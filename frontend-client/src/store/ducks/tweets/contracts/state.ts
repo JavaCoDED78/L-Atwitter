@@ -13,6 +13,7 @@ export interface Tweet {
   addressedId: number;
   addressedTweetId?: number;
   dateTime: string;
+  scheduledDate?: string;
   link: string;
   linkTitle: string;
   linkDescription: string;
@@ -56,10 +57,12 @@ export interface PollChoice {
 }
 
 export interface AddTweet {
+  id?: string;
   text: string;
   images: Image[];
   replyType: ReplyType;
   pollDateTime?: number;
+  scheduledDate?: Date;
   choices?: string[];
 }
 
