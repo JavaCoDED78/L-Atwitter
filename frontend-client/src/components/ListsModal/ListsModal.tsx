@@ -1,5 +1,5 @@
 import React, { FC, FormEvent, ReactElement, useEffect, useState } from "react";
-import { RouteComponentProps, useLocation, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import {
   Button,
@@ -9,8 +9,6 @@ import {
   List,
   ListItem,
 } from "@material-ui/core";
-import IconButton from "@material-ui/core/IconButton";
-import CloseIcon from "@material-ui/icons/Close";
 
 import { useListsModalStyles } from "./ListsModalStyles";
 import { selectUserListsItems } from "../../store/ducks/lists/selectors";
@@ -22,6 +20,7 @@ import { CheckIcon } from "../../icons";
 import { Lists } from "../../store/ducks/lists/contracts/state";
 import { Tweet } from "../../store/ducks/tweets/contracts/state";
 import { User } from "../../store/ducks/user/contracts/state";
+import CloseButton from "../CloseButton/CloseButton";
 
 interface ListsModalProps {
   tweet?: Tweet;
@@ -129,9 +128,7 @@ const ListsModal: FC<ListsModalProps> = ({
     >
       <form onSubmit={onSubmit}>
         <DialogTitle id="form-dialog-title">
-          <IconButton onClick={onClose} color="secondary" aria-label="close">
-            <CloseIcon style={{ fontSize: 26 }} color="secondary" />
-          </IconButton>
+          <CloseButton onClose={onClose} />
           Pick a List
           <Button
             className={classes.button}

@@ -28,6 +28,7 @@ import DirectUserItem from "./DirectUserItem/DirectUserItem";
 import { SendDirectMessageInput } from "./SendDirectMessageInput";
 import { addChatMessageWithTweet } from "../../../store/ducks/chatMessages/actionCreators";
 import { Tweet } from "../../../store/ducks/tweets/contracts/state";
+import CloseButton from "../../CloseButton/CloseButton";
 
 interface SendDirectTweetModalProps {
   tweet: Tweet;
@@ -137,10 +138,8 @@ const SendDirectTweetModal: FC<SendDirectTweetModalProps> = ({
       aria-labelledby="form-dialog-title"
     >
       <DialogTitle id="form-dialog-title" className={classes.header}>
-        <IconButton onClick={onClose} color="secondary" aria-label="close">
-          <CloseIcon color="secondary" />
-        </IconButton>
-        <span className={classes.headerMessage}>Send Tweet</span>
+        <CloseButton onClose={onClose} />
+        Send Tweet
       </DialogTitle>
       <DialogContent className={classes.content}>
         <MessagesModalInput

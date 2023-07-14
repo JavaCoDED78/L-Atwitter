@@ -34,6 +34,7 @@ import {
   ProfileIcon,
   ProfileIconFilled,
   SettingsIcon,
+  TweetIcon,
   TwitterAdsIcon,
 } from "../../icons";
 import UserSideProfile from "../UserSideProfile/UserSideProfile";
@@ -86,11 +87,11 @@ const SideMenu: FC = (): ReactElement => {
   return (
     <>
       <ul className={classes.container}>
-        <li className={classes.itemWrapper}>
+        <li>
           <NavLink to="/home" activeClassName={"selected"}>
-            <IconButton color="primary">
-              <TwitterIcon className={classes.logoIcon} />
-            </IconButton>
+            <div className={classes.logoIcon}>
+              <IconButton color="primary">{TweetIcon}</IconButton>
+            </div>
           </NavLink>
         </li>
         <li className={classes.itemWrapper}>

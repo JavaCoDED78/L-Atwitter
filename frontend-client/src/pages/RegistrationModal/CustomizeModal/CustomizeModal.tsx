@@ -54,7 +54,16 @@ const CustomizeModal: FC<CustomizeModalProps> = ({
         <Radio className={classes.radio} checked={true} color="primary" />
         <Typography component={"div"}>
           For more details about these settings, visit the{" "}
-          <span className={classes.link}>Help Center</span>.
+          <a
+            href={
+              "https://help.twitter.com/managing-your-account/new-account-settings"
+            }
+            target={"_blank"}
+            className={classes.link}
+          >
+            Help Center
+          </a>
+          .
         </Typography>
         <div className={classes.buttonWrapper}>
           <Button

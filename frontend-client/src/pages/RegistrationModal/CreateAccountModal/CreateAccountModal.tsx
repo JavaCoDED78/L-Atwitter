@@ -92,10 +92,37 @@ const CreateAccountModal: FC<CustomizeModalProps> = ({
               />
             </div>
             <Typography component={"div"} className={classes.text}>
-              By signing up, you agree to the <span>Terms of Service</span> and{" "}
-              <span>Privacy Policy</span>, including <span>Cookie Use</span>.
-              Others will be able to find you by email or phone number when
-              provided · <span>Privacy Options</span>
+              By signing up, you agree to the{" "}
+              <a
+                href={"https://twitter.com/tos#new"}
+                target={"_blank"}
+                className={classes.link}
+              >
+                Terms of Service
+              </a>{" "}
+              and{" "}
+              <a
+                href={"https://twitter.com/privacy"}
+                target={"_blank"}
+                className={classes.link}
+              >
+                Privacy Policy
+              </a>
+              , including{" "}
+              <a
+                href={
+                  "https://help.twitter.com/rules-and-policies/twitter-cookies"
+                }
+                target={"_blank"}
+                className={classes.link}
+              >
+                Cookie Use
+              </a>
+              . Others will be able to find you by email or phone number when
+              provided ·{" "}
+              <a href={""} target={"_blank"} className={classes.link}>
+                Privacy Options
+              </a>
             </Typography>
             <Button
               className={classes.button}

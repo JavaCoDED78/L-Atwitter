@@ -67,6 +67,7 @@ import { selectUserProfile } from "../../store/ducks/userProfile/selectors";
 import {
   fetchUserProfile,
   followUserProfile,
+  resetUserProfile,
   unfollowUserProfile,
 } from "../../store/ducks/userProfile/actionCreators";
 import UserPageTweets from "./UserPageTweets";
@@ -134,6 +135,7 @@ const UserPage: FC<RouteComponentProps<{ id: string }>> = ({
     });
 
     return () => {
+      dispatch(resetUserProfile());
       dispatch(resetUserTweets());
       stompClient?.disconnect();
     };
@@ -154,7 +156,7 @@ const UserPage: FC<RouteComponentProps<{ id: string }>> = ({
     };
   }, [userProfile]);
 
-  const loadUserTweets = () => {
+  const loadUserTweets = (): void => {
     if (activeTab === 1) {
       dispatch(
         fetchUserRetweetsAndReplies({ userId: match.params.id, page: page })
@@ -170,6 +172,27 @@ const UserPage: FC<RouteComponentProps<{ id: string }>> = ({
     if (isTweetsLoaded) {
       setPage((prevState) => prevState + 1);
     }
+  };
+
+  const showTweetCount = (): string => {
+    if (userProfile !== undefined) {
+      if (activeTab === 2) {
+        return `${userProfile.mediaTweetCount} ${
+          userProfile.mediaTweetCount === 1
+            ? "Photo & video"
+            : "Photos & videos"
+        }`;
+      } else if (activeTab === 3) {
+        return `${userProfile.likeCount} ${
+          userProfile.likeCount === 1 ? "Like" : "Likes"
+        }`;
+      } else {
+        return `${userProfile.tweetCount} ${
+          userProfile.tweetCount === 1 ? "Tweet" : "Tweets"
+        }`;
+      }
+    }
+    return "";
   };
 
   const handleShowTweets = (callback: () => void): void => {
@@ -250,7 +273,7 @@ const UserPage: FC<RouteComponentProps<{ id: string }>> = ({
               {userProfile?.fullName}
             </Typography>
             <Typography component={"div"} className={classes.headerTweetCount}>
-              {userProfile?.tweetCount} Tweets
+              {showTweetCount()}
             </Typography>
           </div>
         </Paper>
@@ -272,52 +295,53 @@ const UserPage: FC<RouteComponentProps<{ id: string }>> = ({
                 }
               />
             </div>
-            {userProfile?.id === myProfile?.id ? (
-              <Button
-                onClick={
-                  myProfile?.profileCustomized
-                    ? onOpenEditProfile
-                    : onOpenSetupProfile
-                }
-                color="primary"
-                className={classes.editButton}
-              >
-                {myProfile?.profileCustomized
-                  ? "Edit profile"
-                  : "Setup profile"}
-              </Button>
-            ) : (
-              <div className={classes.buttonWrapper}>
-                <UserPageActions user={userProfile!} />
-                <IconButton
-                  className={classes.messageButton}
-                  onClick={handleClickAddUserToChat}
+            {userProfile !== undefined &&
+              (userProfile?.id === myProfile?.id ? (
+                <Button
+                  onClick={
+                    myProfile?.profileCustomized
+                      ? onOpenEditProfile
+                      : onOpenSetupProfile
+                  }
                   color="primary"
+                  className={classes.editButton}
                 >
-                  {MessagesIcon}
-                </IconButton>
-                {follower ? (
-                  <Button
-                    onClick={handleFollow}
-                    className={classes.primaryButton}
-                    color="primary"
-                    variant="contained"
-                    onMouseOver={() => setBtnText("Unfollow")}
-                    onMouseLeave={() => setBtnText("Following")}
-                  >
-                    {btnText}
-                  </Button>
-                ) : (
-                  <Button
-                    onClick={handleFollow}
-                    className={classes.editButton}
+                  {myProfile?.profileCustomized
+                    ? "Edit profile"
+                    : "Setup profile"}
+                </Button>
+              ) : (
+                <div className={classes.buttonWrapper}>
+                  <UserPageActions user={userProfile!} />
+                  <IconButton
+                    className={classes.messageButton}
+                    onClick={handleClickAddUserToChat}
                     color="primary"
                   >
-                    Follow
-                  </Button>
-                )}
-              </div>
-            )}
+                    {MessagesIcon}
+                  </IconButton>
+                  {follower ? (
+                    <Button
+                      onClick={handleFollow}
+                      className={classes.primaryButton}
+                      color="primary"
+                      variant="contained"
+                      onMouseOver={() => setBtnText("Unfollow")}
+                      onMouseLeave={() => setBtnText("Following")}
+                    >
+                      {btnText}
+                    </Button>
+                  ) : (
+                    <Button
+                      onClick={handleFollow}
+                      className={classes.editButton}
+                      color="primary"
+                    >
+                      Follow
+                    </Button>
+                  )}
+                </div>
+              ))}
             {!userProfile ? (
               <Skeleton variant="text" width={250} height={30} />
             ) : (
@@ -336,6 +360,13 @@ const UserPage: FC<RouteComponentProps<{ id: string }>> = ({
               {userProfile?.about}
             </Typography>
             <div className={classes.infoList}>
+              {!userProfile && (
+                <div className={classes.skeletonDetails}>
+                  <Skeleton component={"span"} variant="text" width={80} />
+                  <Skeleton component={"span"} variant="text" width={150} />
+                  <Skeleton component={"span"} variant="text" width={150} />
+                </div>
+              )}
               <List>
                 {userProfile?.location && (
                   <ListItem>
@@ -371,42 +402,49 @@ const UserPage: FC<RouteComponentProps<{ id: string }>> = ({
                   </ListItem>
                 )}
               </List>
-              <List className={classes.details}>
-                <Link
-                  to={`/user/${userProfile?.id}/following`}
-                  className={classes.followLink}
-                >
-                  <ListItem>
-                    <b>
-                      {userProfile?.id === myProfile?.id
-                        ? myProfile?.followers?.length
+              {!userProfile ? (
+                <div className={classes.skeletonDetails}>
+                  <Skeleton component={"span"} variant="text" width={80} />
+                  <Skeleton component={"span"} variant="text" width={80} />
+                </div>
+              ) : (
+                <List className={classes.details}>
+                  <Link
+                    to={`/user/${userProfile?.id}/following`}
+                    className={classes.followLink}
+                  >
+                    <ListItem>
+                      <b>
+                        {userProfile?.id === myProfile?.id
                           ? myProfile?.followers?.length
-                          : 0
-                        : userProfile?.followers?.length
-                        ? userProfile?.followers?.length
-                        : 0}
-                    </b>
-                    <Typography component={"span"}>{" Following"}</Typography>
-                  </ListItem>
-                </Link>
-                <Link
-                  to={`/user/${userProfile?.id}/followers`}
-                  className={classes.followLink}
-                >
-                  <ListItem>
-                    <b>
-                      {userProfile?.id === myProfile?.id
-                        ? myProfile?.following?.length
+                            ? myProfile?.followers?.length
+                            : 0
+                          : userProfile?.followers?.length
+                          ? userProfile?.followers?.length
+                          : 0}
+                      </b>
+                      <Typography component={"span"}>{" Following"}</Typography>
+                    </ListItem>
+                  </Link>
+                  <Link
+                    to={`/user/${userProfile?.id}/followers`}
+                    className={classes.followLink}
+                  >
+                    <ListItem>
+                      <b>
+                        {userProfile?.id === myProfile?.id
                           ? myProfile?.following?.length
-                          : 0
-                        : userProfile?.following?.length
-                        ? userProfile?.following?.length
-                        : 0}
-                    </b>
-                    <Typography component={"span"}>{" Followers"}</Typography>
-                  </ListItem>
-                </Link>
-              </List>
+                            ? myProfile?.following?.length
+                            : 0
+                          : userProfile?.following?.length
+                          ? userProfile?.following?.length
+                          : 0}
+                      </b>
+                      <Typography component={"span"}>{" Followers"}</Typography>
+                    </ListItem>
+                  </Link>
+                </List>
+              )}
             </div>
           </div>
           <div className={classes.tabs}>
@@ -437,17 +475,19 @@ const UserPage: FC<RouteComponentProps<{ id: string }>> = ({
             </Tabs>
           </div>
           <div className={classes.tweets}>
-            <UserPageTweets
-              tweets={tweets}
-              activeTab={activeTab}
-              userProfileId={userProfile?.id}
-              myProfileId={myProfile?.id}
-              username={userProfile?.username}
-            />
-            {isTweetsLoading && (
+            {userProfile === undefined ? (
               <div className={classes.tweetsCentred}>
                 <CircularProgress />
               </div>
+            ) : (
+              <UserPageTweets
+                tweets={tweets}
+                isTweetsLoading={isTweetsLoading}
+                activeTab={activeTab}
+                userProfileId={userProfile?.id}
+                myProfileId={myProfile?.id}
+                username={userProfile?.username}
+              />
             )}
           </div>
         </div>

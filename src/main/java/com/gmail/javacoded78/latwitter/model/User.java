@@ -67,6 +67,12 @@ public class User {
     @Column(name = "tweet_count", columnDefinition = "int default 0")
     private Long tweetCount;
 
+    @Column(name = "media_tweet_count", columnDefinition = "int default 0")
+    private Long mediaTweetCount;
+
+    @Column(name = "like_count", columnDefinition = "int default 0")
+    private Long likeCount;
+
     @Column(name = "notifications_count", columnDefinition = "int default 0")
     private Long notificationsCount;
 

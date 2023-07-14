@@ -3,8 +3,6 @@ import { useDispatch } from "react-redux";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import DialogContent from "@material-ui/core/DialogContent";
 import Dialog from "@material-ui/core/Dialog";
-import CloseIcon from "@material-ui/icons/Close";
-import IconButton from "@material-ui/core/IconButton";
 
 import { User } from "../../store/ducks/user/contracts/state";
 import Follower from "../Follower/Follower";
@@ -13,6 +11,8 @@ import {
   unfollowUser,
 } from "../../store/ducks/user/actionCreators";
 import { LikeTweet, Retweet } from "../../store/ducks/tweets/contracts/state";
+import CloseButton from "../CloseButton/CloseButton";
+import { useUsersListModalStyles } from "./UsersListModalStyles";
 
 interface UsersListModalProps {
   users?: LikeTweet[] | Retweet[];
@@ -27,6 +27,7 @@ const UsersListModal: FC<UsersListModalProps> = ({
   title,
   onClose,
 }): ReactElement | null => {
+  const classes = useUsersListModalStyles();
   const dispatch = useDispatch();
 
   const handleFollow = (user: User): void => {
@@ -43,14 +44,13 @@ const UsersListModal: FC<UsersListModalProps> = ({
 
   return (
     <Dialog
+      className={classes.dialog}
       open={visible}
       onClose={onClose}
       aria-labelledby="form-dialog-title"
     >
-      <DialogTitle id="form-dialog-title" style={{ margin: 0 }}>
-        <IconButton onClick={onClose} color="secondary" aria-label="close">
-          <CloseIcon style={{ fontSize: 26 }} color="secondary" />
-        </IconButton>
+      <DialogTitle id="form-dialog-title">
+        <CloseButton onClose={onClose} />
         {title}
       </DialogTitle>
       <DialogContent style={{ height: 550, width: 598, padding: 0 }}>

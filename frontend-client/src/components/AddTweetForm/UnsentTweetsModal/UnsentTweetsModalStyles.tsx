@@ -15,9 +15,6 @@ export const useUnsentTweetsModalStyles = makeStyles<
         props.visibleEditTweetModal
           ? "1px solid rgb(239, 243, 244)"
           : "1px solid transparent",
-      "& .MuiIconButton-root": {
-        marginRight: 15,
-      },
     },
   },
   outlinedButton: {

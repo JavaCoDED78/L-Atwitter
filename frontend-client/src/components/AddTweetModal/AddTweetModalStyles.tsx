@@ -3,6 +3,11 @@ import { makeStyles, Theme } from "@material-ui/core";
 export const useAddTweetModalStyles = makeStyles((theme: Theme) => ({
   content: {
     top: "-20%",
+    "& .MuiDialogTitle-root": {
+      padding: "5px 15px",
+      marginBottom: 0,
+      borderBottom: "1px solid rgb(239, 243, 244)",
+    },
   },
   header: {
     padding: "5px 15px",
