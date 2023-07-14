@@ -1,6 +1,7 @@
-import React, { FC, ReactElement, useEffect } from "react";
+import React, { FC, ReactElement, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Route, useLocation } from "react-router-dom";
+import InfiniteScroll from "react-infinite-scroll-component";
 import {
   CircularProgress,
   IconButton,
@@ -13,15 +14,15 @@ import { useHomeStyles } from "./HomeStyles";
 import { AddTweetForm } from "../../components/AddTweetForm/AddTweetForm";
 import {
   fetchTweets,
-  setTweets,
+  resetTweets,
   setTweetsLoadingState,
 } from "../../store/ducks/tweets/actionCreators";
 import {
   selectIsTweetsLoading,
+  selectPagesCount,
   selectTweetsItems,
 } from "../../store/ducks/tweets/selectors";
 import { BackButton } from "../../components/BackButton/BackButton";
-
 import { fetchUserData } from "../../store/ducks/user/actionCreators";
 import { fetchRelevantUsers } from "../../store/ducks/users/actionCreators";
 import { fetchTags } from "../../store/ducks/tags/actionCreators";
@@ -41,6 +42,8 @@ const Home: FC = (): ReactElement => {
   const myProfile = useSelector(selectUserData);
   const tweets = useSelector(selectTweetsItems);
   const isLoading = useSelector(selectIsTweetsLoading);
+  const pagesCount = useSelector(selectPagesCount);
+  const [page, setPage] = useState<number>(0);
 
   useEffect(() => {
     dispatch(setTweetsLoadingState(LoadingStatus.NEVER));
@@ -49,7 +52,7 @@ const Home: FC = (): ReactElement => {
     dispatch(fetchTags());
 
     if (location.pathname !== "/search") {
-      dispatch(fetchTweets());
+      loadTweets();
     }
     if (location.pathname !== "/home/connect") {
       dispatch(fetchRelevantUsers());
@@ -58,66 +61,77 @@ const Home: FC = (): ReactElement => {
     window.scrollTo(0, 0);
 
     return () => {
-      dispatch(setTweets([]));
+      dispatch(resetTweets());
     };
   }, []);
 
+  const loadTweets = () => {
+    dispatch(fetchTweets(page));
+    setPage((prevState) => prevState + 1);
+  };
+
   return (
-    <Paper className={classes.container} variant="outlined">
-      <Paper className={classes.header} variant="outlined">
+    <InfiniteScroll
+      dataLength={tweets.length}
+      next={loadTweets}
+      hasMore={page < pagesCount}
+      loader={null}
+    >
+      <Paper className={classes.container} variant="outlined">
+        <Paper className={classes.header} variant="outlined">
+          <Route path="/home" exact>
+            <Typography variant="h6">Home</Typography>
+            <div className={classes.headerIcon}>
+              <IconButton color="primary">
+                <>{TopTweets}</>
+              </IconButton>
+            </div>
+          </Route>
+          <Route path="/home/tweet">
+            <BackButton />
+            <Typography variant="h6">Tweet</Typography>
+          </Route>
+          <Route path="/home/connect">
+            <BackButton />
+            <Typography variant="h6">Connect</Typography>
+          </Route>
+          <Route path="/home/trends">
+            <BackButton />
+            <Typography variant="h6">Trends</Typography>
+          </Route>
+        </Paper>
+
         <Route path="/home" exact>
-          <Typography variant="h6">Home</Typography>
-          <div className={classes.headerIcon}>
-            <IconButton color="primary">
-              <>{TopTweets}</>
-            </IconButton>
+          <div className={classes.addForm}>
+            <AddTweetForm title={"What's happening?"} buttonName={"Tweet"} />
           </div>
+          <div className={classes.divider} />
         </Route>
-        <Route path="/home/tweet">
-          <BackButton />
-          <Typography variant="h6">Tweet</Typography>
+
+        <Route path="/home/connect" exact>
+          <Connect />
         </Route>
-        <Route path="/home/connect">
-          <BackButton />
-          <Typography variant="h6">Connect</Typography>
+
+        <Route path="/home/trends" exact>
+          <Trends />
         </Route>
-        <Route path="/home/trends">
-          <BackButton />
-          <Typography variant="h6">Trends</Typography>
+
+        <Route path="/home" exact>
+          {!myProfile?.profileStarted && !isLoading && <Welcome />}
+          {tweets.map((tweet) => (
+            <TweetComponent key={tweet.id} item={tweet} />
+          ))}
+          {isLoading && (
+            <div className={classes.loading}>
+              <CircularProgress />
+            </div>
+          )}
+        </Route>
+        <Route path="/home/tweet/:id" exact>
+          <FullTweet />
         </Route>
       </Paper>
-
-      <Route path="/home" exact>
-        <div className={classes.addForm}>
-          <AddTweetForm title={"What's happening?"} buttonName={"Tweet"} />
-        </div>
-        <div className={classes.divider} />
-      </Route>
-
-      <Route path="/home/connect" exact>
-        <Connect />
-      </Route>
-
-      <Route path="/home/trends" exact>
-        <Trends />
-      </Route>
-
-      <Route path="/home" exact>
-        {isLoading ? (
-          <div className={classes.loading}>
-            <CircularProgress />
-          </div>
-        ) : !myProfile?.profileStarted ? (
-          <Welcome />
-        ) : (
-          tweets.map((tweet) => <TweetComponent key={tweet.id} item={tweet} />)
-        )}
-      </Route>
-
-      <Route path="/home/tweet/:id" exact>
-        <FullTweet />
-      </Route>
-    </Paper>
+    </InfiniteScroll>
   );
 };
 

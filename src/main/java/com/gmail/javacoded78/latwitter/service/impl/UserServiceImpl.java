@@ -12,12 +12,18 @@ import com.gmail.javacoded78.latwitter.model.Tweet;
 import com.gmail.javacoded78.latwitter.model.User;
 import com.gmail.javacoded78.latwitter.repository.BookmarkRepository;
 import com.gmail.javacoded78.latwitter.repository.ImageRepository;
+import com.gmail.javacoded78.latwitter.repository.LikeTweetRepository;
 import com.gmail.javacoded78.latwitter.repository.NotificationRepository;
+import com.gmail.javacoded78.latwitter.repository.RetweetRepository;
 import com.gmail.javacoded78.latwitter.repository.TweetRepository;
 import com.gmail.javacoded78.latwitter.repository.UserRepository;
 import com.gmail.javacoded78.latwitter.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.support.PagedListHolder;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -31,7 +37,6 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -41,6 +46,8 @@ public class UserServiceImpl implements UserService {
     private final TweetRepository tweetRepository;
     private final ImageRepository imageRepository;
     private final BookmarkRepository bookmarkRepository;
+    private final RetweetRepository retweetRepository;
+    private final LikeTweetRepository likeTweetRepository;
     private final NotificationRepository notificationRepository;
     private final AmazonS3 amazonS3client;
 
@@ -78,32 +85,31 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<Tweet> getUserTweets(Long userId) {
+    public Page<Tweet> getUserTweets(Long userId, Pageable pageable) {
         User user = userRepository.getOne(userId);
-        List<Tweet> tweets = user.getTweets().stream()
-                .filter(tweet -> tweet.getAddressedUsername() == null)
-                .sorted(Comparator.comparing(Tweet::getDateTime).reversed())
-                .collect(Collectors.toList());
-        List<Retweet> retweets = user.getRetweets();
-        retweets.sort(Comparator.comparing(Retweet::getRetweetDate).reversed());
+        List<Tweet> tweets = tweetRepository.findByUserAndAddressedUsernameIsNullOrderByDateTimeDesc(user);
+        List<Retweet> retweets = retweetRepository.findByUserOrderByRetweetDateDesc(user);
         List<Tweet> userTweets = combineTweetsArrays(tweets, retweets);
         boolean isTweetExist = userTweets.removeIf(tweet -> tweet.equals(user.getPinnedTweet()));
         if (isTweetExist) {
             userTweets.add(0, user.getPinnedTweet());
         }
-        return userTweets;
+        PagedListHolder<Tweet> page = new PagedListHolder<>(userTweets);
+        page.setPage(pageable.getPageNumber());
+        page.setPageSize(pageable.getPageSize());
+        return new PageImpl<>(page.getPageList(), pageable, tweets.size() + retweets.size());
     }
 
     @Override
-    public List<Tweet> getUserRetweetsAndReplies(Long userId) {
+    public Page<Tweet> getUserRetweetsAndReplies(Long userId, Pageable pageable) {
         User user = userRepository.getOne(userId);
-        List<Tweet> replies = user.getTweets().stream()
-                .filter(tweet -> tweet.getAddressedUsername() != null)
-                .sorted(Comparator.comparing(Tweet::getDateTime).reversed())
-                .collect(Collectors.toList());
-        List<Retweet> retweets = user.getRetweets();
-        retweets.sort(Comparator.comparing(Retweet::getRetweetDate).reversed());
-        return combineTweetsArrays(replies, retweets);
+        List<Tweet> replies = tweetRepository.findByUserAndAddressedUsernameIsNotNullOrderByDateTimeDesc(user);
+        List<Retweet> retweets = retweetRepository.findByUserOrderByRetweetDateDesc(user);
+        List<Tweet> userTweets = combineTweetsArrays(replies, retweets);
+        PagedListHolder<Tweet> page = new PagedListHolder<>(userTweets);
+        page.setPage(pageable.getPageNumber());
+        page.setPageSize(pageable.getPageSize());
+        return new PageImpl<>(page.getPageList(), pageable, replies.size() + retweets.size());
     }
 
     @Override
@@ -118,14 +124,10 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<Tweet> getUserBookmarks() {
+    public Page<Bookmark> getUserBookmarks(Pageable pageable) {
         Principal principal = SecurityContextHolder.getContext().getAuthentication();
         User user = userRepository.findByEmail(principal.getName());
-        List<Bookmark> bookmarks = user.getBookmarks();
-        bookmarks.sort(Comparator.comparing(Bookmark::getBookmarkDate).reversed());
-        List<Tweet> allTweets = new ArrayList<>();
-        bookmarks.forEach(bookmark -> allTweets.add(bookmark.getTweet()));
-        return allTweets;
+        return bookmarkRepository.findByUserOrderByBookmarkDateDesc(user, pageable);
     }
 
     @Override
@@ -145,6 +147,7 @@ public class UserServiceImpl implements UserService {
         } else {
             Bookmark newBookmark = new Bookmark();
             newBookmark.setTweet(tweet);
+            newBookmark.setUser(user);
             bookmarkRepository.save(newBookmark);
             bookmarks.add(newBookmark);
         }
@@ -153,19 +156,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<Tweet> getUserLikedTweets(Long userId) {
-        User user = userRepository.getOne(userId);
-        List<LikeTweet> likedTweets = user.getLikedTweets();
-        likedTweets.sort(Comparator.comparing(LikeTweet::getLikeTweetDate).reversed());
-        List<Tweet> allTweets = new ArrayList<>();
-        likedTweets.forEach(likeTweet -> allTweets.add(likeTweet.getTweet()));
-        return allTweets;
+    public Page<LikeTweet> getUserLikedTweets(Long userId, Pageable pageable) {
+        return likeTweetRepository.findByUser_IdOrderByLikeTweetDateDesc(userId, pageable);
     }
 
     @Override
-    public List<Tweet> getUserMediaTweets(Long userId) {
-        User user = userRepository.getOne(userId);
-        return tweetRepository.findByImagesIsNotNullAndUserOrderByDateTimeDesc(user);
+    public Page<Tweet> getUserMediaTweets(Long userId, Pageable pageable) {
+        return tweetRepository.findByImagesIsNotNullAndUser_IdOrderByDateTimeDesc(userId, pageable);
     }
 
     @Override

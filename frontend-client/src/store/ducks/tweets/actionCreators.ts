@@ -24,7 +24,9 @@ import {
   FetchTweetsWithVideoActionInterface,
   FetchVoteActionInterface,
   RemoveTweetFromBookmarksActionInterface,
+  ResetTweetsActionInterface,
   SetTweetActionInterface,
+  SetTweets2ActionInterface,
   SetTweetsActionInterface,
   SetTweetsLoadingStateInterface,
   SetUpdatedTweetActionInterface,
@@ -39,9 +41,21 @@ export const setTweets = (
   payload,
 });
 
+export const setTweets2 = (payload: {
+  items: TweetsState["items"];
+  pagesCount: TweetsState["pagesCount"];
+}): SetTweets2ActionInterface => ({
+  type: TweetsActionType.SET_TWEETS2,
+  payload,
+});
+
 export const setTweet = (payload: Tweet): SetTweetActionInterface => ({
   type: TweetsActionType.SET_TWEET,
   payload,
+});
+
+export const resetTweets = (): ResetTweetsActionInterface => ({
+  type: TweetsActionType.RESET_TWEETS,
 });
 
 export const fetchAddTweet = (
@@ -137,21 +151,30 @@ export const fetchRetweet = (payload: string): FetchRetweetActionInterface => ({
   payload,
 });
 
-export const fetchTweets = (): FetchTweetsActionInterface => ({
+export const fetchTweets = (payload: number): FetchTweetsActionInterface => ({
   type: TweetsActionType.FETCH_TWEETS,
+  payload,
 });
 
-export const fetchMediaTweets = (): FetchMediaTweetsActionInterface => ({
+export const fetchMediaTweets = (
+  payload: number
+): FetchMediaTweetsActionInterface => ({
   type: TweetsActionType.FETCH_MEDIA_TWEETS,
+  payload,
 });
 
-export const fetchTweetsWithVideo =
-  (): FetchTweetsWithVideoActionInterface => ({
-    type: TweetsActionType.FETCH_TWEETS_WITH_VIDEO,
-  });
+export const fetchTweetsWithVideo = (
+  payload: number
+): FetchTweetsWithVideoActionInterface => ({
+  type: TweetsActionType.FETCH_TWEETS_WITH_VIDEO,
+  payload,
+});
 
-export const fetchUserBookmarks = (): FetchBookmarksActionInterface => ({
+export const fetchUserBookmarks = (
+  payload: number
+): FetchBookmarksActionInterface => ({
   type: TweetsActionType.FETCH_BOOKMARKS,
+  payload,
 });
 
 export const removeTweetFromBookmarks = (

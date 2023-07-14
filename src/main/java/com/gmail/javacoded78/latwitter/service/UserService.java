@@ -1,9 +1,13 @@
 package com.gmail.javacoded78.latwitter.service;
 
+import com.gmail.javacoded78.latwitter.model.Bookmark;
 import com.gmail.javacoded78.latwitter.model.Image;
+import com.gmail.javacoded78.latwitter.model.LikeTweet;
 import com.gmail.javacoded78.latwitter.model.Notification;
 import com.gmail.javacoded78.latwitter.model.Tweet;
 import com.gmail.javacoded78.latwitter.model.User;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -20,17 +24,17 @@ public interface UserService {
 
     User startUseTwitter(Long userId);
 
-    List<Tweet> getUserTweets(Long userId);
+    Page<Tweet> getUserTweets(Long userId, Pageable pageable);
 
-    List<Tweet> getUserLikedTweets(Long userId);
+    Page<LikeTweet> getUserLikedTweets(Long userId, Pageable pageable);
 
-    List<Tweet> getUserMediaTweets(Long userId);
+    Page<Tweet> getUserMediaTweets(Long userId, Pageable pageable);
 
-    List<Tweet> getUserRetweetsAndReplies(Long userId);
+    Page<Tweet> getUserRetweetsAndReplies(Long userId, Pageable pageable);
 
     List<Notification> getUserNotifications();
 
-    List<Tweet> getUserBookmarks();
+    Page<Bookmark> getUserBookmarks(Pageable pageable);
 
     User processUserBookmarks(Long tweetId);
 

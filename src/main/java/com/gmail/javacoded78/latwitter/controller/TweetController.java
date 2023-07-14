@@ -2,15 +2,25 @@ package com.gmail.javacoded78.latwitter.controller;
 
 import com.gmail.javacoded78.latwitter.dto.request.TweetRequest;
 import com.gmail.javacoded78.latwitter.dto.request.VoteRequest;
+import com.gmail.javacoded78.latwitter.dto.response.TweetHeaderResponse;
 import com.gmail.javacoded78.latwitter.dto.response.notification.NotificationResponse;
 import com.gmail.javacoded78.latwitter.dto.response.notification.NotificationTweetResponse;
 import com.gmail.javacoded78.latwitter.dto.response.tweet.TweetResponse;
 import com.gmail.javacoded78.latwitter.mapper.TweetMapper;
 import com.gmail.javacoded78.latwitter.model.ReplyType;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
@@ -23,8 +33,9 @@ public class TweetController {
     private final SimpMessagingTemplate messagingTemplate;
 
     @GetMapping
-    public ResponseEntity<List<TweetResponse>> getTweets() {
-        return ResponseEntity.ok(tweetMapper.getTweets());
+    public ResponseEntity<List<TweetResponse>> getTweets(@PageableDefault(size = 10) Pageable pageable) {
+        TweetHeaderResponse response = tweetMapper.getTweets(pageable);
+        return ResponseEntity.ok().headers(response.getHeaders()).body(response.getTweets());
     }
 
     @GetMapping("/{tweetId}")
@@ -33,13 +44,15 @@ public class TweetController {
     }
 
     @GetMapping("/media")
-    public ResponseEntity<List<TweetResponse>> getMediaTweets() {
-        return ResponseEntity.ok(tweetMapper.getMediaTweets());
+    public ResponseEntity<List<TweetResponse>> getMediaTweetsPageable(@PageableDefault(size = 10) Pageable pageable) {
+        TweetHeaderResponse response = tweetMapper.getMediaTweets(pageable);
+        return ResponseEntity.ok().headers(response.getHeaders()).body(response.getTweets());
     }
 
     @GetMapping("/video")
-    public ResponseEntity<List<TweetResponse>> getTweetsWithVideo() {
-        return ResponseEntity.ok(tweetMapper.getTweetsWithVideo());
+    public ResponseEntity<List<TweetResponse>> getTweetsWithVideo(@PageableDefault(size = 10) Pageable pageable) {
+        TweetHeaderResponse response = tweetMapper.getTweetsWithVideo(pageable);
+        return ResponseEntity.ok().headers(response.getHeaders()).body(response.getTweets());
     }
 
     @PostMapping

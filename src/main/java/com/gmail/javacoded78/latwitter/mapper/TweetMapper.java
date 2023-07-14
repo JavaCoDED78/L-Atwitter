@@ -2,6 +2,7 @@ package com.gmail.javacoded78.latwitter.mapper;
 
 import com.gmail.javacoded78.latwitter.dto.request.TweetRequest;
 import com.gmail.javacoded78.latwitter.dto.request.VoteRequest;
+import com.gmail.javacoded78.latwitter.dto.response.TweetHeaderResponse;
 import com.gmail.javacoded78.latwitter.dto.response.notification.NotificationResponse;
 import com.gmail.javacoded78.latwitter.dto.response.tweet.TweetResponse;
 import com.gmail.javacoded78.latwitter.model.ReplyType;
@@ -10,6 +11,9 @@ import com.gmail.javacoded78.latwitter.service.TweetService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -38,16 +42,23 @@ public class TweetMapper {
                 .collect(Collectors.toList());
     }
 
-    public List<TweetResponse> getTweets() {
-        return convertListToResponse(tweetService.getTweets());
+    private TweetHeaderResponse getTweetHeaderResponse(Page<Tweet> tweets) {
+        List<TweetResponse> tweetResponses = convertListToResponse(tweets.getContent());
+        HttpHeaders responseHeaders = new HttpHeaders();
+        responseHeaders.add("page-total-count", String.valueOf(tweets.getTotalPages()));
+        return new TweetHeaderResponse(tweetResponses, responseHeaders);
     }
 
-    public List<TweetResponse> getMediaTweets() {
-        return convertListToResponse(tweetService.getMediaTweets());
+    public TweetHeaderResponse getTweets(Pageable pageable) {
+        return getTweetHeaderResponse(tweetService.getTweets(pageable));
     }
 
-    public List<TweetResponse> getTweetsWithVideo() {
-        return convertListToResponse(tweetService.getTweetsWithVideo());
+    public TweetHeaderResponse getMediaTweets(Pageable pageable) {
+        return getTweetHeaderResponse(tweetService.getMediaTweets(pageable));
+    }
+
+    public TweetHeaderResponse getTweetsWithVideo(Pageable pageable) {
+        return getTweetHeaderResponse(tweetService.getTweetsWithVideo(pageable));
     }
 
     public TweetResponse getTweetById(Long tweetId) {

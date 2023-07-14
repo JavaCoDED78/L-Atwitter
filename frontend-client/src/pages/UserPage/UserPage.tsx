@@ -6,12 +6,13 @@ import React, {
   useState,
 } from "react";
 import {
-  RouteComponentProps,
   Link,
-  useLocation,
+  RouteComponentProps,
   useHistory,
+  useLocation,
 } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
+import InfiniteScroll from "react-infinite-scroll-component";
 import Paper from "@material-ui/core/Paper";
 import {
   Avatar,
@@ -30,9 +31,9 @@ import { CompatClient, Stomp } from "@stomp/stompjs";
 import SockJS from "sockjs-client";
 
 import {
-  LocationIcon,
-  LinkIcon,
   CalendarIcon,
+  LinkIcon,
+  LocationIcon,
   MessagesIcon,
 } from "../../icons";
 import { useUserPageStyles } from "./UserPageStyles";
@@ -47,18 +48,20 @@ import { selectUserData } from "../../store/ducks/user/selectors";
 import { fetchRelevantUsers } from "../../store/ducks/users/actionCreators";
 import { fetchTags } from "../../store/ducks/tags/actionCreators";
 import {
+  selectIsUserTweetsLoaded,
   selectIsUserTweetsLoading,
+  selectPagesCount,
   selectUserTweetsItems,
 } from "../../store/ducks/userTweets/selectors";
 import {
-  fetchUserTweets,
+  deleteUserTweet,
   fetchUserLikedTweets,
   fetchUserMediaTweets,
   fetchUserRetweetsAndReplies,
-  setUserTweets,
+  fetchUserTweets,
+  resetUserTweets,
   setAddedUserTweet,
   setUpdatedUserTweet,
-  deleteUserTweet,
 } from "../../store/ducks/userTweets/actionCreators";
 import { selectUserProfile } from "../../store/ducks/userProfile/selectors";
 import {
@@ -83,6 +86,7 @@ const UserPage: FC<RouteComponentProps<{ id: string }>> = ({
   const myProfile = useSelector(selectUserData);
   const userProfile = useSelector(selectUserProfile);
   const isTweetsLoading = useSelector(selectIsUserTweetsLoading);
+  const isTweetsLoaded = useSelector(selectIsUserTweetsLoaded);
   const location = useLocation<{ isRegistered: boolean }>();
   const history = useHistory();
 
@@ -91,6 +95,8 @@ const UserPage: FC<RouteComponentProps<{ id: string }>> = ({
   const [visibleEditProfile, setVisibleEditProfile] = useState<boolean>(false);
   const [visibleSetupProfile, setVisibleSetupProfile] =
     useState<boolean>(false);
+  const pagesCount = useSelector(selectPagesCount);
+  const [page, setPage] = useState<number>(0);
 
   const follower = myProfile?.followers?.find(
     (user) => user.id === userProfile?.id
@@ -128,13 +134,15 @@ const UserPage: FC<RouteComponentProps<{ id: string }>> = ({
     });
 
     return () => {
+      dispatch(resetUserTweets());
       stompClient?.disconnect();
     };
   }, [match.params.id]);
 
   useEffect(() => {
     if (userProfile) {
-      dispatch(fetchUserTweets(match.params.id));
+      dispatch(fetchUserTweets({ userId: match.params.id, page: 0 }));
+      setPage((prevState) => prevState + 1);
     }
 
     if (location.state?.isRegistered) {
@@ -142,9 +150,34 @@ const UserPage: FC<RouteComponentProps<{ id: string }>> = ({
     }
 
     return () => {
-      dispatch(setUserTweets([]));
+      dispatch(resetUserTweets());
     };
   }, [userProfile]);
+
+  const loadUserTweets = () => {
+    if (activeTab === 1) {
+      dispatch(
+        fetchUserRetweetsAndReplies({ userId: match.params.id, page: page })
+      );
+    } else if (activeTab === 2) {
+      dispatch(fetchUserMediaTweets({ userId: match.params.id, page: page }));
+    } else if (activeTab === 3) {
+      dispatch(fetchUserLikedTweets({ userId: match.params.id, page: page }));
+    } else {
+      dispatch(fetchUserTweets({ userId: match.params.id, page: page }));
+    }
+
+    if (isTweetsLoaded) {
+      setPage((prevState) => prevState + 1);
+    }
+  };
+
+  const handleShowTweets = (callback: () => void): void => {
+    window.scrollTo(0, 0);
+    setPage(0);
+    dispatch(resetUserTweets());
+    callback();
+  };
 
   const handleChange = (event: ChangeEvent<{}>, newValue: number): void => {
     setActiveTab(newValue);
@@ -177,19 +210,23 @@ const UserPage: FC<RouteComponentProps<{ id: string }>> = ({
   };
 
   const handleShowUserTweets = (): void => {
-    dispatch(fetchUserTweets(match.params.id));
+    dispatch(fetchUserTweets({ userId: match.params.id, page: 0 }));
+    setPage((prevState) => prevState + 1);
   };
 
   const handleShowUserRetweetsAndReplies = (): void => {
-    dispatch(fetchUserRetweetsAndReplies(match.params.id));
-  };
-
-  const handleShowLikedTweets = (): void => {
-    dispatch(fetchUserLikedTweets(match.params.id));
+    dispatch(fetchUserRetweetsAndReplies({ userId: match.params.id, page: 0 }));
+    setPage((prevState) => prevState + 1);
   };
 
   const handleShowMediaTweets = (): void => {
-    dispatch(fetchUserMediaTweets(match.params.id));
+    dispatch(fetchUserMediaTweets({ userId: match.params.id, page: 0 }));
+    setPage((prevState) => prevState + 1);
+  };
+
+  const handleShowLikedTweets = (): void => {
+    dispatch(fetchUserLikedTweets({ userId: match.params.id, page: 0 }));
+    setPage((prevState) => prevState + 1);
   };
 
   const handleClickAddUserToChat = (): void => {
@@ -198,190 +235,207 @@ const UserPage: FC<RouteComponentProps<{ id: string }>> = ({
   };
 
   return (
-    <Paper className={classes.container} variant="outlined">
-      <Paper className={classes.header} variant="outlined">
-        <BackButton />
-        <div>
-          <Typography component={"div"} className={classes.headerFullName}>
-            {userProfile?.fullName}
-          </Typography>
-          <Typography component={"div"} className={classes.headerTweetCount}>
-            {userProfile?.tweetCount} Tweets
-          </Typography>
-        </div>
-      </Paper>
-      <div style={{ paddingTop: 53 }}>
-        <div className={classes.wallpaper}>
-          <img
-            key={userProfile?.wallpaper?.src}
-            src={userProfile?.wallpaper?.src}
-            alt={userProfile?.wallpaper?.src}
-          />
-        </div>
-        <div className={classes.info}>
-          <div style={{ display: "inline-block" }}>
-            <Avatar
-              src={
-                userProfile?.avatar?.src
-                  ? userProfile?.avatar.src
-                  : DEFAULT_PROFILE_IMG
-              }
+    <InfiniteScroll
+      dataLength={tweets.length}
+      next={loadUserTweets}
+      hasMore={page < pagesCount}
+      loader={null}
+    >
+      <Paper className={classes.container} variant="outlined">
+        <Paper className={classes.header} variant="outlined">
+          <BackButton />
+          <div>
+            <Typography component={"div"} className={classes.headerFullName}>
+              {userProfile?.fullName}
+            </Typography>
+            <Typography component={"div"} className={classes.headerTweetCount}>
+              {userProfile?.tweetCount} Tweets
+            </Typography>
+          </div>
+        </Paper>
+        <div style={{ paddingTop: 53 }}>
+          <div className={classes.wallpaper}>
+            <img
+              key={userProfile?.wallpaper?.src}
+              src={userProfile?.wallpaper?.src}
+              alt={userProfile?.wallpaper?.src}
             />
           </div>
-          {userProfile?.id === myProfile?.id ? (
-            <Button
-              onClick={
-                myProfile?.profileCustomized
-                  ? onOpenEditProfile
-                  : onOpenSetupProfile
-              }
-              color="primary"
-              className={classes.editButton}
-            >
-              {myProfile?.profileCustomized ? "Edit profile" : "Setup profile"}
-            </Button>
-          ) : (
-            <div className={classes.buttonWrapper}>
-              <UserPageActions user={userProfile!} />
-              <IconButton
-                className={classes.messageButton}
-                onClick={handleClickAddUserToChat}
+          <div className={classes.info}>
+            <div style={{ display: "inline-block" }}>
+              <Avatar
+                src={
+                  userProfile?.avatar?.src
+                    ? userProfile?.avatar.src
+                    : DEFAULT_PROFILE_IMG
+                }
+              />
+            </div>
+            {userProfile?.id === myProfile?.id ? (
+              <Button
+                onClick={
+                  myProfile?.profileCustomized
+                    ? onOpenEditProfile
+                    : onOpenSetupProfile
+                }
                 color="primary"
+                className={classes.editButton}
               >
-                {MessagesIcon}
-              </IconButton>
-              {follower ? (
-                <Button
-                  onClick={handleFollow}
-                  className={classes.primaryButton}
-                  color="primary"
-                  variant="contained"
-                  onMouseOver={() => setBtnText("Unfollow")}
-                  onMouseLeave={() => setBtnText("Following")}
-                >
-                  {btnText}
-                </Button>
-              ) : (
-                <Button
-                  onClick={handleFollow}
-                  className={classes.editButton}
+                {myProfile?.profileCustomized
+                  ? "Edit profile"
+                  : "Setup profile"}
+              </Button>
+            ) : (
+              <div className={classes.buttonWrapper}>
+                <UserPageActions user={userProfile!} />
+                <IconButton
+                  className={classes.messageButton}
+                  onClick={handleClickAddUserToChat}
                   color="primary"
                 >
-                  Follow
-                </Button>
-              )}
-            </div>
-          )}
-          {!userProfile ? (
-            <Skeleton variant="text" width={250} height={30} />
-          ) : (
-            <Typography className={classes.fullName}>
-              {userProfile.fullName}
+                  {MessagesIcon}
+                </IconButton>
+                {follower ? (
+                  <Button
+                    onClick={handleFollow}
+                    className={classes.primaryButton}
+                    color="primary"
+                    variant="contained"
+                    onMouseOver={() => setBtnText("Unfollow")}
+                    onMouseLeave={() => setBtnText("Following")}
+                  >
+                    {btnText}
+                  </Button>
+                ) : (
+                  <Button
+                    onClick={handleFollow}
+                    className={classes.editButton}
+                    color="primary"
+                  >
+                    Follow
+                  </Button>
+                )}
+              </div>
+            )}
+            {!userProfile ? (
+              <Skeleton variant="text" width={250} height={30} />
+            ) : (
+              <Typography className={classes.fullName}>
+                {userProfile.fullName}
+              </Typography>
+            )}
+            {!userProfile ? (
+              <Skeleton variant="text" width={60} />
+            ) : (
+              <Typography className={classes.username}>
+                @{userProfile.username}
+              </Typography>
+            )}
+            <Typography className={classes.description}>
+              {userProfile?.about}
             </Typography>
-          )}
-          {!userProfile ? (
-            <Skeleton variant="text" width={60} />
-          ) : (
-            <Typography className={classes.username}>
-              @{userProfile.username}
-            </Typography>
-          )}
-          <Typography className={classes.description}>
-            {userProfile?.about}
-          </Typography>
-          <div className={classes.infoList}>
-            <List>
-              {userProfile?.location && (
-                <ListItem>
-                  <>{LocationIcon}</>
-                  <Typography component={"span"}>
-                    {userProfile?.location}
-                  </Typography>
-                </ListItem>
-              )}
-              {userProfile?.website && (
-                <ListItem>
-                  <>{LinkIcon}</>
-                  <a className="link" href={userProfile?.website}>
-                    {userProfile?.website}
-                  </a>
-                </ListItem>
-              )}
-              {userProfile?.dateOfBirth && (
-                <ListItem>
-                  <Typography component={"span"}>
-                    Date of Birth: {userProfile?.dateOfBirth}
-                  </Typography>
-                </ListItem>
-              )}
-              {userProfile?.registrationDate && (
-                <ListItem>
-                  <>{CalendarIcon}</>
-                  Joined:{" "}
-                  {format(new Date(userProfile?.registrationDate), "MMMM yyyy")}
-                </ListItem>
-              )}
-            </List>
-            <List className={classes.details}>
-              <Link
-                to={`/user/${userProfile?.id}/following`}
-                className={classes.followLink}
-              >
-                <ListItem>
-                  <b>
-                    {userProfile?.id === myProfile?.id
-                      ? myProfile?.followers?.length
+            <div className={classes.infoList}>
+              <List>
+                {userProfile?.location && (
+                  <ListItem>
+                    <>{LocationIcon}</>
+                    <Typography component={"span"}>
+                      {userProfile?.location}
+                    </Typography>
+                  </ListItem>
+                )}
+                {userProfile?.website && (
+                  <ListItem>
+                    <>{LinkIcon}</>
+                    <a className="link" href={userProfile?.website}>
+                      {userProfile?.website}
+                    </a>
+                  </ListItem>
+                )}
+                {userProfile?.dateOfBirth && (
+                  <ListItem>
+                    <Typography component={"span"}>
+                      Date of Birth: {userProfile?.dateOfBirth}
+                    </Typography>
+                  </ListItem>
+                )}
+                {userProfile?.registrationDate && (
+                  <ListItem>
+                    <>{CalendarIcon}</>
+                    Joined:{" "}
+                    {format(
+                      new Date(userProfile?.registrationDate),
+                      "MMMM yyyy"
+                    )}
+                  </ListItem>
+                )}
+              </List>
+              <List className={classes.details}>
+                <Link
+                  to={`/user/${userProfile?.id}/following`}
+                  className={classes.followLink}
+                >
+                  <ListItem>
+                    <b>
+                      {userProfile?.id === myProfile?.id
                         ? myProfile?.followers?.length
-                        : 0
-                      : userProfile?.followers?.length
-                      ? userProfile?.followers?.length
-                      : 0}
-                  </b>
-                  <Typography component={"span"}>{" Following"}</Typography>
-                </ListItem>
-              </Link>
-              <Link
-                to={`/user/${userProfile?.id}/followers`}
-                className={classes.followLink}
-              >
-                <ListItem>
-                  <b>
-                    {userProfile?.id === myProfile?.id
-                      ? myProfile?.following?.length
+                          ? myProfile?.followers?.length
+                          : 0
+                        : userProfile?.followers?.length
+                        ? userProfile?.followers?.length
+                        : 0}
+                    </b>
+                    <Typography component={"span"}>{" Following"}</Typography>
+                  </ListItem>
+                </Link>
+                <Link
+                  to={`/user/${userProfile?.id}/followers`}
+                  className={classes.followLink}
+                >
+                  <ListItem>
+                    <b>
+                      {userProfile?.id === myProfile?.id
                         ? myProfile?.following?.length
-                        : 0
-                      : userProfile?.following?.length
-                      ? userProfile?.following?.length
-                      : 0}
-                  </b>
-                  <Typography component={"span"}>{" Followers"}</Typography>
-                </ListItem>
-              </Link>
-            </List>
-          </div>
-        </div>
-        <div className={classes.tabs}>
-          <Tabs
-            value={activeTab}
-            indicatorColor="primary"
-            textColor="primary"
-            onChange={handleChange}
-          >
-            <Tab onClick={handleShowUserTweets} label="Tweets" />
-            <Tab
-              onClick={handleShowUserRetweetsAndReplies}
-              label="Tweets & replies"
-            />
-            <Tab onClick={handleShowMediaTweets} label="Media" />
-            <Tab onClick={handleShowLikedTweets} label="Likes" />
-          </Tabs>
-        </div>
-        <div className={classes.tweets}>
-          {isTweetsLoading ? (
-            <div className={classes.tweetsCentred}>
-              <CircularProgress />
+                          ? myProfile?.following?.length
+                          : 0
+                        : userProfile?.following?.length
+                        ? userProfile?.following?.length
+                        : 0}
+                    </b>
+                    <Typography component={"span"}>{" Followers"}</Typography>
+                  </ListItem>
+                </Link>
+              </List>
             </div>
-          ) : (
+          </div>
+          <div className={classes.tabs}>
+            <Tabs
+              value={activeTab}
+              indicatorColor="primary"
+              textColor="primary"
+              onChange={handleChange}
+            >
+              <Tab
+                onClick={() => handleShowTweets(handleShowUserTweets)}
+                label="Tweets"
+              />
+              <Tab
+                onClick={() =>
+                  handleShowTweets(handleShowUserRetweetsAndReplies)
+                }
+                label="Tweets & replies"
+              />
+              <Tab
+                onClick={() => handleShowTweets(handleShowMediaTweets)}
+                label="Media"
+              />
+              <Tab
+                onClick={() => handleShowTweets(handleShowLikedTweets)}
+                label="Likes"
+              />
+            </Tabs>
+          </div>
+          <div className={classes.tweets}>
             <UserPageTweets
               tweets={tweets}
               activeTab={activeTab}
@@ -389,22 +443,27 @@ const UserPage: FC<RouteComponentProps<{ id: string }>> = ({
               myProfileId={myProfile?.id}
               username={userProfile?.username}
             />
-          )}
+            {isTweetsLoading && (
+              <div className={classes.tweetsCentred}>
+                <CircularProgress />
+              </div>
+            )}
+          </div>
         </div>
-      </div>
-      {visibleEditProfile && (
-        <EditProfileModal
-          visible={visibleEditProfile}
-          onClose={onCloseEditProfile}
-        />
-      )}
-      {visibleSetupProfile && (
-        <SetupProfileModal
-          visible={visibleSetupProfile}
-          onClose={onCloseSetupProfile}
-        />
-      )}
-    </Paper>
+        {visibleEditProfile && (
+          <EditProfileModal
+            visible={visibleEditProfile}
+            onClose={onCloseEditProfile}
+          />
+        )}
+        {visibleSetupProfile && (
+          <SetupProfileModal
+            visible={visibleSetupProfile}
+            onClose={onCloseSetupProfile}
+          />
+        )}
+      </Paper>
+    </InfiniteScroll>
   );
 };
 

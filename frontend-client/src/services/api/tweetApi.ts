@@ -1,3 +1,5 @@
+import { AxiosResponse } from "axios";
+
 import { axios } from "../../core/axios";
 import {
   AddQuoteTweet,
@@ -15,17 +17,20 @@ interface Response<T> {
 }
 
 export const TweetApi = {
-  async fetchTweets(): Promise<Response<Tweet[]>> {
-    const data = await axios.get<Response<Tweet[]>>(API_URL + "/tweets");
-    return data.data;
+  async fetchTweets(payload: number): Promise<AxiosResponse<Tweet[]>> {
+    return await axios.get<Tweet[]>(API_URL + "/tweets", {
+      params: { page: payload },
+    });
   },
-  async fetchMediaTweets(): Promise<Response<Tweet[]>> {
-    const data = await axios.get<Response<Tweet[]>>(API_URL + "/tweets/media");
-    return data.data;
+  async fetchMediaTweets(payload: number): Promise<AxiosResponse<Tweet[]>> {
+    return await axios.get<Tweet[]>(API_URL + "/tweets/media", {
+      params: { page: payload },
+    });
   },
-  async fetchTweetsWithVideo(): Promise<Response<Tweet[]>> {
-    const data = await axios.get<Response<Tweet[]>>(API_URL + "/tweets/video");
-    return data.data;
+  async fetchTweetsWithVideo(payload: number): Promise<AxiosResponse<Tweet[]>> {
+    return await axios.get<Tweet[]>(API_URL + "/tweets/video", {
+      params: { page: payload },
+    });
   },
   async fetchTweetData(id: string): Promise<Response<Tweet>> {
     const data = await axios.get<Response<Tweet>>(API_URL + "/tweets/" + id);

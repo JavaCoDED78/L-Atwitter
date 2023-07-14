@@ -1,51 +1,84 @@
 import { call, put, takeLatest } from "redux-saga/effects";
 
-import { setTweets, setTweetsLoadingState } from "./actionCreators";
+import { setTweets, setTweets2, setTweetsLoadingState } from "./actionCreators";
 import { TweetApi } from "../../../services/api/tweetApi";
 import { Tweet } from "./contracts/state";
 import {
   FetchAddPollActionInterface,
   FetchAddQuoteTweetActionInterface,
   FetchAddTweetActionInterface,
+  FetchBookmarksActionInterface,
   FetchChangeReplyTypeActionInterface,
   FetchDeleteTweetActionInterface,
   FetchLikedTweetsActionInterface,
   FetchLikeTweetActionInterface,
+  FetchMediaTweetsActionInterface,
   FetchRetweetActionInterface,
+  FetchTweetsActionInterface,
   FetchTweetsByTagActionInterface,
   FetchTweetsByTextActionInterface,
+  FetchTweetsWithVideoActionInterface,
   FetchVoteActionInterface,
   TweetsActionType,
 } from "./contracts/actionTypes";
 import { LoadingStatus } from "../../types";
 import { TagApi } from "../../../services/api/tagApi";
 import { UserApi } from "../../../services/api/userApi";
+import { AxiosResponse } from "axios";
 
-export function* fetchTweetsRequest() {
+export function* fetchTweetsRequest({ payload }: FetchTweetsActionInterface) {
   try {
     yield put(setTweetsLoadingState(LoadingStatus.LOADING));
-    const items: Tweet[] = yield call(TweetApi.fetchTweets);
-    yield put(setTweets(items));
+    const response: AxiosResponse<Tweet[]> = yield call(
+      TweetApi.fetchTweets,
+      payload
+    );
+    yield put(
+      setTweets2({
+        items: response.data,
+        pagesCount: parseInt(response.headers["page-total-count"]),
+      })
+    );
   } catch (e) {
     yield put(setTweetsLoadingState(LoadingStatus.ERROR));
   }
 }
 
-export function* fetchMediaTweetsRequest() {
+export function* fetchMediaTweetsRequest({
+  payload,
+}: FetchMediaTweetsActionInterface) {
   try {
     yield put(setTweetsLoadingState(LoadingStatus.LOADING));
-    const items: Tweet[] = yield call(TweetApi.fetchMediaTweets);
-    yield put(setTweets(items));
+    const response: AxiosResponse<Tweet[]> = yield call(
+      TweetApi.fetchMediaTweets,
+      payload
+    );
+    yield put(
+      setTweets2({
+        items: response.data,
+        pagesCount: parseInt(response.headers["page-total-count"]),
+      })
+    );
   } catch (e) {
     yield put(setTweetsLoadingState(LoadingStatus.ERROR));
   }
 }
 
-export function* fetchTweetsWithVideoRequest() {
+export function* fetchTweetsWithVideoRequest({
+  payload,
+}: FetchTweetsWithVideoActionInterface) {
   try {
     yield put(setTweetsLoadingState(LoadingStatus.LOADING));
-    const items: Tweet[] = yield call(TweetApi.fetchTweetsWithVideo);
-    yield put(setTweets(items));
+    const response: AxiosResponse<Tweet[]> = yield call(
+      TweetApi.fetchTweetsWithVideo,
+      payload
+    );
+    yield put(
+      setTweets2({
+        items: response.data,
+        pagesCount: parseInt(response.headers["page-total-count"]),
+      })
+    );
   } catch (e) {
     yield put(setTweetsLoadingState(LoadingStatus.ERROR));
   }
@@ -153,11 +186,21 @@ export function* fetchRetweetRequest({ payload }: FetchRetweetActionInterface) {
   yield call(TweetApi.retweet, payload);
 }
 
-export function* fetchUserBookmarksRequest() {
+export function* fetchUserBookmarksRequest({
+  payload,
+}: FetchBookmarksActionInterface) {
   try {
     yield put(setTweetsLoadingState(LoadingStatus.LOADING));
-    const item: Tweet[] = yield call(UserApi.getUserBookmarks);
-    yield put(setTweets(item));
+    const response: AxiosResponse<Tweet[]> = yield call(
+      UserApi.getUserBookmarks,
+      payload
+    );
+    yield put(
+      setTweets2({
+        items: response.data,
+        pagesCount: parseInt(response.headers["page-total-count"]),
+      })
+    );
   } catch (e) {
     yield put(setTweetsLoadingState(LoadingStatus.ERROR));
   }

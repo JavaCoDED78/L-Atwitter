@@ -2,20 +2,16 @@ package com.gmail.javacoded78.latwitter.model;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Getter
 @Setter
 @Entity
 @Table(name = "bookmarks")
+@ToString
 public class Bookmark {
 
     @Id
@@ -24,6 +20,10 @@ public class Bookmark {
 
     @Column(name = "bookmark_date")
     private LocalDateTime bookmarkDate;
+
+    @ManyToOne
+    @JoinColumn(name = "users_id")
+    private User user;
 
     @OneToOne
     private Tweet tweet;
