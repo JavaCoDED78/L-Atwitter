@@ -5,18 +5,15 @@ import com.gmail.javacoded78.latwitter.model.Tweet;
 import com.gmail.javacoded78.latwitter.model.User;
 import com.gmail.javacoded78.latwitter.repository.ImageRepository;
 import com.gmail.javacoded78.latwitter.repository.ListsRepository;
-import com.gmail.javacoded78.latwitter.repository.TweetRepository;
 import com.gmail.javacoded78.latwitter.repository.UserRepository;
+import com.gmail.javacoded78.latwitter.service.AuthenticationService;
 import com.gmail.javacoded78.latwitter.service.ListsService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
-import java.security.Principal;
 import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -24,6 +21,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ListsServiceImpl implements ListsService {
 
+    private final AuthenticationService authenticationService;
     private final ListsRepository listsRepository;
     private final UserRepository userRepository;
     private final ImageRepository imageRepository;
@@ -35,15 +33,13 @@ public class ListsServiceImpl implements ListsService {
 
     @Override
     public List<Lists> getUserTweetLists() {
-        Principal principal = SecurityContextHolder.getContext().getAuthentication();
-        User user = userRepository.findByEmail(principal.getName());
+        User user = authenticationService.getAuthenticatedUser();
         return user.getUserLists();
     }
 
     @Override
     public List<Lists> getUserPinnedLists() {
-        Principal principal = SecurityContextHolder.getContext().getAuthentication();
-        User user = userRepository.findByEmail(principal.getName());
+        User user = authenticationService.getAuthenticatedUser();
         return user.getUserLists().stream()
                 .filter(list -> list.getPinnedDate() != null)
                 .sorted(Comparator.comparing(Lists::getPinnedDate).reversed())
@@ -59,8 +55,7 @@ public class ListsServiceImpl implements ListsService {
 
     @Override
     public Lists createTweetList(Lists lists) {
-        Principal principal = SecurityContextHolder.getContext().getAuthentication();
-        User user = userRepository.findByEmail(principal.getName());
+        User user = authenticationService.getAuthenticatedUser();
         lists.setListOwner(user);
         Lists userTweetList = listsRepository.save(lists);
         List<Lists> userLists = user.getUserLists();
@@ -83,8 +78,7 @@ public class ListsServiceImpl implements ListsService {
 
     @Override
     public String deleteList(Long listId) {
-        Principal principal = SecurityContextHolder.getContext().getAuthentication();
-        User user = userRepository.findByEmail(principal.getName());
+        User user = authenticationService.getAuthenticatedUser();
         Lists list = listsRepository.getOne(listId);
         list.getTweets().removeAll(list.getTweets());
         list.getMembers().removeAll(list.getMembers());
@@ -100,8 +94,7 @@ public class ListsServiceImpl implements ListsService {
 
     @Override
     public Lists followList(Long listId) {
-        Principal principal = SecurityContextHolder.getContext().getAuthentication();
-        User user = userRepository.findByEmail(principal.getName());
+        User user = authenticationService.getAuthenticatedUser();
         Lists list = listsRepository.getOne(listId);
         Optional<User> follower = list.getFollowers().stream()
                 .filter(f -> f.equals(user))

@@ -1,6 +1,8 @@
 package com.gmail.javacoded78.latwitter.mapper;
 
+import com.gmail.javacoded78.latwitter.dto.request.SettingsRequest;
 import com.gmail.javacoded78.latwitter.dto.request.UserRequest;
+import com.gmail.javacoded78.latwitter.dto.response.AuthenticationResponse;
 import com.gmail.javacoded78.latwitter.dto.response.ImageResponse;
 import com.gmail.javacoded78.latwitter.dto.response.TweetHeaderResponse;
 import com.gmail.javacoded78.latwitter.dto.response.notification.NotificationResponse;
@@ -13,6 +15,7 @@ import com.gmail.javacoded78.latwitter.model.Notification;
 import com.gmail.javacoded78.latwitter.model.Tweet;
 import com.gmail.javacoded78.latwitter.model.User;
 import com.gmail.javacoded78.latwitter.service.UserService;
+import com.gmail.javacoded78.latwitter.service.UserSettingsService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
@@ -23,6 +26,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Component
@@ -32,6 +36,7 @@ public class UserMapper {
     private final ModelMapper modelMapper;
     private final TweetMapper tweetMapper;
     private final UserService userService;
+    private final UserSettingsService userSettingsService;
 
     private ImageResponse convertToImageResponse(Image image) {
         return modelMapper.map(image, ImageResponse.class);
@@ -139,5 +144,57 @@ public class UserMapper {
 
     public List<NotificationResponse> getUserNotifications() {
         return convertListToNotificationResponse(userService.getUserNotifications());
+    }
+
+    public UserResponse updateUsername(SettingsRequest request) {
+        return convertToUserResponse(userSettingsService.updateUsername(request.getUsername()));
+    }
+
+    public AuthenticationResponse updateEmail(SettingsRequest request) {
+        Map<String, Object> credentials = userSettingsService.updateEmail(request.getEmail());
+        AuthenticationResponse response = new AuthenticationResponse();
+        response.setUser(convertToUserResponse((User) credentials.get("user")));
+        response.setToken((String) credentials.get("token"));
+        return response;
+    }
+
+    public UserResponse updatePhone(SettingsRequest request) {
+        return convertToUserResponse(userSettingsService.updatePhone(request.getCountryCode(), request.getPhone()));
+    }
+
+    public UserResponse updateCountry(SettingsRequest request) {
+        return convertToUserResponse(userSettingsService.updateCountry(request.getCountry()));
+    }
+
+    public UserResponse updateGender(SettingsRequest request) {
+        return convertToUserResponse(userSettingsService.updateGender(request.getGender()));
+    }
+
+    public UserResponse updateLanguage(SettingsRequest request) {
+        return convertToUserResponse(userSettingsService.updateLanguage(request.getLanguage()));
+    }
+
+    public UserResponse updateDirectMessageRequests(SettingsRequest request) {
+        return convertToUserResponse(userSettingsService.updateDirectMessageRequests(request.isMutedDirectMessages()));
+    }
+
+    public UserResponse updatePrivateProfile(SettingsRequest request) {
+        return convertToUserResponse(userSettingsService.updatePrivateProfile(request.isPrivateProfile()));
+    }
+
+    public List<UserResponse> getBlockList() {
+        return convertListToResponse(userService.getBlockList());
+    }
+
+    public UserResponse processBlockList(Long userId) {
+        return convertToUserResponse(userService.processBlockList(userId));
+    }
+
+    public List<UserResponse> getMutedList() {
+        return convertListToResponse(userService.getMutedList());
+    }
+
+    public UserResponse processMutedList(Long userId) {
+        return convertToUserResponse(userService.processMutedList(userId));
     }
 }

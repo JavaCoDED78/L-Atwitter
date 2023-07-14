@@ -17,6 +17,7 @@ import com.gmail.javacoded78.latwitter.repository.NotificationRepository;
 import com.gmail.javacoded78.latwitter.repository.RetweetRepository;
 import com.gmail.javacoded78.latwitter.repository.TweetRepository;
 import com.gmail.javacoded78.latwitter.repository.UserRepository;
+import com.gmail.javacoded78.latwitter.service.AuthenticationService;
 import com.gmail.javacoded78.latwitter.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -42,6 +43,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
+    private final AuthenticationService authenticationService;
     private final UserRepository userRepository;
     private final TweetRepository tweetRepository;
     private final ImageRepository imageRepository;
@@ -61,8 +63,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<User> getUsers() {
-        Principal principal = SecurityContextHolder.getContext().getAuthentication();
-        User user = userRepository.findByEmail(principal.getName());
+        User user = authenticationService.getAuthenticatedUser();
         return userRepository.findByActiveTrueAndIdNot(user.getId());
     }
 
@@ -78,8 +79,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User startUseTwitter(Long userId) {
-        Principal principal = SecurityContextHolder.getContext().getAuthentication();
-        User user = userRepository.findByEmail(principal.getName());
+        User user = authenticationService.getAuthenticatedUser();
         user.setProfileStarted(true);
         return userRepository.save(user);
     }
@@ -114,8 +114,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<Notification> getUserNotifications() {
-        Principal principal = SecurityContextHolder.getContext().getAuthentication();
-        User user = userRepository.findByEmail(principal.getName());
+        User user = authenticationService.getAuthenticatedUser();
         user.setNotificationsCount(0L);
         List<Notification> notifications = user.getNotifications();
         notifications.sort(Comparator.comparing(Notification::getDate).reversed());
@@ -125,15 +124,13 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Page<Bookmark> getUserBookmarks(Pageable pageable) {
-        Principal principal = SecurityContextHolder.getContext().getAuthentication();
-        User user = userRepository.findByEmail(principal.getName());
+        User user = authenticationService.getAuthenticatedUser();
         return bookmarkRepository.findByUserOrderByBookmarkDateDesc(user, pageable);
     }
 
     @Override
     public User processUserBookmarks(Long tweetId) {
-        Principal principal = SecurityContextHolder.getContext().getAuthentication();
-        User user = userRepository.findByEmail(principal.getName());
+        User user = authenticationService.getAuthenticatedUser();
         Tweet tweet = tweetRepository.getOne(tweetId);
 
         List<Bookmark> bookmarks = user.getBookmarks();
@@ -185,8 +182,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User updateUserProfile(User userInfo) {
-        Principal principal = SecurityContextHolder.getContext().getAuthentication();
-        User user = userRepository.findByEmail(principal.getName());
+        User user = authenticationService.getAuthenticatedUser();
 
         if (userInfo.getAvatar() != null) {
             user.setAvatar(userInfo.getAvatar());
@@ -204,8 +200,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Notification processFollow(Long userId) {
-        Principal principal = SecurityContextHolder.getContext().getAuthentication();
-        User user = userRepository.findByEmail(principal.getName());
+        User user = authenticationService.getAuthenticatedUser();
         User currentUser = userRepository.getOne(userId);
 
         List<User> followers = user.getFollowers();
@@ -244,8 +239,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User processPinTweet(Long tweetId) {
-        Principal principal = SecurityContextHolder.getContext().getAuthentication();
-        User user = userRepository.findByEmail(principal.getName());
+        User user = authenticationService.getAuthenticatedUser();
         Tweet tweet = tweetRepository.getOne(tweetId);
 
         if (user.getPinnedTweet() == null || !user.getPinnedTweet().getId().equals(tweet.getId())) {
@@ -254,6 +248,47 @@ public class UserServiceImpl implements UserService {
             user.setPinnedTweet(null);
         }
         return userRepository.save(user);
+    }
+
+    @Override
+    public List<User> getBlockList() {
+        User user = authenticationService.getAuthenticatedUser();
+        return user.getUserBlockedList();
+    }
+
+    @Override
+    public User processBlockList(Long userId) {
+        User user = authenticationService.getAuthenticatedUser();
+        User currentUser = userRepository.getOne(userId);
+        user.getFollowers().removeIf(follower -> follower.getId().equals(currentUser.getId()));
+        user.getFollowing().removeIf(following -> following.getId().equals(currentUser.getId()));
+        return processUserList(user, currentUser, user.getUserBlockedList());
+    }
+
+    @Override
+    public List<User> getMutedList() {
+        User user = authenticationService.getAuthenticatedUser();
+        return user.getUserMutedList();
+    }
+
+    @Override
+    public User processMutedList(Long userId) {
+        User user = authenticationService.getAuthenticatedUser();
+        User currentUser = userRepository.getOne(userId);
+        return processUserList(user, currentUser, user.getUserMutedList());
+    }
+
+    private User processUserList(User authenticatedUser, User currentUser, List<User> userLists) {
+        Optional<User> userFromList = userLists.stream()
+                .filter(user -> user.getId().equals(currentUser.getId()))
+                .findFirst();
+
+        if (userFromList.isPresent()) {
+            userLists.remove(userFromList.get());
+        } else {
+            userLists.add(currentUser);
+        }
+        return userRepository.save(authenticatedUser);
     }
 
     private List<Tweet> combineTweetsArrays(List<Tweet> tweets, List<Retweet> retweets) {

@@ -11,5 +11,6 @@ public class ChatParticipantResponse {
     private String fullName;
     private String username;
     private ImageResponse avatar;
+    private boolean privateProfile;
 }
 

@@ -1,13 +1,13 @@
-import { makeStyles } from "@material-ui/core";
+import {makeStyles} from "@material-ui/core";
 
 export const useSetupProfileModalStyles = makeStyles((theme) => ({
-  container: {
-    "& .MuiDialog-root": {
-      height: 666,
-      marginTop: 92,
+    container: {
+        "& .MuiDialog-root": {
+            height: 666,
+            marginTop: 92
+        },
+        "& .MuiDialog-container": {
+            padding: "0 32px"
+        },
     },
-    "& .MuiDialog-container": {
-      padding: "0 32px",
-    },
-  },
 }));

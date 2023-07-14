@@ -45,4 +45,12 @@ public interface UserService {
     Notification processFollow(Long userId);
 
     User processPinTweet(Long tweetId);
+
+    List<User> getBlockList();
+
+    User processBlockList(Long userId);
+
+    List<User> getMutedList();
+
+    User processMutedList(Long userId);
 }

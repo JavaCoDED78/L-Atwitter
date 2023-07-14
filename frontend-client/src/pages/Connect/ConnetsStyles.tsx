@@ -1,30 +1,30 @@
-import { makeStyles, Theme } from "@material-ui/core";
+import {makeStyles, Theme} from "@material-ui/core";
 
 export const useConnectStyles = makeStyles((theme: Theme) => ({
-  container: {
-    paddingTop: 48,
-  },
-  loading: {
-    marginTop: 50,
-    textAlign: "center",
-  },
-  header: {
-    display: "flex",
-    alignItems: "center",
-    flex: 1,
-    borderTop: 0,
-    borderLeft: 0,
-    borderRight: 0,
-    borderRadius: 0,
-    "& h6": {
-      margin: "10px 20px",
-      fontWeight: 800,
+    container: {
+        paddingTop: 48,
     },
-  },
-  content: {
-    borderRadius: 0,
-    minHeight: "100vh",
-    borderTop: "0",
-    borderBottom: "0",
-  },
+    loading: {
+        marginTop: 50,
+        textAlign: 'center',
+    },
+    header: {
+        display: 'flex',
+        alignItems: 'center',
+        flex: 1,
+        borderTop: 0,
+        borderLeft: 0,
+        borderRight: 0,
+        borderRadius: 0,
+        '& h6': {
+            margin: "10px 20px",
+            fontWeight: 800,
+        },
+    },
+    content: {
+        borderRadius: 0,
+        minHeight: '100vh',
+        borderTop: '0',
+        borderBottom: '0',
+    },
 }));

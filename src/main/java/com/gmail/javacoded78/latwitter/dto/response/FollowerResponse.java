@@ -12,6 +12,7 @@ public class FollowerResponse {
     private String location;
     private String about;
     private String website;
+    private boolean privateProfile;
     private ImageResponse avatar;
     private ImageResponse wallpaper;
     private boolean confirmed;

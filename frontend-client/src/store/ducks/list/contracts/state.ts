@@ -1,7 +1,7 @@
-import { LoadingStatus } from "../../../types";
-import { Lists } from "../../lists/contracts/state";
+import {LoadingStatus} from "../../../types";
+import {Lists} from "../../lists/contracts/state";
 
 export interface ListState {
-  list: Lists | undefined;
-  loadingState: LoadingStatus;
+    list: Lists | undefined;
+    loadingState: LoadingStatus;
 }

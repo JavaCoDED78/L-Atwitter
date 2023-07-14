@@ -17,6 +17,11 @@ public class UserResponse {
     private String about;
     private String website;
     private String birthday;
+    private String countryCode;
+    private Long phone;
+    private String country;
+    private String gender;
+    private String language;
     private LocalDateTime registrationDate;
     private Long tweetCount;
     private Long mediaTweetCount;
@@ -26,9 +31,13 @@ public class UserResponse {
     private List<BookmarkResponse> bookmarks;
     private ImageResponse avatar;
     private ImageResponse wallpaper;
+    private boolean mutedDirectMessages;
+    private boolean privateProfile;
     private boolean profileCustomized;
     private boolean profileStarted;
     private List<ChatMessageResponse> unreadMessages;
+    private List<BlockedUserResponse> userMutedList;
+    private List<BlockedUserResponse> userBlockedList;
     private List<FollowerResponse> followers;
     private List<FollowerResponse> following;
 }
