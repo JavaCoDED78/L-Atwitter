@@ -1,17 +1,14 @@
 import { makeStyles, Theme } from "@material-ui/core";
 
-export const useChangeLanguageStyles = makeStyles((theme: Theme) => ({
-  selectWrapper: {
+export const useYourAdvertiserListStyles = makeStyles((theme: Theme) => ({
+  infoItemWrapper: {
     padding: "12px 16px",
-    "& .MuiFormControl-root": {
-      width: "100%",
-    },
   },
-  languageInfo: {
-    paddingTop: 2,
-    fontSize: 13,
+  text: {
     color: "rgb(83, 100, 113)",
     fontWeight: 400,
+    fontSize: 15,
+    lineHeight: "20px",
   },
   link: {
     textDecoration: "none",
@@ -24,10 +21,5 @@ export const useChangeLanguageStyles = makeStyles((theme: Theme) => ({
   divider: {
     height: 1,
     backgroundColor: "rgb(239, 243, 244)",
-  },
-  buttonWrapper: {
-    padding: "12px 16px",
-    float: "right",
-    height: 30,
   },
 }));
