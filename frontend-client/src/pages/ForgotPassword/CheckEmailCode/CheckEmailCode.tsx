@@ -1,68 +1,88 @@
-import React, {FC, FormEvent, ReactElement, useState} from 'react';
-import {useHistory} from "react-router-dom";
-import {Button} from "@material-ui/core";
+import React, {
+  ChangeEvent,
+  FC,
+  FormEvent,
+  ReactElement,
+  useState,
+} from "react";
+import { useHistory } from "react-router-dom";
+import { Button, Typography } from "@material-ui/core";
 
-import {ForgotPasswordTextField} from "../ForgotPasswordTextField/ForgotPasswordTextField";
-import {useForgotPasswordStyles} from "../ForgotPasswordStyles";
-import {AuthApi} from "../../../services/api/authApi";
-import {User} from "../../../store/ducks/user/contracts/state";
+import { ForgotPasswordTextField } from "../ForgotPasswordTextField/ForgotPasswordTextField";
+import { AuthApi } from "../../../services/api/authApi";
+import { useCheckEmailCodeStyles } from "./CheckEmailCodeStyles";
 
-interface CheckEmailCodeProps {
-    setUser: (value: User | undefined | ((prevVar: User | undefined) => User | undefined)) => void;
-}
+const CheckEmailCode: FC = (): ReactElement => {
+  const classes = useCheckEmailCodeStyles();
+  const history = useHistory();
+  const [resetCode, setResetCode] = useState<string>("");
+  const [error, setError] = useState<boolean>(false);
 
-const CheckEmailCode: FC<CheckEmailCodeProps> = ({setUser}): ReactElement => {
-    const classes = useForgotPasswordStyles();
-    const history = useHistory();
-    const [resetCode, setResetCode] = useState<string>("");
-    const [error, setError] = useState<boolean>(false);
+  const verifyResetCode = (event: FormEvent<HTMLFormElement>): void => {
+    event.preventDefault();
 
-    const verifyResetCode = (event: FormEvent<HTMLFormElement>): void => {
-        event.preventDefault();
+    if (resetCode === "") {
+      setError(true);
+    } else {
+      AuthApi.getUserByResetCode(resetCode)
+        .then((data) => {
+          history.push({
+            pathname: "/account/forgot/reset_password",
+            state: { user: data },
+          });
+        })
+        .catch(() => setError(true));
+    }
+  };
 
-        if (resetCode === "") {
-            setError(true);
-        } else {
-            AuthApi.getUserByResetCode(resetCode)
-                .then((data) => {
-                    setUser(data);
-                    history.push("/account/forgot/reset_password");
-                })
-                .catch(() => setError(true));
-        }
-    };
+  const handleChangeResetCode = (
+    event: ChangeEvent<HTMLInputElement>
+  ): void => {
+    if (event.currentTarget) {
+      setResetCode(event.currentTarget.value);
+    }
+  };
 
-    return (
-        <>
-            <h1>Check your email</h1>
-            <p>You'll receive a code to verify here so you can reset your account password.</p>
-            <form onSubmit={verifyResetCode}>
-                <ForgotPasswordTextField
-                    error={error}
-                    placeholder="Enter your code"
-                    variant="outlined"
-                    onChange={(event) => setResetCode(event.target.value)}
-                    value={resetCode}
-                />
-                {error && <div className={classes.errorMessage}>Incorrect code. Please try again.</div>}
-                <Button
-                    className={classes.button}
-                    type="submit"
-                    variant="contained"
-                    color="primary"
-                >
-                    Verify
-                </Button>
-            </form>
-            <div>
-                <p className={classes.footerText}>
-                    If you don't see the email, check other places it might be, like your junk, spam, social,
-                    or other folders.
-                </p>
-                <p className={classes.link}>Didn’t receive your code?</p>
-            </div>
-        </>
-    );
+  return (
+    <>
+      <Typography component={"h1"}>Check your email</Typography>
+      <Typography component={"div"} className={classes.text}>
+        You'll receive a code to verify here so you can reset your account
+        password.
+      </Typography>
+      <form onSubmit={verifyResetCode}>
+        <ForgotPasswordTextField
+          error={error}
+          placeholder="Enter your code"
+          variant="outlined"
+          onChange={handleChangeResetCode}
+          value={resetCode}
+        />
+        {error && (
+          <Typography component={"div"} className={classes.errorMessage}>
+            Incorrect code. Please try again.
+          </Typography>
+        )}
+        <Button
+          className={classes.button}
+          type="submit"
+          variant="contained"
+          color="primary"
+        >
+          Verify
+        </Button>
+      </form>
+      <div>
+        <Typography className={classes.footerText}>
+          If you don't see the email, check other places it might be, like your
+          junk, spam, social, or other folders.
+        </Typography>
+        <Typography className={classes.link}>
+          Didn’t receive your code?
+        </Typography>
+      </div>
+    </>
+  );
 };
 
 export default CheckEmailCode;
