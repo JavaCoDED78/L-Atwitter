@@ -4,9 +4,10 @@ import { Route, Switch, useHistory, useLocation } from "react-router-dom";
 import { Stomp } from "@stomp/stompjs";
 import SockJS from "sockjs-client";
 import CssBaseline from "@material-ui/core/CssBaseline";
-import { MuiThemeProvider, Theme, ThemeOptions } from "@material-ui/core";
+import { MuiThemeProvider, Theme } from "@material-ui/core";
 import { createMuiTheme } from "@material-ui/core/styles";
-
+// @ts-ignore
+import { ThemeOptions } from "@material-ui/core/styles/createMuiTheme";
 import { deepmerge } from "@mui/utils";
 
 import Authentication from "./pages/Authentication/Authentication";
@@ -36,7 +37,7 @@ import Messages from "./pages/Messages/Messages";
 import { setChatMessage } from "./store/ducks/chatMessages/actionCreators";
 import { WS_URL } from "./util/url";
 import { setNotification } from "./store/ducks/notifications/actionCreators";
-import { selectNotificationsItems } from "./store/ducks/notifications/selectors";
+import { selectNotificationsList } from "./store/ducks/notifications/selectors";
 import {
   deleteTweet,
   setScheduledTweets,
@@ -63,12 +64,13 @@ import {
   BackgroundTheme,
   ColorScheme,
 } from "./pages/Settings/AccessibilityDisplayLanguages/Display/Display";
+import NotificationsTimeline from "./pages/Notifications/NotificationsTimeline/NotificationsTimeline";
 
 const App: FC = (): ReactElement => {
   const history = useHistory();
   const dispatch = useDispatch();
   const myProfile = useSelector(selectUserData);
-  const notifications = useSelector(selectNotificationsItems);
+  const notifications = useSelector(selectNotificationsList);
   const isAuth = useSelector(selectIsAuth);
   const loadingStatus = useSelector(selectUserStatus);
   const isReady =
@@ -205,6 +207,11 @@ const App: FC = (): ReactElement => {
             <Route path="/home" component={Home} />
             <Route path="/search" component={Explore} />
             <Route path="/notifications" component={Notifications} exact />
+            <Route
+              path="/notifications/timeline"
+              component={NotificationsTimeline}
+              exact
+            />
             <Route path="/notification" component={NotificationInfo} exact />
             <Route path="/messages" component={Messages} />
             <Route

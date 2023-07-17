@@ -5,6 +5,7 @@ import com.gmail.javacoded78.latwitter.dto.response.ImageResponse;
 import com.gmail.javacoded78.latwitter.dto.response.TweetHeaderResponse;
 import com.gmail.javacoded78.latwitter.dto.response.notification.NotificationResponse;
 import com.gmail.javacoded78.latwitter.dto.response.notification.NotificationUserResponse;
+import com.gmail.javacoded78.latwitter.dto.response.notification.NotificationsResponse;
 import com.gmail.javacoded78.latwitter.dto.response.tweet.TweetResponse;
 import com.gmail.javacoded78.latwitter.dto.response.UserResponse;
 import com.gmail.javacoded78.latwitter.mapper.UserMapper;
@@ -83,8 +84,14 @@ public class UserController {
     }
 
     @GetMapping("/notifications")
-    public ResponseEntity<List<NotificationResponse>> getUserNotifications() {
+    public ResponseEntity<NotificationsResponse> getUserNotifications() {
         return ResponseEntity.ok(userMapper.getUserNotifications());
+    }
+
+    @GetMapping("/notifications/timeline")
+    public ResponseEntity<List<TweetResponse>> getNotificationsFromTweetAuthors(@PageableDefault(size = 10) Pageable pageable) {
+        TweetHeaderResponse response = userMapper.getNotificationsFromTweetAuthors(pageable);
+        return ResponseEntity.ok().headers(response.getHeaders()).body(response.getTweets());
     }
 
     @GetMapping("/bookmarks")
@@ -116,6 +123,11 @@ public class UserController {
             messagingTemplate.convertAndSend("/topic/notifications/" + notification.getUserToFollow().getId(), notification);
         }
         return ResponseEntity.ok(notification.getUserToFollow());
+    }
+
+    @GetMapping("/subscribe/{userId}")
+    public ResponseEntity<UserResponse> processSubscribeToNotifications(@PathVariable Long userId) {
+        return ResponseEntity.ok(userMapper.processSubscribeToNotifications(userId));
     }
 
     @GetMapping("/pin/tweet/{tweetId}")

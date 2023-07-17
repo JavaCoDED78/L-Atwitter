@@ -11,6 +11,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Map;
 
 public interface UserService {
 
@@ -32,7 +33,9 @@ public interface UserService {
 
     Page<Tweet> getUserRetweetsAndReplies(Long userId, Pageable pageable);
 
-    List<Notification> getUserNotifications();
+    Map<String, Object> getUserNotifications();
+
+    Page<Tweet> getNotificationsFromTweetAuthors(Pageable pageable);
 
     Page<Bookmark> getUserBookmarks(Pageable pageable);
 
@@ -43,6 +46,8 @@ public interface UserService {
     User updateUserProfile(User userInfo);
 
     Notification processFollow(Long userId);
+
+    User processSubscribeToNotifications(Long userId);
 
     User processPinTweet(Long tweetId);
 

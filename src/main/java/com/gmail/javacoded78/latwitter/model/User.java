@@ -3,7 +3,19 @@ package com.gmail.javacoded78.latwitter.model;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -70,7 +82,7 @@ public class User {
     private String role;
 
     @Column(name = "tweet_count", columnDefinition = "int default 0")
-    private Long tweetCount;
+    private Long tweetCount = 0L;
 
     @Column(name = "media_tweet_count", columnDefinition = "int default 0")
     private Long mediaTweetCount;
@@ -169,11 +181,18 @@ public class User {
             inverseJoinColumns = @JoinColumn(name = "user_id"))
     private List<User> following;
 
+    @ManyToMany
+    @JoinTable(name = "subscribers",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "subscriber_id"))
+    private List<User> subscribers;
+
     public User() {
         this.registrationDate = LocalDateTime.now().withNano(0);
         this.bookmarks = new ArrayList<>();
         this.userLists = new ArrayList<>();
         this.unreadMessages = new ArrayList<>();
+        this.subscribers = new ArrayList<>();
         this.backgroundColor = BackgroundColorType.DEFAULT;
         this.colorScheme = ColorSchemeType.BLUE;
     }

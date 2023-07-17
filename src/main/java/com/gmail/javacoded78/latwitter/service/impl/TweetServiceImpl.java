@@ -119,6 +119,18 @@ public class TweetServiceImpl implements TweetService {
         user.getTweets().add(createdTweet);
         userRepository.save(user);
         parseHashtagInText(tweet); // find hashtag in text
+
+        Notification notification = new Notification();
+        notification.setNotificationType(NotificationType.TWEET);
+        notification.setUser(user);
+        notification.setTweet(tweet);
+
+        user.getSubscribers().forEach(subscriber -> {
+            subscriber.setNotificationsCount(subscriber.getNotificationsCount() + 1);
+            List<Notification> notifications = subscriber.getNotifications();
+            notifications.add(notification);
+            userRepository.save(subscriber);
+        });
         return createdTweet;
     }
 
@@ -356,11 +368,11 @@ public class TweetServiceImpl implements TweetService {
                 tweet.getUser().setNotificationsCount(tweet.getUser().getNotificationsCount() + 1);
                 List<Notification> notifications = tweet.getUser().getNotifications();
                 notifications.add(newNotification);
+                userRepository.save(tweet.getUser());
                 return newNotification;
             }
             tweetRepository.save(tweet);
         }
-        userRepository.save(user);
         return notification;
     }
 

@@ -37,11 +37,12 @@ public class UserResponse {
     private boolean privateProfile;
     private boolean profileCustomized;
     private boolean profileStarted;
-    private BackgroundColorType BackgroundColor;
+    private BackgroundColorType backgroundColorType;
     private ColorSchemeType colorScheme;
     private List<ChatMessageResponse> unreadMessages;
     private List<BlockedUserResponse> userMutedList;
     private List<BlockedUserResponse> userBlockedList;
     private List<FollowerResponse> followers;
     private List<FollowerResponse> following;
+    private List<FollowerResponse> subscribers;
 }

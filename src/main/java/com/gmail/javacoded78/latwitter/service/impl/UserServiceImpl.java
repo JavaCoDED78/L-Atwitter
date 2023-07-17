@@ -31,11 +31,8 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -92,10 +89,7 @@ public class UserServiceImpl implements UserService {
         if (isTweetExist) {
             userTweets.add(0, user.getPinnedTweet());
         }
-        PagedListHolder<Tweet> page = new PagedListHolder<>(userTweets);
-        page.setPage(pageable.getPageNumber());
-        page.setPageSize(pageable.getPageSize());
-        return new PageImpl<>(page.getPageList(), pageable, tweets.size() + retweets.size());
+        return getPageableTweetList(pageable, userTweets, tweets.size() + retweets.size());
     }
 
     @Override
@@ -104,20 +98,38 @@ public class UserServiceImpl implements UserService {
         List<Tweet> replies = tweetRepository.findRepliesByUserId(user.getId());
         List<Retweet> retweets = retweetRepository.findRetweetsByUserId(user.getId());
         List<Tweet> userTweets = combineTweetsArrays(replies, retweets);
-        PagedListHolder<Tweet> page = new PagedListHolder<>(userTweets);
-        page.setPage(pageable.getPageNumber());
-        page.setPageSize(pageable.getPageSize());
-        return new PageImpl<>(page.getPageList(), pageable, replies.size() + retweets.size());
+        return getPageableTweetList(pageable, userTweets, replies.size() + retweets.size());
     }
 
     @Override
-    public List<Notification> getUserNotifications() {
+    public Map<String, Object> getUserNotifications() {
         User user = authenticationService.getAuthenticatedUser();
         user.setNotificationsCount(0L);
-        List<Notification> notifications = user.getNotifications();
-        notifications.sort(Comparator.comparing(Notification::getDate).reversed());
+        List<Notification> notifications = user.getNotifications().stream()
+                .filter(notification -> !notification.getNotificationType().equals(NotificationType.TWEET))
+                .sorted(Comparator.comparing(Notification::getDate).reversed())
+                .collect(Collectors.toList());
+        Set<User> tweetAuthors = user.getNotifications().stream()
+                .filter(notification -> notification.getNotificationType().equals(NotificationType.TWEET)
+                        && notification.getTweet().getUser().getSubscribers().contains(user))
+                .map(notification -> notification.getTweet().getUser())
+                .collect(Collectors.toSet());
+        Map<String, Object> response = new HashMap<>();
+        response.put("notifications", notifications);
+        response.put("tweetAuthors", tweetAuthors);
         userRepository.save(user);
-        return notifications;
+        return response;
+    }
+
+    @Override
+    public Page<Tweet> getNotificationsFromTweetAuthors(Pageable pageable) {
+        User user = authenticationService.getAuthenticatedUser();
+        List<Tweet> tweets = user.getNotifications().stream()
+                .filter(notification -> notification.getNotificationType().equals(NotificationType.TWEET))
+                .sorted(Comparator.comparing(Notification::getDate).reversed())
+                .map(Notification::getTweet)
+                .collect(Collectors.toList());
+        return getPageableTweetList(pageable, tweets, tweets.size());
     }
 
     @Override
@@ -208,6 +220,11 @@ public class UserServiceImpl implements UserService {
 
         if (follower.isPresent()) {
             followers.remove(follower.get());
+            List<User> subscribers = currentUser.getSubscribers();
+            Optional<User> subscriber = subscribers.stream()
+                    .filter(s -> s.getId().equals(user.getId()))
+                    .findFirst();
+            subscriber.ifPresent(subscribers::remove);
         } else {
             followers.add(currentUser);
         }
@@ -233,6 +250,13 @@ public class UserServiceImpl implements UserService {
             }
         }
         return notification;
+    }
+
+    @Override
+    public User processSubscribeToNotifications(Long userId) {
+        User user = authenticationService.getAuthenticatedUser();
+        User currentUser = userRepository.getOne(userId);
+        return processUserList(currentUser, user, currentUser.getSubscribers());
     }
 
     @Override
@@ -287,6 +311,13 @@ public class UserServiceImpl implements UserService {
             userLists.add(currentUser);
         }
         return userRepository.save(authenticatedUser);
+    }
+
+    private Page<Tweet> getPageableTweetList(Pageable pageable, List<Tweet> tweets, int totalPages) {
+        PagedListHolder<Tweet> page = new PagedListHolder<>(tweets);
+        page.setPage(pageable.getPageNumber());
+        page.setPageSize(pageable.getPageSize());
+        return new PageImpl<>(page.getPageList(), pageable, totalPages);
     }
 
     private List<Tweet> combineTweetsArrays(List<Tweet> tweets, List<Retweet> retweets) {
