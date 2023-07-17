@@ -18,6 +18,6 @@ public class ChatTweetResponse {
     private String linkDescription;
     private String linkCover;
     private LinkCoverSize linkCoverSize;
-    private ChatParticipantResponse user;
+    private ChatUserResponse user;
     private List<ImageResponse> images;
 }

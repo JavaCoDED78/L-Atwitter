@@ -55,4 +55,13 @@ export const ChatApi = {
     );
     return data;
   },
+  async leaveFromConversation(payload: {
+    participantId: number;
+    chatId: number;
+  }): Promise<Response<User>> {
+    const { data } = await axios.get<Response<User>>(
+      `${API_URL}/chat/leave/${payload.participantId}/${payload.chatId}`
+    );
+    return data;
+  },
 };
