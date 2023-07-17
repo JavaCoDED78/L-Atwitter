@@ -5,11 +5,11 @@ export const SideSearchTextField = withStyles((theme: Theme) => ({
     root: {
         '& .MuiOutlinedInput-root': {
             borderRadius: 30,
-            backgroundColor: '#EFF3F4',
+            backgroundColor: theme.palette.grey[200],
             padding: 0,
             paddingLeft: 15,
             '&.Mui-focused': {
-                backgroundColor: '#fff',
+                backgroundColor: theme.palette.background.paper,
                 '& fieldset': { borderWidth: 1, borderColor: theme.palette.primary.main },
                 '& svg path': {
                     fill: theme.palette.primary.main,
@@ -17,7 +17,7 @@ export const SideSearchTextField = withStyles((theme: Theme) => ({
             },
             "& .MuiInputAdornment-root": {
                 "& svg" : {
-                    color: "rgb(83, 100, 113)",
+                    color: theme.palette.text.secondary,
                     height: "1.25em"
                 }
             },

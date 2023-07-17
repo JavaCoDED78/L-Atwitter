@@ -8,9 +8,9 @@ interface QuoteStylesProps {
 export const useQuoteStyles = makeStyles<Theme, QuoteStylesProps>((theme) => ({
     quoteTweetLink: {
         textDecoration: "none",
-        color: "#000",
+        color: theme.palette.text.primary,
         "& #link": {
-            color: "rgb(27, 149, 224)"
+            color: theme.palette.primary.main
         }
     },
     quoteTweetContainer: {
@@ -21,9 +21,9 @@ export const useQuoteStyles = makeStyles<Theme, QuoteStylesProps>((theme) => ({
         marginLeft: props => props.isTweetQuoted ? 0 : 58,
         fontSize: 14,
         borderRadius: 16,
-        border: "1px solid rgb(207, 217, 222)",
+        border: `1px solid ${theme.palette.divider}`,
         '&:hover': {
-            backgroundColor: 'rgb(242, 246, 248)',
+            backgroundColor: theme.palette.secondary.dark,
         },
     },
     quoteTweetWrapper: {
@@ -40,12 +40,12 @@ export const useQuoteStyles = makeStyles<Theme, QuoteStylesProps>((theme) => ({
         marginRight: 3,
     },
     quoteTweetUsername: {
-        color: "rgb(83, 100, 113)",
+        color: theme.palette.text.secondary,
     },
     quoteTweetText: {
         width: 490,
         '& #hashtag': {
-            color: "rgb(27, 149, 224)",
+            color: theme.palette.primary.main,
         },
     },
 }));

@@ -13,10 +13,6 @@ export const useCreateAccountModalStyles = makeStyles((theme: Theme) => ({
         marginBottom: 22,
         linHeight: "24px"
     },
-    spinner: {
-        marginTop: 50,
-        textAlign: 'center',
-    },
     subtitle: {
         fontSize: 21,
         fontWeight: 700,
@@ -33,7 +29,7 @@ export const useCreateAccountModalStyles = makeStyles((theme: Theme) => ({
         linHeight: "20px",
         // "& span": {
         //     fontSize: 14,
-        //     color: "rgb(27, 149, 224)",
+        //     color: theme.palette.primary.main,
         //     "&:hover": {
         //         cursor: "pointer",
         //     },
@@ -41,7 +37,7 @@ export const useCreateAccountModalStyles = makeStyles((theme: Theme) => ({
     },
     link: {
         textDecoration: "none",
-        color: "rgb(29, 155, 240)",
+        color: theme.palette.primary.main,
         cursor: "pointer",
         "&:hover": {
             textDecoration: "underline",

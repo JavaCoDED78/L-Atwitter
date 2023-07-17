@@ -10,7 +10,7 @@ export const useLargeLinkPreviewStyles = makeStyles<Theme, LargeLinkPreviewStyle
         height: props => props.isFullTweet ? 382 : 372,
         marginTop: 5,
         borderRadius: 16,
-        border: "1px solid rgb(207, 217, 222)",
+        border: `1px solid ${theme.palette.info.light}`,
         "&:hover": {
             cursor: "pointer",
             backgroundColor: "rgba(0, 0, 0, 0.03)"
@@ -36,7 +36,7 @@ export const useLargeLinkPreviewStyles = makeStyles<Theme, LargeLinkPreviewStyle
     },
     siteInfoDescription:{
         fontSize: 15,
-        color: "rgb(83, 100, 113)",
+        color: theme.palette.text.secondary,
         display: "-webkit-box",
         "-webkit-box-orient": "vertical",
         "-webkit-line-clamp": 2,
@@ -47,12 +47,12 @@ export const useLargeLinkPreviewStyles = makeStyles<Theme, LargeLinkPreviewStyle
         marginTop: 5,
         height: 40,
         fontSize: 15,
-        color: "rgb(83, 100, 113)",
+        color: theme.palette.text.secondary,
         "& svg": {
             marginBottom: 2,
             marginRight: 3,
             verticalAlign: "bottom",
-            fill: "rgb(83, 100, 113)",
+            fill: theme.palette.text.secondary,
             height: "1.10em",
         },
     },

@@ -24,18 +24,18 @@ export const useFollowingFollowersStyles = makeStyles((theme) => ({
     headerUsername: {
         fontSize: 13,
         lineHeight: "16px",
-        color: "rgb(83, 100, 113)",
+        color: theme.palette.text.secondary,
     },
     contentWrapper: {
         paddingTop: 57
     },
     tabs: {
-        borderBottom: "1px solid rgb(239, 243, 244)",
+        borderBottom: `1px solid ${theme.palette.divider}`,
         "& .MuiTabs-indicator": {
             marginLeft: 116,
             maxWidth: 70,
             height: 4,
-            backgroundColor: "rgb(29, 161, 242)",
+            backgroundColor: theme.palette.primary.main,
         },
         "& .MuiTab-root": {
             fontWeight: 700,
@@ -44,10 +44,6 @@ export const useFollowingFollowersStyles = makeStyles((theme) => ({
     tab: {
         minWidth: 301,
         textTransform: 'none',
-    },
-    loading: {
-        marginTop: 50,
-        textAlign: 'center',
     },
     content: {
         margin: "40px 20px",
@@ -62,7 +58,7 @@ export const useFollowingFollowersStyles = makeStyles((theme) => ({
         fontSize: 15,
         fontWeight: 400,
         marginBottom: 16,
-        color: "rgb(83, 100, 113)"
+        color: theme.palette.text.secondary
     },
     link: {
         textDecoration: 'none',

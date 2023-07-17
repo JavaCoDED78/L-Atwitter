@@ -6,7 +6,7 @@ export const useBookmarksStyles= makeStyles((theme) => ({
         minHeight: '100vh',
         borderTop: '0',
         borderBottom: '0',
-        marginBottom: 500,
+        paddingBottom: 500,
     },
     header: {
         marginLeft: 15,
@@ -33,14 +33,10 @@ export const useBookmarksStyles= makeStyles((theme) => ({
     headerUsername: {
         fontSize: 13,
         lineHeight: "16px",
-        color: "rgb(83, 100, 113)",
+        color: theme.palette.text.secondary,
     },
     contentWrapper: {
         paddingTop: 48
-    },
-    loading: {
-        marginTop: 50,
-        textAlign: 'center',
     },
     infoWrapper: {
         marginTop: 32,
@@ -56,9 +52,6 @@ export const useBookmarksStyles= makeStyles((theme) => ({
     },
     infoText: {
         fontSize: 15,
-        color: "rgb(83, 100, 113)",
+        color: theme.palette.text.secondary,
     },
-
-
-
 }));

@@ -12,7 +12,7 @@ export const useProfileDescriptionModalStyles = makeStyles((theme) => ({
         width: 30,
         "& svg": {
             fontSize: 34,
-            color: "rgb(29, 161, 245)",
+            color: theme.palette.primary.main,
         },
     },
     title: {
@@ -21,7 +21,7 @@ export const useProfileDescriptionModalStyles = makeStyles((theme) => ({
         fontSize: 23,
     },
     text: {
-        color: "rgb(83, 100, 113)",
+        color: theme.palette.text.secondary,
         fontSize: 15,
         marginBottom: 30,
     },

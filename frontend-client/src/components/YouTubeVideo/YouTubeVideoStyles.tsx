@@ -5,7 +5,7 @@ export const useYouTubeVideoStyles = makeStyles<Theme>((theme) => ({
         width: "100%",
         minHeight: 469,
         marginTop: 5,
-        border: "1px solid rgb(207, 217, 222)",
+        border: `1px solid ${theme.palette.divider}`,
         borderRadius: 16,
         "& iframe": {
             width: "100%",
@@ -29,7 +29,7 @@ export const useYouTubeVideoStyles = makeStyles<Theme>((theme) => ({
     },
     videoInfoDescription:{
         fontSize: 15,
-        color: "rgb(83, 100, 113)",
+        color: theme.palette.text.secondary,
         display: "-webkit-box",
         "-webkit-box-orient": "vertical",
         "-webkit-line-clamp": 2,
@@ -40,12 +40,12 @@ export const useYouTubeVideoStyles = makeStyles<Theme>((theme) => ({
         marginTop: 5,
         height: 40,
         fontSize: 15,
-        color: "rgb(83, 100, 113)",
+        color: theme.palette.text.secondary,
         "& svg": {
             marginBottom: 3,
             marginRight: 3,
             verticalAlign: "bottom",
-            fill: "rgb(83, 100, 113)",
+            fill: theme.palette.text.secondary,
             height: "1.10em",
         },
     },

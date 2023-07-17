@@ -8,12 +8,12 @@ export const useUnfollowModalStyles = makeStyles((theme) => ({
         margin: "32px 20px",
     },
     modalFullName: {
-        color: "rgb(15, 20, 25)",
+        color: theme.palette.text.primary,
         fontWeight: 700,
         fontSize: 20,
     },
     modalUsername: {
-        color: "rgb(83, 100, 113)",
+        color: theme.palette.text.secondary,
         fontWeight: 400,
         fontSize: 15,
         marginTop: 8,
@@ -27,14 +27,13 @@ export const useUnfollowModalStyles = makeStyles((theme) => ({
     modalCancelButton: {
         width: 134,
         height: 40,
-        color: "#000",
-        backgroundColor: "rgb(239, 243, 244)",
+        color: theme.palette.text.primary,
+        backgroundColor: theme.palette.divider,
         borderRadius: '25px',
     },
     modalUnfollowButton: {
         width: 134,
         height: 40,
-        border: '1px solid',
         borderRadius: '25px',
     },
 }));

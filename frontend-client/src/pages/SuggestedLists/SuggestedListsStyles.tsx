@@ -6,11 +6,7 @@ export const useSuggestedListsStyles = makeStyles((theme: Theme) => ({
         minHeight: '100vh',
         borderTop: '0',
         borderBottom: '0',
-        marginBottom: 500,
-    },
-    loading: {
-        paddingTop: 50,
-        textAlign: 'center',
+        paddingBottom: 500,
     },
     header: {
         position: "fixed",
@@ -51,7 +47,7 @@ export const useSuggestedListsStyles = makeStyles((theme: Theme) => ({
     },
     infoText: {
         fontSize: 15,
-        color: "rgb(83, 100, 113)"
+        color: theme.palette.text.secondary
     },
     listsTitle: {
         padding: "12px 16px",

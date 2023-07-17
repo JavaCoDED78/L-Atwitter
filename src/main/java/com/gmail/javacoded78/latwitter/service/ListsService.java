@@ -1,7 +1,6 @@
 package com.gmail.javacoded78.latwitter.service;
 
 import com.gmail.javacoded78.latwitter.model.Lists;
-import com.gmail.javacoded78.latwitter.model.Tweet;
 
 import java.util.List;
 

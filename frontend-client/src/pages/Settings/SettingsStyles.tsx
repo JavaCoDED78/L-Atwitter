@@ -1,6 +1,11 @@
 import {makeStyles, Theme} from "@material-ui/core";
+import {LocationState} from "./Settings";
 
-export const useSettingsStyles = makeStyles((theme: Theme) => ({
+interface SettingsStylesProps {
+    location: LocationState,
+}
+
+export const useSettingsStyles = makeStyles<Theme, SettingsStylesProps>((theme) => ({
     grid: {
         padding: "12px 0px 0px 0px !important",
     },
@@ -8,7 +13,7 @@ export const useSettingsStyles = makeStyles((theme: Theme) => ({
         "& .MuiPaper-outlined": {
             padding: 0,
             borderRadius: 0,
-            minHeight: '100vh',
+            minHeight: props => props.location.pathname.includes("privacy_and_safety") ? 1300 : "100vh",
             borderTop: 0,
             borderBottom: 0,
         },
@@ -63,23 +68,26 @@ export const useSettingsStyles = makeStyles((theme: Theme) => ({
             padding: "14px 16px",
             "&:hover": {
                 cursor: "pointer",
-                backgroundColor: "rgb(247, 249, 249)",
+                backgroundColor: theme.palette.secondary.main,
+            },
+            "&.Mui-selected": {
+                backgroundColor: theme.palette.secondary.main,
             },
         },
         "& .MuiTypography-root": {
             fontSize: 15,
             fontWeight: 400,
             lineHeight: "20px",
-            color: "rgb(15, 20, 25)",
+            color: theme.palette.text.primary,
         },
         "& .Mui-selected": {
-            borderRight: "2px solid rgb(27, 149, 224)",
+            borderRight: `2px solid ${theme.palette.primary.main}`,
             "& svg": {
                 marginRight: "-2px"
             },
         },
         "& svg": {
-            color: "rgb(83, 100, 113)",
+            color: theme.palette.text.secondary,
             height: "1.4em",
             marginLeft: "auto",
         },

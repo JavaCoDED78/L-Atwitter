@@ -1,6 +1,8 @@
 package com.gmail.javacoded78.latwitter.service.impl;
 
 import com.gmail.javacoded78.latwitter.exception.ApiRequestException;
+import com.gmail.javacoded78.latwitter.model.BackgroundColorType;
+import com.gmail.javacoded78.latwitter.model.ColorSchemeType;
 import com.gmail.javacoded78.latwitter.model.User;
 import com.gmail.javacoded78.latwitter.repository.UserRepository;
 import com.gmail.javacoded78.latwitter.security.JwtProvider;
@@ -87,6 +89,20 @@ public class UserSettingsServiceImpl implements UserSettingsService {
     public User updatePrivateProfile(boolean privateProfile) {
         User user = authenticationService.getAuthenticatedUser();
         user.setPrivateProfile(privateProfile);
+        return userRepository.save(user);
+    }
+
+    @Override
+    public User updateColorScheme(ColorSchemeType colorSchemeType) {
+        User user = authenticationService.getAuthenticatedUser();
+        user.setColorScheme(colorSchemeType);
+        return userRepository.save(user);
+    }
+
+    @Override
+    public User updateBackgroundColor(BackgroundColorType backgroundColorType) {
+        User user = authenticationService.getAuthenticatedUser();
+        user.setBackgroundColor(backgroundColorType);
         return userRepository.save(user);
     }
 }

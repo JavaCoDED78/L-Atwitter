@@ -10,7 +10,7 @@ export const useManageMembersModalStyles = makeStyles((theme: Theme) => ({
             marginRight: 15,
             "& svg": {
                 height: "1.0em",
-                fill: "rgb(29, 161, 242)",
+                fill: theme.palette.primary.main,
             },
         },
     },
@@ -21,12 +21,12 @@ export const useManageMembersModalStyles = makeStyles((theme: Theme) => ({
         overflowX: "hidden",
     },
     tabs: {
-        borderBottom: "1px solid rgb(239, 243, 244)",
+        borderBottom: `1px solid ${theme.palette.divider}`,
         "& .MuiTabs-indicator": {
             marginLeft: 105,
             maxWidth: 90,
             height: 4,
-            backgroundColor: "rgb(29, 161, 242)",
+            backgroundColor: theme.palette.primary.main,
         },
         "& .MuiTab-root": {
             fontWeight: 700,
@@ -52,6 +52,6 @@ export const useManageMembersModalStyles = makeStyles((theme: Theme) => ({
     },
     suggestedText: {
         fontSize: 15,
-        color: "rgb(83, 100, 113)",
+        color: theme.palette.text.secondary,
     },
 }));

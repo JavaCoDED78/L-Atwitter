@@ -5,7 +5,7 @@ export const useScheduleModalStyles = makeStyles((theme: Theme) => ({
         "& .MuiDialogTitle-root": {
             padding: "5px 15px",
             marginBottom: 0,
-            borderBottom: "1px solid rgb(239, 243, 244)"
+            borderBottom: `1px solid ${theme.palette.divider}`,
         },
         "& .MuiDialog-container": {
             height: "80%"
@@ -42,7 +42,7 @@ export const useScheduleModalStyles = makeStyles((theme: Theme) => ({
         "& svg": {
             verticalAlign: "bottom",
             marginRight: 12,
-            fill: "rgb(83, 100, 113)",
+            fill: theme.palette.text.secondary,
             height: "1.30em",
         },
     },
@@ -50,26 +50,26 @@ export const useScheduleModalStyles = makeStyles((theme: Theme) => ({
         fontSize: 13,
         fontWeight: 400,
         lineHeight: "16px",
-        color: "rgb(83, 100, 113)",
+        color: theme.palette.text.secondary,
     },
     title: {
         fontSize: 20,
         fontWeight: 400,
         lineHeight: "24px",
-        color: "rgb(15, 20, 25)",
+        color: theme.palette.text.primary,
     },
     subtitle: {
         marginBottom: 2,
         fontSize: 15,
         fontWeight: 400,
         lineHeight: "20px",
-        color: "rgb(83, 100, 113)",
+        color: theme.palette.text.secondary,
     },
     errorText: {
         fontSize: 15,
         fontWeight: 400,
         lineHeight: "20px",
-        color: "rgb(244, 33, 46)",
+        color: theme.palette.error.main,
     },
     dateWrapper: {
         marginBottom: 20,
@@ -84,11 +84,11 @@ export const useScheduleModalStyles = makeStyles((theme: Theme) => ({
             padding: '2px 15px',
             '&:hover': {
                 border: 0,
-                backgroundColor: 'rgb(29, 161, 242, 0.1)',
+                backgroundColor: theme.palette.secondary.light,
             },
         },
         padding: "12px 16px",
-        borderTop: "1px solid rgb(239, 243, 244)"
+        borderTop: `1px solid ${theme.palette.divider}`,
     },
     outlinedButton: {
 

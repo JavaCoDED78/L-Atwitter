@@ -14,7 +14,7 @@ export const FilledSelect = styled((props: SelectProps) => (
     />
 ))(({theme}) => ({
     '& .MuiSelect-filled': {
-        border: "1px solid #C4C4C4",
+        border: `1px solid ${theme.palette.grey[100]}`,
         overflow: "hidden",
         borderRadius: 4,
         backgroundColor: "transparent",
@@ -31,7 +31,7 @@ export const FilledSelect = styled((props: SelectProps) => (
             marginLeft: "-32px",
             zIndex: 1,
             "& svg" : {
-                color: "rgb(83, 100, 113)",
+                color: theme.palette.text.secondary,
                 height: "1.25em"
             }
         },
@@ -42,19 +42,19 @@ export const FilledSelect = styled((props: SelectProps) => (
         },
     },
     '&.Mui-focused': {
-        backgroundColor: '#fff',
+        backgroundColor: theme.palette.background.paper,
         "& .MuiSelect-root": {
             borderColor: "transparent",
-            boxShadow: "0 0 0 2px rgb(29, 161, 242)",
+            boxShadow: `0 0 0 2px ${theme.palette.primary.main}`,
         },
         "& .MuiInputAdornment-root": {
             "& svg" : {
-                color: "rgb(29, 161, 242) !important",
+                color: `${theme.palette.primary.main} !important`,
             }
         },
     },
     "&.MuiFilledInput-underline": {
-        backgroundColor: '#fff',
+        backgroundColor: theme.palette.background.paper,
         '&:before': {
             border: 0,
         },
@@ -68,12 +68,13 @@ export const FilledSelect = styled((props: SelectProps) => (
         },
     },
     "&.Mui-error": {
+        backgroundColor: "transparent",
         '& .MuiSelect-filled': {
             border: 0,
         },
         border: '1px solid rgb(224, 36, 94)',
         '&.Mui-focused': {
-            backgroundColor: '#fff',
+            backgroundColor: "transparent",
             "& .MuiSelect-root": {
                 borderColor: "transparent",
                 boxShadow: "0 0 0 2px rgb(224, 36, 94)",

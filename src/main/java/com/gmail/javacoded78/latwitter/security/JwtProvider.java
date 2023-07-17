@@ -1,6 +1,10 @@
 package com.gmail.javacoded78.latwitter.security;
 
-import io.jsonwebtoken.*;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jws;
+import io.jsonwebtoken.JwtException;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -21,7 +25,8 @@ import java.util.Date;
 @RequiredArgsConstructor
 public class JwtProvider {
 
-    @Qualifier("userDetailsServiceImpl") @Lazy
+    @Qualifier("userDetailsServiceImpl")
+    @Lazy
     private final UserDetailsService userDetailsService;
 
     @Value("${jwt.header}")

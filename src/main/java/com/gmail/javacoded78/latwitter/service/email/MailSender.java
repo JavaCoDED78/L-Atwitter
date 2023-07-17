@@ -17,7 +17,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class MailSender {
 
-    private final JavaMailSender javaMailSender;
+    private final JavaMailSender mailSender;
     private final SpringTemplateEngine thymeleafTemplateEngine;
 
     @Value("${spring.mail.username}")
@@ -28,12 +28,12 @@ public class MailSender {
         Context thymeleafContext = new Context();
         thymeleafContext.setVariables(attributes);
         String htmlBody = thymeleafTemplateEngine.process(template, thymeleafContext);
-        MimeMessage message = javaMailSender.createMimeMessage();
+        MimeMessage message = mailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
         helper.setFrom(username);
         helper.setTo(to);
         helper.setSubject(subject);
         helper.setText(htmlBody, true);
-        javaMailSender.send(message);
+        mailSender.send(message);
     }
 }

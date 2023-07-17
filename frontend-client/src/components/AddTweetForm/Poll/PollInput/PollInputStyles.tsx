@@ -3,38 +3,38 @@ import {createStyles, makeStyles, OutlinedInputProps, TextField, TextFieldProps,
 const useStylesPoll = makeStyles((theme: Theme) =>
     createStyles({
         root: {
-            border: '1px solid #C4C4C4',
+            border: `1px solid ${theme.palette.grey[100]}`,
             overflow: 'hidden',
             borderRadius: 4,
-            backgroundColor: '#fff',
+            backgroundColor: theme.palette.background.paper,
             transition: theme.transitions.create(['border-color', 'box-shadow']),
             '&:hover': {
-                backgroundColor: '#fff',
+                backgroundColor: theme.palette.background.paper,
             },
             '&$focused': {
-                backgroundColor: '#fff',
+                backgroundColor: theme.palette.background.paper,
                 borderColor: "transparent",
-                boxShadow: "0 0 0 2px rgb(29, 161, 242)",
+                boxShadow: `0 0 0 2px ${theme.palette.primary.main}`,
             },
         },
         focused: {},
         error: {
             border: '1px solid rgb(224, 36, 94)',
-            backgroundColor: '#fff',
+            backgroundColor: theme.palette.common.white,
             '&:hover': {
-                backgroundColor: '#fff',
+                backgroundColor: theme.palette.common.white,
             },
             '&$focused': {
-                backgroundColor: '#fff',
+                backgroundColor: theme.palette.common.white,
                 borderColor: "transparent",
                 boxShadow: "0 0 0 2px rgb(224, 36, 94)",
             },
         },
         disabled: {
-            backgroundColor: '#fff',
+            backgroundColor: theme.palette.common.white,
             color: "#849099",
             '&:hover': {
-                backgroundColor: '#fff',
+                backgroundColor: theme.palette.common.white,
             },
         },
     }),

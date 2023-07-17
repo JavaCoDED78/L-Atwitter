@@ -6,7 +6,7 @@ export const useHomeStyles = makeStyles((theme: Theme) => ({
         minHeight: '100vh',
         borderTop: '0',
         borderBottom: '0',
-        marginBottom: 500,
+        paddingBottom: 500,
     },
     header: {
         position: "fixed",
@@ -30,7 +30,7 @@ export const useHomeStyles = makeStyles((theme: Theme) => ({
         "& .MuiIconButton-root": {
             padding: 7,
             marginLeft: 475,
-            color: "rgb(29, 161, 242)",
+            color: theme.palette.primary.main,
             "& svg": {
                 height: "0.90em",
             },
@@ -41,11 +41,7 @@ export const useHomeStyles = makeStyles((theme: Theme) => ({
     },
     divider: {
         height: 12,
-        backgroundColor: '#F7F9F9',
-    },
-    loading: {
-        marginTop: 50,
-        textAlign: 'center',
+        backgroundColor: theme.palette.divider,
     },
     info: {
         padding: "40px 20px",
@@ -60,7 +56,7 @@ export const useHomeStyles = makeStyles((theme: Theme) => ({
     infoText: {
         textAlign: "center",
         marginBottom: 20,
-        color: "rgb(83, 100, 113)",
+        color: theme.palette.text.secondary,
         fontSize: 15,
         fontWeight: 400,
     },

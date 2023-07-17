@@ -57,4 +57,15 @@ public class UserSettingsController {
     public ResponseEntity<UserResponse> updatePrivateProfile(@RequestBody SettingsRequest request) {
         return ResponseEntity.ok(userMapper.updatePrivateProfile(request));
     }
+
+    @PutMapping("/update/color_scheme")
+    public ResponseEntity<UserResponse> updateColorScheme(@RequestBody SettingsRequest request) {
+        return ResponseEntity.ok(userMapper.updateColorScheme(request));
+    }
+
+    @PutMapping("/update/background_color")
+    public ResponseEntity<UserResponse> updateBackgroundColor(@RequestBody SettingsRequest request) {
+        return ResponseEntity.ok(userMapper.updateBackgroundColor(request));
+    }
 }
+

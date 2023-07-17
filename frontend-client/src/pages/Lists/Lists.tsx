@@ -1,10 +1,10 @@
 import React, {FC, ReactElement, useEffect, useState} from 'react';
 import {useDispatch, useSelector} from "react-redux";
-import {CircularProgress, ClickAwayListener, IconButton, Paper, Typography} from "@material-ui/core";
+import {ClickAwayListener, IconButton, Paper, Typography} from "@material-ui/core";
 import {Link} from 'react-router-dom';
 
 import {useListsStyles} from "./ListsStyles";
-import {BackButton} from "../../components/BackButton/BackButton";
+import BackButton from "../../components/BackButton/BackButton";
 import {selectUserData} from "../../store/ducks/user/selectors";
 import {AddListsIcon, EditIcon, ListsIcon} from "../../icons";
 import CreateListsModal from "./CreateListsModal/CreateListsModal";
@@ -25,13 +25,10 @@ import {
 import ListsItem from "./ListsItem/ListsItem";
 import PinnedListsItem from "./PinnedListsItem/PinnedListsItem";
 import HoverAction from "../../components/HoverAction/HoverAction";
+import Spinner from "../../components/Spinner/Spinner";
+import {HoverActionProps, HoverActions, withHoverAction} from "../../hoc/withHoverAction";
 
-enum ListsAction {
-    NEW_LIST = "NEW_LIST",
-    MORE = "MORE"
-}
-
-const Lists: FC = (): ReactElement => {
+const Lists: FC<HoverActionProps> = ({visibleHoverAction, handleHoverAction, handleLeaveAction}): ReactElement => {
     const classes = useListsStyles();
     const dispatch = useDispatch();
     const myProfile = useSelector(selectUserData);
@@ -39,9 +36,6 @@ const Lists: FC = (): ReactElement => {
     const userLists = useSelector(selectUserListsItems);
     const pinnedLists = useSelector(selectPinnedListsItems);
     const isLoading = useSelector(selectIsListsLoading);
-    const [visibleCreateListAction, setVisibleCreateListAction] = useState<boolean>(false);
-    const [visibleMoreAction, setVisibleMoreAction] = useState<boolean>(false);
-    const [delayHandler, setDelayHandler] = useState<any>(null);
     const [visibleCreateListModal, setVisibleCreateListModal] = useState<boolean>(false);
     const [openPopover, setOpenPopover] = useState<boolean>(false);
 
@@ -74,20 +68,6 @@ const Lists: FC = (): ReactElement => {
         setOpenPopover(false);
     };
 
-    const handleHoverAction = (action: ListsAction): void => {
-        if (action === ListsAction.NEW_LIST) {
-            setDelayHandler(setTimeout(() => setVisibleCreateListAction(true), 500));
-        } else if (action === ListsAction.MORE) {
-            setDelayHandler(setTimeout(() => setVisibleMoreAction(true), 500));
-        }
-    };
-
-    const handleLeaveAction = (): void => {
-        clearTimeout(delayHandler);
-        setVisibleCreateListAction(false);
-        setVisibleMoreAction(false);
-    };
-
     return (
         <Paper className={classes.container} variant="outlined">
             <Paper className={classes.header} variant="outlined">
@@ -104,11 +84,11 @@ const Lists: FC = (): ReactElement => {
                     <div className={classes.icon}>
                         <IconButton
                             onClick={onOpenCreateListModal}
-                            onMouseEnter={() => handleHoverAction(ListsAction.NEW_LIST)}
+                            onMouseEnter={() => handleHoverAction?.(HoverActions.CREATE_LIST)}
                             onMouseLeave={handleLeaveAction}
                         >
                             <>{AddListsIcon}</>
-                            <HoverAction visible={visibleCreateListAction} actionText={"Create"}/>
+                            <HoverAction visible={visibleHoverAction?.visibleCreateListAction} actionText={"Create"}/>
                         </IconButton>
                     </div>
                     <div className={classes.icon}>
@@ -116,11 +96,11 @@ const Lists: FC = (): ReactElement => {
                             <div>
                                 <IconButton
                                     onClick={handleClick}
-                                    onMouseEnter={() => handleHoverAction(ListsAction.MORE)}
+                                    onMouseEnter={() => handleHoverAction?.(HoverActions.MORE)}
                                     onMouseLeave={handleLeaveAction}
                                 >
                                     <>{EditIcon}</>
-                                    <HoverAction visible={visibleMoreAction} actionText={"More"}/>
+                                    <HoverAction visible={visibleHoverAction?.visibleMoreAction} actionText={"More"}/>
                                 </IconButton>
                                 {openPopover ? (
                                     <Link to={`/lists/memberships/${myProfile?.id}`} className={classes.dropdownLink}>
@@ -140,9 +120,7 @@ const Lists: FC = (): ReactElement => {
                 </div>
             </Paper>
             {isLoading ? (
-                <div className={classes.loading}>
-                    <CircularProgress/>
-                </div>
+                <Spinner paddingTop={250}/>
             ) : (
                 <>
                     <Paper className={classes.pinnedLists} variant="outlined">
@@ -185,4 +163,4 @@ const Lists: FC = (): ReactElement => {
     );
 };
 
-export default Lists;
+export default withHoverAction(Lists);

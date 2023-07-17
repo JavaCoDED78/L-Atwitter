@@ -7,17 +7,17 @@ export const useTweetComponentActionsModalStyles = makeStyles((theme: Theme) => 
         textAlign: "center",
         margin: "32px 20px",
         "& svg": {
-            color: "rgb(29, 161, 242)",
+            color: theme.palette.primary.main,
             fontSize: 45,
         },
     },
     modalFullName: {
-        color: "rgb(15, 20, 25)",
+        color: theme.palette.text.primary,
         fontWeight: 700,
         fontSize: 20,
     },
     modalUsername: {
-        color: "rgb(83, 100, 113)",
+        color: theme.palette.text.secondary,
         fontWeight: 400,
         fontSize: 15,
         marginTop: 8,
@@ -31,8 +31,8 @@ export const useTweetComponentActionsModalStyles = makeStyles((theme: Theme) => 
     modalCancelButton: {
         width: 134,
         height: 40,
-        color: "#000",
-        backgroundColor: "rgb(239, 243, 244)",
+        color: theme.palette.text.primary,
+        backgroundColor: theme.palette.divider,
         borderRadius: '25px',
     },
     modalButton: {
@@ -42,17 +42,17 @@ export const useTweetComponentActionsModalStyles = makeStyles((theme: Theme) => 
     },
     modalDeleteButton: {
         "&.MuiButton-contained": {
-            color: "#fff",
-            backgroundColor: "rgb(244, 33, 46)",
+            color: theme.palette.common.white,
+            backgroundColor: theme.palette.error.main,
         },
         "&.MuiButton-contained:hover": {
-            backgroundColor: "rgb(220, 30, 41)",
+            backgroundColor: theme.palette.error.dark,
         },
     },
     modalPrimaryButton: {
         "&.MuiButton-contained": {
-            color: "#fff",
-            backgroundColor: "rgb(29, 161, 242)",
+            color: theme.palette.common.white,
+            backgroundColor: theme.palette.primary.main,
         },
         "&.MuiButton-contained:hover": {
             backgroundColor: "rgb(26, 145, 218)",

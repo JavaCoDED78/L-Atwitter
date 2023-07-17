@@ -1,5 +1,7 @@
 package com.gmail.javacoded78.latwitter.dto.request;
 
+import com.gmail.javacoded78.latwitter.model.BackgroundColorType;
+import com.gmail.javacoded78.latwitter.model.ColorSchemeType;
 import lombok.Data;
 
 @Data
@@ -14,4 +16,6 @@ public class SettingsRequest {
     private String language;
     private boolean mutedDirectMessages;
     private boolean privateProfile;
+    private BackgroundColorType backgroundColor;
+    private ColorSchemeType colorScheme;
 }

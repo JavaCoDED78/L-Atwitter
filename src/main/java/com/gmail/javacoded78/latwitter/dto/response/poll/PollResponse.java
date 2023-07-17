@@ -1,6 +1,5 @@
 package com.gmail.javacoded78.latwitter.dto.response.poll;
 
-import com.gmail.javacoded78.latwitter.dto.response.poll.PollChoiceResponse;
 import lombok.Data;
 
 import java.time.LocalDateTime;

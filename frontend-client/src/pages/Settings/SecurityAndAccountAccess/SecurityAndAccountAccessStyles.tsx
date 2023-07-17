@@ -5,7 +5,7 @@ export const useSecurityAndAccountAccessStyles = makeStyles((theme: Theme) => ({
         padding: "12px 16px"
     },
     info: {
-        color: "rgb(83, 100, 113)",
+        color: theme.palette.text.secondary,
         fontWeight: 400,
         fontSize: 13,
         lineHeight: "16px"
@@ -21,11 +21,11 @@ export const useSecurityAndAccountAccessStyles = makeStyles((theme: Theme) => ({
             padding: "12px 16px",
             "&:hover": {
                 cursor: "pointer",
-                backgroundColor: "rgb(247, 249, 249)",
+                backgroundColor: theme.palette.secondary.main,
             },
         },
         "& svg": {
-            color: "rgb(83, 100, 113)",
+            color: theme.palette.text.secondary,
             height: "1.3em",
         },
     },
@@ -37,14 +37,14 @@ export const useSecurityAndAccountAccessStyles = makeStyles((theme: Theme) => ({
     },
     title: {
         fontSize: 15,
-        color: "rgb(15, 20, 25)",
+        color: theme.palette.text.primary,
         fontWeight: 400,
         lineHeight: "20px",
     },
     text: {
         lineHeight: "16px",
         fontSize: 13,
-        color: "rgb(83, 100, 113)",
+        color: theme.palette.text.secondary,
         fontWeight: 400
     },
 

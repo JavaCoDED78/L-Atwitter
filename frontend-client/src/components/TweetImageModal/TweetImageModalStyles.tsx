@@ -18,7 +18,7 @@ export const useTweetImageStyles = makeStyles<Theme, TweetImageStylesProps>((the
         cursor: "auto",
     },
     modalWrapper: {
-        backgroundColor: "white",
+        backgroundColor: theme.palette.background.paper,
         width: 359,
         height: "100%",
         float: 'right',
@@ -43,7 +43,7 @@ export const useTweetImageStyles = makeStyles<Theme, TweetImageStylesProps>((the
     link: {
         cursor: "pointer",
         textDecoration: "none",
-        color: "#000",
+        color: theme.palette.text.primary,
         "&:hover": {
             "& #link": {
                 textDecoration: "underline",
@@ -63,7 +63,7 @@ export const useTweetImageStyles = makeStyles<Theme, TweetImageStylesProps>((the
         lineHeight: 1.3125,
         wordBreak: 'break-word',
         '& #hashtag': {
-            color: "rgb(27, 149, 224)",
+            color: theme.palette.primary.main,
         },
     },
     content: {
@@ -72,13 +72,13 @@ export const useTweetImageStyles = makeStyles<Theme, TweetImageStylesProps>((the
         margin: "16px 0",
         fontSize: 15,
         '& a': {
-            color: "#000",
+            color: theme.palette.text.primary,
             textDecoration: 'none'
         },
     },
     contentItem: {
         marginLeft: 5,
-        color: "rgb(83, 100, 113)"
+        color: theme.palette.text.secondary,
     },
     tweetFooter: {
         display: 'flex',
@@ -86,7 +86,7 @@ export const useTweetImageStyles = makeStyles<Theme, TweetImageStylesProps>((the
         paddingTop: 5,
         paddingBottom: 5,
         margin: '0 auto',
-        borderTop: '1px solid #E6ECF0',
+        borderTop: `1px solid ${theme.palette.divider}`,
         left: 0,
         maxWidth: '100%',
         justifyContent: 'space-around',
@@ -96,7 +96,7 @@ export const useTweetImageStyles = makeStyles<Theme, TweetImageStylesProps>((the
         "& .MuiIconButton-root": {
             padding: 7,
             "& svg": {
-                color: "rgb(83, 100, 113)",
+                color: theme.palette.text.secondary,
                 verticalAlign: "bottom",
                 height: "0.80em",
             }
@@ -106,7 +106,7 @@ export const useTweetImageStyles = makeStyles<Theme, TweetImageStylesProps>((the
         "& .MuiIconButton-root": {
             padding: 7,
             "& svg": {
-                color: props => props.isTweetRetweeted ? "rgb(23, 191, 99)" : "rgb(83, 100, 113)",
+                color: props => props.isTweetRetweeted ? "rgb(23, 191, 99)" : theme.palette.text.secondary,
                 verticalAlign: "bottom",
                 height: "0.80em",
             }
@@ -116,7 +116,7 @@ export const useTweetImageStyles = makeStyles<Theme, TweetImageStylesProps>((the
         "& .MuiIconButton-root": {
             padding: 7,
             "& svg": {
-                color: props => props.isTweetLiked ? "rgb(224, 36, 94)" : "rgb(83, 100, 113)",
+                color: props => props.isTweetLiked ? "rgb(224, 36, 94)" : theme.palette.text.secondary,
                 verticalAlign: "bottom",
                 height: "0.80em",
             },
@@ -126,27 +126,27 @@ export const useTweetImageStyles = makeStyles<Theme, TweetImageStylesProps>((the
         "& .MuiIconButton-root": {
             padding: 7,
             "& svg": {
-                color: "#ffffff",
+                color: theme.palette.common.white,
                 verticalAlign: "bottom",
                 height: "0.80em",
             }
         },
         "& span": {
-            color: "#ffffff",
+            color: theme.palette.common.white,
         },
     },
     replyWrapper: {
         margin: "16px 68px",
-        color: "rgb(83, 100, 113)",
+        color: theme.palette.text.secondary,
         fontSize: 15,
         "& a": {
             textDecoration: "none",
-            color: "rgb(27, 149, 224)",
+            color: theme.palette.primary.main,
         },
     },
     divider: {
         height: 12,
-        backgroundColor: '#F7F9F9',
+        backgroundColor: theme.palette.divider,
     },
     imageFooterContainer: {
         position: "absolute",
@@ -155,11 +155,11 @@ export const useTweetImageStyles = makeStyles<Theme, TweetImageStylesProps>((the
         height: 48,
         bottom: 0,
         "& svg": {
-            color: "#fff"
+            color: theme.palette.common.white
         },
     },
     grey: {
-        color: "rgb(83, 100, 113)",
+        color: theme.palette.text.secondary,
     },
     imageFooterWrapper: {
         display: 'flex',
@@ -174,7 +174,7 @@ export const useTweetImageStyles = makeStyles<Theme, TweetImageStylesProps>((the
         margin: 10,
         "& svg": {
             height: "0.9em",
-            color: "#fff"
+            color: theme.palette.common.white
         },
     },
 }));

@@ -44,7 +44,7 @@ export const useMessagesStyles = makeStyles((theme: Theme) => ({
     },
     messagesText: {
         fontSize: 14,
-        color: "rgb(83, 100, 113)",
+        color: theme.palette.text.secondary,
         margin: "8px 30px 27px 30px",
     },
     messagesButton: {
@@ -60,15 +60,15 @@ export const useMessagesStyles = makeStyles((theme: Theme) => ({
     },
     list: {
         "& .Mui-selected": {
-            borderRight: "2px solid rgb(27, 149, 224)",
-            backgroundColor: "#fff",
+            borderRight: `2px solid ${theme.palette.primary.main}`,
+            backgroundColor: theme.palette.common.white,
         },
     },
     listItem: {
         padding: 0,
-        backgroundColor: "#fff",
+        backgroundColor: theme.palette.common.white,
         "& :hover": {
-            backgroundColor: '#edf3f6',
+            backgroundColor: theme.palette.secondary.dark,
         },
     },
     userWrapper: {
@@ -94,14 +94,14 @@ export const useMessagesStyles = makeStyles((theme: Theme) => ({
     },
     userFullName: {
         display: "inline-block",
-        color: "rgb(15, 20, 25)",
+        color: theme.palette.text.primary,
         fontWeight: 800,
         fontSize: 15,
     },
     username: {
         marginLeft: 5,
         display: "inline-block",
-        color: "rgb(83, 100, 113)",
+        color: theme.palette.text.secondary,
         fontWeight: 400,
         fontSize: 15,
     },
@@ -128,7 +128,7 @@ export const useMessagesStyles = makeStyles((theme: Theme) => ({
     },
     chatInfoText: {
         fontSize: 14,
-        color: "rgb(83, 100, 113)",
+        color: theme.palette.text.secondary,
         margin: "8px 0px 27px 0px",
     },
     chatInfoButton: {
@@ -178,13 +178,13 @@ export const useMessagesStyles = makeStyles((theme: Theme) => ({
         },
     },
     tweetWrapper: {
-        border: "1px solid rgb(29, 161, 242)",
+        border: `1px solid ${theme.palette.primary.main}`,
         borderRadius: "16px 16px 0px 16px",
         padding: 12,
         width: 384,
         "&:hover": {
             cursor: "pointer",
-            backgroundColor: "rgb(247, 249, 249)",
+            backgroundColor: theme.palette.secondary.main,
         },
     },
     tweetUserInfoWrapper: {
@@ -201,15 +201,15 @@ export const useMessagesStyles = makeStyles((theme: Theme) => ({
     },
     tweetUsername: {
         marginLeft: 3,
-        color: "rgb(83, 100, 113)",
+        color: theme.palette.text.secondary,
         fontSize: 15,
     },
     myMessage: {
         display: "flex",
         flexDirection: "row-reverse",
         "& span": {
-            backgroundColor: "rgb(29, 161, 242)",
-            color: "#fff",
+            backgroundColor: theme.palette.primary.main,
+            color: theme.palette.common.white,
             padding: "11px 15px",
             maxWidth: 384,
         },
@@ -230,11 +230,11 @@ export const useMessagesStyles = makeStyles((theme: Theme) => ({
         display: "flex",
         flexDirection: "row-reverse",
         marginTop: 5,
-        color: "rgb(83, 100, 113)",
+        color: theme.palette.text.secondary,
         "& svg": {
             marginLeft: 5,
             height: "1.2em",
-            color: "rgb(29, 161, 242)"
+            color: theme.palette.primary.main
         },
     },
     participantContainer: {
@@ -251,7 +251,7 @@ export const useMessagesStyles = makeStyles((theme: Theme) => ({
         },
     },
     participantTweetWrapper: {
-        border: "1px solid rgb(239, 243, 244)",
+        border: `1px solid ${theme.palette.divider}`,
         borderRadius: "16px 16px 16px 0px",
         padding: 12,
         width: 384,
@@ -274,7 +274,7 @@ export const useMessagesStyles = makeStyles((theme: Theme) => ({
     },
     participantTweetUsername: {
         marginLeft: 3,
-        color: "rgb(83, 100, 113)",
+        color: theme.palette.text.secondary,
         fontSize: 15,
     },
     participantMessageCommon: {
@@ -292,7 +292,7 @@ export const useMessagesStyles = makeStyles((theme: Theme) => ({
         display: "flex",
         alignItems: "flex-start",
         "& span": {
-            backgroundColor: "rgb(239, 243, 244)",
+            backgroundColor: theme.palette.divider,
             padding: "11px 16px",
             maxWidth: 384,
         },
@@ -307,7 +307,7 @@ export const useMessagesStyles = makeStyles((theme: Theme) => ({
         fontSize: 12,
         marginLeft: 50,
         marginTop: 5,
-        color: "rgb(83, 100, 113)",
+        color: theme.palette.text.secondary,
     },
     chatFooter: {
         display: 'flex',

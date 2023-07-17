@@ -1,6 +1,8 @@
 package com.gmail.javacoded78.latwitter.dto.response;
 
 import com.gmail.javacoded78.latwitter.dto.response.chat.ChatMessageResponse;
+import com.gmail.javacoded78.latwitter.model.BackgroundColorType;
+import com.gmail.javacoded78.latwitter.model.ColorSchemeType;
 import lombok.Data;
 
 import java.time.LocalDateTime;
@@ -35,6 +37,8 @@ public class UserResponse {
     private boolean privateProfile;
     private boolean profileCustomized;
     private boolean profileStarted;
+    private BackgroundColorType BackgroundColor;
+    private ColorSchemeType colorScheme;
     private List<ChatMessageResponse> unreadMessages;
     private List<BlockedUserResponse> userMutedList;
     private List<BlockedUserResponse> userBlockedList;

@@ -3,17 +3,7 @@ package com.gmail.javacoded78.latwitter.model;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -106,6 +96,14 @@ public class User {
     @Column(name = "private_profile", columnDefinition = "boolean default false")
     private boolean privateProfile;
 
+    @Column(name = "background_color")
+    @Enumerated(EnumType.STRING)
+    private BackgroundColorType backgroundColor;
+
+    @Column(name = "color_scheme")
+    @Enumerated(EnumType.STRING)
+    private ColorSchemeType colorScheme;
+
     @OneToOne
     @JoinTable(name = "user_pinned_tweet",
             joinColumns = @JoinColumn(name = "user_id"),
@@ -176,5 +174,7 @@ public class User {
         this.bookmarks = new ArrayList<>();
         this.userLists = new ArrayList<>();
         this.unreadMessages = new ArrayList<>();
+        this.backgroundColor = BackgroundColorType.DEFAULT;
+        this.colorScheme = ColorSchemeType.BLUE;
     }
 }

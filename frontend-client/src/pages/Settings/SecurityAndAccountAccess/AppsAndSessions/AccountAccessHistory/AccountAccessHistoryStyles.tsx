@@ -6,13 +6,13 @@ export const useAccountAccessHistoryStyles = makeStyles((theme: Theme) => ({
     },
     text: {
         fontSize: 13,
-        color: "rgb(83, 100, 113)",
+        color: theme.palette.text.secondary,
         fontWeight: 400,
         lineHeight: "16px",
     },
     link: {
         textDecoration: "none",
-        color: "rgb(29, 155, 240)",
+        color: theme.palette.primary.main,
         cursor: "pointer",
         "&:hover": {
             textDecoration: "underline",

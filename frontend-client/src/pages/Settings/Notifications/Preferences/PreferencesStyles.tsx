@@ -5,14 +5,14 @@ export const usePreferencesStyles = makeStyles((theme: Theme) => ({
         padding: "12px 16px"
     },
     text: {
-        color: "rgb(83, 100, 113)",
+        color: theme.palette.text.secondary,
         fontWeight: 400,
         fontSize: 13,
         lineHeight: "16px"
     },
     link: {
         textDecoration: "none",
-        color: "rgb(29, 155, 240)",
+        color: theme.palette.primary.main,
         cursor: "pointer",
         "&:hover": {
             textDecoration: "underline",
@@ -24,16 +24,16 @@ export const usePreferencesStyles = makeStyles((theme: Theme) => ({
     preferencesLink: {
         padding: "12px 16px",
         fontSize: 15,
-        color: "rgb(15, 20, 25)",
+        color: theme.palette.text.primary,
         fontWeight: 400,
         lineHeight: "20px",
         "&:hover": {
-            backgroundColor: "rgb(247, 249, 249)",
+            backgroundColor: theme.palette.secondary.main,
             cursor: "pointer"
         },
         "& svg": {
             float: "right",
-            color: "rgb(83, 100, 113)",
+            color: theme.palette.text.secondary,
             height: "1.4em"
         },
     },

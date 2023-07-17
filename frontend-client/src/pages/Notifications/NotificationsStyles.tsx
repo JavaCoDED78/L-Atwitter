@@ -7,7 +7,7 @@ export const useNotificationsStyles = makeStyles((theme: Theme) => ({
         borderTop: '0',
         borderBottom: '0',
         "& a": {
-            color: "rgb(29, 161, 242)",
+            color: theme.palette.primary.main,
             textDecoration: "none",
         },
     },
@@ -28,10 +28,6 @@ export const useNotificationsStyles = makeStyles((theme: Theme) => ({
             marginRight: 20
         },
     },
-    loading: {
-        marginTop: 50,
-        textAlign: 'center',
-    },
     title: {
         textAlign: "center",
         marginTop: 30,
@@ -43,15 +39,15 @@ export const useNotificationsStyles = makeStyles((theme: Theme) => ({
         textAlign: "center",
         fontSize: 14,
         fontWeight: 400,
-        color: "rgb(83, 100, 113)",
+        color: theme.palette.text.secondary,
     },
     tabs: {
-        borderBottom: "1px solid rgb(239, 243, 244)",
+        borderBottom: `1px solid ${theme.palette.divider}`,
         "& .MuiTabs-indicator": {
             marginLeft: 116,
             maxWidth: 70,
             height: 4,
-            backgroundColor: "rgb(29, 161, 242)",
+            backgroundColor: theme.palette.primary.main,
         },
         "& .MuiTab-root": {
             fontWeight: 700,
@@ -61,7 +57,7 @@ export const useNotificationsStyles = makeStyles((theme: Theme) => ({
         minWidth: 301,
         textTransform: 'none',
         '&:hover': {
-            backgroundColor: 'rgb(29, 161, 242, 0.1)',
+            backgroundColor: theme.palette.secondary.light,
         },
     },
     notificationWrapper: {
@@ -75,7 +71,7 @@ export const useNotificationsStyles = makeStyles((theme: Theme) => ({
         borderRight: '0',
         borderRadius: 0,
         '&:hover': {
-            backgroundColor: 'rgb(245, 248, 250)',
+            backgroundColor: theme.palette.secondary.main,
         },
 
     },
@@ -90,7 +86,7 @@ export const useNotificationsStyles = makeStyles((theme: Theme) => ({
             color: "rgb(224, 36, 94)",
         },
         '& #follow': {
-            color: "rgb(29, 161, 242)",
+            color: theme.palette.primary.main,
         },
         "& svg": {
             verticalAlign: "bottom",
@@ -109,7 +105,7 @@ export const useNotificationsStyles = makeStyles((theme: Theme) => ({
     },
     notificationText: {
         '& #hashtag': {
-            color: "rgb(27, 149, 224)",
+            color: theme.palette.primary.main,
         },
     },
 }));

@@ -8,7 +8,7 @@ export const useUnsentTweetsModalStyles = makeStyles<Theme, UnsentTweetsModalSty
     dialog: {
         "& .MuiDialogTitle-root": {
             marginBottom: 0,
-            borderBottom: props => props.visibleEditTweetModal ? "1px solid rgb(239, 243, 244)" : "1px solid transparent",
+            borderBottom: props => props.visibleEditTweetModal ? `1px solid ${theme.palette.divider}` : "1px solid transparent",
         },
     },
     outlinedButton: {
@@ -35,12 +35,12 @@ export const useUnsentTweetsModalStyles = makeStyles<Theme, UnsentTweetsModalSty
         minHeight: props => props.visibleEditTweetModal ? 220 : 600,
     },
     tabs: {
-        borderBottom: "1px solid rgb(239, 243, 244)",
+        borderBottom: `1px solid ${theme.palette.divider}`,
         "& .MuiTabs-indicator": {
             marginLeft: 105,
             maxWidth: 90,
             height: 4,
-            backgroundColor: "rgb(29, 161, 242)",
+            backgroundColor: theme.palette.primary.main,
         },
         "& .MuiTab-root": {
             fontWeight: 700,
@@ -49,10 +49,6 @@ export const useUnsentTweetsModalStyles = makeStyles<Theme, UnsentTweetsModalSty
     tab: {
         minWidth: 299,
         textTransform: 'none',
-    },
-    loading: {
-        marginTop: 50,
-        textAlign: 'center',
     },
     infoWrapper: {
         margin: "32px auto",
@@ -63,7 +59,7 @@ export const useUnsentTweetsModalStyles = makeStyles<Theme, UnsentTweetsModalSty
         fontWeight: 800,
         textAlign: "center",
         lineHeight: "36px",
-        color: "rgb(15, 20, 25)",
+        color: theme.palette.text.primary,
         marginBottom: 8
     },
     text: {
@@ -71,11 +67,11 @@ export const useUnsentTweetsModalStyles = makeStyles<Theme, UnsentTweetsModalSty
         fontWeight: 400,
         lineHeight: "20px",
         textAlign: "center",
-        color: "rgb(83, 100, 113)",
+        color: theme.palette.text.secondary,
     },
     tweetContainer: {
         padding: "12px 16px",
-        borderBottom: "1px solid rgb(239, 243, 244)",
+        borderBottom: `1px solid ${theme.palette.divider}`,
         display: "flex",
         "&:hover": {
             cursor: "pointer",
@@ -93,7 +89,7 @@ export const useUnsentTweetsModalStyles = makeStyles<Theme, UnsentTweetsModalSty
         fontSize: 15,
         fontWeight: 400,
         lineHeight: "20px",
-        color: "rgb(15, 20, 25)",
+        color: theme.palette.text.primary,
     },
     imageWrapper: {
         width: 75,
@@ -108,7 +104,7 @@ export const useUnsentTweetsModalStyles = makeStyles<Theme, UnsentTweetsModalSty
         "& svg": {
             verticalAlign: "bottom",
             marginRight: 12,
-            fill: "rgb(83, 100, 113)",
+            fill: theme.palette.text.secondary,
             height: "1.30em",
         },
     },
@@ -116,7 +112,7 @@ export const useUnsentTweetsModalStyles = makeStyles<Theme, UnsentTweetsModalSty
         fontSize: 13,
         fontWeight: 400,
         lineHeight: "16px",
-        color: "rgb(83, 100, 113)",
+        color: theme.palette.text.secondary,
     },
     addTweetWrapper: {
       padding: "4px 16px 20px 16px",
@@ -128,7 +124,7 @@ export const useUnsentTweetsModalStyles = makeStyles<Theme, UnsentTweetsModalSty
         position: "absolute",
         display: "flex",
         justifyContent: "space-between",
-        borderTop: "1px solid rgb(239, 243, 244)",
+        borderTop: `1px solid ${theme.palette.divider}`,
     },
     footerOutlinedButton: {
         "&.MuiButton-root": {
@@ -141,7 +137,7 @@ export const useUnsentTweetsModalStyles = makeStyles<Theme, UnsentTweetsModalSty
     },
     footerDeleteButton: {
         "&.MuiButton-root": {
-            color: "rgb(244, 33, 46)",
+            color: theme.palette.error.main,
             padding: "4px 16px",
             border: 0,
             '&:hover': {

@@ -11,7 +11,7 @@ export const useListsItemStyles = makeStyles((theme: Theme) => ({
         padding: "12px 16px",
         cursor: 'pointer',
         '&:hover': {
-            backgroundColor: 'rgb(245, 248, 250)',
+            backgroundColor: theme.palette.secondary.main,
         },
     },
     link: {
@@ -54,14 +54,14 @@ export const useListsItemStyles = makeStyles((theme: Theme) => ({
     },
     listOwnerUsername: {
         paddingBottom: 5,
-        color: "rgb(83, 100, 113)",
+        color: theme.palette.text.secondary,
     },
     listPinWrapper: {
         "& .MuiIconButton-root": {
             padding: 7,
             "& svg": {
                 verticalAlign: "bottom",
-                color: "rgba(29, 161, 242, 1.00)",
+                color: theme.palette.primary.main,
                 height: "0.85em",
             },
         },
@@ -73,7 +73,7 @@ export const useListsItemStyles = makeStyles((theme: Theme) => ({
         borderRadius: '25px',
         padding: '0 15px',
         '&:hover': {
-            backgroundColor: 'rgb(202, 32, 85)',
+            backgroundColor: theme.palette.error.dark,
         },
     },
     listOutlinedButton: {
@@ -83,7 +83,7 @@ export const useListsItemStyles = makeStyles((theme: Theme) => ({
         borderRadius: '25px',
         padding: '0 15px',
         '&:hover': {
-            backgroundColor: 'rgb(29, 161, 242, 0.1)',
+            backgroundColor: theme.palette.secondary.light,
         },
     },
 }));

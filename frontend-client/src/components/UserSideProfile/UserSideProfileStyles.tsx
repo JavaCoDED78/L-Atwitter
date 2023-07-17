@@ -11,12 +11,12 @@ export const useUserSideProfileStyles = makeStyles((theme: Theme) => ({
         borderRadius: 50,
         cursor: 'pointer',
         '&:hover': {
-            backgroundColor: colors.lightBlue[50],
+            backgroundColor: theme.palette.secondary.dark,
         },
     },
     icon: {
         "& svg": {
-            color: "rgb(83, 100, 113)",
+            color: theme.palette.text.secondary,
             marginTop: 5,
             height: "1.4em",
         },
@@ -62,7 +62,7 @@ export const useUserSideProfileStyles = makeStyles((theme: Theme) => ({
         },
         "& span": {
             "& svg" : {
-                color: "rgba(29, 161, 242, 1.00)",
+                color: theme.palette.primary.main,
                 height: "1.30em",
             },
 
@@ -75,11 +75,11 @@ export const useUserSideProfileStyles = makeStyles((theme: Theme) => ({
             fontSize: 15,
             '&:hover': {
                 cursor: 'pointer',
-                backgroundColor: 'rgb(247, 249, 249)',
+                backgroundColor: theme.palette.secondary.main,
             },
         },
         "& .MuiDivider-root": {
-            backgroundColor: 'rgb(239, 243, 244)',
+            backgroundColor: theme.palette.divider,
         },
     },
 }));

@@ -5,7 +5,7 @@ export const useAccessibilityDisplayLanguagesStyles = makeStyles((theme: Theme) 
         padding: "12px 16px"
     },
     text: {
-        color: "rgb(83, 100, 113)",
+        color: theme.palette.text.secondary,
         fontWeight: 400,
         fontSize: 13,
         lineHeight: "16px"
@@ -21,17 +21,17 @@ export const useAccessibilityDisplayLanguagesStyles = makeStyles((theme: Theme) 
             padding: "12px 16px",
             "&:hover": {
                 cursor: "pointer",
-                backgroundColor: "rgb(247, 249, 249)",
+                backgroundColor: theme.palette.secondary.main,
             },
         },
         "& svg": {
-            color: "rgb(83, 100, 113)",
+            color: theme.palette.text.secondary,
             height: "1.3em",
         },
     },
     subtitle: {
         fontSize: 15,
-        color: "rgb(15, 20, 25)",
+        color: theme.palette.text.primary,
         fontWeight: 400,
         lineHeight: "20px",
     },

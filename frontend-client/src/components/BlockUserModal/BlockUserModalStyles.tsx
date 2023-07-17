@@ -12,7 +12,7 @@ export const useBlockUserModalStyles = makeStyles((theme: Theme) => ({
         fontWeight: 700,
         textAlign: "center",
         lineHeight: "24px",
-        color: "rgb(15, 20, 25)",
+        color: theme.palette.text.primary,
     },
     text: {
         marginTop: 8,
@@ -21,7 +21,7 @@ export const useBlockUserModalStyles = makeStyles((theme: Theme) => ({
         fontWeight: 400,
         textAlign: "center",
         lineHeight: "20px",
-        color: "rgb(83, 100, 113)",
+        color: theme.palette.text.secondary,
     },
     containedButton: {
         "&.MuiButtonBase-root": {
@@ -31,20 +31,20 @@ export const useBlockUserModalStyles = makeStyles((theme: Theme) => ({
                 fontSize: 15,
                 fontWeight: 700,
                 lineHeight: "20px",
-                color: "rgb(255, 255, 255)",
+                color: theme.palette.common.white,
             },
         },
     },
     blockButton: {
         "&.MuiButtonBase-root": {
-            backgroundColor: "rgb(244, 33, 46)",
+            backgroundColor: theme.palette.error.main,
             "&:hover" : {
                 backgroundColor: "rgb(220, 30, 41)",
             },
         }
     },
     unblockButton: {
-        backgroundColor: "rgb(29, 161, 242)",
+        backgroundColor: theme.palette.primary.main,
     },
     cancelButton: {
         "&.MuiButtonBase-root": {
@@ -53,7 +53,7 @@ export const useBlockUserModalStyles = makeStyles((theme: Theme) => ({
                 fontSize: 15,
                 fontWeight: 700,
                 lineHeight: "20px",
-                color: "rgb(29, 161, 242)",
+                color: theme.palette.primary.main,
             },
         },
     },

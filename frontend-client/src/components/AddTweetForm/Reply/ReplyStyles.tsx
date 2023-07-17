@@ -16,16 +16,16 @@ export const useReplyStyles = makeStyles((theme: Theme) => ({
             },
         },
         "& .MuiButton-root.Mui-disabled": {
-            color: "rgb(142, 205, 247)"
+            color: theme.palette.primary.light
         },
         "& .MuiDivider-root": {
             marginLeft: 50,
             marginTop: 8,
-            backgroundColor: "#EFF3F4",
         },
     },
     popover: {
         "& .MuiPaper-root": {
+            boxShadow: "rgb(101 119 134 / 20%) 0px 0px 15px, rgb(101 119 134 / 15%) 0px 0px 3px 1px",
             borderRadius: 16,
         }
     },
@@ -35,7 +35,6 @@ export const useReplyStyles = makeStyles((theme: Theme) => ({
         zIndex: 2,
         borderRadius: 16,
         backgroundColor: theme.palette.background.paper,
-        boxShadow: "rgb(101 119 134 / 20%) 0px 0px 15px, rgb(101 119 134 / 15%) 0px 0px 3px 1px",
     },
     infoWrapper: {
         fontSize: 15,
@@ -45,13 +44,18 @@ export const useReplyStyles = makeStyles((theme: Theme) => ({
         fontWeight: 700,
     },
     text: {
-        color: "rgb(83, 100, 113)",
+        color: theme.palette.text.secondary,
     },
     listItem: {
         fontSize: 15,
         height: 60,
         padding: 0,
-        backgroundColor: "#fff",
+        backgroundColor: theme.palette.background.paper,
+        "&.MuiListItem-button": {
+            "&:hover": {
+                backgroundColor: theme.palette.secondary.main,
+            },
+        },
     },
     iconCircle: {
         marginRight: 12,
@@ -61,19 +65,19 @@ export const useReplyStyles = makeStyles((theme: Theme) => ({
         width: 40,
         height: 40,
         borderRadius: "50%",
-        backgroundColor: "rgb(29, 155, 240)",
+        backgroundColor: theme.palette.primary.main,
     },
     icon: {
         "& svg": {
             marginTop: 5,
             height: "1.35em",
-            fill: "#fff",
+            fill: theme.palette.common.white,
         },
     },
     checkIcon: {
         marginLeft: "auto",
         "& svg": {
-            color: "rgb(29, 155, 240)",
+            color: theme.palette.primary.main,
             marginTop: 5,
             height: "1.3em",
         },

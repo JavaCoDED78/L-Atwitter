@@ -6,11 +6,7 @@ export const useListsStyles = makeStyles((theme: Theme) => ({
         minHeight: '100vh',
         borderTop: '0',
         borderBottom: '0',
-        marginBottom: 500,
-    },
-    loading: {
-        paddingTop: 250,
-        textAlign: 'center',
+        paddingBottom: 500,
     },
     header: {
         position: "fixed",
@@ -36,7 +32,7 @@ export const useListsStyles = makeStyles((theme: Theme) => ({
     headerUsername: {
         fontSize: 13,
         lineHeight: "16px",
-        color: "rgb(83, 100, 113)",
+        color: theme.palette.text.secondary,
     },
     iconGroup: {
         marginLeft: "auto",
@@ -47,7 +43,7 @@ export const useListsStyles = makeStyles((theme: Theme) => ({
         "& .MuiIconButton-root": {
             padding: 7,
             "& svg": {
-                color: "rgb(27, 149, 224)",
+                color: theme.palette.primary.main,
                 verticalAlign: "bottom",
                 height: "0.90em",
             },
@@ -70,10 +66,11 @@ export const useListsStyles = makeStyles((theme: Theme) => ({
         boxShadow: "rgb(101 119 134 / 20%) 0px 0px 15px, rgb(101 119 134 / 15%) 0px 0px 3px 1px",
         '&:hover': {
             cursor: 'pointer',
-            backgroundColor: 'rgb(247, 249, 249)',
+            backgroundColor: theme.palette.secondary.main,
         },
     },
     text: {
+        color: theme.palette.text.primary,
         fontSize: 15,
         fontWeight: 400,
     },
@@ -81,7 +78,7 @@ export const useListsStyles = makeStyles((theme: Theme) => ({
         "& svg": {
             verticalAlign: -3,
             marginRight: 15,
-            fill: "rgb(83, 100, 113)",
+            fill: theme.palette.text.secondary,
             height: "1.30em",
         },
     },
@@ -99,7 +96,7 @@ export const useListsStyles = makeStyles((theme: Theme) => ({
     },
     pinnedListsText: {
         fontSize: 15,
-        color: "rgb(83, 100, 113)",
+        color: theme.palette.text.secondary,
         marginTop: 32,
         marginLeft: 32,
     },
@@ -124,7 +121,7 @@ export const useListsStyles = makeStyles((theme: Theme) => ({
 
         padding: 16,
         fontSize: 15,
-        color: "rgb(29, 155, 240)",
+        color: theme.palette.primary.main,
         "&:hover": {
             cursor: "pointer",
             backgroundColor: "rgba(0, 0, 0, 0.03)"

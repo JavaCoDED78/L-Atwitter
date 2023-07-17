@@ -5,7 +5,7 @@ export const useChangePhoneModalStyles = makeStyles((theme: Theme) => ({
         "& .MuiDialogTitle-root": {
             padding: "5px 15px",
             marginBottom: 0,
-            borderBottom: "1px solid rgb(239, 243, 244)"
+            borderBottom: `1px solid ${theme.palette.divider}`,
         },
         "& .MuiDialogContent-root": {
             paddingTop: 10,
@@ -23,7 +23,7 @@ export const useChangePhoneModalStyles = makeStyles((theme: Theme) => ({
         width: 53,
         "& svg": {
             height: "2.30em",
-            color: "rgb(29, 161, 245)",
+            color: theme.palette.primary.main,
         },
     },
     title: {
@@ -31,7 +31,7 @@ export const useChangePhoneModalStyles = makeStyles((theme: Theme) => ({
         fontSize: 23,
         fontWeight: 700,
         lineHeight: "28px",
-        color: "rgb(15, 20, 25)",
+        color: theme.palette.text.primary,
     },
     text: {
         marginBottom: 20,
@@ -40,11 +40,11 @@ export const useChangePhoneModalStyles = makeStyles((theme: Theme) => ({
         lineHeight: "20px",
     },
     textSecondary: {
-        color: "rgb(83, 100, 113)",
+        color: theme.palette.text.secondary,
     },
     textPrimary: {
         width: 504,
-        color: "rgb(15, 20, 25)",
+        color: theme.palette.text.primary,
     },
     infoWrapper: {
         marginTop: 38,
@@ -59,7 +59,7 @@ export const useChangePhoneModalStyles = makeStyles((theme: Theme) => ({
     },
     link: {
         textDecoration: "none",
-        color: "rgb(29, 155, 240)",
+        color: theme.palette.primary.main,
         cursor: "pointer",
         "&:hover": {
             textDecoration: "underline",

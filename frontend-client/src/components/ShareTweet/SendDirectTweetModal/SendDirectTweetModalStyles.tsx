@@ -18,28 +18,28 @@ export const useSendDirectTweetModalStyles = makeStyles((theme: Theme) => ({
         padding: 0,
         "& .MuiChip-root": {
             marginLeft: 8,
-            backgroundColor: "#fff",
-            border: "1px solid rgb(207, 217, 222)",
+            backgroundColor: theme.palette.common.white,
+            border: `1px solid ${theme.palette.info.light}`,
             "& .MuiChip-label": {
                 fontSize: 15,
                 fontWeight: 700,
             },
             "& .MuiChip-deleteIcon": {
-                color: "rgb(29, 161, 242)"
+                color: theme.palette.primary.main
             },
         },
     },
     divider: {
         marginTop: 8,
         height: 1,
-        backgroundColor: "rgb(207, 217, 222)",
+        backgroundColor: theme.palette.divider,
     },
     footer: {
         position: "absolute",
         padding: "4px 8px",
         minHeight: 56,
         width: "100%",
-        borderTop: "3px solid rgb(239, 243, 244)",
+        borderTop: `3px solid ${theme.palette.divider}`,
         bottom: 0,
     },
     chatIcon: {
@@ -58,7 +58,7 @@ export const useSendDirectTweetModalStyles = makeStyles((theme: Theme) => ({
             display: "inline",
             padding: 7,
             "& svg": {
-                color: "rgb(142, 205, 247)",
+                color: theme.palette.primary.light,
                 paddingTop: 2,
                 height: "0.90em",
             },

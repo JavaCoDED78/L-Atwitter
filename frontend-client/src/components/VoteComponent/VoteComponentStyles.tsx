@@ -25,12 +25,12 @@ export const useVoteComponentStyles = makeStyles((theme: Theme) => ({
         borderRadius: 4,
         position: "absolute",
         height: 30,
-        backgroundColor: "rgb(207, 217, 222)",
+        backgroundColor: theme.palette.info.light,
     },
     voteInfo: {
         fontSize: 14,
         marginTop: 11,
-        color: "rgb(83, 100, 113)",
+        color: theme.palette.text.secondary,
     },
     voteButton: {
         marginTop: 4,

@@ -6,7 +6,7 @@ export const useConnectedAppsStyles = makeStyles((theme: Theme) => ({
     },
     text: {
         fontSize: 13,
-        color: "rgb(83, 100, 113)",
+        color: theme.palette.text.secondary,
         fontWeight: 400,
         lineHeight: "16px",
     },
@@ -20,17 +20,17 @@ export const useConnectedAppsStyles = makeStyles((theme: Theme) => ({
         lineHeight: "36px",
         fontSize: 31,
         fontWeight: 800,
-        color: "rgb(15, 20, 25)",
+        color: theme.palette.text.primary,
     },
     subtitle: {
         lineHeight: "20px",
         fontSize: 15,
         fontWeight: 400,
-        color: "rgb(83, 100, 113)",
+        color: theme.palette.text.secondary,
     },
     link: {
         textDecoration: "none",
-        color: "rgb(29, 155, 240)",
+        color: theme.palette.primary.main,
         cursor: "pointer",
         "&:hover": {
             textDecoration: "underline",

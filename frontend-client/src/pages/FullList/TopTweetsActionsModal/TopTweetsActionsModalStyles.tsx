@@ -5,7 +5,7 @@ export const useTopTweetsActionsModalStyles = makeStyles((theme: Theme) => ({
         display: "inline-block",
         "& .MuiIconButton-root": {
             padding: 7,
-            color: "rgb(27, 149, 224)",
+            color: theme.palette.primary.main,
             "& .MuiIconButton-label": {
                 "& svg": {
                     verticalAlign: "bottom",
@@ -34,7 +34,7 @@ export const useTopTweetsActionsModalStyles = makeStyles((theme: Theme) => ({
             '&:hover': {
                 borderRadius: 4,
                 cursor: 'pointer',
-                backgroundColor: 'rgb(247, 249, 249)',
+                backgroundColor: theme.palette.secondary.main,
             },
         },
     },
@@ -47,14 +47,14 @@ export const useTopTweetsActionsModalStyles = makeStyles((theme: Theme) => ({
     },
     text: {
         fontSize: 13,
-        color: "rgb(83, 100, 113)",
+        color: theme.palette.text.secondary,
     },
     textIcon: {
         paddingTop: 20,
         "& svg": {
             verticalAlign: "bottom",
             marginRight: 15,
-            fill: "rgb(83, 100, 113)",
+            fill: theme.palette.text.secondary,
             height: "1.30em",
         },
     },

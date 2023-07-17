@@ -6,7 +6,7 @@ export const useListsMembershipsStyles = makeStyles((theme: Theme) => ({
         minHeight: '100vh',
         borderTop: '0',
         borderBottom: '0',
-        marginBottom: 500,
+        paddingBottom: 500,
     },
     header: {
         position: "fixed",
@@ -32,7 +32,7 @@ export const useListsMembershipsStyles = makeStyles((theme: Theme) => ({
     headerUsername: {
         fontSize: 13,
         lineHeight: "16px",
-        color: "rgb(83, 100, 113)",
+        color: theme.palette.text.secondary,
     },
     infoWrapper: {
         paddingTop: 84,
@@ -48,7 +48,7 @@ export const useListsMembershipsStyles = makeStyles((theme: Theme) => ({
     },
     text: {
         fontSize: 15,
-        color: "rgb(83, 100, 113)",
+        color: theme.palette.text.secondary,
         lineHeight: "20px"
     },
 }));

@@ -12,7 +12,7 @@ export const useFullTweetStyles = makeStyles<Theme, FullTweetStyles>((theme) => 
         alignItems: "center",
         marginLeft: 20,
         marginTop: 5,
-        color: "rgb(83, 100, 113)",
+        color: theme.palette.text.secondary,
         '& p': {
             marginLeft: 15,
             fontSize: 14,
@@ -22,10 +22,6 @@ export const useFullTweetStyles = makeStyles<Theme, FullTweetStyles>((theme) => 
             verticalAlign: "bottom",
             height: "1.20em",
         },
-    },
-    loading: {
-        paddingTop: 200,
-        textAlign: 'center',
     },
     container: {
         borderTop: '0',
@@ -38,7 +34,7 @@ export const useFullTweetStyles = makeStyles<Theme, FullTweetStyles>((theme) => 
         justifyContent: "space-between",
         alignItems: 'center',
         '& a': {
-            color: "#000",
+            color: theme.palette.text.primary,
             textDecoration: 'none',
         },
     },
@@ -58,11 +54,11 @@ export const useFullTweetStyles = makeStyles<Theme, FullTweetStyles>((theme) => 
         },
     },
     username: {
-        color: "rgb(83, 100, 113)",
+        color: theme.palette.text.secondary,
         lineHeight: "20px"
     },
     date: {
-        color: "rgb(83, 100, 113)",
+        color: theme.palette.text.secondary,
     },
     dateWrapper: {
         marginBottom: 16
@@ -74,11 +70,11 @@ export const useFullTweetStyles = makeStyles<Theme, FullTweetStyles>((theme) => 
         lineHeight: 1.3125,
         wordBreak: 'break-word',
         '& #hashtag': {
-            color: "rgb(27, 149, 224)",
+            color: theme.palette.primary.main,
         },
         "& #link": {
             textDecoration: 'none',
-            color: "rgb(27, 149, 224)",
+            color: theme.palette.primary.main,
         }
     },
     image: {
@@ -87,7 +83,7 @@ export const useFullTweetStyles = makeStyles<Theme, FullTweetStyles>((theme) => 
             marginTop: 10,
             width: 564,
             borderRadius: 20,
-            borderColor: "#5b7083",
+            borderColor: theme.palette.info.light,
         },
     },
     content: {
@@ -96,7 +92,7 @@ export const useFullTweetStyles = makeStyles<Theme, FullTweetStyles>((theme) => 
         margin: "16px 0",
         fontSize: 15,
         '& a': {
-            color: "#000",
+            color: theme.palette.text.primary,
             textDecoration: 'none'
         },
     },
@@ -104,7 +100,7 @@ export const useFullTweetStyles = makeStyles<Theme, FullTweetStyles>((theme) => 
         marginRight: 20,
         "& span": {
             marginLeft: 5,
-            color: "rgb(83, 100, 113)",
+            color: theme.palette.text.secondary,
         },
     },
     info: {
@@ -113,7 +109,7 @@ export const useFullTweetStyles = makeStyles<Theme, FullTweetStyles>((theme) => 
         paddingTop: 5,
         paddingBottom: 5,
         margin: '0 auto',
-        borderTop: '1px solid #E6ECF0',
+        borderTop: `1px solid ${theme.palette.divider}`,
         left: 0,
         maxWidth: '100%',
         justifyContent: 'space-around',
@@ -125,7 +121,7 @@ export const useFullTweetStyles = makeStyles<Theme, FullTweetStyles>((theme) => 
     infoIcon: {
         "& .MuiIconButton-root": {
             "& svg": {
-                color: "rgb(83, 100, 113)",
+                color: theme.palette.text.secondary,
                 verticalAlign: "bottom",
                 height: "0.9em",
             },
@@ -134,19 +130,31 @@ export const useFullTweetStyles = makeStyles<Theme, FullTweetStyles>((theme) => 
     retweetIcon: {
         "& .MuiIconButton-root": {
             "& svg": {
-                color: props => props.isTweetRetweeted ? "rgb(23, 191, 99)" : "rgb(83, 100, 113)",
+                color: props => props.isTweetRetweeted ? "rgb(23, 191, 99)" : theme.palette.text.secondary,
                 verticalAlign: "bottom",
                 height: "0.9em",
-            }
+            },
+            "&:hover": {
+                backgroundColor: "rgba(0, 186, 124, 0.1) !important",
+                "& svg": {
+                    color: "rgb(23, 191, 99) !important",
+                },
+            },
         },
     },
     likeIcon: {
         "& .MuiIconButton-root": {
             "& svg": {
-                color: props => props.isTweetLiked ? "rgb(224, 36, 94)" : "rgb(83, 100, 113)",
+                color: props => props.isTweetLiked ? "rgb(224, 36, 94)" : theme.palette.text.secondary,
                 verticalAlign: "bottom",
                 height: "0.9em",
-            }
+            },
+            "&:hover": {
+                backgroundColor: "rgba(249, 24, 128, 0.1) !important",
+                "& svg": {
+                    color: "rgb(224, 36, 94) !important",
+                },
+            },
         },
     },
     replyInfoWrapper: {
@@ -173,13 +181,13 @@ export const useFullTweetStyles = makeStyles<Theme, FullTweetStyles>((theme) => 
         width: 28,
         height: 28,
         borderRadius: "50%",
-        backgroundColor: "rgb(29, 155, 240)",
+        backgroundColor: theme.palette.primary.main,
     },
     icon: {
         "& svg": {
             marginTop: 3,
             height: "1.2em",
-            fill: "#fff",
+            fill: theme.palette.common.white,
         },
     },
     replyTextInfoWrapper: {
@@ -194,16 +202,16 @@ export const useFullTweetStyles = makeStyles<Theme, FullTweetStyles>((theme) => 
     },
     replyWrapper: {
         margin: "16px 60px",
-        color: "rgb(83, 100, 113)",
+        color: theme.palette.text.secondary,
         fontSize: 15,
         "& a": {
             textDecoration: "none",
-            color: "rgb(27, 149, 224)",
+            color: theme.palette.primary.main,
         },
     },
     divider: {
         height: 12,
-        backgroundColor: '#E6ECF0',
+        backgroundColor: theme.palette.divider,
     },
     error: {
         width: 350,

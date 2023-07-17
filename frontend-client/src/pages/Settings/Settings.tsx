@@ -1,10 +1,10 @@
 import React, {FC, ReactElement} from 'react';
-import {NavLink, Route} from 'react-router-dom';
+import {NavLink, Route, useLocation} from 'react-router-dom';
 import {Grid, List, ListItem, Paper, Typography} from "@material-ui/core";
 
 import {useSettingsStyles} from "./SettingsStyles";
 import {ArrowRightIcon} from "../../icons";
-import {BackButton} from "../../components/BackButton/BackButton";
+import BackButton from "../../components/BackButton/BackButton";
 import Account from "./Account/Account";
 import AccountInformation from "./Account/AccountInformation/AccountInformation";
 import ChangeUsername from "./Account/AccountInformation/ChangeUsername/ChangeUsername";
@@ -56,15 +56,20 @@ import PushNotifications from "./Notifications/Preferences/PushNotifications/Pus
 import EmailNotifications from "./Notifications/Preferences/EmailNotifications/EmailNotifications";
 import Accessibility from "./AccessibilityDisplayLanguages/Accessibility/Accessibility";
 import DataUsage from "./AccessibilityDisplayLanguages/DataUsage/DataUsage";
-import Display from "./AccessibilityDisplayLanguages/Display/Display";
+import Display, {DisplayProps} from "./AccessibilityDisplayLanguages/Display/Display";
 import Languages from "./AccessibilityDisplayLanguages/Languages/Languages";
 import Autoplay from "./AccessibilityDisplayLanguages/DataUsage/Autoplay/Autoplay";
 
-const Settings: FC = (): ReactElement => {
-    const classes = useSettingsStyles();
+export interface LocationState {
+    pathname: string;
+}
+
+const Settings: FC<DisplayProps> = ({changeBackgroundColor, changeColorScheme}): ReactElement => {
+    const location = useLocation<LocationState>();
+    const classes = useSettingsStyles({location});
     const [selectedIndex, setSelectedIndex] = React.useState(1);
 
-    const handleListItemClick = (index: number) => {
+    const handleListItemClick = (index: number): void => {
         setSelectedIndex(index);
     };
 
@@ -526,7 +531,11 @@ const Settings: FC = (): ReactElement => {
                             <Route exact path="/settings/notification/email_notifications" component={EmailNotifications}/>
                             <Route exact path="/settings/accessibility_display_and_languages" component={AccessibilityDisplayLanguages}/>
                             <Route exact path="/settings/accessibility_display_and_languages/accessibility" component={Accessibility}/>
-                            <Route exact path="/settings/accessibility_display_and_languages/display" component={Display}/>
+                            <Route exact path="/settings/accessibility_display_and_languages/display"
+                                   render={() => <Display
+                                       changeBackgroundColor={changeBackgroundColor}
+                                       changeColorScheme={changeColorScheme}/>
+                                   }/>
                             <Route exact path="/settings/accessibility_display_and_languages/languages" component={Languages}/>
                             <Route exact path="/settings/accessibility_display_and_languages/data" component={DataUsage}/>
                             <Route exact path="/settings/accessibility_display_and_languages/autoplay" component={Autoplay}/>

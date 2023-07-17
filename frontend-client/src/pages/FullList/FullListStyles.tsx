@@ -4,13 +4,9 @@ export const useFullListStyles = makeStyles((theme: Theme) => ({
     container: {
         borderRadius: 0,
         minHeight: '100vh',
-        marginBottom: 500,
+        paddingBottom: 500,
         borderTop: 0,
         borderBottom: 0,
-    },
-    loading: {
-        paddingTop: 250,
-        textAlign: 'center',
     },
     header: {
         position: "fixed",
@@ -33,7 +29,7 @@ export const useFullListStyles = makeStyles((theme: Theme) => ({
     headerUsername: {
         fontSize: 13,
         lineHeight: "16px",
-        color: "rgb(83, 100, 113)",
+        color: theme.palette.text.secondary,
     },
     iconGroup: {
         marginLeft: "auto",
@@ -90,15 +86,15 @@ export const useFullListStyles = makeStyles((theme: Theme) => ({
     },
     listOwnerUsername: {
         verticalAlign: "top",
-        color: "rgb(83, 100, 113)",
+        color: theme.palette.text.secondary,
         fontSize: 15,
     },
     listMembers: {
         marginLeft: 20,
-        color: "rgb(83, 100, 113)",
+        color: theme.palette.text.secondary,
         fontSize: 15,
         "& b" : {
-            color: "#000"
+            color: theme.palette.text.primary,
         },
         "&:hover": {
            cursor: "pointer",
@@ -118,7 +114,7 @@ export const useFullListStyles = makeStyles((theme: Theme) => ({
         borderRadius: '25px',
         padding: '0 15px',
         '&:hover': {
-            backgroundColor: 'rgb(29, 161, 242, 0.1)',
+            backgroundColor: theme.palette.secondary.light,
         },
     },
     outlinedButton: {
@@ -128,7 +124,7 @@ export const useFullListStyles = makeStyles((theme: Theme) => ({
         borderRadius: '25px',
         padding: '0 15px',
         '&:hover': {
-            backgroundColor: 'rgb(29, 161, 242, 0.1)',
+            backgroundColor: theme.palette.secondary.light,
         },
     },
     primaryButton: {
@@ -138,7 +134,7 @@ export const useFullListStyles = makeStyles((theme: Theme) => ({
         borderRadius: '25px',
         padding: '0 15px',
         '&:hover': {
-            backgroundColor: 'rgb(202, 32, 85)',
+            backgroundColor: theme.palette.error.dark,
         },
     },
     listInfoWrapper: {
@@ -156,6 +152,6 @@ export const useFullListStyles = makeStyles((theme: Theme) => ({
     listInfoText: {
         lineHeight: "20px",
         fontSize: 15,
-        color: "rgb(83, 100, 113)",
+        color: theme.palette.text.secondary,
     },
 }));

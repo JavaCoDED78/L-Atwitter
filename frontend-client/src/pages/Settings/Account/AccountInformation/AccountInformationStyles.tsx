@@ -12,23 +12,23 @@ export const useAccountInformationStyles = makeStyles((theme: Theme) => ({
             padding: "12px 16px",
             "&:hover": {
                 cursor: "pointer",
-                backgroundColor: "rgb(247, 249, 249)",
+                backgroundColor: theme.palette.secondary.main,
             },
         },
         "& svg": {
-            color: "rgb(83, 100, 113)",
+            color: theme.palette.text.secondary,
             height: "1.3em",
         },
     },
     title: {
         fontSize: 15,
-        color: "rgb(15, 20, 25)",
+        color: theme.palette.text.primary,
         fontWeight: 400,
         lineHeight: "20px",
     },
     text: {
         fontSize: 13,
-        color: "rgb(83, 100, 113)",
+        color: theme.palette.text.secondary,
         fontWeight: 400,
         lineHeight: "16px",
     },
@@ -41,10 +41,6 @@ export const useAccountInformationStyles = makeStyles((theme: Theme) => ({
     link: {
         fontSize: 13,
         cursor: "pointer",
-        color: "rgb(29, 155, 240)",
-    },
-    divider: {
-        height: 1,
-        backgroundColor: "rgb(239, 243, 244)",
+        color: theme.palette.primary.main,
     },
 }));

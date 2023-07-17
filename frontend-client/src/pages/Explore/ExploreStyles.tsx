@@ -6,7 +6,7 @@ export const useExploreStyles = makeStyles((theme: Theme) => ({
         minHeight: '100vh',
         borderTop: 0,
         borderBottom: 0,
-        marginBottom: 500,
+        paddingBottom: 500,
     },
     header: {
         position: "fixed",
@@ -33,28 +33,23 @@ export const useExploreStyles = makeStyles((theme: Theme) => ({
             marginLeft: 25,
             width: 40,
             height: 40,
-            color: "rgb(29, 161, 242)",
-            "& span": {
-                paddingTop: 5,
-                "& svg" : {
-                    height: "0.90em",
-                },
+            "& svg": {
+                marginTop: 5,
+                verticalAlign: "bottom",
+                color: theme.palette.primary.main,
+                height: "0.90em",
             },
         },
     },
     contentWrapper: {
         paddingTop: 97
     },
-    loading: {
-        marginTop: 50,
-        textAlign: 'center',
-    },
     tabs: {
         "& .MuiTabs-indicator": {
             marginLeft: 35,
             maxWidth: 50,
             height: 4,
-            backgroundColor: "rgb(29, 161, 242)",
+            backgroundColor: theme.palette.primary.main,
         },
         "& .MuiTab-root": {
             fontSize: 15,

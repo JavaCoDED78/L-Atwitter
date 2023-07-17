@@ -5,7 +5,7 @@ export const useShareActionsModalStyles = makeStyles((theme: Theme) => ({
         display: "inline-block",
         "& .MuiIconButton-root": {
             padding: 7,
-            color: "rgb(27, 149, 224)",
+            color: theme.palette.primary.main,
             "& .MuiIconButton-label": {
                 "& svg": {
                     verticalAlign: "bottom",
@@ -32,13 +32,13 @@ export const useShareActionsModalStyles = makeStyles((theme: Theme) => ({
             height: 52,
             '&:hover': {
                 cursor: 'pointer',
-                backgroundColor: 'rgb(247, 249, 249)',
+                backgroundColor: theme.palette.secondary.main,
             },
         },
         "& svg": {
             verticalAlign: "bottom",
             marginRight: 15,
-            fill: "rgb(83, 100, 113)",
+            fill: theme.palette.text.secondary,
             height: "1.30em",
         },
     },

@@ -3,15 +3,14 @@ import {makeStyles, Theme} from "@material-ui/core";
 export const useChangePhoneStyles = makeStyles((theme: Theme) => ({
     textFieldWrapper: {
         padding: "12px 16px",
-    },
-    divider: {
-        height: 1,
-        backgroundColor: "rgb(239, 243, 244)",
+        "& .MuiFormLabel-root.Mui-disabled": {
+            color: theme.palette.grey[500],
+        },
     },
     updatePhoneNumber: {
         textAlign: "center",
         padding: 16,
-        color: "rgb(29, 155, 240)",
+        color: theme.palette.primary.main,
         fontWeight: 400,
         fontSize: 15,
         lineHeight: "20px",
@@ -23,7 +22,7 @@ export const useChangePhoneStyles = makeStyles((theme: Theme) => ({
     deletePhoneNumber: {
         textAlign: "center",
         padding: 16,
-        color: "rgb(244, 33, 46)",
+        color: theme.palette.error.main,
         fontWeight: 400,
         fontSize: 15,
         lineHeight: "20px",

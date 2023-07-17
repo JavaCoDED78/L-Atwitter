@@ -2,13 +2,13 @@ import {makeStyles} from "@material-ui/core";
 
 export const useTagsStyles = makeStyles((theme) => ({
     container: {
-        backgroundColor: '#F7F9F9',
+        backgroundColor: theme.palette.secondary.main,
         borderRadius: 15,
         marginTop: 20,
         '& .MuiList-root': {
             paddingTop: 0,
             '& .MuiListItemText-primary': {
-                color: 'black',
+                color: theme.palette.text.primary,
                 '&:hover': {
                     textDecoration: 'underline',
                 },
@@ -24,7 +24,7 @@ export const useTagsStyles = makeStyles((theme) => ({
         borderTop: 0,
         borderLeft: 0,
         borderRight: 0,
-        borderBottom: "1px solid rgb(239, 243, 244)",
+        borderBottom: `1px solid ${theme.palette.divider}`,
         backgroundColor: 'transparent',
         padding: '10px 18px',
         '& b': {
@@ -34,21 +34,17 @@ export const useTagsStyles = makeStyles((theme) => ({
         "& .MuiIconButton-root": {
             width: 35,
             height: 35,
-            color: "rgb(83, 100, 113)",
+            color: theme.palette.text.secondary,
             "& svg" : {
                 marginTop: 5,
-                color: "rgb(27, 149, 224)",
+                color: theme.palette.primary.main,
                 height: "0.95em",
             },
         },
     },
-    loading: {
-        marginTop: 50,
-        textAlign: 'center',
-    },
     item: {
         cursor: 'pointer',
-        borderBottom: "1px solid rgb(239, 243, 244)",
+        borderBottom: `1px solid ${theme.palette.divider}`,
         '& .MuiListItem-root .MuiListItem-gutters': {
             padding: "0px 0px 0px 0px",
         },
@@ -62,7 +58,7 @@ export const useTagsStyles = makeStyles((theme) => ({
             // marginRight: 45,
         },
         '&:hover': {
-            backgroundColor: '#edf3f6',
+            backgroundColor: theme.palette.secondary.dark,
         },
         '& a': {
             color: 'inherit',
@@ -71,7 +67,7 @@ export const useTagsStyles = makeStyles((theme) => ({
     },
     footer: {
         fontSize: 16,
-        color: "rgb(27, 149, 224)",
+        color: theme.palette.primary.main,
         cursor: 'pointer',
         '& .MuiListItem-root .MuiListItem-gutters': {
             padding: "0px 0px 0px 0px",
@@ -86,7 +82,7 @@ export const useTagsStyles = makeStyles((theme) => ({
             // marginRight: 45,
         },
         '&:hover': {
-            backgroundColor: '#edf3f6',
+            backgroundColor: theme.palette.secondary.dark,
         },
         '& a': {
             color: 'inherit',

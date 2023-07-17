@@ -1,5 +1,7 @@
 package com.gmail.javacoded78.latwitter.service;
 
+import com.gmail.javacoded78.latwitter.model.BackgroundColorType;
+import com.gmail.javacoded78.latwitter.model.ColorSchemeType;
 import com.gmail.javacoded78.latwitter.model.User;
 
 import java.util.Map;
@@ -21,4 +23,8 @@ public interface UserSettingsService {
     User updateDirectMessageRequests(boolean mutedDirectMessages);
 
     User updatePrivateProfile(boolean privateProfile);
+
+    User updateColorScheme(ColorSchemeType colorSchemeType);
+
+    User updateBackgroundColor(BackgroundColorType backgroundColorType);
 }

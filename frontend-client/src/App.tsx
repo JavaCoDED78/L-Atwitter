@@ -1,8 +1,13 @@
-import React, { FC, ReactElement, useEffect } from "react";
+import React, { FC, ReactElement, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Route, Switch, useHistory, useLocation } from "react-router-dom";
 import { Stomp } from "@stomp/stompjs";
 import SockJS from "sockjs-client";
+import CssBaseline from "@material-ui/core/CssBaseline";
+import { MuiThemeProvider, Theme, ThemeOptions } from "@material-ui/core";
+import { createMuiTheme } from "@material-ui/core/styles";
+
+import { deepmerge } from "@mui/utils";
 
 import Authentication from "./pages/Authentication/Authentication";
 import Home from "./pages/Home/Home";
@@ -43,6 +48,21 @@ import FullList from "./pages/FullList/FullList";
 import SuggestedLists from "./pages/SuggestedLists/SuggestedLists";
 import ListsMemberships from "./pages/Lists/ListsMemberships/ListsMemberships";
 import Settings from "./pages/Settings/Settings";
+import {
+  blueColor,
+  crimsonColor,
+  defaultTheme,
+  dimTheme,
+  greenColor,
+  lightsOutTheme,
+  orangeColor,
+  violetColor,
+  yellowColor,
+} from "./theme";
+import {
+  BackgroundTheme,
+  ColorScheme,
+} from "./pages/Settings/AccessibilityDisplayLanguages/Display/Display";
 
 const App: FC = (): ReactElement => {
   const history = useHistory();
@@ -54,6 +74,10 @@ const App: FC = (): ReactElement => {
   const isReady =
     loadingStatus !== LoadingStatus.NEVER &&
     loadingStatus !== LoadingStatus.LOADING;
+  const [colorScheme, setColorScheme] = useState<ThemeOptions>(
+    blueColor as ThemeOptions
+  );
+  const [theme, setTheme] = useState<Theme>(defaultTheme);
 
   const location = useLocation<{ background: any }>();
   const background = location.state && location.state.background;
@@ -89,6 +113,13 @@ const App: FC = (): ReactElement => {
         dispatch(setScheduledTweets(JSON.parse(response.body)));
       });
     });
+
+    const background = localStorage.getItem("background");
+    const color = localStorage.getItem("color");
+    processColorScheme(
+      color !== null ? (color as ColorScheme) : ColorScheme.BLUE
+    );
+    processBackgroundColor(background as BackgroundTheme);
   }, []);
 
   useEffect(() => {
@@ -121,36 +152,88 @@ const App: FC = (): ReactElement => {
     }
   }, [myProfile?.id]);
 
+  const changeBackgroundColor = (background: BackgroundTheme): void => {
+    processBackgroundColor(background);
+    localStorage.setItem("background", background);
+  };
+
+  const changeColorScheme = (color: ColorScheme): void => {
+    processColorScheme(color);
+    localStorage.setItem("color", color);
+  };
+
+  const processBackgroundColor = (background: BackgroundTheme): void => {
+    if (background === BackgroundTheme.DEFAULT) {
+      setTheme(defaultTheme);
+    } else if (background === BackgroundTheme.DIM) {
+      setTheme(dimTheme);
+    } else if (background === BackgroundTheme.LIGHTS_OUT) {
+      setTheme(lightsOutTheme);
+    }
+  };
+
+  const processColorScheme = (color: ColorScheme): void => {
+    if (color === ColorScheme.BLUE) {
+      setColorScheme(blueColor);
+    } else if (color === ColorScheme.YELLOW) {
+      setColorScheme(yellowColor);
+    } else if (color === ColorScheme.CRIMSON) {
+      setColorScheme(crimsonColor);
+    } else if (color === ColorScheme.VIOLET) {
+      setColorScheme(violetColor);
+    } else if (color === ColorScheme.ORANGE) {
+      setColorScheme(orangeColor);
+    } else if (color === ColorScheme.GREEN) {
+      setColorScheme(greenColor);
+    } else {
+      setColorScheme(blueColor);
+    }
+  };
+
   return (
-    <div className="App">
-      <Layout>
-        <Switch location={background || location}>
-          <Route path="/account/signin" component={Authentication} exact />
-          <Route path="/account/login" component={Login} exact />
-          <Route path="/account/forgot" component={ForgotPassword} />
-          <Route path="/home" component={Home} />
-          <Route path="/search" component={Explore} />
-          <Route path="/notifications" component={Notifications} exact />
-          <Route path="/notification" component={NotificationInfo} exact />
-          <Route path="/messages" component={Messages} />
-          <Route path="/settings" component={Settings} />
-          <Route path="/bookmarks" component={Bookmarks} />
-          <Route path="/suggested" component={SuggestedLists} />
-          <Route path="/lists" component={Lists} exact />
-          <Route
-            path="/lists/memberships/:id"
-            component={ListsMemberships}
-            exact
-          />
-          <Route path="/lists/:listId" component={FullList} exact />
-          <Route path="/user/:id" component={UserPage} exact />
-          <Route path="/user/:id/:follow" component={FollowingFollowers} />
-        </Switch>
-        {background && (
-          <Route path="/modal/:id" children={<TweetImageModal />} />
-        )}
-      </Layout>
-    </div>
+    <MuiThemeProvider theme={createMuiTheme(deepmerge(theme, colorScheme))}>
+      <CssBaseline />
+      <div className="App">
+        <Layout
+          changeBackgroundColor={changeBackgroundColor}
+          changeColorScheme={changeColorScheme}
+        >
+          <Switch location={background || location}>
+            <Route path="/account/signin" component={Authentication} exact />
+            <Route path="/account/login" component={Login} exact />
+            <Route path="/account/forgot" component={ForgotPassword} />
+            <Route path="/home" component={Home} />
+            <Route path="/search" component={Explore} />
+            <Route path="/notifications" component={Notifications} exact />
+            <Route path="/notification" component={NotificationInfo} exact />
+            <Route path="/messages" component={Messages} />
+            <Route
+              path="/settings"
+              render={() => (
+                <Settings
+                  changeBackgroundColor={changeBackgroundColor}
+                  changeColorScheme={changeColorScheme}
+                />
+              )}
+            />
+            <Route path="/bookmarks" component={Bookmarks} />
+            <Route path="/suggested" component={SuggestedLists} />
+            <Route path="/lists" component={Lists} exact />
+            <Route
+              path="/lists/memberships/:id"
+              component={ListsMemberships}
+              exact
+            />
+            <Route path="/lists/:listId" component={FullList} exact />
+            <Route path="/user/:id" component={UserPage} exact />
+            <Route path="/user/:id/:follow" component={FollowingFollowers} />
+          </Switch>
+          {background && (
+            <Route path="/modal/:id" children={<TweetImageModal />} />
+          )}
+        </Layout>
+      </div>
+    </MuiThemeProvider>
   );
 };
 

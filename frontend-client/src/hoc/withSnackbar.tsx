@@ -1,31 +1,29 @@
-import React, { useState } from "react";
+import React, {ComponentType, useState} from "react";
 
 export interface SnackbarProps {
-  snackBarMessage?: string;
-  openSnackBar?: boolean;
-  setSnackBarMessage?: (value: string | ((prevVar: string) => string)) => void;
-  setOpenSnackBar?: (value: boolean | ((prevVar: boolean) => boolean)) => void;
-  onCloseSnackBar?: () => void;
+    snackBarMessage?: string;
+    openSnackBar?: boolean;
+    setSnackBarMessage?: (value: string | ((prevVar: string) => string)) => void;
+    setOpenSnackBar?: (value: boolean | ((prevVar: boolean) => boolean)) => void;
+    onCloseSnackBar?: () => void;
 }
 
-export const withSnackbar =
-  <T extends object>(Component: React.ComponentType<SnackbarProps>) =>
-  (props: SnackbarProps) => {
+export const withSnackbar = <T extends SnackbarProps>(Component: ComponentType<T>) => (props: T) => {
     const [snackBarMessage, setSnackBarMessage] = useState<string>("");
     const [openSnackBar, setOpenSnackBar] = useState<boolean>(false);
 
     const onCloseSnackBar = (): void => {
-      setOpenSnackBar(false);
+        setOpenSnackBar(false);
     };
 
     return (
-      <Component
-        {...(props as SnackbarProps)}
-        snackBarMessage={snackBarMessage}
-        openSnackBar={openSnackBar}
-        setSnackBarMessage={setSnackBarMessage}
-        setOpenSnackBar={setOpenSnackBar}
-        onCloseSnackBar={onCloseSnackBar}
-      />
+        <Component
+            {...props as T}
+            snackBarMessage={snackBarMessage}
+            openSnackBar={openSnackBar}
+            setSnackBarMessage={setSnackBarMessage}
+            setOpenSnackBar={setOpenSnackBar}
+            onCloseSnackBar={onCloseSnackBar}
+        />
     );
-  };
+};
