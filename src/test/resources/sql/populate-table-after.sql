@@ -7,15 +7,19 @@ FROM tweets_tags;
 DELETE
 FROM user_blocked;
 DELETE
+FROM subscribers;
+DELETE
 FROM user_muted;
+DELETE
+FROM user_follower_requests;
 DELETE
 FROM users_tweets;
 DELETE
 FROM user_subscriptions;
 DELETE
-FROM users_bookmarks;
-DELETE
 FROM unread_messages;
+DELETE
+FROM chats_participants;
 DELETE
 FROM chat_to_user;
 DELETE

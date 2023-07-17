@@ -12,7 +12,7 @@ spring:
       fetch_size: 50
       show_sql: true
       format_sql: true
-#     open-in-view: false
+    #     open-in-view: false
     hibernate:
       ddl-auto: create
 
@@ -41,11 +41,12 @@ spring:
 
 google:
   api:
+    url: https://www.googleapis.com/youtube/v3/videos?id=%s&key=%s&part=snippet,contentDetails,statistics,status
     key: AIzaSyAyhB6MnJNlOGXJkibk-07VgGSxmn72-vU
 
 jwt:
   header: Authorization
-  secret:  dejavudejavudejavudejavudejavudejavudejavudejavudejavudejavu
+  secret: dejavudejavudejavudejavudejavudejavudejavudejavudejavudejavu
   expiration: 6048000
 
 amazon:
