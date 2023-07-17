@@ -48,7 +48,7 @@ public class Lists {
     @JoinColumn(name = "wallpaper_id")
     private Image wallpaper;
 
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "user_id")
     private User listOwner;
 

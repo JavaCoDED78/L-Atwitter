@@ -6,5 +6,6 @@ import lombok.Data;
 public class VoteRequest {
 
     private Long tweetId;
+    private Long pollId;
     private Long pollChoiceId;
 }

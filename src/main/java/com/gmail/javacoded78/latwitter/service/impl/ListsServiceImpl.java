@@ -1,5 +1,6 @@
 package com.gmail.javacoded78.latwitter.service.impl;
 
+import com.gmail.javacoded78.latwitter.exception.ApiRequestException;
 import com.gmail.javacoded78.latwitter.model.Lists;
 import com.gmail.javacoded78.latwitter.model.Tweet;
 import com.gmail.javacoded78.latwitter.model.User;
@@ -9,12 +10,14 @@ import com.gmail.javacoded78.latwitter.repository.UserRepository;
 import com.gmail.javacoded78.latwitter.service.AuthenticationService;
 import com.gmail.javacoded78.latwitter.service.ListsService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -48,13 +51,18 @@ public class ListsServiceImpl implements ListsService {
 
     @Override
     public Lists getListById(Long listId) {
-        Lists list = listsRepository.getOne(listId);
+        User user = authenticationService.getAuthenticatedUser();
+        Lists list = listsRepository.getListById(listId, user.getId())
+                .orElseThrow(() -> new ApiRequestException("List not found", HttpStatus.NOT_FOUND));
         list.setTweets(mergeTweets(list));
         return list;
     }
 
     @Override
     public Lists createTweetList(Lists lists) {
+        if (lists.getName() == null) {
+            throw new ApiRequestException("List name cannot be empty", HttpStatus.BAD_REQUEST);
+        }
         User user = authenticationService.getAuthenticatedUser();
         lists.setListOwner(user);
         Lists userTweetList = listsRepository.save(lists);
@@ -77,6 +85,14 @@ public class ListsServiceImpl implements ListsService {
 
     @Override
     public Lists editTweetList(Lists listInfo) {
+        if (listInfo.getName() == null) {
+            throw new ApiRequestException("List name cannot be empty", HttpStatus.BAD_REQUEST);
+        }
+        User user = authenticationService.getAuthenticatedUser();
+
+        if (!listInfo.getListOwner().getId().equals(user.getId())) {
+            throw new ApiRequestException("List owner not found", HttpStatus.BAD_REQUEST);
+        }
         Lists listFromDb = listsRepository.getOne(listInfo.getId());
         listFromDb.setName(listInfo.getName());
         listFromDb.setDescription(listInfo.getDescription());
@@ -90,7 +106,12 @@ public class ListsServiceImpl implements ListsService {
     @Override
     public String deleteList(Long listId) {
         User user = authenticationService.getAuthenticatedUser();
-        Lists list = listsRepository.getOne(listId);
+        Lists list = listsRepository.findById(listId)
+                .orElseThrow(() -> new ApiRequestException("List not found", HttpStatus.NOT_FOUND));
+
+        if (!list.getListOwner().getId().equals(user.getId())) {
+            throw new ApiRequestException("List owner not found", HttpStatus.BAD_REQUEST);
+        }
         list.getTweets().removeAll(list.getTweets());
         list.getMembers().removeAll(list.getMembers());
         list.getFollowers().removeAll(list.getFollowers());
@@ -106,7 +127,9 @@ public class ListsServiceImpl implements ListsService {
     @Override
     public Lists followList(Long listId) {
         User user = authenticationService.getAuthenticatedUser();
-        Lists list = listsRepository.getOne(listId);
+        Lists list = listsRepository.findByIdAndIsPrivateFalse(listId)
+                .orElseThrow(() -> new ApiRequestException("List not found", HttpStatus.NOT_FOUND));
+        // TODO if user blocked, can the user follow list???
         Optional<User> follower = list.getFollowers().stream()
                 .filter(f -> f.equals(user))
                 .findFirst();
@@ -128,7 +151,11 @@ public class ListsServiceImpl implements ListsService {
 
     @Override
     public Lists pinList(Long listId) {
-        Lists list = listsRepository.getOne(listId);
+        User user = authenticationService.getAuthenticatedUser();
+        Lists list = user.getUserLists().stream()
+                .filter(userList -> userList.getId().equals(listId))
+                .findFirst()
+                .orElseThrow(() -> new ApiRequestException("List not found", HttpStatus.NOT_FOUND));
 
         if (list.getPinnedDate() == null) {
             list.setPinnedDate(LocalDateTime.now().withNano(0));
@@ -140,10 +167,19 @@ public class ListsServiceImpl implements ListsService {
 
     @Override
     public List<Lists> addUserToLists(Long userId, List<Lists> lists) {
-        User user = userRepository.getOne(userId);
-        List<Lists> userLists = getUserTweetLists();
-
-        lists.forEach((list) -> {
+        User authUser = authenticationService.getAuthenticatedUser();
+        authUser.getUserBlockedList().stream() // TODO check: if user in my block list [+]
+                .filter(blockedUser -> !blockedUser.getId().equals(userId))
+                .findFirst()
+                .orElseThrow(() -> new ApiRequestException("User is blocked", HttpStatus.BAD_REQUEST));
+        User user = userRepository.getValidUser(userId, authUser.getId()) // TODO check: if private profile, if blocked [+]
+                .orElseThrow(() -> new ApiRequestException("User not found", HttpStatus.NOT_FOUND));
+        List<Lists> userLists = authUser.getUserLists();
+        Set<Lists> commonLists = userLists.stream() // TODO check: if lists is exist in db [+]
+                .distinct()
+                .filter(lists::contains)
+                .collect(Collectors.toSet());
+        commonLists.forEach((list) -> {
             Optional<User> userInList = list.getMembers().stream()
                     .filter(m -> m.getId().equals(user.getId()))
                     .findFirst();
@@ -170,13 +206,20 @@ public class ListsServiceImpl implements ListsService {
 
     @Override
     public Lists addUserToList(Long userId, Long listId) {
-        User user = userRepository.getOne(userId);
-        Lists list = listsRepository.getOne(listId);
-        Optional<User> member = list.getMembers().stream()
-                .filter(m -> m.equals(user))
+        User authUser = authenticationService.getAuthenticatedUser();
+        authUser.getUserBlockedList().stream()
+                .filter(blockedUser -> !blockedUser.getId().equals(userId))
+                .findFirst()
+                .orElseThrow(() -> new ApiRequestException("User is blocked", HttpStatus.BAD_REQUEST));
+        User user = userRepository.getValidUser(userId, authUser.getId())
+                .orElseThrow(() -> new ApiRequestException("User not found", HttpStatus.NOT_FOUND));
+        Lists list = listsRepository.findById(listId)
+                .orElseThrow(() -> new ApiRequestException("List not found", HttpStatus.NOT_FOUND));
+        Optional<User> listMember = list.getMembers().stream()
+                .filter(member -> member.getId().equals(user.getId()))
                 .findFirst();
 
-        if (member.isPresent()) {
+        if (listMember.isPresent()) {
             list.getMembers().remove(user);
         } else {
             list.getMembers().add(user);

@@ -3,6 +3,7 @@ package com.gmail.javacoded78.latwitter.repository;
 import com.gmail.javacoded78.latwitter.model.Tweet;
 import com.gmail.javacoded78.latwitter.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
@@ -14,7 +15,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     List<User> findByActiveTrueAndIdNot(Long id);
 
-    User findByEmail(String email);
+    Optional<User> findByEmail(String email);
 
     List<User> findByFullNameOrUsernameContainingIgnoreCase(
             @Param("fullName") String fullName,
@@ -27,4 +28,10 @@ public interface UserRepository extends JpaRepository<User, Long> {
     List<User> findTop5ByActiveTrue();
 
     List<User> findByUnreadMessages_Tweet(Tweet tweet);
+
+    @Query("SELECT user FROM User user " +
+            "LEFT JOIN user.followers follower " +
+            "WHERE user.id = :userId " +
+            "AND (user.privateProfile = false OR follower.id = :authUserId)")
+    Optional<User> getValidUser(Long userId, Long authUserId);
 }

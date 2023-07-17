@@ -44,7 +44,8 @@ public class ChatServiceImpl implements ChatService {
     @Override
     public Chat createChat(Long userId) {
         User authUser = authenticationService.getAuthenticatedUser();
-        User user = userRepository.getOne(userId);
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ApiRequestException("Participant not found", HttpStatus.NOT_FOUND));
 
         if (isParticipantBlocked(authUser, user)) {
             throw new ApiRequestException("Participant is blocked", HttpStatus.BAD_REQUEST);
@@ -64,7 +65,12 @@ public class ChatServiceImpl implements ChatService {
 
     @Override
     public List<ChatMessage> getChatMessages(Long chatId) {
-        return chatMessageRepository.getAllByChatId(chatId);
+        User authUser = authenticationService.getAuthenticatedUser();
+        List<ChatMessage> chatMessages = chatMessageRepository.getAllByChatId(chatId, authUser.getId());
+        if (chatMessages.isEmpty()) {
+            throw new ApiRequestException("Chat messages not found", HttpStatus.NOT_FOUND);
+        }
+        return chatMessages;
     }
 
     @Override
@@ -79,10 +85,20 @@ public class ChatServiceImpl implements ChatService {
     @Override
     public ChatMessage addMessage(ChatMessage chatMessage, Long chatId) {
         User author = authenticationService.getAuthenticatedUser();
-        Chat chat = chatRepository.getOne(chatId);
+        Chat chat = chatRepository.findById(chatId)
+                .orElseThrow(() -> new ApiRequestException("Chat not found", HttpStatus.NOT_FOUND));
+        Optional<ChatParticipant> chatParticipant = chat.getParticipants().stream()
+                .filter(participant -> participant.getUser().getId().equals(author.getId()))
+                .findAny();
+
+        if (chatParticipant.isEmpty()) {
+            throw new ApiRequestException("Chat participant not found", HttpStatus.NOT_FOUND);
+        }
+
         Optional<ChatParticipant> blockedChatParticipant = chat.getParticipants().stream()
                 .filter(participant -> !participant.getUser().getId().equals(author.getId())
-                        && isParticipantBlocked(author, participant.getUser()))
+                        && isParticipantBlocked(participant.getUser(), author)
+                        || isParticipantBlocked(author, participant.getUser()))
                 .findFirst();
 
         if (blockedChatParticipant.isPresent()) {
@@ -136,15 +152,21 @@ public class ChatServiceImpl implements ChatService {
 
     @Override
     public String leaveFromConversation(Long participantId, Long chatId) {
-        chatParticipantRepository.leaveFromConversation(participantId, chatId);
         Chat chat = chatRepository.findById(chatId)
                 .orElseThrow(() -> new ApiRequestException("Chat not found", HttpStatus.NOT_FOUND));
+        int isChatParticipantUpdated = chatParticipantRepository.leaveFromConversation(participantId, chatId);
+
+        if (isChatParticipantUpdated != 1) {
+            throw new ApiRequestException("Participant not found", HttpStatus.NOT_FOUND);
+        }
+
         boolean isParticipantsLeftFromChat = chat.getParticipants().stream().allMatch(ChatParticipant::isLeftChat);
 
         if (isParticipantsLeftFromChat) {
             chatMessageRepository.deleteAll(chat.getMessages());
             chatParticipantRepository.deleteAll(chat.getParticipants());
             chatRepository.delete(chat);
+            return "Chat successfully deleted";
         }
         return "Successfully left the chat";
     }

@@ -10,10 +10,8 @@ import com.gmail.javacoded78.latwitter.service.AuthenticationService;
 import com.gmail.javacoded78.latwitter.service.UserSettingsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
-import java.security.Principal;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -27,6 +25,9 @@ public class UserSettingsServiceImpl implements UserSettingsService {
 
     @Override
     public User updateUsername(String username) {
+        if (username.length() == 0 || username.length() > 50) {
+            throw new ApiRequestException("Incorrect username length", HttpStatus.BAD_REQUEST);
+        }
         User user = authenticationService.getAuthenticatedUser();
         user.setUsername(username);
         return userRepository.save(user);
@@ -35,7 +36,8 @@ public class UserSettingsServiceImpl implements UserSettingsService {
     @Override
     public Map<String, Object> updateEmail(String email) {
         User user = authenticationService.getAuthenticatedUser();
-        User userByEmail = userRepository.findByEmail(email);
+        User userByEmail = userRepository.findByEmail(email)
+                .orElseThrow(() -> new ApiRequestException("User not found", HttpStatus.NOT_FOUND));
 
         if (userByEmail == null) {
             user.setEmail(email);

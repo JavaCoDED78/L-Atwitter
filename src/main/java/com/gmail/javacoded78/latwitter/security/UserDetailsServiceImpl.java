@@ -1,8 +1,10 @@
 package com.gmail.javacoded78.latwitter.security;
 
+import com.gmail.javacoded78.latwitter.exception.ApiRequestException;
 import com.gmail.javacoded78.latwitter.model.User;
 import com.gmail.javacoded78.latwitter.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.LockedException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -17,14 +19,12 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        User user = userRepository.findByEmail(email);
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new ApiRequestException("User not found", HttpStatus.NOT_FOUND));
 
-        if (user == null) {
-            throw new UsernameNotFoundException("User not found");
-        }
         if (user.getActivationCode() != null) {
             throw new LockedException("email not activated");
         }
-        return UserPrincipal.create(user);
+        return new UserPrincipal(user);
     }
 }
