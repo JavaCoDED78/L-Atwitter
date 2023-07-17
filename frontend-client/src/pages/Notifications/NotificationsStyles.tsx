@@ -1,124 +1,125 @@
-import { makeStyles, Theme } from "@material-ui/core";
+import {makeStyles, Theme} from "@material-ui/core";
 
 export const useNotificationsStyles = makeStyles((theme: Theme) => ({
-  container: {
-    borderRadius: 0,
-    minHeight: "100vh",
-    borderTop: "0",
-    borderBottom: "0",
-    "& a": {
-      color: theme.palette.primary.main,
-      textDecoration: "none",
+    container: {
+        borderRadius: 0,
+        minHeight: '100vh',
+        borderTop: '0',
+        borderBottom: '0',
+        "& a": {
+            color: theme.palette.primary.main,
+            textDecoration: "none",
+        },
     },
-  },
-  header: {
-    marginLeft: 15,
-    position: "fixed",
-    display: "flex",
-    width: 580,
-    height: 53,
-    zIndex: 1,
-    border: 0,
-    alignItems: "center",
-    flex: 1,
-    "& h6": {
-      fontWeight: 800,
+    header: {
+        marginLeft: 15,
+        position: "fixed",
+        display: 'flex',
+        width: 580,
+        height: 53,
+        zIndex: 1,
+        border: 0,
+        alignItems: 'center',
+        flex: 1,
+        '& h6': {
+            fontWeight: 800,
+        },
+        "& svg": {
+            marginRight: 20
+        },
     },
-    "& svg": {
-      marginRight: 20,
+    title: {
+        textAlign: "center",
+        marginTop: 30,
+        marginBottom: 8,
+        fontSize: 29,
+        fontWeight: 800,
     },
-  },
-  title: {
-    textAlign: "center",
-    marginTop: 30,
-    marginBottom: 8,
-    fontSize: 29,
-    fontWeight: 800,
-  },
-  text: {
-    textAlign: "center",
-    fontSize: 14,
-    fontWeight: 400,
-    color: theme.palette.text.secondary,
-  },
-  tabs: {
-    borderBottom: `1px solid ${theme.palette.divider}`,
-    "& .MuiTabs-indicator": {
-      marginLeft: 116,
-      maxWidth: 70,
-      height: 4,
-      backgroundColor: theme.palette.primary.main,
+    text: {
+        textAlign: "center",
+        fontSize: 14,
+        fontWeight: 400,
+        color: theme.palette.text.secondary,
     },
-    "& .MuiTab-root": {
-      fontWeight: 700,
+    tabs: {
+        borderBottom: `1px solid ${theme.palette.divider}`,
+        "& .MuiTabs-indicator": {
+            marginLeft: 116,
+            maxWidth: 70,
+            height: 4,
+            backgroundColor: theme.palette.primary.main,
+        },
+        "& .MuiTab-root": {
+            fontWeight: 700,
+        },
     },
-  },
-  tab: {
-    minWidth: 301,
-    textTransform: "none",
-    "&:hover": {
-      backgroundColor: theme.palette.secondary.light,
+    tab: {
+        minWidth: 301,
+        textTransform: 'none',
+        '&:hover': {
+            backgroundColor: theme.palette.secondary.light,
+        },
     },
-  },
-  notificationWrapper: {
-    display: "flex",
-    cursor: "pointer",
-    alignItems: "flex-start",
-    padding: "11px 15px",
-    flex: 1,
-    borderTop: "0",
-    borderLeft: "0",
-    borderRight: "0",
-    borderRadius: 0,
-    "&:hover": {
-      backgroundColor: theme.palette.secondary.main,
+    notificationWrapper: {
+        display: 'flex',
+        cursor: 'pointer',
+        alignItems: 'flex-start',
+        padding: "11px 15px",
+        flex: 1,
+        borderTop: '0',
+        borderLeft: '0',
+        borderRight: '0',
+        borderRadius: 0,
+        '&:hover': {
+            backgroundColor: theme.palette.secondary.main,
+        },
+
     },
-  },
-  notificationIcon: {
-    alignItems: "flex-end",
-    marginLeft: 15,
-    marginRight: 11,
-    "& #notification": {
-      color: "rgb(29, 155, 240)",
+    notificationIcon: {
+        alignItems: "flex-end",
+        marginLeft: 15,
+        marginRight: 11,
+        '& #notification': {
+            color: "rgb(29, 155, 240)",
+        },
+        '& #retweet': {
+            color: "rgb(23, 191, 99)",
+        },
+        '& #like': {
+            color: "rgb(224, 36, 94)",
+        },
+        '& #follow': {
+            color: "rgb(29, 155, 240)",
+        },
+        "& svg": {
+            verticalAlign: "bottom",
+            height: "2.30em",
+        },
     },
-    "& #retweet": {
-      color: "rgb(23, 191, 99)",
+    notificationAvatarWrapper: {
+        display: "inline-block",
     },
-    "& #like": {
-      color: "rgb(224, 36, 94)",
+    notificationAvatar: {
+        display: "inline-block",
+        marginRight: 8,
+        width: theme.spacing(4),
+        height: theme.spacing(4),
+        marginBottom: 11,
     },
-    "& #follow": {
-      color: "rgb(29, 155, 240)",
+    notificationInfo: {
+        fontSize: 15,
+        marginBottom: 11,
     },
-    "& svg": {
-      verticalAlign: "bottom",
-      height: "2.30em",
+    notificationText: {
+        fontSize: 15,
+        '& #hashtag': {
+            color: theme.palette.primary.main,
+        },
     },
-  },
-  notificationAvatarWrapper: {
-    display: "inline-block",
-  },
-  notificationAvatar: {
-    display: "inline-block",
-    marginRight: 8,
-    width: theme.spacing(4),
-    height: theme.spacing(4),
-    marginBottom: 11,
-  },
-  notificationInfo: {
-    fontSize: 15,
-    marginBottom: 11,
-  },
-  notificationText: {
-    fontSize: 15,
-    "& #hashtag": {
-      color: theme.palette.primary.main,
+    notificationInfoText: {
+        fontSize: 15,
+        "& span": {
+            fontWeight: 500
+        },
     },
-  },
-  notificationInfoText: {
-    fontSize: 15,
-    "& span": {
-      fontWeight: 500,
-    },
-  },
 }));

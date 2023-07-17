@@ -31,7 +31,14 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -253,6 +260,54 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public List<User> overallFollowers(Long userId) {
+        User user = authenticationService.getAuthenticatedUser();
+
+        if (!user.getId().equals(userId)) {
+            User currentUser = userRepository.getOne(userId);
+            return user.getFollowers().stream()
+                    .filter(follower -> currentUser.getFollowers().contains(follower))
+                    .collect(Collectors.toList());
+        } else {
+            return user.getFollowers();
+        }
+    }
+
+    @Override
+    public User processFollowRequestToPrivateProfile(Long userId) {
+        User user = authenticationService.getAuthenticatedUser();
+        User currentUser = userRepository.getOne(userId);
+        List<User> followerRequests = currentUser.getFollowerRequests();
+        Optional<User> followerRequest = currentUser.getFollowerRequests().stream()
+                .filter(follower -> follower.getId().equals(user.getId()))
+                .findFirst();
+
+        if (followerRequest.isPresent()) {
+            followerRequests.remove(followerRequest.get());
+        } else {
+            followerRequests.add(user);
+        }
+        return userRepository.save(currentUser);
+    }
+
+    @Override
+    public User acceptFollowRequest(Long userId) {
+        User user = authenticationService.getAuthenticatedUser();
+        User currentUser = userRepository.getOne(userId);
+        user.getFollowerRequests().remove(currentUser);
+        user.getFollowers().add(currentUser);
+        return userRepository.save(user);
+    }
+
+    @Override
+    public User declineFollowRequest(Long userId) {
+        User user = authenticationService.getAuthenticatedUser();
+        User currentUser = userRepository.getOne(userId);
+        user.getFollowerRequests().remove(currentUser);
+        return userRepository.save(user);
+    }
+
+    @Override
     public User processSubscribeToNotifications(Long userId) {
         User user = authenticationService.getAuthenticatedUser();
         User currentUser = userRepository.getOne(userId);
@@ -284,6 +339,8 @@ public class UserServiceImpl implements UserService {
         User currentUser = userRepository.getOne(userId);
         user.getFollowers().removeIf(follower -> follower.getId().equals(currentUser.getId()));
         user.getFollowing().removeIf(following -> following.getId().equals(currentUser.getId()));
+        user.getUserLists().removeIf(list -> list.getMembers().stream()
+                .anyMatch(member -> member.getId().equals(currentUser.getId())));
         return processUserList(user, currentUser, user.getUserBlockedList());
     }
 

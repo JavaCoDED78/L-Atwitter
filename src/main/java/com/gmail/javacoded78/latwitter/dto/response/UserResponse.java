@@ -45,4 +45,5 @@ public class UserResponse {
     private List<FollowerResponse> followers;
     private List<FollowerResponse> following;
     private List<FollowerResponse> subscribers;
+    private List<FollowerResponse> followerRequests;
 }

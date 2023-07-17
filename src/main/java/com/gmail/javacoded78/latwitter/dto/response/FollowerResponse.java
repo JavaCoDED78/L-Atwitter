@@ -2,6 +2,8 @@ package com.gmail.javacoded78.latwitter.dto.response;
 
 import lombok.Data;
 
+import java.util.List;
+
 @Data
 public class FollowerResponse {
 
@@ -16,4 +18,7 @@ public class FollowerResponse {
     private ImageResponse avatar;
     private ImageResponse wallpaper;
     private boolean confirmed;
+    private List<CommonUserResponse> userBlockedList;
+    private List<CommonUserResponse> followers;
+    private List<CommonUserResponse> following;
 }

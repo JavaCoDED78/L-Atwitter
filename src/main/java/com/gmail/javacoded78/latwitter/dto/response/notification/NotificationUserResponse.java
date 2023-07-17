@@ -1,5 +1,6 @@
 package com.gmail.javacoded78.latwitter.dto.response.notification;
 
+import com.gmail.javacoded78.latwitter.dto.response.BlockedUserResponse;
 import com.gmail.javacoded78.latwitter.dto.response.FollowerResponse;
 import com.gmail.javacoded78.latwitter.dto.response.ImageResponse;
 import lombok.Data;
@@ -25,6 +26,7 @@ public class NotificationUserResponse {
     private Long likeCount;
     private ImageResponse avatar;
     private ImageResponse wallpaper;
+    private List<BlockedUserResponse> userBlockedList;
     private List<FollowerResponse> followers;
     private List<FollowerResponse> following;
     private List<FollowerResponse> subscribers;
