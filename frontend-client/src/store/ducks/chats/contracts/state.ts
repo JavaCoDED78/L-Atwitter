@@ -1,20 +1,19 @@
-import {LoadingStatus} from "../../../types";
-import {Image} from "../../tweets/contracts/state";
+import { LoadingStatus } from "../../../types";
+import { User } from "../../user/contracts/state";
 
 export interface Chat {
-    id: number;
-    participants: ChatParticipant[];
+  id: number;
+  participants: ChatParticipant[];
 }
 
 export interface ChatParticipant {
-    id: number;
-    email: string;
-    fullName: string;
-    username: string;
-    avatar: Image;
+  id: number;
+  leftChat: boolean;
+  chat: Chat;
+  user: User;
 }
 
 export interface ChatsState {
-    items: Chat[];
-    loadingState: LoadingStatus;
+  items: Chat[];
+  loadingState: LoadingStatus;
 }

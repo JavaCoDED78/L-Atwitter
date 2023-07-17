@@ -1,26 +1,29 @@
-import React, {FC, ReactElement} from 'react';
+import React, { FC, ReactElement } from "react";
 
-import {useHoverActionStyles} from "./HoverActionStyles";
+import { useHoverActionStyles } from "./HoverActionStyles";
 
 interface HoverActionProps {
-    visible?: boolean;
-    actionText: string;
+  visible?: boolean;
+  positionTop?: boolean;
+  actionText: string;
 }
 
-const HoverAction: FC<HoverActionProps> = ({visible, actionText}): ReactElement | null => {
-    const classes = useHoverActionStyles();
+const HoverAction: FC<HoverActionProps> = ({
+  visible,
+  positionTop,
+  actionText,
+}): ReactElement | null => {
+  const classes = useHoverActionStyles({ positionTop });
 
-    if (visible) {
-        return (
-            <div className={classes.container}>
-                <span id={"action-text"}>
-                    {actionText}
-                </span>
-            </div>
-        );
-    } else {
-        return null;
-    }
+  if (visible) {
+    return (
+      <div className={classes.container}>
+        <span id={"action-text"}>{actionText}</span>
+      </div>
+    );
+  } else {
+    return null;
+  }
 };
 
 export default HoverAction;

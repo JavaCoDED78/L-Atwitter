@@ -146,7 +146,8 @@ const Notifications: FC<HoverUserProps> = ({
                         <span>{tweetAuthors[0].fullName}</span>
                         {tweetAuthors.length > 2
                           ? ` and ${tweetAuthors.length - 1} others`
-                          : " and " + <span>{tweetAuthors[1].fullName}</span>}
+                          : tweetAuthors.length === 2 &&
+                            " and " + <span>{tweetAuthors[1].fullName}</span>}
                       </div>
                     </div>
                   </Paper>

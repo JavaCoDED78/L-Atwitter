@@ -1,5 +1,6 @@
 import React, {
   ChangeEvent,
+  ComponentType,
   FC,
   ReactElement,
   ReactNode,
@@ -11,6 +12,7 @@ import {
   RouteComponentProps,
   useHistory,
   useLocation,
+  withRouter,
 } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import InfiniteScroll from "react-infinite-scroll-component";
@@ -31,6 +33,7 @@ import format from "date-fns/format";
 import { CompatClient, Stomp } from "@stomp/stompjs";
 import SockJS from "sockjs-client";
 import classNames from "classnames";
+import { compose } from "recompose";
 
 import {
   CalendarIcon,
@@ -87,6 +90,12 @@ import BlockUserModal from "../../components/BlockUserModal/BlockUserModal";
 import ActionSnackbar from "../../components/ActionSnackbar/ActionSnackbar";
 import { SnackbarProps, withSnackbar } from "../../hoc/withSnackbar";
 import Spinner from "../../components/Spinner/Spinner";
+import {
+  HoverActionProps,
+  HoverActions,
+  withHoverAction,
+} from "../../hoc/withHoverAction";
+import HoverAction from "../../components/HoverAction/HoverAction";
 
 interface LinkToFollowersProps {
   children: ReactNode;
@@ -95,13 +104,18 @@ interface LinkToFollowersProps {
 
 let stompClient: CompatClient | null = null;
 
-const UserPage: FC<RouteComponentProps<{ id: string }> & SnackbarProps> = ({
+const UserPage: FC<
+  SnackbarProps & HoverActionProps & RouteComponentProps<{ id: string }>
+> = ({
   match,
   snackBarMessage,
   openSnackBar,
   setSnackBarMessage,
   setOpenSnackBar,
   onCloseSnackBar,
+  visibleHoverAction,
+  handleHoverAction,
+  handleLeaveAction,
 }): ReactElement => {
   const classes = useUserPageStyles();
   const dispatch = useDispatch();
@@ -414,15 +428,26 @@ const UserPage: FC<RouteComponentProps<{ id: string }> & SnackbarProps> = ({
                     isUserBlocked={isUserBlocked}
                     onMuteUser={onMuteUser}
                     onOpenBlockUserModal={onOpenBlockUserModal}
+                    visibleMoreAction={visibleHoverAction?.visibleMoreAction}
+                    handleHoverAction={handleHoverAction}
+                    handleLeaveAction={handleLeaveAction}
                   />
                   {!isUserBlocked &&
                     (!userProfile?.mutedDirectMessages || isFollower ? (
                       <IconButton
                         className={classes.messageButton}
                         onClick={handleClickAddUserToChat}
+                        onMouseEnter={() =>
+                          handleHoverAction?.(HoverActions.MESSAGE)
+                        }
+                        onMouseLeave={handleLeaveAction}
                         color="primary"
                       >
                         {MessagesIcon}
+                        <HoverAction
+                          visible={visibleHoverAction?.visibleMessageAction}
+                          actionText={"Message"}
+                        />
                       </IconButton>
                     ) : null)}
                   {isUserBlocked ? (
@@ -443,12 +468,22 @@ const UserPage: FC<RouteComponentProps<{ id: string }> & SnackbarProps> = ({
                     <>
                       <IconButton
                         onClick={handleSubscribeToNotifications}
+                        onMouseEnter={() =>
+                          handleHoverAction?.(HoverActions.OTHER)
+                        }
+                        onMouseLeave={handleLeaveAction}
                         className={classes.messageButton}
                         color="primary"
                       >
                         {isSubscriber
                           ? NotificationsAddFilledIcon
                           : NotificationsAddIcon}
+                        <HoverAction
+                          visible={visibleHoverAction?.visibleOtherAction}
+                          actionText={
+                            isSubscriber ? "Turn off notifications" : "Notify"
+                          }
+                        />
                       </IconButton>
                       <Button
                         onClick={handleFollow}
@@ -671,4 +706,15 @@ const UserPage: FC<RouteComponentProps<{ id: string }> & SnackbarProps> = ({
   );
 };
 
-export default withSnackbar(UserPage);
+// @ts-ignore
+export default compose(
+  withSnackbar,
+  withHoverAction,
+  withRouter
+)(UserPage) as ComponentType<
+  SnackbarProps &
+    HoverActionProps &
+    RouteComponentProps<{
+      id: string;
+    }>
+>;
