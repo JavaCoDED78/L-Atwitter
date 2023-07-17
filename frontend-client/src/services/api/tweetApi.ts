@@ -103,7 +103,7 @@ export const TweetApi = {
   },
   async replyTweet(payload: ReplyTweet): Promise<Response<Tweet>> {
     const data = await axios.post<Response<Tweet>>(
-      API_URL + `/tweets/reply/${payload.id}`,
+      API_URL + `/tweets/reply/${payload.tweetId}`,
       payload
     );
     return data.data;

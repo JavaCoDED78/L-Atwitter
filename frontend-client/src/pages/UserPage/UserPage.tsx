@@ -22,7 +22,6 @@ import {
   IconButton,
   List,
   ListItem,
-  Snackbar,
   Typography,
 } from "@material-ui/core";
 import Tabs from "@material-ui/core/Tabs";
@@ -82,6 +81,7 @@ import SetupProfileModal from "../SetupProfileModal/SetupProfileModal";
 import UserPageActions from "./UserPageActions/UserPageActions";
 import { createChat } from "../../store/ducks/chats/actionCreators";
 import BlockUserModal from "../../components/BlockUserModal/BlockUserModal";
+import ActionSnackbar from "../../components/ActionSnackbar/ActionSnackbar";
 
 interface LinkToFollowersProps {
   children: ReactNode;
@@ -639,13 +639,10 @@ const UserPage: FC<RouteComponentProps<{ id: string }>> = ({
           onClose={onCloseBlockUserModal}
           onBlockUser={onBlockUser}
         />
-        <Snackbar
-          className={classes.snackBar}
-          anchorOrigin={{ horizontal: "center", vertical: "bottom" }}
-          open={openSnackBar}
-          message={snackBarMessage}
-          onClose={onCloseSnackBar}
-          autoHideDuration={3000}
+        <ActionSnackbar
+          snackBarMessage={snackBarMessage}
+          openSnackBar={openSnackBar}
+          onCloseSnackBar={onCloseSnackBar}
         />
       </Paper>
     </InfiniteScroll>

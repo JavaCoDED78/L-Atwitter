@@ -8,6 +8,4 @@ import java.util.List;
 
 @Repository
 public interface ListsRepository extends JpaRepository<Lists, Long> {
-
-    List<Lists> findByIdIn(List<Long> listsIds);
 }

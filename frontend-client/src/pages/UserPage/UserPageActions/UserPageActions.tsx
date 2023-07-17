@@ -5,7 +5,6 @@ import {
   IconButton,
   List,
   ListItem,
-  Snackbar,
   Typography,
 } from "@material-ui/core";
 
@@ -28,6 +27,7 @@ import { User } from "../../../store/ducks/user/contracts/state";
 import ListsModal from "../../../components/ListsModal/ListsModal";
 import CopyToClipboard from "react-copy-to-clipboard";
 import { CLIENT_URL } from "../../../util/url";
+import ActionSnackbar from "../../../components/ActionSnackbar/ActionSnackbar";
 
 interface UserPageActionsProps {
   user: User;
@@ -167,13 +167,10 @@ const UserPageActions: FC<UserPageActionsProps> = ({
           visible={visibleListsModal}
           onClose={onCloseListsModal}
         />
-        <Snackbar
-          className={classes.snackBar}
-          anchorOrigin={{ horizontal: "center", vertical: "bottom" }}
-          open={openSnackBar}
-          message="Copied to clipboard"
-          onClose={onCloseSnackBar}
-          autoHideDuration={3000}
+        <ActionSnackbar
+          snackBarMessage={"Copied to clipboard"}
+          openSnackBar={openSnackBar}
+          onCloseSnackBar={onCloseSnackBar}
         />
       </div>
     </ClickAwayListener>

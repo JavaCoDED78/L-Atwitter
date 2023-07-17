@@ -25,14 +25,12 @@ import org.springframework.beans.support.PagedListHolder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.security.Principal;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -87,8 +85,8 @@ public class UserServiceImpl implements UserService {
     @Override
     public Page<Tweet> getUserTweets(Long userId, Pageable pageable) {
         User user = userRepository.getOne(userId);
-        List<Tweet> tweets = tweetRepository.findByScheduledDateIsNullAndUserAndAddressedUsernameIsNullOrderByDateTimeDesc(user);
-        List<Retweet> retweets = retweetRepository.findByUserOrderByRetweetDateDesc(user);
+        List<Tweet> tweets = tweetRepository.findTweetsByUserId(user.getId());
+        List<Retweet> retweets = retweetRepository.findRetweetsByUserId(user.getId());
         List<Tweet> userTweets = combineTweetsArrays(tweets, retweets);
         boolean isTweetExist = userTweets.removeIf(tweet -> tweet.equals(user.getPinnedTweet()));
         if (isTweetExist) {
@@ -103,8 +101,8 @@ public class UserServiceImpl implements UserService {
     @Override
     public Page<Tweet> getUserRetweetsAndReplies(Long userId, Pageable pageable) {
         User user = userRepository.getOne(userId);
-        List<Tweet> replies = tweetRepository.findByUserAndAddressedUsernameIsNotNullOrderByDateTimeDesc(user);
-        List<Retweet> retweets = retweetRepository.findByUserOrderByRetweetDateDesc(user);
+        List<Tweet> replies = tweetRepository.findRepliesByUserId(user.getId());
+        List<Retweet> retweets = retweetRepository.findRetweetsByUserId(user.getId());
         List<Tweet> userTweets = combineTweetsArrays(replies, retweets);
         PagedListHolder<Tweet> page = new PagedListHolder<>(userTweets);
         page.setPage(pageable.getPageNumber());
@@ -125,7 +123,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public Page<Bookmark> getUserBookmarks(Pageable pageable) {
         User user = authenticationService.getAuthenticatedUser();
-        return bookmarkRepository.findByUserOrderByBookmarkDateDesc(user, pageable);
+        return bookmarkRepository.findByUser(user, pageable);
     }
 
     @Override
@@ -154,12 +152,12 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Page<LikeTweet> getUserLikedTweets(Long userId, Pageable pageable) {
-        return likeTweetRepository.findByUser_IdOrderByLikeTweetDateDesc(userId, pageable);
+        return likeTweetRepository.findByUserId(userId, pageable);
     }
 
     @Override
     public Page<Tweet> getUserMediaTweets(Long userId, Pageable pageable) {
-        return tweetRepository.findByScheduledDateIsNullAndImagesIsNotNullAndUser_IdOrderByDateTimeDesc(userId, pageable);
+        return tweetRepository.findAllUserMediaTweets(userId, pageable);
     }
 
     @Override

@@ -99,7 +99,7 @@ INSERT INTO pools (id, date_time)
 VALUES (2, '2021-10-10 20:29:03.812910');
 
 -- tweet_pool
-INSERT INTO tweet_pool (tweet_id, pool_id)
+INSERT INTO tweet_pool (tweet_id, pools_id)
 VALUES (40, 2);
 
 -- tweet_quote
