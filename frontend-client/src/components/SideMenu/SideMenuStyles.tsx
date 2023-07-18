@@ -9,7 +9,9 @@ export const useSideMenuStyles = makeStyles((theme: Theme) => ({
         margin: 0,
         maxWidth: 230,
         "& li .selected": {
-            color: theme.palette.primary.main,
+            "& .MuiTypography-h5": {
+                color: theme.palette.primary.main,
+            },
             "& svg": {
                 fill: theme.palette.primary.main,
             },
@@ -18,21 +20,23 @@ export const useSideMenuStyles = makeStyles((theme: Theme) => ({
     itemWrapper: {
         marginBottom: 2,
         height: 58,
+        "& .MuiTypography-h5": {
+            fontWeight: 700,
+        },
         '& a': {
             color: 'inherit',
             textDecoration: 'none',
         },
         '& svg': {
             verticalAlign: "bottom",
-            height: "1.3em",
+            height: "1.9em",
             marginRight: 15,
-            marginBottom: 3,
         },
         cursor: 'pointer',
         '&:hover': {
             '& div': {
                 backgroundColor: theme.palette.secondary.light,
-                '& h6': {
+                "& .MuiTypography-h5": {
                     color: theme.palette.primary.main,
                 },
                 '& svg path': {
@@ -40,7 +44,6 @@ export const useSideMenuStyles = makeStyles((theme: Theme) => ({
                 },
             },
         },
-
         '& div': {
             display: 'inline-flex',
             alignItems: 'center',
@@ -54,15 +57,15 @@ export const useSideMenuStyles = makeStyles((theme: Theme) => ({
     },
     logoIcon: {
         marginLeft: 7,
-        "& svg" : {
-            color: theme.palette.primary.main,
-            height: "1.25em"
+        "& .MuiIconButton-root": {
+            minWidth: 52,
+            minHeight: 52,
+            "& svg" : {
+                color: theme.palette.primary.main,
+                height: "2rem",
+                width: "2rem"
+            },
         },
-    },
-    label: {
-        position: "relative",
-        fontWeight: 700,
-        fontSize: 20,
     },
     homeNotification: {
         position: "absolute",
@@ -78,9 +81,8 @@ export const useSideMenuStyles = makeStyles((theme: Theme) => ({
         width: 19,
         height: 19,
         borderRadius: "50%",
-        border: `1px solid ${theme.palette.common.white}`,
         backgroundColor: theme.palette.primary.main,
-        fontSize: 11,
+        fontSize: 13,
         color: theme.palette.common.white,
         textAlign: "center",
     },
@@ -90,32 +92,14 @@ export const useSideMenuStyles = makeStyles((theme: Theme) => ({
         boxShadow: "rgb(101 119 134 / 20%) 0px 0px 15px, rgb(101 119 134 / 15%) 0px 0px 3px 1px",
         marginLeft: 40,
         marginTop: 50,
-        "& .MuiAvatar-root": {
-            width: "48px !important",
-            height: "48px !important",
-        },
-        '& .MuiListItemText-root': {
-            marginLeft: 8,
-        },
-        '& .MuiListItemText-primary': {
-            fontSize: 15,
-            fontWeight: 700,
-        },
-        '& .MuiTypography-body2': {
-            fontSize: 15,
-        },
         "& svg": {
             marginRight: 12,
-            color: theme.palette.text.primary,
-            height: "1.30em",
+            fill: theme.palette.text.primary,
         },
     },
     listItemWrapper: {
         "& a": {
             textDecoration: "none"
-        },
-        "& .MuiList-root": {
-            padding: 0,
         },
         '& .MuiListItem-root': {
             color: theme.palette.text.primary,
@@ -124,18 +108,13 @@ export const useSideMenuStyles = makeStyles((theme: Theme) => ({
                 cursor: 'pointer',
                 backgroundColor: theme.palette.secondary.main,
             },
-            "& .MuiTypography-root": {
-                fontWeight: 400,
-                fontSize: 15,
-                lineHeight: "20px",
-            },
         },
         "& .MuiDivider-root": {
             backgroundColor: theme.palette.divider,
         },
     },
     button: {
-        height: 48,
+        height: "52px !important",
         padding: theme.spacing(3.2),
         marginTop: theme.spacing(2),
         "& .MuiButton-label": {
@@ -147,7 +126,7 @@ export const useSideMenuStyles = makeStyles((theme: Theme) => ({
         marginLeft: 4,
         padding: "0px 7px",
         borderRadius: "50%",
-        border: `1px solid ${theme.palette.common.white}`,
+        // border: `1px solid ${theme.palette.common.white}`,
         backgroundColor: theme.palette.primary.main,
         fontSize: 12,
         color: theme.palette.common.white,

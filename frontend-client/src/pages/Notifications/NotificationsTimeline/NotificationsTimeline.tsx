@@ -3,16 +3,16 @@ import {useDispatch, useSelector} from "react-redux";
 import {Paper, Typography} from "@material-ui/core";
 import InfiniteScroll from "react-infinite-scroll-component";
 
-import {useNotificationsTimelineStyles} from "./NotificationsTimelineStyles";
 import BackButton from "../../../components/BackButton/BackButton";
 import {fetchNotificationsFromTweetAuthors} from "../../../store/ducks/notifications/actionCreators";
 import {selectIsTweetsLoading, selectPagesCount, selectTweetsItems} from "../../../store/ducks/tweets/selectors";
 import TweetComponent from "../../../components/TweetComponent/TweetComponent";
 import Spinner from "../../../components/Spinner/Spinner";
 import {resetTweets} from "../../../store/ducks/tweets/actionCreators";
+import {useGlobalStyles} from "../../../util/globalClasses";
 
 const NotificationsTimeline: FC = (): ReactElement => {
-    const classes = useNotificationsTimelineStyles();
+    const globalClasses = useGlobalStyles();
     const dispatch = useDispatch();
     const tweets = useSelector(selectTweetsItems);
     const pagesCount = useSelector(selectPagesCount);
@@ -41,14 +41,14 @@ const NotificationsTimeline: FC = (): ReactElement => {
             hasMore={page < pagesCount}
             loader={null}
         >
-            <Paper className={classes.container} variant="outlined">
-                <Paper className={classes.header} variant="outlined">
+            <Paper className={globalClasses.pageContainer} variant="outlined">
+                <Paper className={globalClasses.pageHeader} variant="outlined">
                     <BackButton/>
-                    <Typography component="div" className={classes.title}>
+                    <Typography variant={"h5"} component="div">
                         Tweets
                     </Typography>
                 </Paper>
-                <div className={classes.contentWrapper}>
+                <div className={globalClasses.contentWrapper}>
                     {(tweets.length === 0 && !isLoading) ? (
                         <Spinner/>
                     ) : (

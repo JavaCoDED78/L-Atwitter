@@ -1,15 +1,18 @@
 import React, {FC, ReactElement, useEffect, useState} from 'react';
 import {useDispatch, useSelector} from "react-redux";
 import {Link} from "react-router-dom";
-import {Checkbox, Typography} from "@material-ui/core";
+import {Checkbox, Link as MuiLink, Typography} from "@material-ui/core";
 
 import {useAudienceAndTaggingStyles} from "./AudienceAndTaggingStyles";
 import {ArrowRightIcon} from "../../../../icons";
 import {selectUserData} from "../../../../store/ducks/user/selectors";
 import {setUserLoadingStatus, updatePrivateProfile} from "../../../../store/ducks/user/actionCreators";
 import {LoadingStatus} from "../../../../store/types";
+import {useGlobalStyles} from "../../../../util/globalClasses";
+import classnames from "classnames";
 
 const AudienceAndTagging: FC = (): ReactElement => {
+    const globalClasses = useGlobalStyles();
     const classes = useAudienceAndTaggingStyles();
     const dispatch = useDispatch();
     const myProfile = useSelector(selectUserData);
@@ -32,29 +35,37 @@ const AudienceAndTagging: FC = (): ReactElement => {
 
     return (
         <>
-            <div className={classes.infoItemWrapper}>
-                <Typography component={"div"} className={classes.text}>
+            <div className={globalClasses.itemInfoWrapper}>
+                <Typography variant={"subtitle2"} component={"div"}>
                     Manage what information you allow other people on Twitter to see.
                 </Typography>
             </div>
-            <div className={classes.infoItemWrapper}>
-                <div className={classes.infoItem}>
-                    <span>Protect your Tweets</span>
+            <div className={globalClasses.itemInfoWrapper}>
+                <div className={globalClasses.infoItemCheckbox}>
+                    <Typography variant={"body1"} component={"span"}>
+                        Protect your Tweets
+                    </Typography>
                     <Checkbox checked={checked} onChange={handleChange}/>
                 </div>
-                <Typography component={"div"} className={classes.text}>
-                    When selected, your Tweets and other account information are only visible to people who follow you.
-                    <a
-                        href={"https://help.twitter.com/safety-and-security/public-and-protected-tweets"}
+                <Typography variant={"subtitle2"} component={"div"}>
+                    {`When selected, your Tweets and other account information are only visible to people who follow you. `}
+                    <MuiLink
+                        href="https://help.twitter.com/safety-and-security/public-and-protected-tweets"
+                        variant="subtitle2"
                         target="_blank"
-                        className={classes.link}> Learn more</a>
+                        rel="noopener"
+                    >
+                        Learn more
+                    </MuiLink>
                 </Typography>
             </div>
-            <Link to={"/settings/privacy_and_safety/tagging"} className={classes.photoTaggingWrapper}>
-                <div className={classes.photoTaggingLink}>
+            <Link to={"/settings/privacy_and_safety/tagging"} className={globalClasses.linkWrapper}>
+                <div className={classnames(globalClasses.contentLink, classes.photoTaggingLink)}>
                     <div className={classes.photoTagInfo}>
-                        <div>Photo tagging</div>
-                        <Typography component={"div"} className={classes.text}>
+                        <Typography variant={"body1"} component={"div"}>
+                            Photo tagging
+                        </Typography>
+                        <Typography variant={"subtitle2"} component={"div"}>
                             Anyone can tag you
                         </Typography>
                     </div>

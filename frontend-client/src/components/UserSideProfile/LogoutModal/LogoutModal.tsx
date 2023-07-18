@@ -25,26 +25,27 @@ const LogoutModal: FC<LogoutModalProps> = ({visible, onClose, handleSignOut}): R
             <DialogContent style={{padding: 0}}>
                 <div className={classes.modalWrapper}>
                     <TwitterIcon />
-                    <Typography className={classes.modalFullName}>
+                    <Typography variant={"h5"} component={"div"}>
                         Log out of Twitter?
                     </Typography>
-                    <div className={classes.modalUsername}>
+                    <Typography variant={"subtitle1"} component={"div"}>
                         You can always log back in at any time. If you just want to switch accounts,
                         you can do that by adding an existing account.
-                    </div>
+                    </Typography>
                     <div className={classes.modalButtonWrapper}>
                         <Button
                             className={classes.modalCancelButton}
                             onClick={onClose}
                             variant="contained"
+                            size="large"
                         >
                             Cancel
                         </Button>
                         <Button
-                            className={classes.modalLogoutButton}
                             onClick={handleSignOut}
                             variant="contained"
                             color="primary"
+                            size="large"
                         >
                             Log out
                         </Button>

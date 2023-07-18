@@ -1,29 +1,38 @@
 import React, {FC, ReactElement} from 'react';
+import {Checkbox, Link as MuiLink, Typography} from "@material-ui/core";
 
 import {useLocationInformationStyles} from "./LocationInformationStyles";
-import {Checkbox, Typography} from "@material-ui/core";
+import {useGlobalStyles} from "../../../../../util/globalClasses";
 
 const LocationInformation: FC = (): ReactElement => {
+    const globalClasses = useGlobalStyles();
     const classes = useLocationInformationStyles();
 
     return (
         <>
-            <div className={classes.infoItemWrapper}>
-                <Typography component={"div"} className={classes.text}>
-                    If enabled, you will be able to attach location information to your Tweets. <a
-                    href={"https://help.twitter.com/safety-and-security/tweet-location-settings"}
-                    target="_blank"
-                    className={classes.link}> Learn more</a>
+            <div className={globalClasses.itemInfoWrapper}>
+                <Typography variant={"subtitle2"} component={"div"}>
+                    {`If enabled, you will be able to attach location information to your Tweets. `}
+                    <MuiLink
+                        href="https://help.twitter.com/safety-and-security/tweet-location-settings"
+                        variant="subtitle2"
+                        target="_blank"
+                        rel="noopener"
+                    >
+                        Learn more
+                    </MuiLink>
                 </Typography>
             </div>
-            <div className={classes.infoItemWrapper}>
-                <div className={classes.infoItem}>
-                    <span>Add location information to your Tweets</span>
+            <div className={globalClasses.itemInfoWrapper}>
+                <div className={globalClasses.infoItemCheckbox}>
+                    <Typography variant={"body1"} component={"span"}>
+                        Add location information to your Tweets
+                    </Typography>
                     <Checkbox/>
                 </div>
             </div>
             <div className={classes.deleteLocationInformation}>
-                <Typography component={"span"}>
+                <Typography variant={"body1"} component={"span"}>
                     Remove all location information attached to your Tweets
                 </Typography>
             </div>

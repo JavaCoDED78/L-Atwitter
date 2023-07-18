@@ -3,16 +3,6 @@ import {makeStyles, Theme} from "@material-ui/core";
 export const useShareActionsModalStyles = makeStyles((theme: Theme) => ({
     root: {
         display: "inline-block",
-        "& .MuiIconButton-root": {
-            padding: 7,
-            color: theme.palette.primary.main,
-            "& .MuiIconButton-label": {
-                "& svg": {
-                    verticalAlign: "bottom",
-                    height: "0.85em",
-                },
-            },
-        },
     },
     dropdown: {
         padding: 0,
@@ -41,9 +31,5 @@ export const useShareActionsModalStyles = makeStyles((theme: Theme) => ({
             fill: theme.palette.text.secondary,
             height: "1.30em",
         },
-    },
-    text: {
-        fontSize: 15,
-        fontWeight: 400,
     },
 }));

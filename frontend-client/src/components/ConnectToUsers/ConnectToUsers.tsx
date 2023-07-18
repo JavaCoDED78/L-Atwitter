@@ -1,46 +1,38 @@
 import React, {FC, ReactElement} from 'react';
 import Paper from "@material-ui/core/Paper";
-import {Typography} from "@material-ui/core";
+import {List, Typography} from "@material-ui/core";
 
 import Spinner from "../Spinner/Spinner";
-import Follower from "../Follower/Follower";
 import {User} from "../../store/ducks/user/contracts/state";
 import {useConnectToUsersStyles} from "./ConnectToUsersStyles";
+import UsersItem, {UserItemSize} from "../UsersItem/UsersItem";
+import {useGlobalStyles} from "../../util/globalClasses";
 
 interface ConnectToUsersProps {
     title: string,
     isUsersLoading: boolean,
     users: User[],
-    handleFollow: (user: User) => void;
-    handleUnfollow: (user: User) => void;
 }
 
-const ConnectToUsers: FC<ConnectToUsersProps> = (
-    {
-        title,
-        isUsersLoading,
-        users,
-        handleFollow,
-        handleUnfollow
-    }
-): ReactElement => {
+const ConnectToUsers: FC<ConnectToUsersProps> = ({title, isUsersLoading, users}): ReactElement => {
+    const globalClasses = useGlobalStyles();
     const classes = useConnectToUsersStyles();
 
     return (
-        <div className={classes.container}>
+        <div className={globalClasses.contentWrapper}>
             {isUsersLoading ? (
                 <Spinner/>
             ) : (
                 <>
                     <Paper className={classes.header} variant="outlined">
-                        <Typography variant="h6">
+                        <Typography variant="h5">
                             {title}
                         </Typography>
                     </Paper>
-                    <Paper className={classes.content} variant="outlined">
-                        {users.map((user) => (
-                            <Follower key={user.id} item={user} follow={handleFollow} unfollow={handleUnfollow}/>)
-                        )}
+                    <Paper className={globalClasses.pageContainer} variant="outlined">
+                        <List>
+                            {users.map((user) => <UsersItem key={user.id} item={user} size={UserItemSize.MEDIUM}/>)}
+                        </List>
                     </Paper>
                 </>
             )}

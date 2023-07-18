@@ -1,7 +1,7 @@
 import React, {ComponentType, FC, ReactElement, useState} from 'react';
 import {useDispatch, useSelector} from "react-redux";
 import {Link, useHistory, useLocation} from 'react-router-dom';
-import {Avatar, IconButton, Paper, Typography} from '@material-ui/core';
+import {Avatar, IconButton, Link as MuiLink, Paper, Typography} from '@material-ui/core';
 import {compose} from "recompose";
 
 import {
@@ -11,8 +11,7 @@ import {
     LikeOutlinedIcon,
     LockIcon,
     PinOutlinedIcon,
-    ReplyIcon,
-    RetweetOutlinedIconSm
+    ReplyIcon
 } from "../../icons";
 import {useTweetComponentStyles} from "./TweetComponentStyles";
 import {formatDate} from '../../util/formatDate';
@@ -35,7 +34,9 @@ import SmallLinkPreview from "../SmallLinkPreview/SmallLinkPreview";
 import HoverAction from "../HoverAction/HoverAction";
 import {HoverActionProps, HoverActions, withHoverAction} from "../../hoc/withHoverAction";
 import TweetAnalyticsModal from "../TweetAnalyticsModal/TweetAnalyticsModal";
-import {withHoverUser, HoverUserProps} from "../../hoc/withHoverUser";
+import {HoverUserProps, withHoverUser} from "../../hoc/withHoverUser";
+import {useGlobalStyles} from "../../util/globalClasses";
+import TweetActionResult, {TweetActionResults} from "../TweetActionResult/TweetActionResult";
 
 export interface TweetComponentProps<T> {
     item?: T;
@@ -55,6 +56,7 @@ const TweetComponent: FC<HoverUserProps & TweetComponentProps<Tweet> & HoverActi
         handleLeaveAction
     }
 ): ReactElement => {
+    const globalClasses = useGlobalStyles();
     const dispatch = useDispatch();
     const myProfile = useSelector(selectUserData);
     const userProfile = useSelector(selectUserProfile);
@@ -64,10 +66,10 @@ const TweetComponent: FC<HoverUserProps & TweetComponentProps<Tweet> & HoverActi
     const [visibleAnalyticsModalWindow, setVisibleAnalyticsModalWindow] = useState<boolean>(false);
     const [openYouTubeVideo, setOpenYouTubeVideo] = useState<boolean>(false);
 
-    const isTweetLiked = tweet?.likedTweets.find((like) => like.user.id === myProfile?.id);
-    const isTweetRetweetedByMe = tweet?.retweets.find((retweet) => retweet.user.id === myProfile?.id);
-    const isTweetRetweetedByUser = tweet?.retweets.find((retweet) => retweet.user.id === userProfile?.id);
-    const isFollower = myProfile?.following?.find((follower) => follower.id === tweet?.user?.id);
+    const isTweetLiked = tweet?.likedTweets.findIndex((like) => like.user.id === myProfile?.id) !== -1;
+    const isTweetRetweetedByMe = tweet?.retweets.findIndex((retweet) => retweet.user.id === myProfile?.id) !== -1;
+    const isTweetRetweetedByUser = tweet?.retweets.findIndex((retweet) => retweet.user.id === userProfile?.id) !== -1;
+    const isFollower = myProfile?.following?.findIndex((follower) => follower.id === tweet?.user?.id) !== -1;
     const isUserCanReply = (tweet?.replyType === ReplyType.MENTION) && (myProfile?.id !== tweet?.user.id);
     const isYouTubeLink = tweet?.link && tweet?.link.includes("youtu");
     const isModal = location.pathname.includes("/modal");
@@ -116,47 +118,48 @@ const TweetComponent: FC<HoverUserProps & TweetComponentProps<Tweet> & HoverActi
     };
 
     return (
-        <>
+        <Paper className={classes.container} variant="outlined">
             {isTweetRetweetedByUser && (
-                <div className={classes.retweetWrapper}>
-                    <span>{RetweetOutlinedIconSm}</span>
-                    <Typography>
-                        {(myProfile?.id === userProfile?.id) ? ("You") : (userProfile?.fullName)} Retweeted
-                    </Typography>
-                </div>
+                <TweetActionResult
+                    action={TweetActionResults.RETWEET}
+                    text={((myProfile?.id === userProfile?.id) ? ("You") : (userProfile?.fullName)) + " Retweeted"}
+                />
             )}
             {((myProfile?.id === userProfile?.id && activeTab === 0) && myProfile?.pinnedTweet?.id === tweet?.id) && (
-                <div className={classes.retweetWrapper}>
-                    <span>{PinOutlinedIcon}</span>
-                    <Typography>
-                        Pinned Tweet
-                    </Typography>
-                </div>
+                <TweetActionResult
+                    action={TweetActionResults.PIN}
+                    text={"Pinned Tweet"}
+                />
             )}
-            <Paper className={classes.container} variant="outlined">
+            <div className={classes.tweetWrapper}>
                 <a onClick={handleClickUser}>
                     <Avatar
-                        className={classes.avatar}
+                        className={globalClasses.avatar}
                         alt={`avatar ${tweet?.user.id}`}
                         src={tweet?.user.avatar?.src ? tweet?.user.avatar?.src : DEFAULT_PROFILE_IMG}
                     />
                 </a>
-                <div style={{flex: 1}}>
+                <div className={classes.tweetContainer}>
                     <div className={classes.header}>
                         <a
                             onClick={handleClickUser}
                             onMouseEnter={handleHoverPopper}
                             onMouseLeave={handleLeavePopper}
                         >
-                            <b>{tweet?.user.fullName}</b>
+                            <Typography variant={"h6"} component={"span"}>
+                                {tweet?.user.fullName}
+                            </Typography>
                             {tweet?.user.privateProfile && (
                                 <span className={classes.lockIcon}>
                                     {LockIcon}
                                 </span>
                             )}&nbsp;
-                            <span className={classes.headerText}>@{tweet?.user.username}</span>&nbsp;
-                            <span className={classes.headerText}>·</span>&nbsp;
-                            <span className={classes.headerText}>{formatDate(new Date(tweet!.dateTime))}</span>
+                            <Typography variant={"subtitle1"} component={"span"}>
+                                @{tweet?.user.username}{" · "}
+                            </Typography>
+                            <Typography variant={"subtitle1"} component={"span"}>
+                                {formatDate(new Date(tweet!.dateTime))}
+                            </Typography>
                             <PopperUserWindow visible={visiblePopperWindow} user={tweet!.user} isTweetComponent={true}/>
                         </a>
                         <TweetComponentActions
@@ -169,25 +172,22 @@ const TweetComponent: FC<HoverUserProps & TweetComponentProps<Tweet> & HoverActi
                             onOpenTweetAnalytics={onOpenTweetAnalyticsModalWindow}
                         />
                     </div>
-                    <Typography
-                        style={tweet?.addressedUsername ? {width: 250, marginBottom: 0} : {width: 500, marginBottom: 0}}
-                        variant="body1" gutterBottom
-                    >
+                    <div className={classes.tweetContent}>
                         {tweet?.addressedUsername && (
                             <object>
-                                <Typography className={classes.replyWrapper}>
+                                <Typography variant={"subtitle1"} component={"div"}>
                                     {"Replying to "}
-                                    <Link to={`/user/${tweet?.addressedId}`} className={classes.replyLink}>
+                                    <MuiLink variant="subtitle1" to={`/user/${tweet?.addressedId}`} component={Link}>
                                         @{tweet?.addressedUsername}
-                                    </Link>
+                                    </MuiLink>
                                 </Typography>
                             </object>
                         )}
-                        <div className={classes.text}>
+                        <Typography variant={"body1"} className={classes.text}>
                             <a onClick={handleClickTweet} href={`/home/tweet/${tweet?.id}`}>
                                 {textFormatter(tweet!.text)}
                             </a>
-                        </div>
+                        </Typography>
                         {(tweet?.images?.length !== 0) && (
                             <Link to={{pathname: `/modal/${tweet?.id}`, state: {background: location}}}>
                                 <div className={classes.image}>
@@ -205,9 +205,9 @@ const TweetComponent: FC<HoverUserProps & TweetComponentProps<Tweet> & HoverActi
                                         </span>
                                     </div>
                                 </div>
-                                <div className={classes.replyText}>
+                                <Typography variant={"subtitle2"} component={"span"}>
                                     You can reply to this conversation
-                                </div>
+                                </Typography>
                             </>
                         )}
                         {tweet?.quoteTweet && (<Quote quoteTweet={tweet?.quoteTweet} isTweetQuoted={true}/>)}
@@ -226,7 +226,7 @@ const TweetComponent: FC<HoverUserProps & TweetComponentProps<Tweet> & HoverActi
                                 )
                             )
                         ) : null}
-                    </Typography>
+                    </div>
                     <div className={classes.footer}>
                         <div className={classes.replyIcon}>
                             <IconButton
@@ -234,6 +234,7 @@ const TweetComponent: FC<HoverUserProps & TweetComponentProps<Tweet> & HoverActi
                                 onClick={onOpenReplyModalWindow}
                                 onMouseEnter={() => handleHoverAction?.(HoverActions.REPLY)}
                                 onMouseLeave={handleLeaveAction}
+                                size="small"
                             >
                                 <>{ReplyIcon}</>
                                 <HoverAction visible={visibleHoverAction?.visibleReplyAction} actionText={"Reply"}/>
@@ -254,13 +255,17 @@ const TweetComponent: FC<HoverUserProps & TweetComponentProps<Tweet> & HoverActi
                                 onClick={handleLike}
                                 onMouseEnter={() => handleHoverAction?.(HoverActions.LIKE)}
                                 onMouseLeave={handleLeaveAction}
+                                size="small"
                             >
                                 {isTweetLiked ? (
                                     <>{LikeIcon}</>
                                 ) : (
                                     <>{LikeOutlinedIcon}</>
                                 )}
-                                <HoverAction visible={visibleHoverAction?.visibleLikeAction} actionText={isTweetLiked ? "Unlike" : "Like"}/>
+                                <HoverAction
+                                    visible={visibleHoverAction?.visibleLikeAction}
+                                    actionText={isTweetLiked ? "Unlike" : "Like"}
+                                />
                             </IconButton>
                             {(tweet?.likedTweets.length !== 0) && (<span>{tweet?.likedTweets.length}</span>)}
                         </div>
@@ -277,6 +282,7 @@ const TweetComponent: FC<HoverUserProps & TweetComponentProps<Tweet> & HoverActi
                                     onClick={onOpenTweetAnalyticsModalWindow}
                                     onMouseEnter={() => handleHoverAction?.(HoverActions.ANALYTICS)}
                                     onMouseLeave={handleLeaveAction}
+                                    size="small"
                                 >
                                     <>{AnalyticsIcon}</>
                                     <HoverAction visible={visibleHoverAction?.visibleAnalyticsAction} actionText={"Analytics"}/>
@@ -285,7 +291,6 @@ const TweetComponent: FC<HoverUserProps & TweetComponentProps<Tweet> & HoverActi
                         )}
                     </div>
                 </div>
-                <div className={classes.bottomLine}/>
                 <ReplyModal
                     user={tweet!.user}
                     tweetId={tweet!.id}
@@ -300,8 +305,8 @@ const TweetComponent: FC<HoverUserProps & TweetComponentProps<Tweet> & HoverActi
                     visible={visibleAnalyticsModalWindow}
                     onClose={onCloseTweetAnalyticsModalWindow}
                 />
-            </Paper>
-        </>
+            </div>
+        </Paper>
     );
 };
 

@@ -1,35 +1,41 @@
 import React, {FC, ReactElement} from 'react';
-
-import {useDataUsageStyles} from "./DataUsageStyles";
 import {Checkbox, Typography} from "@material-ui/core";
 import {Link} from "react-router-dom";
+
+import {useDataUsageStyles} from "./DataUsageStyles";
 import {ArrowRightIcon} from "../../../../icons";
+import {useGlobalStyles} from "../../../../util/globalClasses";
 
 const DataUsage: FC = (): ReactElement => {
+    const globalClasses = useGlobalStyles();
     const classes = useDataUsageStyles();
 
     return (
         <>
-            <div className={classes.infoItemWrapper}>
-                <Typography component={"div"} className={classes.text}>
+            <div className={globalClasses.itemInfoWrapper}>
+                <Typography variant={"subtitle2"} component={"div"}>
                     Limit how Twitter uses some of your network data. These settings affect all the Twitter accounts on
                     this browser.
                 </Typography>
             </div>
-            <div className={classes.infoItemWrapper}>
-                <div className={classes.infoItem}>
-                    <span>Data saver</span>
+            <div className={globalClasses.itemInfoWrapper}>
+                <div className={globalClasses.infoItemCheckbox}>
+                    <Typography variant={"body1"} component={"span"}>
+                        Data saver
+                    </Typography>
                     <Checkbox/>
                 </div>
-                <Typography component={"div"} className={classes.text}>
+                <Typography variant={"subtitle2"} component={"div"}>
                     If selected, Twitter will use less network data.
                 </Typography>
             </div>
-            <Link to={"/settings/accessibility_display_and_languages/autoplay"} className={classes.accessibilityWrapper}>
-                <div className={classes.accessibilityLink}>
+            <Link to={"/settings/accessibility_display_and_languages/autoplay"} className={globalClasses.linkWrapper}>
+                <div className={globalClasses.contentLink}>
                     <div className={classes.accessibilityInfo}>
-                        <div>Autoplay</div>
-                        <Typography component={"div"} className={classes.text}>
+                        <Typography variant={"body1"} component={"div"}>
+                            Autoplay
+                        </Typography>
+                        <Typography variant={"subtitle2"} component={"div"}>
                             Never
                         </Typography>
                     </div>

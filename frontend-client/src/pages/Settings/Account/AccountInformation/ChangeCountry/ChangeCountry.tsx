@@ -1,14 +1,17 @@
 import React, {ChangeEvent, FC, ReactElement, useEffect, useState} from 'react';
 import {useDispatch, useSelector} from "react-redux";
-import {FormControl, InputLabel, Typography} from "@material-ui/core";
+import {FormControl, InputLabel, Link as MuiLink, Typography} from "@material-ui/core";
+import classnames from "classnames";
 
 import {useChangeCountryStyles} from "./ChangeCountryStyles";
 import {FilledSelect} from "../../../../../components/FilledSelect/FilledSelect";
 import {selectUserData} from "../../../../../store/ducks/user/selectors";
 import {setUserLoadingStatus, updateCountry} from "../../../../../store/ducks/user/actionCreators";
 import {LoadingStatus} from "../../../../../store/types";
+import {useGlobalStyles} from "../../../../../util/globalClasses";
 
 const ChangeCountry: FC = (): ReactElement => {
+    const globalClasses = useGlobalStyles();
     const classes = useChangeCountryStyles();
     const dispatch = useDispatch();
     const myProfile = useSelector(selectUserData);
@@ -31,7 +34,7 @@ const ChangeCountry: FC = (): ReactElement => {
 
     return (
         <>
-            <div className={classes.selectWrapper}>
+            <div className={classnames(classes.selectWrapper, globalClasses.itemInfoWrapper)}>
                 <FormControl variant="filled">
                     <InputLabel htmlFor="select-country">
                         Country
@@ -50,11 +53,17 @@ const ChangeCountry: FC = (): ReactElement => {
                         {countries()}
                     </FilledSelect>
                 </FormControl>
-                <Typography component={"div"} className={classes.countryInfo}>
-                    This is the primary country associated with your account. Your country helps us to customize
-                    your Twitter experience. <a
-                    href={"https://help.twitter.com/managing-your-account/how-to-change-country-settings"}
-                    target="_blank" className={classes.link}>Learn more</a>
+                <Typography variant={"subtitle2"} component={"div"}>
+                    {"This is the primary country associated with your account. Your country helps us to customize " +
+                    "your Twitter experience. "}
+                    <MuiLink
+                        href="https://help.twitter.com/managing-your-account/how-to-change-country-settings"
+                        variant="subtitle2"
+                        target="_blank"
+                        rel="noopener"
+                    >
+                        Learn more
+                    </MuiLink>
                 </Typography>
             </div>
         </>

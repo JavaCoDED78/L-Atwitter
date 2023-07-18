@@ -16,10 +16,6 @@ export const useManageMembersItemStyles = makeStyles((theme: Theme) => ({
             backgroundColor: theme.palette.secondary.main,
         },
     },
-    link: {
-        color: theme.palette.text.primary,
-        textDecoration: 'none',
-    },
     listAvatar: {
         width: theme.spacing(6.7),
         height: theme.spacing(6.7),
@@ -34,42 +30,18 @@ export const useManageMembersItemStyles = makeStyles((theme: Theme) => ({
         position: "relative",
         width: 350
     },
-    fullName: {
-        lineHeight: "20px",
-        color: theme.palette.text.primary,
-        fontWeight: 800,
-        fontSize: 15,
-    },
-    username: {
-        lineHeight: "20px",
-        color: theme.palette.text.secondary,
-        fontWeight: 400,
-        fontSize: 15,
-    },
-    about: {
-        lineHeight: "20px",
-        marginLeft: 5,
-        fontWeight: 400,
-        fontSize: 15,
+    buttonWrapper: {
+        "& .MuiButton-root": {
+            float: 'right',
+            marginRight: 15,
+        },
     },
     outlinedButton: {
-        float: 'right',
-        marginRight: 15,
-        width: 79,
-        height: 32,
-        borderRadius: '25px',
-        padding: '0 15px',
         '&:hover': {
             backgroundColor: theme.palette.secondary.light,
         },
     },
     containedButton: {
-        float: 'right',
-        marginRight: 15,
-        width: 90,
-        height: 32,
-        borderRadius: '25px',
-        padding: '0 15px',
         '&:hover': {
             backgroundColor: theme.palette.error.dark,
         },

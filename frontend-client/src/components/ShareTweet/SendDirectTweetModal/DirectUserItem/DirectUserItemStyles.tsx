@@ -8,9 +8,6 @@ export const useDirectUserItemStyles = makeStyles((theme: Theme) => ({
         paddingLeft: 15,
         cursor: 'pointer',
     },
-    link: {
-        textDecoration: 'none',
-    },
     listAvatar: {
         width: theme.spacing(5),
         height: theme.spacing(5),
@@ -30,16 +27,6 @@ export const useDirectUserItemStyles = makeStyles((theme: Theme) => ({
             marginBottom: -3,
             height: "1.2em",
         },
-    },
-    fullName: {
-        color: theme.palette.text.primary,
-        fontWeight: 800,
-        fontSize: 15,
-    },
-    username: {
-        color: theme.palette.text.secondary,
-        fontWeight: 400,
-        fontSize: 15,
     },
     checkIcon: {
         float: "right",

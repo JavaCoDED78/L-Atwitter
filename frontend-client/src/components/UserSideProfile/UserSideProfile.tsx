@@ -20,8 +20,8 @@ const UserSideProfile: FC = (): ReactElement | null => {
     const myProfile = useSelector(selectUserData);
     const [visibleLogoutModal, setVisibleLogoutModal] = useState<boolean>(false);
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-    const open = Boolean(anchorEl);
-    const id = open ? "simple-popover" : undefined;
+    const openPopover = Boolean(anchorEl);
+    const popoverId = openPopover ? "simple-popover" : undefined;
 
     const handleOpenPopup = (event: React.MouseEvent<HTMLDivElement, MouseEvent>): void => {
         setAnchorEl(event.currentTarget);
@@ -51,14 +51,16 @@ const UserSideProfile: FC = (): ReactElement | null => {
 
     return (
         <>
-            <div aria-describedby={id} onClick={handleOpenPopup} className={classes.container}>
+            <div aria-describedby={popoverId} onClick={handleOpenPopup} className={classes.container}>
                 <Avatar
                     alt={`avatar ${myProfile?.id}`}
                     src={myProfile?.avatar?.src ? myProfile?.avatar?.src : DEFAULT_PROFILE_IMG}
                 />
                 <div className={classes.info}>
-                    <b>{myProfile.fullName}</b>
-                    <Typography style={{color: "rgb(83, 100, 113)"}}>
+                    <Typography variant={"h6"}>
+                        {myProfile.fullName}
+                    </Typography>
+                    <Typography variant={"subtitle1"}>
                         @{myProfile.username}
                     </Typography>
                 </div>
@@ -67,8 +69,8 @@ const UserSideProfile: FC = (): ReactElement | null => {
                 </div>
             </div>
             <Popover
-                id={id}
-                open={open}
+                id={popoverId}
+                open={openPopover}
                 anchorEl={anchorEl}
                 onClose={handleClosePopup}
                 classes={{
@@ -89,9 +91,13 @@ const UserSideProfile: FC = (): ReactElement | null => {
                             <Avatar alt={`${myProfile?.id}`} src={myProfile?.avatar?.src}/>
                         </ListItemAvatar>
                         <ListItemText
-                            primary={myProfile?.fullName}
+                            primary={
+                                <Typography variant={"h6"} component="div">
+                                    {myProfile?.fullName}
+                                </Typography>
+                            }
                             secondary={
-                                <Typography component="span" variant="body2" color="textSecondary">
+                                <Typography variant="subtitle1" component="div">
                                     @{myProfile?.username}
                                 </Typography>
                             }
@@ -101,11 +107,15 @@ const UserSideProfile: FC = (): ReactElement | null => {
                     <div className={classes.listItemWrapper}>
                         <Divider component="li"/>
                         <ListItem>
-                            Add an existing account
+                            <Typography variant="body1" component="div">
+                                Add an existing account
+                            </Typography>
                         </ListItem>
                         <Divider component="li"/>
                         <ListItem onClick={onOpenLogoutModal}>
-                            Log out @{myProfile?.username}
+                            <Typography variant="body1" component="div">
+                                Log out @{myProfile?.username}
+                            </Typography>
                         </ListItem>
                     </div>
                 </List>

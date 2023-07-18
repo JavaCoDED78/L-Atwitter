@@ -12,9 +12,7 @@ import {
     fetchLists,
     fetchPinnedLists,
     fetchUserLists,
-    setLists,
-    setPinnedLists,
-    setUserLists
+    resetListsState,
 } from "../../store/ducks/lists/actionCreators";
 import {
     selectIsListsLoading,
@@ -27,8 +25,10 @@ import PinnedListsItem from "./PinnedListsItem/PinnedListsItem";
 import HoverAction from "../../components/HoverAction/HoverAction";
 import Spinner from "../../components/Spinner/Spinner";
 import {HoverActionProps, HoverActions, withHoverAction} from "../../hoc/withHoverAction";
+import {useGlobalStyles} from "../../util/globalClasses";
 
 const Lists: FC<HoverActionProps> = ({visibleHoverAction, handleHoverAction, handleLeaveAction}): ReactElement => {
+    const globalClasses = useGlobalStyles();
     const classes = useListsStyles();
     const dispatch = useDispatch();
     const myProfile = useSelector(selectUserData);
@@ -46,9 +46,7 @@ const Lists: FC<HoverActionProps> = ({visibleHoverAction, handleHoverAction, han
         dispatch(fetchPinnedLists());
 
         return () => {
-            dispatch(setLists([]));
-            dispatch(setUserLists([]));
-            dispatch(setPinnedLists([]));
+            dispatch(resetListsState());
         };
     }, []);
 
@@ -69,14 +67,14 @@ const Lists: FC<HoverActionProps> = ({visibleHoverAction, handleHoverAction, han
     };
 
     return (
-        <Paper className={classes.container} variant="outlined">
-            <Paper className={classes.header} variant="outlined">
+        <Paper className={globalClasses.pageContainer} variant="outlined">
+            <Paper className={globalClasses.pageHeader} variant="outlined">
                 <BackButton/>
                 <div>
-                    <Typography component={"div"} className={classes.headerFullName}>
+                    <Typography variant="h5" component={"div"}>
                         Lists
                     </Typography>
-                    <Typography component={"div"} className={classes.headerUsername}>
+                    <Typography variant="subtitle2" component={"div"}>
                         @{myProfile?.username}
                     </Typography>
                 </div>
@@ -86,6 +84,7 @@ const Lists: FC<HoverActionProps> = ({visibleHoverAction, handleHoverAction, han
                             onClick={onOpenCreateListModal}
                             onMouseEnter={() => handleHoverAction?.(HoverActions.CREATE_LIST)}
                             onMouseLeave={handleLeaveAction}
+                            color="primary"
                         >
                             <>{AddListsIcon}</>
                             <HoverAction visible={visibleHoverAction?.visibleCreateListAction} actionText={"Create"}/>
@@ -98,6 +97,7 @@ const Lists: FC<HoverActionProps> = ({visibleHoverAction, handleHoverAction, han
                                     onClick={handleClick}
                                     onMouseEnter={() => handleHoverAction?.(HoverActions.MORE)}
                                     onMouseLeave={handleLeaveAction}
+                                    color="primary"
                                 >
                                     <>{EditIcon}</>
                                     <HoverAction visible={visibleHoverAction?.visibleMoreAction} actionText={"More"}/>
@@ -108,7 +108,7 @@ const Lists: FC<HoverActionProps> = ({visibleHoverAction, handleHoverAction, han
                                             <span className={classes.textIcon}>
                                                 {ListsIcon}
                                             </span>
-                                            <Typography component={"span"} className={classes.text}>
+                                            <Typography variant={"body1"} component={"span"}>
                                                 Lists you’re on
                                             </Typography>
                                         </div>
@@ -124,37 +124,39 @@ const Lists: FC<HoverActionProps> = ({visibleHoverAction, handleHoverAction, han
             ) : (
                 <>
                     <Paper className={classes.pinnedLists} variant="outlined">
-                        <Typography variant="h6">
+                        <Typography variant="h5" className={globalClasses.itemInfoWrapper}>
                             Pinned Lists
                         </Typography>
                         {(pinnedLists.length === 0) ? (
-                            <Typography component={"div"} className={classes.pinnedListsText}>
+                            <Typography variant={"subtitle1"} component={"div"} className={classes.pinnedListsText}>
                                 Nothing to see here yet — pin your favorite Lists to access them quickly.
                             </Typography>
                         ) : (
                             <Typography component={"div"} className={classes.pinnedListsWrapper}>
-                                {pinnedLists.map((pinnedList) => (<PinnedListsItem pinnedList={pinnedList}/>))}
+                                {pinnedLists.map((pinnedList) => (
+                                    <PinnedListsItem key={pinnedList.id} pinnedList={pinnedList}/>
+                                ))}
                             </Typography>
                         )}
                     </Paper>
                     <Paper className={classes.newLists} variant="outlined">
-                        <Typography variant="h6">
+                        <Typography variant="h5" className={globalClasses.itemInfoWrapper}>
                             Discover new Lists
                         </Typography>
                         {lists.slice(0, 3).map((list, index) => (
                             <ListsItem key={list.id} item={list} listIndex={index}/>
                         ))}
-                        <Link to={"/suggested"} className={classes.link}>
-                            <Typography component={"div"} className={classes.showMore}>
+                        <Link to={"/suggested"} className={globalClasses.link}>
+                            <Typography variant={"body1"} component={"div"} className={classes.showMore}>
                                 Show more
                             </Typography>
                         </Link>
                     </Paper>
                     <Paper className={classes.myLists} variant="outlined">
-                        <Typography variant="h6">
+                        <Typography variant="h5" className={globalClasses.itemInfoWrapper}>
                             Your Lists
                         </Typography>
-                        {userLists.map((list) => (<ListsItem isMyList={true} key={list.id} item={list}/>))}
+                        {userLists.map((list) => (<ListsItem key={list.id} isMyList={true} item={list}/>))}
                     </Paper>
                     <CreateListsModal visible={visibleCreateListModal} onClose={onCloseCreateListModal}/>
                 </>

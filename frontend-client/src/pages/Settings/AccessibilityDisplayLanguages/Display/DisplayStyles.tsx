@@ -1,21 +1,6 @@
 import {makeStyles, Theme} from "@material-ui/core";
 
 export const useDisplayStyles = makeStyles((theme: Theme) => ({
-    infoItemWrapper: {
-        padding: "12px 16px"
-    },
-    title: {
-        fontWeight: 800,
-        lineHeight: "24px",
-        fontSize: 20,
-        color: theme.palette.text.primary,
-    },
-    text: {
-        color: theme.palette.text.secondary,
-        fontWeight: 400,
-        fontSize: 13,
-        lineHeight: "16px"
-    },
     tweetInfoWrapper: {
         display: "inline-flex",
         justifyContent: "flex-start"
@@ -40,9 +25,6 @@ export const useDisplayStyles = makeStyles((theme: Theme) => ({
     tweetTitle: {
         marginRight: 3,
         fontWeight: 700,
-        fontSize: 15,
-        color: theme.palette.text.primary,
-        lineHeight: "20px"
     },
     tweetVerifiedIcon: {
         marginRight: 3,
@@ -52,17 +34,7 @@ export const useDisplayStyles = makeStyles((theme: Theme) => ({
             height: "1.35em"
         },
     },
-    tweetInfoText: {
-        fontWeight: 400,
-        fontSize: 15,
-        color: theme.palette.text.secondary,
-        lineHeight: "20px"
-    },
     tweetText: {
-        fontWeight: 400,
-        fontSize: 15,
-        color: theme.palette.text.primary,
-        lineHeight: "20px",
         "&#xs": {
             fontSize: 13,
         },
@@ -154,6 +126,10 @@ export const useDisplayStyles = makeStyles((theme: Theme) => ({
     },
     backgroundWrapper: {
         display: "inline-block",
+        "& .MuiTypography-h6": {
+            fontWeight: 700,
+            marginLeft: 25,
+        },
     },
     backgroundItem: {
         display: "flex",
@@ -168,25 +144,25 @@ export const useDisplayStyles = makeStyles((theme: Theme) => ({
         cursor: "pointer",
         "&#default": {
             backgroundColor: theme.palette.common.white,
-            color: theme.palette.common.black,
+            "& .MuiTypography-h6": {
+                color: theme.palette.common.black,
+            },
         },
         "&#dim": {
             backgroundColor: "rgb(21, 32, 43)",
-            color: theme.palette.common.white,
+            "& .MuiTypography-h6": {
+                color: theme.palette.common.white,
+            },
         },
         "&#lights-out": {
             backgroundColor: "rgb(0, 0, 0)",
-            color: "rgb(217, 217, 217)",
+            "& .MuiTypography-h6": {
+                color: "rgb(217, 217, 217)",
+            },
         },
     },
     backgroundItemWrapper: {
         padding: "4px 0px",
-        "& .MuiTypography-root": {
-            fontSize: 15,
-            color: theme.palette.text.primary,
-            fontWeight: 400,
-            lineHeight: "20px",
-        },
         "& .MuiButtonBase-root": {
             padding: 4,
             "& .MuiSvgIcon-root": {
@@ -194,11 +170,5 @@ export const useDisplayStyles = makeStyles((theme: Theme) => ({
                 height: 20
             },
         },
-    },
-    backgroundItemText: {
-        fontWeight: 700,
-        fontSize: 15,
-        lineHeight: "20px",
-        marginLeft: 25,
     },
 }));

@@ -10,18 +10,17 @@ export const useTweetComponentActionsModalStyles = makeStyles((theme: Theme) => 
             color: theme.palette.primary.main,
             fontSize: 45,
         },
-    },
-    modalFullName: {
-        color: theme.palette.text.primary,
-        fontWeight: 700,
-        fontSize: 20,
-    },
-    modalUsername: {
-        color: theme.palette.text.secondary,
-        fontWeight: 400,
-        fontSize: 15,
-        marginTop: 8,
-        marginBottom: 24,
+        "& .MuiTypography-subtitle1": {
+            marginTop: 8,
+            marginBottom: 24,
+        },
+        "& .MuiButton-root": {
+            width: 134,
+            "& .MuiButton-label": {
+                fontSize: 15,
+                lineHeight: "20px",
+            },
+        },
     },
     modalButtonWrapper: {
         display: "flex",
@@ -29,16 +28,8 @@ export const useTweetComponentActionsModalStyles = makeStyles((theme: Theme) => 
         justifyContent: "space-between",
     },
     modalCancelButton: {
-        width: 134,
-        height: 40,
         color: theme.palette.text.primary,
         backgroundColor: theme.palette.divider,
-        borderRadius: '25px',
-    },
-    modalButton: {
-        width: 134,
-        height: 40,
-        borderRadius: '25px',
     },
     modalDeleteButton: {
         "&.MuiButton-contained": {

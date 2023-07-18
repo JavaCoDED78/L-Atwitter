@@ -1,4 +1,4 @@
-import React, {FC, ReactElement, useState} from 'react';
+import React, {FC, ReactElement} from 'react';
 import {useDispatch, useSelector} from "react-redux";
 import {Avatar, Button, Paper, Typography} from "@material-ui/core";
 import {Link} from "react-router-dom";
@@ -10,6 +10,8 @@ import {selectUserData} from "../../../../../../store/ducks/user/selectors";
 import {addUserToBlocklist} from "../../../../../../store/ducks/user/actionCreators";
 import ActionSnackbar from "../../../../../../components/ActionSnackbar/ActionSnackbar";
 import {SnackbarProps, withSnackbar} from "../../../../../../hoc/withSnackbar";
+import {useGlobalStyles} from "../../../../../../util/globalClasses";
+import classnames from "classnames";
 
 interface BlockedAccountItemProps {
     blockedUser: User;
@@ -25,59 +27,60 @@ const BlockedAccountItem: FC<BlockedAccountItemProps & SnackbarProps> = (
         onCloseSnackBar
     }
 ): ReactElement => {
+    const globalClasses = useGlobalStyles();
     const dispatch = useDispatch();
     const myProfile = useSelector(selectUserData);
     const isUserBlocked = myProfile?.userBlockedList?.findIndex(user => user.id === blockedUser?.id) !== -1;
     const classes = useBlockedAccountItemStyles({isUserBlocked});
 
-    const unblockUser = (): void => {
+    const unblockUser = (event: React.MouseEvent<HTMLButtonElement>): void => {
+        event.preventDefault();
         dispatch(addUserToBlocklist(blockedUser?.id!));
         setSnackBarMessage!(`@${blockedUser.username} has been ${isUserBlocked ? "unblocked" : "blocked"}.`);
         setOpenSnackBar!(true);
     };
 
     return (
-        <Paper className={classes.container}>
-            <Link to={`/user/${blockedUser?.id}`} className={classes.link}>
+        <Link to={`/user/${blockedUser?.id}`} className={globalClasses.link}>
+            <Paper className={classes.container}>
                 <Avatar
-                    className={classes.listAvatar}
+                    className={classnames(classes.listAvatar, globalClasses.avatar)}
                     src={blockedUser?.avatar?.src ? blockedUser?.avatar.src : DEFAULT_PROFILE_IMG}
                 />
-            </Link>
-            <div style={{flex: 1}}>
-                <div className={classes.userInfoWrapper}>
-                    <Link to={`/user/${blockedUser?.id}`} className={classes.link}>
+                <div style={{flex: 1}}>
+                    <div className={classes.userInfoWrapper}>
                         <div className={classes.userInfo}>
                             <div>
-                                <Typography component={"span"} className={classes.fullName}>
+                                <Typography variant={"h6"} component={"span"}>
                                     {blockedUser?.fullName}
                                 </Typography>
                             </div>
-                            <Typography component={"div"} className={classes.username}>
+                            <Typography variant={"subtitle1"} component={"div"}>
                                 @{blockedUser?.username}
                             </Typography>
                         </div>
-                    </Link>
-                    <div className={classes.blockButton}>
-                        <Button
-                            onClick={unblockUser}
-                            color="primary"
-                            variant="contained"
-                        >
-                            {isUserBlocked ? "Blocked" : "Block"}
-                        </Button>
+                        <div className={classes.blockButton}>
+                            <Button
+                                onClick={(event) => unblockUser(event)}
+                                color="primary"
+                                variant="contained"
+                                size="medium"
+                            >
+                                {isUserBlocked ? "Blocked" : "Block"}
+                            </Button>
+                        </div>
                     </div>
+                    <Typography variant={"body1"} component={"div"}>
+                        {blockedUser?.about}
+                    </Typography>
                 </div>
-                <Typography display="block">
-                    {blockedUser?.about}
-                </Typography>
-            </div>
-            <ActionSnackbar
-                onCloseSnackBar={onCloseSnackBar!}
-                openSnackBar={openSnackBar!}
-                snackBarMessage={snackBarMessage!}
-            />
-        </Paper>
+                <ActionSnackbar
+                    onCloseSnackBar={onCloseSnackBar!}
+                    openSnackBar={openSnackBar!}
+                    snackBarMessage={snackBarMessage!}
+                />
+            </Paper>
+        </Link>
     );
 };
 

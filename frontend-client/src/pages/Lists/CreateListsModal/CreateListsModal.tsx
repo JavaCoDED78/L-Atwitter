@@ -65,6 +65,7 @@ const CreateListsModal: FC<CreateListsModalProps> = ({visible, onClose}): ReactE
                         type="submit"
                         variant="contained"
                         color="primary"
+                        size="small"
                     >
                         Next
                     </Button>
@@ -95,7 +96,7 @@ const CreateListsModal: FC<CreateListsModalProps> = ({visible, onClose}): ReactE
                         />
                         <div className={classes.footer}>
                             <div className={classes.footerWrapper}>
-                                <Typography component={"div"} className={classes.footerTitle}>
+                                <Typography variant={"body1"} component={"div"}>
                                     Make private
                                 </Typography>
                                 <Checkbox
@@ -105,7 +106,7 @@ const CreateListsModal: FC<CreateListsModalProps> = ({visible, onClose}): ReactE
                                     color="primary"
                                 />
                             </div>
-                            <Typography component={"div"} className={classes.footerText}>
+                            <Typography variant={"subtitle2"} component={"div"}>
                                 When you make a List private, only you can see it.
                             </Typography>
                         </div>

@@ -1,10 +1,12 @@
 import React, {FC, ReactElement, useState} from 'react';
-
-import {usePhotoTaggingStyles} from "./PhotoTaggingStyles";
 import {Divider, Radio, Switch, Typography} from "@material-ui/core";
 import {CheckCircle, RadioButtonUnchecked} from "@material-ui/icons";
 
+import {usePhotoTaggingStyles} from "./PhotoTaggingStyles";
+import {useGlobalStyles} from "../../../../../util/globalClasses";
+
 const PhotoTagging: FC = (): ReactElement => {
+    const globalClasses = useGlobalStyles();
     const classes = usePhotoTaggingStyles();
     const [selectedValue, setSelectedValue] = useState<string>("Anyone");
 
@@ -14,21 +16,21 @@ const PhotoTagging: FC = (): ReactElement => {
 
     return (
         <>
-            <div className={classes.infoItemWrapper}>
-                <Typography component={"div"} className={classes.title}>
+            <div className={globalClasses.itemInfoWrapper}>
+                <Typography variant={"h6"} component={"div"} className={classes.title}>
                     Photo tagging
                     <span className={classes.switch}>
                         <Switch defaultChecked/>
                     </span>
                 </Typography>
-                <Typography component={"div"} className={classes.text}>
+                <Typography variant={"subtitle2"} component={"div"}>
                     Allow people to tag you in their photos and receive notifications when they do so.
                 </Typography>
             </div>
             <Divider/>
-            <div className={classes.infoItemWrapper}>
-                <div className={classes.photoTaggingItemWrapper}>
-                    <Typography component={"span"}>
+            <div className={globalClasses.itemInfoWrapper}>
+                <div className={globalClasses.infoItemRadioCheckbox}>
+                    <Typography variant={"body1"} component={"span"}>
                         Anyone can tag you
                     </Typography>
                     <Radio
@@ -42,8 +44,8 @@ const PhotoTagging: FC = (): ReactElement => {
                         size="small"
                     />
                 </div>
-                <div className={classes.photoTaggingItemWrapper}>
-                    <Typography component={"span"}>
+                <div className={globalClasses.infoItemRadioCheckbox}>
+                    <Typography variant={"body1"} component={"span"}>
                         Only people you follow can tag you
                     </Typography>
                     <Radio

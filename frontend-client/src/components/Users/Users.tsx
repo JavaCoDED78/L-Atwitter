@@ -1,42 +1,53 @@
 import React, {FC, ReactElement} from 'react';
-import {Link, useLocation} from 'react-router-dom';
-import {useSelector} from "react-redux";
-import {Paper} from "@material-ui/core";
+import {useHistory} from 'react-router-dom';
+import {useDispatch, useSelector} from "react-redux";
+import {Paper, Typography} from "@material-ui/core";
 import List from "@material-ui/core/List/List";
 import ListItem from "@material-ui/core/ListItem/ListItem";
 
 import {selectUsers, selectUsersIsLoading} from "../../store/ducks/users/selectors";
-import UsersItem from "./UsersItem/UsersItem";
+import UsersItem, {UserItemSize} from "../UsersItem/UsersItem";
 import {useUsersStyles} from "./UsersStyles";
 import Spinner from "../Spinner/Spinner";
+import {resetUsersState} from "../../store/ducks/users/actionCreators";
 
 const Users: FC = (): ReactElement => {
     const classes = useUsersStyles();
-    const location = useLocation();
+    const dispatch = useDispatch();
+    const history = useHistory();
     const users = useSelector(selectUsers);
     const isUsersLoading = useSelector(selectUsersIsLoading);
 
+    const clickToConnect = () => {
+        dispatch(resetUsersState());
+        history.push("/home/connect");
+    };
+
     return (
         <>
-            {(location.pathname !== "/home/connect") && (
+            {(history.location.pathname !== "/home/connect") && (
                 <Paper className={classes.container}>
                     <Paper className={classes.header} variant="outlined">
-                        <b>Who to follow</b>
+                        <Typography variant={"h5"} component={"div"}>
+                            Who to follow
+                        </Typography>
                     </Paper>
                     {isUsersLoading ? (
                         <Spinner/>
                     ) : (
                         <List>
-                            {users.slice(0, 5).map((user) => <UsersItem key={user.id} item={user}/>)}
-                            <Link to={"/home/connect"}>
-                                <ListItem className={classes.footer}>
+                            {users.slice(0, 5).map((user) => (
+                                <UsersItem key={user.id} item={user} size={UserItemSize.SMALL}/>
+                            ))}
+                            <ListItem onClick={clickToConnect} className={classes.footer}>
+                                <Typography variant={"body1"} component={"div"}>
                                     Show more
-                                </ListItem>
-                            </Link>
+                                </Typography>
+                            </ListItem>
                         </List>
                     )}
-                </Paper>)
-            }
+                </Paper>
+            )}
         </>
     );
 };

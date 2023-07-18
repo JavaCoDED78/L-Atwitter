@@ -1,35 +1,39 @@
 import React, {FC, ReactElement} from 'react';
 import {Link} from "react-router-dom";
-import {Typography} from "@material-ui/core";
+import {Link as MuiLink, Typography} from "@material-ui/core";
 
-import {usePreferencesStyles} from "./PreferencesStyles";
 import {ArrowRightIcon} from "../../../../icons";
+import {useGlobalStyles} from "../../../../util/globalClasses";
 
 const Preferences: FC = (): ReactElement => {
-    const classes = usePreferencesStyles();
+    const globalClasses = useGlobalStyles();
 
     return (
         <>
-            <div className={classes.infoItemWrapper}>
-                <Typography component={"div"} className={classes.text}>
-                    Select your preferences by notification type.
-                    <a
-                        href={"https://help.twitter.com/managing-your-account/notifications-on-mobile-devices"}
+            <div className={globalClasses.itemInfoWrapper}>
+                <Typography variant={"subtitle2"} component={"div"}>
+                    {`Select your preferences by notification type. `}
+                    <MuiLink
+                        href="https://help.twitter.com/managing-your-account/notifications-on-mobile-devices"
+                        variant="subtitle2"
                         target="_blank"
-                        className={classes.link}> Learn more</a>
+                        rel="noopener"
+                    >
+                        Learn more
+                    </MuiLink>
                 </Typography>
             </div>
-            <Link to={"/settings/notification/push_notifications"} className={classes.preferencesWrapper}>
-                <div className={classes.preferencesLink}>
-                    <Typography component={"span"}>
+            <Link to={"/settings/notification/push_notifications"} className={globalClasses.linkWrapper}>
+                <div className={globalClasses.contentLink}>
+                    <Typography variant={"body1"} component={"span"}>
                         Push notifications
                     </Typography>
                     {ArrowRightIcon}
                 </div>
             </Link>
-            <Link to={"/settings/notification/email_notifications"} className={classes.preferencesWrapper}>
-                <div className={classes.preferencesLink}>
-                    <Typography component={"span"}>
+            <Link to={"/settings/notification/email_notifications"} className={globalClasses.linkWrapper}>
+                <div className={globalClasses.contentLink}>
+                    <Typography variant={"body1"} component={"span"}>
                         Email notifications
                     </Typography>
                     {ArrowRightIcon}

@@ -5,7 +5,6 @@ import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
 
 import {useManageMembersModalStyles} from "./ManageMembersModalStyles";
-import {Lists} from "../../../../store/ducks/lists/contracts/state";
 import ManageMembersItem from "./ManageMembersItem/ManageMembersItem";
 import ManageMembersSuggested from "./ManageMembersSuggested/ManageMembersSuggested";
 import {ArrowIcon} from "../../../../icons";
@@ -39,7 +38,7 @@ const ManageMembersModal: FC<ManageMembersModalProps> = ({visible, onClose}): Re
             aria-labelledby="form-dialog-title"
         >
             <DialogTitle id="form-dialog-title">
-                <IconButton onClick={onClose} color="secondary" aria-label="close">
+                <IconButton onClick={onClose} color="primary" size="small">
                     <>{ArrowIcon}</>
                 </IconButton>
                 Manage members
@@ -51,7 +50,9 @@ const ManageMembersModal: FC<ManageMembersModalProps> = ({visible, onClose}): Re
                         <Tab className={classes.tab} label="Suggested"/>
                     </Tabs>
                 </div>
-                {(activeTab === 0) && (list?.members.map((member) => <ManageMembersItem item={list} member={member}/>))}
+                {(activeTab === 0) && (list?.members.map((member) => (
+                    <ManageMembersItem key={member.id} item={list} member={member}/>
+                )))}
                 {(activeTab === 1) && (<ManageMembersSuggested/>)}
             </DialogContent>
         </Dialog>

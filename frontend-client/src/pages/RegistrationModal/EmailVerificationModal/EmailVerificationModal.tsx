@@ -1,6 +1,6 @@
 import React, {FC, ReactElement, useState} from 'react';
 import TwitterIcon from "@material-ui/icons/Twitter";
-import {Button, Dialog, DialogContent, Typography} from "@material-ui/core";
+import {Button, Dialog, DialogContent, Link as MuiLink, Typography} from "@material-ui/core";
 
 import {useEmailVerificationModalStyles} from "./EmailVerificationModalStyles";
 import {RegistrationInputField} from "../RegistrationInput/RegistrationInputField";
@@ -36,11 +36,11 @@ const EmailVerificationModal: FC<CustomizeModalProps> = ({email, open, onClose, 
                 <div className={classes.logoIcon}>
                     <TwitterIcon/>
                 </div>
-                <Typography component={"div"} className={classes.title}>
+                <Typography variant={"h3"} component={"div"}>
                     We sent you a code
                 </Typography>
-                <Typography component={"div"} className={classes.text}>
-                    Enter it below to verify {email}.
+                <Typography variant={"subtitle1"} component={"div"}>
+                    {`Enter it below to verify ${email}.`}
                 </Typography>
                 <div style={{marginTop: 10}}>
                     <RegistrationInputField
@@ -53,15 +53,16 @@ const EmailVerificationModal: FC<CustomizeModalProps> = ({email, open, onClose, 
                         fullWidth
                     />
                 </div>
-                <Typography component={"div"} className={classes.link}>
+                <MuiLink variant="subtitle2" href="#" className={classes.emailLinkWrapper}>
                     Didn't receive email?
-                </Typography>
+                </MuiLink>
                 <div className={classes.buttonWrapper}>
                     <Button
                         disabled={verificationCode === ""}
                         onClick={checkEmailVerificationCode}
                         variant="contained"
                         color="primary"
+                        size="small"
                         fullWidth
                     >
                         Next

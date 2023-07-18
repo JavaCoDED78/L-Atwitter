@@ -27,21 +27,24 @@ const FollowerGroup: FC<FollowerGroupProps> = ({user, sameFollowers}): ReactElem
                             <AvatarGroup>
                                 {sameFollowers.slice(0, 3).map(follower => (
                                     <Avatar
+                                        key={follower.id}
                                         alt={follower.username}
                                         src={follower.avatar?.src ? follower.avatar.src : DEFAULT_PROFILE_IMG}
                                     />
                                 ))}
                             </AvatarGroup>
-                            <Typography component={"span"} className={classes.followedTextInfo}>
+                            <Typography variant={"subtitle2"} component={"span"} className={classes.followedTextInfo}>
                                 {"Followed by "}
-                                {sameFollowers.slice(0, 2).map(follower => `${follower.username}, `)}
+                                {sameFollowers.slice(0, 2).map((follower, index, array) => (
+                                    `${follower.username}${(array.length !== index + 1) ? "," : ""} `
+                                ))}
                                 {(sameFollowers?.length > 2) && `and ${sameFollowers?.length - 2} others you follow`}
                             </Typography>
                         </Link>
                     </div>
                 ) : (
                     (user.id !== myProfile?.id) && (
-                        <Typography component={"div"} className={classes.noFollowedTextInfo}>
+                        <Typography variant={"subtitle2"} component={"div"} className={classes.noFollowedTextInfo}>
                             Not followed by anyone you’re following
                         </Typography>
                     )

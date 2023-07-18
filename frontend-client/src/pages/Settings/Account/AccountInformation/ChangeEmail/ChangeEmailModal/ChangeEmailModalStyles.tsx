@@ -10,6 +10,12 @@ export const useChangeEmailModalStyles = makeStyles((theme: Theme) => ({
         "& .MuiDialogContent-root": {
             paddingTop: 10,
         },
+        "& .MuiTypography-h3": {
+            padding: "16px 0px",
+        },
+        "& .MuiTypography-subtitle1": {
+            marginBottom: 20,
+        },
     },
     content: {
         width: 598,
@@ -26,26 +32,6 @@ export const useChangeEmailModalStyles = makeStyles((theme: Theme) => ({
             color: theme.palette.primary.main,
         },
     },
-    title: {
-        padding: "16px 0px",
-        fontSize: 23,
-        fontWeight: 700,
-        lineHeight: "28px",
-        color: theme.palette.text.primary,
-    },
-    text: {
-        marginBottom: 20,
-        fontSize: 15,
-        fontWeight: 400,
-        lineHeight: "20px",
-    },
-    textSecondary: {
-        color: theme.palette.text.secondary,
-    },
-    textPrimary: {
-        width: 504,
-        color: theme.palette.text.primary,
-    },
     infoWrapper: {
         marginTop: 38,
         display: "flex",
@@ -56,14 +42,6 @@ export const useChangeEmailModalStyles = makeStyles((theme: Theme) => ({
         "& .MuiFormControl-root": {
             width: "100%"
         },
-    },
-    link: {
-        textDecoration: "none",
-        color: theme.palette.primary.main,
-        cursor: "pointer",
-        "&:hover": {
-            textDecoration: "underline",
-        }
     },
     footer: {
         width: "100%",

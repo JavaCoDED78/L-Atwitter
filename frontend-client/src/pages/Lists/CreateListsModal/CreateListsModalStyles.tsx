@@ -16,7 +16,6 @@ export const useCreateListsModalStyles = makeStyles((theme: Theme) => ({
     },
     button: {
         marginLeft: "auto",
-        height: 30,
     },
     wallpaperWrapper: {
         width: 598,
@@ -44,12 +43,5 @@ export const useCreateListsModalStyles = makeStyles((theme: Theme) => ({
     footerWrapper: {
         display: "flex",
         justifyContent: "space-between",
-    },
-    footerTitle: {
-        fontSize: 15,
-    },
-    footerText: {
-        fontSize: 13,
-        color: theme.palette.text.secondary,
     },
 }));

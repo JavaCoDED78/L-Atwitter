@@ -15,9 +15,6 @@ export const useMessagesModalUserStyles = makeStyles<Theme, MessagesModalUserSty
         cursor: props => props.mutedDirectMessages ? "default" : "pointer",
         opacity: props => props.mutedDirectMessages ? 0.5 : 1,
     },
-    link: {
-        textDecoration: 'none',
-    },
     listAvatar: {
         width: theme.spacing(5),
         height: theme.spacing(5),
@@ -37,15 +34,5 @@ export const useMessagesModalUserStyles = makeStyles<Theme, MessagesModalUserSty
             marginBottom: -3,
             height: "1.2em",
         },
-    },
-    fullName: {
-        color: theme.palette.text.primary,
-        fontWeight: 800,
-        fontSize: 15,
-    },
-    username: {
-        color: theme.palette.text.secondary,
-        fontWeight: 400,
-        fontSize: 15,
     },
 }));

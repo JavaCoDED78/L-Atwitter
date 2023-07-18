@@ -6,6 +6,7 @@ import com.gmail.javacoded78.latwitter.dto.request.VoteRequest;
 import com.gmail.javacoded78.latwitter.dto.response.TweetHeaderResponse;
 import com.gmail.javacoded78.latwitter.dto.response.NotificationResponse;
 import com.gmail.javacoded78.latwitter.dto.response.TweetResponse;
+import com.gmail.javacoded78.latwitter.dto.response.TweetResponseCommon;
 import com.gmail.javacoded78.latwitter.model.ReplyType;
 import com.gmail.javacoded78.latwitter.model.Tweet;
 import com.gmail.javacoded78.latwitter.service.TweetService;
@@ -33,8 +34,18 @@ public class TweetMapper {
         return modelMapper.map(tweetRequest, Tweet.class);
     }
 
-    protected TweetResponse convertToTweetResponse(Tweet tweet) {
-        return modelMapper.map(tweet, TweetResponse.class);
+    TweetResponseCommon convertToTweetResponseCommon(Tweet tweet) {
+        return modelMapper.map(tweet, TweetResponseCommon.class);
+    }
+
+    private TweetResponse convertToTweetResponse(Tweet tweet) {
+        TweetResponse tweetResponse = modelMapper.map(tweet, TweetResponse.class);
+
+        if (tweet.getQuoteTweet() != null) {
+            TweetResponseCommon tweetResponseCommon = convertToTweetResponseCommon(tweet.getQuoteTweet());
+            tweetResponse.setQuoteTweet(tweetResponseCommon);
+        }
+        return tweetResponse;
     }
 
     public List<TweetResponse> convertListToResponse(List<Tweet> tweets) {

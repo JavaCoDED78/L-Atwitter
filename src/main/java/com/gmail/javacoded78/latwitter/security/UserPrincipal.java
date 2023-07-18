@@ -1,6 +1,5 @@
 package com.gmail.javacoded78.latwitter.security;
 
-import com.gmail.javacoded78.latwitter.model.User;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
@@ -14,6 +13,7 @@ import java.util.Collections;
 @AllArgsConstructor
 public class UserPrincipal implements UserDetails {
 
+    private final Long id;
     private final String email;
     private final String password;
 

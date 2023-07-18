@@ -1,13 +1,15 @@
 import React, {FC, ReactElement, useEffect, useState} from 'react';
 import {Link} from "react-router-dom";
-import {Divider, Typography} from "@material-ui/core";
+import {Divider, Link as MuiLink, Typography} from "@material-ui/core";
 import axios from 'axios'
 import bowser from "bowser";
 
 import {useSessionsStyles} from "./SessionsStyles";
 import {ArrowRightIcon, DeviceIcon} from "../../../../../icons";
+import {useGlobalStyles} from "../../../../../util/globalClasses";
 
 const Sessions: FC = (): ReactElement => {
+    const globalClasses = useGlobalStyles();
     const classes = useSessionsStyles();
     const [OSName, setOSName] = useState<string | undefined>("Unknown");
     const [browserName, setBrowserName] = useState<string>("Unknown");
@@ -26,19 +28,19 @@ const Sessions: FC = (): ReactElement => {
 
     return (
         <>
-            <div className={classes.infoItemWrapper}>
-                <Typography component={"div"} className={classes.text}>
+            <div className={globalClasses.itemInfoWrapper}>
+                <Typography variant={"subtitle2"} component={"div"}>
                     Sessions are the devices you are using or that have used your Twitter account. These are the
                     sessions where your account is currently logged in. You can log out of each session.
                 </Typography>
             </div>
-            <div className={classes.infoItemWrapper}>
-                <Typography component={"div"} className={classes.title}>
+            <div className={globalClasses.itemInfoWrapper}>
+                <Typography variant={"h6"} component={"div"}>
                     Current active session
                 </Typography>
             </div>
-            <div className={classes.infoItemWrapper}>
-                <Typography component={"div"} className={classes.text}>
+            <div className={globalClasses.itemInfoWrapper}>
+                <Typography variant={"subtitle2"} component={"div"}>
                     You’re logged into this Twitter account on this device and are currently using it.
                 </Typography>
             </div>
@@ -52,46 +54,50 @@ const Sessions: FC = (): ReactElement => {
                 <div className={classes.sessionLink}>
                     <div className={classes.sessionInfo}>
                         <div className={classes.deviceIconWrapper}>
-                                    <span className={classes.deviceIcon}>
-                                        {DeviceIcon}
-                                    </span>
+                            <span className={classes.deviceIcon}>
+                                {DeviceIcon}
+                            </span>
                         </div>
                         <div>
-                            <Typography component={"div"} className={classes.OSTypeText}>
+                            <Typography variant={"body1"} component={"div"}>
                                 {OSName}
                             </Typography>
-                            <Typography component={"div"} className={classes.text}>
-                                {countryName} · <span className={classes.active}>Active now</span>
+                            <Typography variant={"subtitle2"} component={"div"}>
+                                {countryName} · <Typography component={"span"} className={classes.active}>Active now</Typography>
                             </Typography>
                         </div>
                     </div>
                     <span className={classes.arrowIcon}>
-                                {ArrowRightIcon}
-                            </span>
+                        {ArrowRightIcon}
+                    </span>
                 </div>
             </Link>
             <Divider/>
-            <div className={classes.infoItemWrapper}>
-                <Typography component={"div"} className={classes.title}>
+            <div className={globalClasses.itemInfoWrapper}>
+                <Typography variant={"h6"} component={"div"}>
                     Log out of other sessions
                 </Typography>
             </div>
-            <div className={classes.infoItemWrapper}>
-                <Typography component={"div"} className={classes.text}>
+            <div className={globalClasses.itemInfoWrapper}>
+                <Typography variant={"subtitle2"} component={"div"}>
                     You’re logged into these accounts on these devices and aren’t currently using them.
                 </Typography>
             </div>
-            <div className={classes.infoItemWrapper}>
-                <Typography component={"div"} className={classes.text}>
-                    Logging out will end 1 of your other active Twitter sessions. It won’t affect your current
-                    active session. <a
-                    href={"https://help.twitter.com/managing-your-account/connect-or-revoke-access-to-third-party-apps"}
-                    target="_blank"
-                    className={classes.link}>Learn more</a>
+            <div className={globalClasses.itemInfoWrapper}>
+                <Typography variant={"subtitle2"} component={"div"}>
+                    {`Logging out will end 1 of your other active Twitter sessions. It won’t affect your current active session. `}
+                    <MuiLink
+                        href="https://help.twitter.com/managing-your-account/connect-or-revoke-access-to-third-party-apps"
+                        variant="subtitle2"
+                        target="_blank"
+                        rel="noopener"
+                    >
+                        Learn more
+                    </MuiLink>
                 </Typography>
             </div>
             <div className={classes.logOut}>
-                <Typography component={"span"}>
+                <Typography variant={"body1"} component={"span"}>
                     Log out of all other sessions
                 </Typography>
             </div>

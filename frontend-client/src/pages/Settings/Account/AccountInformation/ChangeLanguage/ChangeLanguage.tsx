@@ -54,7 +54,7 @@ const ChangeLanguage: FC = (): ReactElement => {
                         {languages()}
                     </FilledSelect>
                 </FormControl>
-                <Typography component={"div"} className={classes.languageInfo}>
+                <Typography variant={"subtitle2"} component={"div"} className={classes.languageInfo}>
                     Select your preferred language for headlines, buttons, and other text from Twitter on this account.
                     This does not change the language of the content you see in your timeline.
                 </Typography>
@@ -67,6 +67,7 @@ const ChangeLanguage: FC = (): ReactElement => {
                     type="submit"
                     variant="contained"
                     color="primary"
+                    size="small"
                 >
                     Save
                 </Button>

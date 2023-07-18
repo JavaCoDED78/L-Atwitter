@@ -228,6 +228,20 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public List<User> getFollowers(Long userId) {
+        checkIsUserExist(userId);
+        checkIsUserBlocked(userId);
+        return userRepository.getFollowersById(userId);
+    }
+
+    @Override
+    public List<User> getFollowing(Long userId) {
+        checkIsUserExist(userId);
+        checkIsUserBlocked(userId);
+        return userRepository.getFollowingById(userId);
+    }
+
+    @Override
     public Notification processFollow(Long userId) {
         User user = authenticationService.getAuthenticatedUser();
         User currentUser = userRepository.findById(userId)
@@ -376,6 +390,23 @@ public class UserServiceImpl implements UserService {
         User currentUser = userRepository.findById(userId)
                 .orElseThrow(() -> new ApiRequestException("User not found", HttpStatus.NOT_FOUND));
         return processUserList(user, currentUser, user.getUserMutedList());
+    }
+
+    private void checkIsUserExist(Long userId) {
+        boolean userExist = userRepository.isUserExist(userId);
+
+        if (!userExist) {
+            throw new ApiRequestException("User (id:" + userId + ") not found", HttpStatus.NOT_FOUND);
+        }
+    }
+
+    private void checkIsUserBlocked(Long userId) {
+        Long authUserId = authenticationService.getAuthenticatedUserId();
+        boolean userBlocked = userRepository.isUserBlocked(userId, authUserId);
+
+        if (userBlocked) {
+            throw new ApiRequestException("User (id:" + authUserId + ") is blocked", HttpStatus.BAD_REQUEST);
+        }
     }
 
     private User processUserList(User authenticatedUser, User currentUser, List<User> userLists) {

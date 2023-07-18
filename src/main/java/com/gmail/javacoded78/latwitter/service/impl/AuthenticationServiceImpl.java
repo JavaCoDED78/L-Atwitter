@@ -4,6 +4,7 @@ import com.gmail.javacoded78.latwitter.exception.ApiRequestException;
 import com.gmail.javacoded78.latwitter.model.User;
 import com.gmail.javacoded78.latwitter.repository.UserRepository;
 import com.gmail.javacoded78.latwitter.security.JwtProvider;
+import com.gmail.javacoded78.latwitter.security.UserPrincipal;
 import com.gmail.javacoded78.latwitter.service.AuthenticationService;
 import com.gmail.javacoded78.latwitter.service.email.MailSender;
 import lombok.RequiredArgsConstructor;
@@ -32,6 +33,11 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private final PasswordEncoder passwordEncoder;
     private final JwtProvider jwtProvider;
     private final MailSender mailSender;
+
+    @Override
+    public Long getAuthenticatedUserId() {
+        return ((UserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId();
+    }
 
     @Override
     public User getAuthenticatedUser() {

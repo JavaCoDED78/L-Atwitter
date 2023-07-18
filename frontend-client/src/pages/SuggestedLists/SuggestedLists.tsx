@@ -8,8 +8,10 @@ import {fetchLists} from "../../store/ducks/lists/actionCreators";
 import {selectIsListsLoading, selectListsItems} from "../../store/ducks/lists/selectors";
 import ListsItem from "../Lists/ListsItem/ListsItem";
 import Spinner from "../../components/Spinner/Spinner";
+import {useGlobalStyles} from "../../util/globalClasses";
 
 const SuggestedLists: FC = (): ReactElement => {
+    const globalClasses = useGlobalStyles();
     const classes = useSuggestedListsStyles();
     const dispatch = useDispatch();
     const lists = useSelector(selectListsItems);
@@ -21,14 +23,12 @@ const SuggestedLists: FC = (): ReactElement => {
     }, []);
 
     return (
-        <Paper className={classes.container} variant="outlined">
-            <Paper className={classes.header} variant="outlined">
+        <Paper className={globalClasses.pageContainer} variant="outlined">
+            <Paper className={globalClasses.pageHeader} variant="outlined">
                 <BackButton/>
-                <div>
-                    <Typography variant="h6">
-                        Suggested Lists
-                    </Typography>
-                </div>
+                <Typography variant="h5" component={"div"}>
+                    Suggested Lists
+                </Typography>
             </Paper>
             <Paper className={classes.content} variant="outlined">
                 <img
@@ -37,16 +37,16 @@ const SuggestedLists: FC = (): ReactElement => {
                     alt="contentImage"
                 />
                 <div className={classes.infoWrapper}>
-                    <Typography component={"div"} className={classes.infoTitle}>
+                    <Typography variant={"h3"} component={"div"} className={classes.infoTitle}>
                         Choose your Lists
                     </Typography>
-                    <Typography component={"div"} className={classes.infoText}>
+                    <Typography variant={"subtitle1"} component={"div"}>
                         When you follow a List, you'll be able to quickly keep up with the experts on what you care
                         about most.
                     </Typography>
                 </div>
             </Paper>
-            <Typography component={"div"} className={classes.listsTitle}>
+            <Typography variant={"h5"} component={"div"} className={globalClasses.itemInfoWrapper}>
                 Discover new Lists
             </Typography>
             {isLoading ? (

@@ -14,9 +14,6 @@ export const useListsItemStyles = makeStyles((theme: Theme) => ({
             backgroundColor: theme.palette.secondary.main,
         },
     },
-    link: {
-        textDecoration: "none",
-    },
     listAvatar: {
         width: "50px !important",
         height: "50px !important",
@@ -33,8 +30,6 @@ export const useListsItemStyles = makeStyles((theme: Theme) => ({
         display: "block",
     },
     listTitle: {
-        lineHeight: "20px",
-        fontSize: 15,
         fontWeight: 700,
     },
     lockIcon: {
@@ -57,15 +52,9 @@ export const useListsItemStyles = makeStyles((theme: Theme) => ({
         display: "inline-block",
     },
     listOwnerFullName: {
-        fontSize: 13,
-        lineHeight: "16px",
         marginRight: 4,
         fontWeight: 700,
-    },
-    listOwnerUsername: {
-        fontSize: 13,
-        lineHeight: "16px",
-        color: theme.palette.text.secondary,
+        color: theme.palette.text.primary,
     },
     listPinWrapper: {
         "& .MuiIconButton-root": {
@@ -79,20 +68,11 @@ export const useListsItemStyles = makeStyles((theme: Theme) => ({
     },
     listPrimaryButton: {
         width: 105,
-        height: 32,
-        border: '1px solid',
-        borderRadius: '25px',
-        padding: '0 15px',
         '&:hover': {
             backgroundColor: theme.palette.error.dark,
         },
     },
     listOutlinedButton: {
-        width: 79,
-        height: 32,
-        border: '1px solid',
-        borderRadius: '25px',
-        padding: '0 15px',
         '&:hover': {
             backgroundColor: theme.palette.secondary.light,
         },

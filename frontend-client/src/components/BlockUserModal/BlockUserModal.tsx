@@ -23,17 +23,26 @@ const BlockUserModal: FC<BlockUserModalProps> = (
 ): ReactElement | null => {
     const classes = useBlockUserModalStyles();
 
+    const handleClick = (event: React.MouseEvent<HTMLDivElement, MouseEvent>): void => {
+        event.stopPropagation();
+    };
+
     if (!visible) {
         return null;
     }
 
     return (
-        <Dialog className={classes.dialog} open={visible} onClose={onClose}>
+        <Dialog
+            className={classes.dialog}
+            open={visible}
+            onClick={(event) => handleClick(event)}
+            onClose={onClose}
+        >
             <DialogContent>
-                <Typography component={"div"} className={classes.title}>
+                <Typography variant={"h5"} component={"div"}>
                     {isUserBlocked ? "Unblock" : "Block"} @{username}
                 </Typography>
-                <Typography component={"div"} className={classes.text}>
+                <Typography variant={"subtitle1"} component={"div"} className={classes.text}>
                     {isUserBlocked ? (
                         "They will be able to follow you and view your Tweets."
                     ) : (
@@ -48,17 +57,18 @@ const BlockUserModal: FC<BlockUserModalProps> = (
                         )
                     }
                     onClick={onBlockUser}
-                    color="primary"
                     variant="contained"
+                    color="primary"
+                    size="large"
                     fullWidth
                 >
                     {isUserBlocked ? "Unblock" : "Block"}
                 </Button>
                 <Button
-                    className={classes.cancelButton}
                     onClick={onClose}
                     color="primary"
                     variant="outlined"
+                    size="large"
                     fullWidth
                 >
                     Cancel

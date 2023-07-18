@@ -1,6 +1,6 @@
 import React, {ChangeEvent, FC, ReactElement, ReactNode, useState} from 'react';
 import {Controller, useForm} from "react-hook-form";
-import {Button, Dialog, FormControl, InputLabel, Typography} from "@material-ui/core";
+import {Button, Dialog, FormControl, InputLabel, Link as MuiLink, Typography} from "@material-ui/core";
 import DialogContent from "@material-ui/core/DialogContent";
 import TwitterIcon from "@material-ui/icons/Twitter"
 import {yupResolver} from "@hookform/resolvers/yup";
@@ -104,7 +104,7 @@ const RegistrationModal: FC<RegistrationModalProps> = (
                         <TwitterIcon/>
                     </div>
                     <div>
-                        <Typography component={"div"} className={classes.title}>
+                        <Typography variant={"h3"} component={"div"} className={classes.title}>
                             Create your account
                         </Typography>
                         <form onSubmit={handleSubmit(onSubmit)}>
@@ -142,12 +142,14 @@ const RegistrationModal: FC<RegistrationModalProps> = (
                                     )}
                                 />
                             </FormControl>
-                            <Typography component={"div"} className={classes.link}>
+                            <MuiLink className={classes.phoneLink} href="#" variant="body1">
                                 Use phone instead
-                            </Typography>
+                            </MuiLink>
                             <div className={classes.footer}>
-                                <b>Date of birth</b>
-                                <Typography component={"div"} className={classes.footerText}>
+                                <Typography variant={"h6"} component={"div"}>
+                                    Date of birth
+                                </Typography>
+                                <Typography variant={"subtitle1"} component={"div"}>
                                     This will not be shown publicly. Confirm your own age, even if this account is for a
                                     business, a pet, or something else.
                                 </Typography>
@@ -222,6 +224,7 @@ const RegistrationModal: FC<RegistrationModalProps> = (
                                     type="submit"
                                     variant="contained"
                                     color="primary"
+                                    size="small"
                                     fullWidth
                                 >
                                     Next

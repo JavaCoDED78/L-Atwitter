@@ -2,13 +2,7 @@ package com.gmail.javacoded78.latwitter.mapper;
 
 import com.gmail.javacoded78.latwitter.dto.request.SettingsRequest;
 import com.gmail.javacoded78.latwitter.dto.request.UserRequest;
-import com.gmail.javacoded78.latwitter.dto.response.AuthenticationResponse;
-import com.gmail.javacoded78.latwitter.dto.response.ImageResponse;
-import com.gmail.javacoded78.latwitter.dto.response.TweetHeaderResponse;
-import com.gmail.javacoded78.latwitter.dto.response.NotificationResponse;
-import com.gmail.javacoded78.latwitter.dto.response.NotificationsResponse;
-import com.gmail.javacoded78.latwitter.dto.response.TweetResponse;
-import com.gmail.javacoded78.latwitter.dto.response.UserResponse;
+import com.gmail.javacoded78.latwitter.dto.response.*;
 import com.gmail.javacoded78.latwitter.model.Bookmark;
 import com.gmail.javacoded78.latwitter.model.Image;
 import com.gmail.javacoded78.latwitter.model.LikeTweet;
@@ -25,7 +19,11 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Component
@@ -42,7 +40,15 @@ public class UserMapper {
     }
 
     NotificationResponse convertToNotificationResponse(Notification notification) {
-        return modelMapper.map(notification, NotificationResponse.class);
+        NotificationResponse notificationResponse = modelMapper.map(notification, NotificationResponse.class);
+
+        if (notification.getTweet().getQuoteTweet() != null) {
+            TweetResponseCommon tweetResponseCommon = tweetMapper.convertToTweetResponseCommon(notification.getTweet().getQuoteTweet());
+            notificationResponse.getTweet().setQuoteTweet(tweetResponseCommon);
+        } else {
+            notificationResponse.getTweet().setQuoteTweet(null);
+        }
+        return notificationResponse;
     }
 
     private List<NotificationResponse> convertListToNotificationResponse(List<Notification> notifications) {
@@ -123,6 +129,14 @@ public class UserMapper {
 
     public UserResponse processUserBookmarks(Long tweetId) {
         return convertToUserResponse(userService.processUserBookmarks(tweetId));
+    }
+
+    public List<UserResponse> getFollowers(Long userId) {
+        return convertUserListToResponse(userService.getFollowers(userId));
+    }
+
+    public List<UserResponse> getFollowing(Long userId) {
+        return convertUserListToResponse(userService.getFollowing(userId));
     }
 
     public NotificationResponse processFollow(Long userId) {

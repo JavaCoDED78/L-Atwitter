@@ -27,12 +27,10 @@ export const usePopperListWindowStyles = makeStyles((theme: Theme) => ({
     },
     popperListTitle: {
         marginBottom: 12,
-        fontSize: 20,
         fontWeight: 700,
     },
     popperListDescription: {
         marginBottom: 12,
-        fontSize: 15,
     },
     popperListOwnerLink: {
         color: "black",
@@ -47,9 +45,7 @@ export const usePopperListWindowStyles = makeStyles((theme: Theme) => ({
         height: "20px !important",
     },
     popperListOwnerFullName: {
-        color: theme.palette.text.primary,
         verticalAlign: "top",
-        fontSize: 15,
         fontWeight: 700,
         marginRight: 4,
         "&:hover": {
@@ -58,15 +54,11 @@ export const usePopperListWindowStyles = makeStyles((theme: Theme) => ({
     },
     popperListOwnerUsername: {
         verticalAlign: "top",
-        color: theme.palette.text.secondary,
-        fontSize: 15,
     },
     popperListMembers: {
         marginLeft: 20,
-        color: theme.palette.text.secondary,
-        fontSize: 15,
-        "& b" : {
-            color: theme.palette.text.primary,
+        "& .MuiTypography-h6" : {
+            fontWeight: 700,
         },
         "&:hover": {
             cursor: "pointer",
@@ -76,35 +68,14 @@ export const usePopperListWindowStyles = makeStyles((theme: Theme) => ({
     buttonWrapper: {
         marginTop: 20,
         marginBottom: 12,
-        fontSize: 15,
-        fontWeight: 700,
-    },
-    listOutlinedButton: {
-        width: 105,
-        height: 32,
-        border: '1px solid',
-        borderRadius: '25px',
-        padding: '0 15px',
-        '&:hover': {
-            backgroundColor: theme.palette.secondary.light,
-        },
     },
     outlinedButton: {
-        width: 79,
-        height: 32,
-        border: '1px solid',
-        borderRadius: '25px',
-        padding: '0 15px',
         '&:hover': {
             backgroundColor: theme.palette.secondary.light,
         },
     },
     primaryButton: {
         width: 105,
-        height: 32,
-        border: '1px solid',
-        borderRadius: '25px',
-        padding: '0 15px',
         '&:hover': {
             backgroundColor: theme.palette.error.dark,
         },

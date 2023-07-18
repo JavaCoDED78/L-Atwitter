@@ -1,60 +1,77 @@
 import React, {FC, ReactElement} from 'react';
+import {Checkbox, Link as MuiLink, Typography} from "@material-ui/core";
 
-import {useMutedNotificationsStyles} from "./MutedNotificationsStyles";
-import {Checkbox, Typography} from "@material-ui/core";
+import {useGlobalStyles} from "../../../../../util/globalClasses";
 
 const MutedNotifications: FC = (): ReactElement => {
-    const classes = useMutedNotificationsStyles();
+    const globalClasses = useGlobalStyles();
 
     return (
         <>
-            <div className={classes.infoItemWrapper}>
-                <Typography component={"div"} className={classes.title}>
+            <div className={globalClasses.itemInfoWrapper}>
+                <Typography variant={"h5"} component={"div"}>
                     Mute notifications from people:
                 </Typography>
             </div>
-            <div className={classes.infoItemWrapper}>
-                <div className={classes.infoItem}>
-                    <span>You don’t follow</span>
+            <div className={globalClasses.itemInfoWrapper}>
+                <div className={globalClasses.infoItemCheckbox}>
+                    <Typography variant={"body1"} component={"span"}>
+                        You don’t follow
+                    </Typography>
                     <Checkbox/>
                 </div>
             </div>
-            <div className={classes.infoItemWrapper}>
-                <div className={classes.infoItem}>
-                    <span>Who don’t follow you</span>
+            <div className={globalClasses.itemInfoWrapper}>
+                <div className={globalClasses.infoItemCheckbox}>
+                    <Typography variant={"body1"} component={"span"}>
+                        Who don’t follow you
+                    </Typography>
                     <Checkbox/>
                 </div>
             </div>
-            <div className={classes.infoItemWrapper}>
-                <div className={classes.infoItem}>
-                    <span>With a new account</span>
+            <div className={globalClasses.itemInfoWrapper}>
+                <div className={globalClasses.infoItemCheckbox}>
+                    <Typography variant={"body1"} component={"span"}>
+                        With a new account
+                    </Typography>
                     <Checkbox/>
                 </div>
             </div>
-            <div className={classes.infoItemWrapper}>
-                <div className={classes.infoItem}>
-                    <span>Who have a default profile photo</span>
+            <div className={globalClasses.itemInfoWrapper}>
+                <div className={globalClasses.infoItemCheckbox}>
+                    <Typography variant={"body1"} component={"span"}>
+                        Who have a default profile photo
+                    </Typography>
                     <Checkbox/>
                 </div>
             </div>
-            <div className={classes.infoItemWrapper}>
-                <div className={classes.infoItem}>
-                    <span>Who haven’t confirmed their email</span>
+            <div className={globalClasses.itemInfoWrapper}>
+                <div className={globalClasses.infoItemCheckbox}>
+                    <Typography variant={"body1"} component={"span"}>
+                        Who haven’t confirmed their email
+                    </Typography>
                     <Checkbox/>
                 </div>
             </div>
-            <div className={classes.infoItemWrapper}>
-                <div className={classes.infoItem}>
-                    <span>Who haven’t confirmed their phone number</span>
+            <div className={globalClasses.itemInfoWrapper}>
+                <div className={globalClasses.infoItemCheckbox}>
+                    <Typography variant={"body1"} component={"span"}>
+                        Who haven’t confirmed their phone number
+                    </Typography>
                     <Checkbox/>
                 </div>
             </div>
-            <div className={classes.infoItemWrapper}>
-                <Typography component={"div"} className={classes.text}>
-                    These filters won’t affect notifications from people you follow. <a
-                    href={"https://help.twitter.com/managing-your-account/understanding-the-notifications-timeline"}
-                    target="_blank"
-                    className={classes.link}>Learn more</a>
+            <div className={globalClasses.itemInfoWrapper}>
+                <Typography variant={"subtitle2"} component={"div"}>
+                    {`These filters won’t affect notifications from people you follow. `}
+                    <MuiLink
+                        href="https://help.twitter.com/managing-your-account/understanding-the-notifications-timeline"
+                        variant="subtitle2"
+                        target="_blank"
+                        rel="noopener"
+                    >
+                        Learn more
+                    </MuiLink>
                 </Typography>
             </div>
         </>

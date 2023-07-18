@@ -77,6 +77,7 @@ const MessagesModal: FC<MessagesModalProps> = ({visible, onClose}): ReactElement
                     type="submit"
                     variant="contained"
                     color="primary"
+                    size="small"
                     disabled={selectedIndex === undefined}
                 >
                     Next
@@ -103,6 +104,7 @@ const MessagesModal: FC<MessagesModalProps> = ({visible, onClose}): ReactElement
                 <List component="nav" aria-label="main mailbox folders">
                     {users.map((user) => (
                         <ListItem
+                            key={user.id}
                             button
                             selected={selectedIndex === user.id!}
                             disabled={user.mutedDirectMessages || user.id === myProfile?.id}

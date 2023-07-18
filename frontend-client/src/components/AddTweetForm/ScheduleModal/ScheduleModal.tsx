@@ -142,22 +142,22 @@ const ScheduleModal: FC<ScheduleModalProps> = (
                 <div className={classes.buttonWrapper}>
                     {selectedScheduleDate && (
                         <Button
-                            className={classes.clearButton}
                             onClick={onSubmitClearScheduleDate}
                             type="submit"
-                            variant="outlined"
+                            variant="text"
                             color="primary"
+                            size="small"
                             disabled={isValidSelectedDate}
                         >
                             Clear
                         </Button>
                     )}
                     <Button
-                        className={classes.submitButton}
                         onClick={onSubmitScheduleDate}
                         type="submit"
                         variant="contained"
                         color="primary"
+                        size="small"
                         disabled={isValidSelectedDate}
                     >
                         {selectedScheduleDate ? "Update" : "Confirm"}
@@ -169,13 +169,13 @@ const ScheduleModal: FC<ScheduleModalProps> = (
                     {!isValidSelectedDate && (
                         <div className={classes.infoWrapper}>
                             {ScheduleIcon}
-                            <Typography component={"span"} className={classes.text}>
+                            <Typography variant={"subtitle2"} component={"span"}>
                                 {`Will send on ${dateFormat}`}
                             </Typography>
                         </div>
                     )}
                     <div className={classes.dateWrapper}>
-                        <Typography component={"div"} className={classes.subtitle}>
+                        <Typography variant={"subtitle1"} component={"div"} className={classes.subtitle}>
                             Date
                         </Typography>
                         <FormControl variant="filled" error={isValidSelectedDate}>
@@ -256,13 +256,13 @@ const ScheduleModal: FC<ScheduleModalProps> = (
                             </FilledSelect>
                         </FormControl>
                         {isValidSelectedDate && (
-                            <Typography component={"div"} className={classes.errorText}>
+                            <Typography variant="subtitle1" component={"div"} className={classes.errorText}>
                                 You can’t schedule a Tweet to send in the past.
                             </Typography>
                         )}
                     </div>
                     <div className={classes.dateWrapper}>
-                        <Typography component={"div"} className={classes.subtitle}>
+                        <Typography variant={"subtitle1"} component={"div"} className={classes.subtitle}>
                             Time
                         </Typography>
                         <FormControl variant="filled" error={isValidSelectedDate}>
@@ -301,20 +301,19 @@ const ScheduleModal: FC<ScheduleModalProps> = (
                         </FormControl>
                     </div>
                     <div className={classes.dateWrapper}>
-                        <Typography component={"div"} className={classes.subtitle}>
+                        <Typography variant={"subtitle1"} component={"div"} className={classes.subtitle}>
                             Time zone
                         </Typography>
-                        <Typography component={"div"} className={classes.title}>
+                        <Typography variant={"h5"} component={"div"} className={classes.title}>
                             {Intl.DateTimeFormat().resolvedOptions().timeZone + " Standard Time"}
                         </Typography>
                     </div>
                 </div>
                 <div className={classes.footer}>
                     <Button
-                        className={classes.outlinedButton}
-                        color="primary"
-                        variant="outlined"
                         onClick={onOpenUnsentTweetsModal}
+                        variant="text"
+                        color="primary"
                     >
                         Scheduled Tweets
                     </Button>

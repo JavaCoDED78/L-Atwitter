@@ -16,10 +16,6 @@ export const useFollowerRequestsItemStyles = makeStyles((theme: Theme) => ({
             backgroundColor: theme.palette.secondary.main,
         },
     },
-    link: {
-        color: theme.palette.text.primary,
-        textDecoration: 'none',
-    },
     listAvatar: {
         width: "48px !important",
         height: "48px !important",
@@ -34,23 +30,6 @@ export const useFollowerRequestsItemStyles = makeStyles((theme: Theme) => ({
         position: "relative",
         width: 350
     },
-    fullName: {
-        lineHeight: "20px",
-        color: theme.palette.text.primary,
-        fontWeight: 800,
-        fontSize: 15,
-    },
-    username: {
-        lineHeight: "20px",
-        color: theme.palette.text.secondary,
-        fontWeight: 400,
-        fontSize: 15,
-    },
-    about: {
-        lineHeight: "20px",
-        fontWeight: 400,
-        fontSize: 15,
-    },
     buttonWrapper: {
         display: "flex",
         marginTop: 8,
@@ -62,7 +41,6 @@ export const useFollowerRequestsItemStyles = makeStyles((theme: Theme) => ({
     },
     declineButton: {
         "& .MuiButton-root": {
-            padding: "3px 15px",
             borderColor: theme.palette.error.light,
             color: theme.palette.error.main,
             "&:hover": {
@@ -73,7 +51,6 @@ export const useFollowerRequestsItemStyles = makeStyles((theme: Theme) => ({
     },
     acceptButton: {
         "& .MuiButton-root": {
-            padding: "3px 15px",
             borderColor: theme.palette.info.light,
             color: theme.palette.primary.main,
             "&:hover": {

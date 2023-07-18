@@ -17,7 +17,6 @@ import {
     addTweet,
     updateScheduledTweet,
 } from "../../store/ducks/tweets/actionCreators";
-import {selectIsTweetsLoading} from "../../store/ducks/tweets/selectors";
 import {Image, ReplyType, Tweet} from '../../store/ducks/tweets/contracts/state';
 import UploadImages from '../UploadImages/UploadImages';
 import {uploadImage} from "../../util/uploadImage";
@@ -26,7 +25,6 @@ import {fetchReplyTweet} from "../../store/ducks/tweet/actionCreators";
 import {useAddTweetFormStyles} from "./AddTweetFormStyles";
 import {DEFAULT_PROFILE_IMG} from "../../util/url";
 import {CloseIcon, EmojiIcon, GifIcon, PullIcon, ScheduleIcon} from "../../icons";
-import {selectIsTweetLoading} from "../../store/ducks/tweet/selectors";
 import Poll from "./Poll/Poll";
 import Reply from "./Reply/Reply";
 import Quote from "../Quote/Quote";
@@ -36,13 +34,15 @@ import {formatScheduleDate} from "../../util/formatDate";
 import UnsentTweetsModal from "./UnsentTweetsModal/UnsentTweetsModal";
 import ActionSnackbar from "../ActionSnackbar/ActionSnackbar";
 import {SnackbarProps, withSnackbar} from "../../hoc/withSnackbar";
+import {useGlobalStyles} from "../../util/globalClasses";
 
 export enum AddTweetFormAction {
     MEDIA = "MEDIA",
     GIF = "GIF",
     POLL = "POLL",
     EMOJI = "EMOJI",
-    SCHEDULE = "SCHEDULE"
+    SCHEDULE = "SCHEDULE",
+    REMOVE = "REMOVE",
 }
 
 export interface AddTweetFormProps {
@@ -85,10 +85,9 @@ const AddTweetForm: FC<AddTweetFormProps & SnackbarProps> = (
         onCloseSnackBar
     }
 ): ReactElement => {
+    const globalClasses = useGlobalStyles();
     const dispatch = useDispatch();
     const location = useLocation();
-    const isTweetsLoading = useSelector(selectIsTweetsLoading);
-    const isReplyLoading = useSelector(selectIsTweetLoading);
     const userData = useSelector(selectUserData);
 
     const [text, setText] = useState<string>('');
@@ -99,14 +98,15 @@ const AddTweetForm: FC<AddTweetFormProps & SnackbarProps> = (
     const [visibleAddPollAction, setVisibleAddPollAction] = useState<boolean>(false);
     const [visibleAddEmojiAction, setVisibleAddEmojiAction] = useState<boolean>(false);
     const [visibleAddScheduleAction, setVisibleAddScheduleAction] = useState<boolean>(false);
+    const [visibleRemoveAction, setVisibleRemoveAction] = useState<boolean>(false);
     const [delayHandler, setDelayHandler] = useState<any>(null);
     const [visibleScheduleModal, setVisibleScheduleModal] = useState<boolean>(false);
     const [visibleUnsentTweetsModal, setVisibleUnsentTweetsModal] = useState<boolean>(false);
     const [selectedScheduleDate, setSelectedScheduleDate] = useState<Date | null>(null);
     // Popover
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-    const open = Boolean(anchorEl);
-    const id = open ? "simple-popover" : undefined;
+    const openPopover = Boolean(anchorEl);
+    const popoverId = openPopover ? "simple-popover" : undefined;
     // Poll
     const [visiblePoll, setVisiblePoll] = useState<boolean>(false);
     const [choice1, setChoice1] = useState<string>("");
@@ -296,6 +296,8 @@ const AddTweetForm: FC<AddTweetFormProps & SnackbarProps> = (
             setDelayHandler(setTimeout(() => setVisibleAddEmojiAction(true), HOVER_DELAY));
         } else if (action === AddTweetFormAction.SCHEDULE) {
             setDelayHandler(setTimeout(() => setVisibleAddScheduleAction(true), HOVER_DELAY));
+        } else if (action === AddTweetFormAction.REMOVE) {
+            setDelayHandler(setTimeout(() => setVisibleRemoveAction(true), HOVER_DELAY));
         }
     };
 
@@ -306,6 +308,7 @@ const AddTweetForm: FC<AddTweetFormProps & SnackbarProps> = (
         setVisibleAddPollAction(false);
         setVisibleAddEmojiAction(false);
         setVisibleAddScheduleAction(false);
+        setVisibleRemoveAction(false);
     };
 
     const onOpenScheduleModal = (): void => {
@@ -339,7 +342,7 @@ const AddTweetForm: FC<AddTweetFormProps & SnackbarProps> = (
         <div>
             <div className={classes.content}>
                 <Avatar
-                    className={classes.contentAvatar}
+                    className={globalClasses.avatar}
                     alt={`avatar ${userData?.id}`}
                     src={userData?.avatar?.src ? userData?.avatar?.src : DEFAULT_PROFILE_IMG}
                 />
@@ -347,7 +350,7 @@ const AddTweetForm: FC<AddTweetFormProps & SnackbarProps> = (
                     {selectedScheduleDate && (
                         <div className={classes.infoWrapper}>
                             {ScheduleIcon}
-                            <Typography component={"span"} className={classes.text}>
+                            <Typography variant={"subtitle2"} component={"span"}>
                                 {`Will send on ${formatScheduleDate(selectedScheduleDate)}`}
                             </Typography>
                         </div>
@@ -357,16 +360,22 @@ const AddTweetForm: FC<AddTweetFormProps & SnackbarProps> = (
                         className={classes.contentTextarea}
                         placeholder={visiblePoll ? "Ask a question..." : title}
                         value={text}
-                        rowsMax={maxRows}
-                        rowsMin={images.length !== 0 ? 1 : minRows}
+                        maxRows={maxRows}
+                        minRows={images.length !== 0 ? 1 : minRows}
                     />
                 </div>
             </div>
             {(images.length !== 0) && (
                 <div className={(location.pathname.includes("/modal")) ? classes.imageSmall : classes.image}>
                     <img src={images[0].src} alt={images[0].src}/>
-                    <IconButton onClick={removeImage} className={classes.imageRemove}>
+                    <IconButton
+                        className={classes.imageRemove}
+                        onClick={removeImage}
+                        onMouseEnter={() => handleHoverAction(AddTweetFormAction.REMOVE)}
+                        onMouseLeave={handleLeaveAction}
+                    >
                         {CloseIcon}
+                        <HoverAction visible={visibleRemoveAction} actionText={"Remove"}/>
                     </IconButton>
                 </div>
             )}
@@ -402,11 +411,11 @@ const AddTweetForm: FC<AddTweetFormProps & SnackbarProps> = (
                         handleHoverAction={handleHoverAction}
                         handleLeaveAction={handleLeaveAction}
                     />
-                    <div className={classes.footerImage}>
+                    <div>
                         <IconButton
-                            color="primary"
                             onMouseEnter={() => handleHoverAction(AddTweetFormAction.GIF)}
                             onMouseLeave={handleLeaveAction}
+                            color="primary"
                         >
                             <>{GifIcon}</>
                             <HoverAction visible={visibleAddGifAction} actionText={"GIF"}/>
@@ -426,17 +435,18 @@ const AddTweetForm: FC<AddTweetFormProps & SnackbarProps> = (
                             </IconButton>
                         </div>
                     )}
-                    <div onClick={handleOpenPopup} className={classes.footerImage}>
+                    <div onClick={handleOpenPopup}>
                         <IconButton
                             onMouseEnter={() => handleHoverAction(AddTweetFormAction.EMOJI)}
                             onMouseLeave={handleLeaveAction}
+                            color="primary"
                         >
                             <>{EmojiIcon}</>
                             <HoverAction visible={visibleAddEmojiAction} actionText={"Emoji"}/>
                         </IconButton>
                     </div>
                     {(buttonName !== "Reply") && (
-                        <div className={classes.footerImage}>
+                        <div>
                             <IconButton
                                 disabled={!!quoteTweet}
                                 onClick={onOpenScheduleModal}
@@ -479,21 +489,17 @@ const AddTweetForm: FC<AddTweetFormProps & SnackbarProps> = (
                             visiblePoll ? (
                                 !choice1 || !choice2 || !text || text.length >= MAX_LENGTH
                             ) : (
-                                isTweetsLoading || isReplyLoading || !text || text.length >= MAX_LENGTH
+                               !text || text.length >= MAX_LENGTH
                             )}
                         color="primary"
                         variant="contained"
                     >
-                        {(isTweetsLoading || isReplyLoading) ? (
-                            <CircularProgress color="inherit" size={16}/>
-                        ) : (
-                            buttonName
-                        )}
+                        {buttonName}
                     </Button>
                 </div>
                 <Popover
-                    id={id}
-                    open={open}
+                    id={popoverId}
+                    open={openPopover}
                     anchorEl={anchorEl}
                     onClose={handleClosePopup}
                     anchorOrigin={{vertical: 'bottom', horizontal: 'center'}}

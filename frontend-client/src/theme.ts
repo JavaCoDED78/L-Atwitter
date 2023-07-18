@@ -1,6 +1,6 @@
 // @ts-nocheck
 
-import {createMuiTheme} from '@material-ui/core/styles';
+import {createTheme} from '@material-ui/core/styles';
 import {deepmerge} from '@mui/utils';
 
 const commonTheme = {
@@ -37,13 +37,30 @@ const commonTheme = {
             root: {
                 borderRadius: 30,
                 textTransform: 'none',
-                fontWeight: 700,
+                height: 36,
             },
             contained: {
                 boxShadow: "none",
                 "&:hover": {
                     boxShadow: "none",
                 },
+            },
+            sizeSmall: {
+                height: 32,
+                padding: "0px 16px",
+            },
+            sizeLarge: {
+                height: 44,
+                "& .MuiButton-label": {
+                    fontSize: 15,
+                    fontWeight: 700,
+                    lineHeight: "20px",
+                },
+            },
+            label: {
+                fontSize: 14,
+                fontWeight: 700,
+                lineHeight: "16px",
             },
         },
         MuiFilledInput: {
@@ -75,17 +92,88 @@ const commonTheme = {
                 '& h2': {
                     display: 'flex',
                     alignItems: 'center',
+                    fontSize: 20,
                     fontWeight: 800,
+                    lineHeight: "24px",
                 },
-                '& button': {
-                    padding: 8,
+            },
+        },
+        MuiIconButton: {
+            root: {
+                padding: 0,
+                minWidth: 35,
+                minHeight: 35,
+                "& svg": {
+                    height: "1.25rem",
+                    width: "1.25rem",
                 },
+            },
+            sizeSmall: {
+                padding: 0,
+                minWidth: 35,
+                minHeight: 35,
+                "& svg": {
+                    height: "1.172rem",
+                    width: "1.172rem",
+                },
+            },
+        },
+        MuiList: {
+            padding: {
+                paddingTop: 0,
+                paddingBottom: 0,
+            },
+        },
+        MuiListItemAvatar: {
+            root: {
+                minWidth: 0,
+            },
+        },
+        MuiTypography: {
+            h3: {
+                fontSize: 23,
+                fontWeight: 700,
+                lineHeight: "28px",
+            },
+            h4: {
+                marginBottom: 8,
+                fontSize: 31,
+                fontWeight: 800,
+                lineHeight: "36px",
+            },
+            h5: {
+                fontSize: 20,
+                fontWeight: 800,
+                lineHeight: "24px",
+            },
+            h6: {
+                fontSize: 15,
+                fontWeight: 800,
+                lineHeight: "20px",
+            },
+            subtitle1: {
+                fontSize: 15,
+                fontWeight: 400,
+                lineHeight: "20px",
+            },
+            subtitle2: {
+                fontSize: 13,
+                fontWeight: 400,
+                lineHeight: "16px",
+            },
+            body1: {
+                fontSize: 15,
+                fontWeight: 400,
+                lineHeight: "20px",
+            },
+            body2: {
+
             },
         },
     },
 }
 
-export const dimTheme = createMuiTheme(deepmerge({
+export const dimTheme = createTheme(deepmerge({
     palette: {
         background: {
             default: "rgb(21, 32, 43)",
@@ -107,6 +195,8 @@ export const dimTheme = createMuiTheme(deepmerge({
             "300": "rgb(136, 153, 166)",
             "400": "rgb(29, 41, 54)",
             "500": "rgb(78, 92, 104)",
+            "600": "rgb(25, 39, 52)",
+            "700": "rgb(61, 84, 102)",
         },
     },
     overrides: {
@@ -126,10 +216,38 @@ export const dimTheme = createMuiTheme(deepmerge({
                 boxShadow: "none"
             },
         },
+        MuiTypography: {
+            h3: {
+                color: "rgb(255, 255, 255)",
+            },
+            h4: {
+                color: "rgb(255, 255, 255)",
+            },
+            h5: {
+                color: "rgb(255, 255, 255)",
+            },
+            h6: {
+                color: "rgb(255, 255, 255)",
+            },
+            subtitle1: {
+                color: "rgb(136, 153, 166)",
+            },
+            subtitle2: {
+                color: "rgb(136, 153, 166)",
+            },
+            body1: {
+                color: "rgb(255, 255, 255)",
+            },
+        },
+        MuiButton: {
+            contained: {
+                color: "rgb(255, 255, 255)",
+            },
+        },
     },
 }, commonTheme));
 
-export const lightsOutTheme = createMuiTheme(deepmerge({
+export const lightsOutTheme = createTheme(deepmerge({
     palette: {
         background: {
             default: "rgb(0, 0, 0)",
@@ -151,6 +269,8 @@ export const lightsOutTheme = createMuiTheme(deepmerge({
             "300": "rgb(110, 118, 125)",
             "400": "rgb(32, 35, 39, 0.5)",
             "500": "rgb(110, 118, 125, 0.5)",
+            "600": "rgb(21, 24, 28)",
+            "700": "rgb(47, 51, 54)",
         },
     },
     overrides: {
@@ -170,10 +290,38 @@ export const lightsOutTheme = createMuiTheme(deepmerge({
                 boxShadow: "none"
             },
         },
+        MuiTypography: {
+            h3: {
+                color: "rgb(217, 217, 217)",
+            },
+            h4: {
+                color: "rgb(217, 217, 217)",
+            },
+            h5: {
+                color: "rgb(217, 217, 217)",
+            },
+            h6: {
+                color: "rgb(217, 217, 217)",
+            },
+            subtitle1: {
+                color: "rgb(110, 118, 125)",
+            },
+            subtitle2: {
+                color: "rgb(110, 118, 125)",
+            },
+            body1: {
+                color: "rgb(217, 217, 217)",
+            },
+        },
+        MuiButton: {
+            contained: {
+                color: "rgb(255, 255, 255)",
+            },
+        },
     },
 }, commonTheme));
 
-export const defaultTheme = createMuiTheme(deepmerge({
+export const defaultTheme = createTheme(deepmerge({
     palette: {
         background: {
             default: "rgb(255, 255, 255)",
@@ -195,6 +343,8 @@ export const defaultTheme = createMuiTheme(deepmerge({
             "300": "rgb(136, 153, 166)",
             "400": "rgb(239, 243, 244)",
             "500": "rgb(83, 100, 113, 0.5)",
+            "600": "rgb(247, 249, 249)",
+            "700": "rgb(207, 217, 222)",
         },
     },
     overrides: {
@@ -212,6 +362,34 @@ export const defaultTheme = createMuiTheme(deepmerge({
             },
             elevation8: {
                 boxShadow: "none"
+            },
+        },
+        MuiTypography: {
+            h3: {
+                color: "rgb(15, 20, 25)",
+            },
+            h4: {
+                color: "rgb(15, 20, 25)",
+            },
+            h5: {
+                color: "rgb(15, 20, 25)",
+            },
+            h6: {
+                color: "rgb(15, 20, 25)",
+            },
+            subtitle1: {
+                color: "rgb(83, 100, 113)",
+            },
+            subtitle2: {
+                color: "rgb(83, 100, 113)",
+            },
+            body1: {
+                color: "rgb(15, 20, 25)",
+            },
+        },
+        MuiButton: {
+            contained: {
+                color: "rgb(15, 20, 25)",
             },
         },
     },
@@ -235,8 +413,20 @@ export const blueColor = {
             outlinedPrimary: {
                 borderColor: "rgb(29, 155, 240)",
             },
+            textPrimary: {
+                "&:hover": {
+                    backgroundColor: "rgb(29, 155, 240, 0.1)",
+                },
+            },
         },
         MuiIconButton: {
+            colorPrimary: {
+                "&.Mui-disabled": {
+                    "& svg": {
+                        color: "rgb(142, 205, 247)",
+                    },
+                },
+            },
             root: {
                 "&:hover": {
                     backgroundColor: "rgb(29, 155, 240, 0.1) !important",
@@ -296,8 +486,20 @@ export const yellowColor = {
             outlinedPrimary: {
                 borderColor: "rgb(255, 212, 0)",
             },
+            textPrimary: {
+                "&:hover": {
+                    backgroundColor: "rgb(255, 212, 0, 0.1)",
+                },
+            },
         },
         MuiIconButton: {
+            colorPrimary: {
+                "&.Mui-disabled": {
+                    "& svg": {
+                        color: "rgb(255, 234, 128)",
+                    },
+                },
+            },
             root: {
                 "&:hover": {
                     backgroundColor: "rgb(255, 212, 0, 0.1) !important",
@@ -357,8 +559,20 @@ export const crimsonColor = {
             outlinedPrimary: {
                 borderColor: "rgb(249, 24, 128)",
             },
+            textPrimary: {
+                "&:hover": {
+                    backgroundColor: "rgb(249, 24, 128, 0.1)",
+                },
+            },
         },
         MuiIconButton: {
+            colorPrimary: {
+                "&.Mui-disabled": {
+                    "& svg": {
+                        color: "rgb(252, 140, 192)",
+                    },
+                },
+            },
             root: {
                 "&:hover": {
                     backgroundColor: "rgb(249, 24, 128, 0.1) !important",
@@ -418,8 +632,20 @@ export const violetColor = {
             outlinedPrimary: {
                 borderColor: "rgb(120, 86, 255)",
             },
+            textPrimary: {
+                "&:hover": {
+                    backgroundColor: "rgb(120, 86, 255, 0.1)",
+                },
+            },
         },
         MuiIconButton: {
+            colorPrimary: {
+                "&.Mui-disabled": {
+                    "& svg": {
+                        color: "rgb(188, 171, 255)",
+                    },
+                },
+            },
             root: {
                 "&:hover": {
                     backgroundColor: "rgb(120, 86, 255, 0.1) !important",
@@ -479,8 +705,20 @@ export const orangeColor = {
             outlinedPrimary: {
                 borderColor: "rgb(255, 122, 0)",
             },
+            textPrimary: {
+                "&:hover": {
+                    backgroundColor: "rgb(255, 122, 0, 0.1)",
+                },
+            },
         },
         MuiIconButton: {
+            colorPrimary: {
+                "&.Mui-disabled": {
+                    "& svg": {
+                        color: "rgb(255, 189, 128)",
+                    },
+                },
+            },
             root: {
                 "&:hover": {
                     backgroundColor: "rgb(255, 122, 0, 0.1) !important",
@@ -540,8 +778,20 @@ export const greenColor = {
             outlinedPrimary: {
                 borderColor: "rgb(0, 186, 124)",
             },
+            textPrimary: {
+                "&:hover": {
+                    backgroundColor: "rgb(0, 186, 124, 0.1)",
+                },
+            },
         },
         MuiIconButton: {
+            colorPrimary: {
+                "&.Mui-disabled": {
+                    "& svg": {
+                        color: "rgb(128, 221, 190)",
+                    },
+                },
+            },
             root: {
                 "&:hover": {
                     backgroundColor: "rgb(0, 186, 124, 0.1) !important",

@@ -1,106 +1,106 @@
 import React, {FC, ReactElement} from 'react';
 import {NavLink} from 'react-router-dom';
-import {List, ListItem, Paper, Typography} from "@material-ui/core";
+import {List, ListItem, Typography} from "@material-ui/core";
 
-import {useAccountStyles} from "./AccountStyles";
 import {ArrowRightIcon, CommunityIcon, DeleteAccountIcon, DownloadIcon, KeyIcon, ProfileIcon} from "../../../icons";
+import {useGlobalStyles} from "../../../util/globalClasses";
 
 const Account: FC = (): ReactElement => {
-    const classes = useAccountStyles();
+    const globalClasses = useGlobalStyles();
 
     return (
         <>
-            <Typography component={"div"} className={classes.accountInfo}>
+            <Typography variant={"subtitle2"} component={"div"} className={globalClasses.itemInfoWrapper}>
                 See information about your account, download an archive of your data, or learn about your
                 account deactivation options
             </Typography>
-            <div className={classes.listWrapper}>
+            <div className={globalClasses.listItemWrapper}>
                 <List component="nav" aria-label="main mailbox folders">
                     <NavLink to={"/settings/info"}>
                         <ListItem>
-                            <div className={classes.icon}>
+                            <div className={globalClasses.listIconWrapper}>
                                 {ProfileIcon}
                             </div>
                             <div>
-                                <Typography component={"div"} className={classes.title}>
+                                <Typography variant={"body1"} component={"div"}>
                                     Account information
                                 </Typography>
-                                <Typography component={"div"} className={classes.text}>
+                                <Typography variant={"subtitle2"} component={"div"}>
                                     See your account information like your phone number and email address.
                                 </Typography>
                             </div>
-                            <div className={classes.arrowIcon}>
+                            <div className={globalClasses.arrowIcon}>
                                 {ArrowRightIcon}
                             </div>
                         </ListItem>
                     </NavLink>
                     <NavLink to={"/settings/password"}>
                         <ListItem>
-                            <div className={classes.icon}>
+                            <div className={globalClasses.listIconWrapper}>
                                 {KeyIcon}
                             </div>
                             <div>
-                                <Typography component={"div"} className={classes.title}>
+                                <Typography variant={"body1"} component={"div"}>
                                     Change your password
                                 </Typography>
-                                <Typography component={"div"} className={classes.text}>
+                                <Typography variant={"subtitle2"} component={"div"}>
                                     Change your password at any time.
                                 </Typography>
                             </div>
-                            <div className={classes.arrowIcon}>
+                            <div className={globalClasses.arrowIcon}>
                                 {ArrowRightIcon}
                             </div>
                         </ListItem>
                     </NavLink>
                     <ListItem>
-                        <div className={classes.icon}>
+                        <div className={globalClasses.listIconWrapper}>
                             {DownloadIcon}
                         </div>
                         <div>
-                            <Typography component={"div"} className={classes.title}>
+                            <Typography variant={"body1"} component={"div"}>
                                 Download an archive of your data
                             </Typography>
-                            <Typography component={"div"} className={classes.text}>
+                            <Typography variant={"subtitle2"} component={"div"}>
                                 Get insights into the type of information stored for your account.
                             </Typography>
                         </div>
-                        <div className={classes.arrowIcon}>
+                        <div className={globalClasses.arrowIcon}>
                             {ArrowRightIcon}
                         </div>
                     </ListItem>
                     <NavLink to={"/settings/teams"}>
                         <ListItem>
-                            <div className={classes.icon}>
+                            <div className={globalClasses.listIconWrapper}>
                                 {CommunityIcon}
                             </div>
                             <div>
-                                <Typography component={"div"} className={classes.title}>
+                                <Typography variant={"body1"} component={"div"}>
                                     TweetDeck Teams
                                 </Typography>
-                                <Typography component={"div"} className={classes.text}>
+                                <Typography variant={"subtitle2"} component={"div"}>
                                     Invite anyone to Tweet from this account using the Teams feature in
                                     TweetDeck.
                                 </Typography>
                             </div>
-                            <div className={classes.arrowIcon}>
+                            <div className={globalClasses.arrowIcon}>
                                 {ArrowRightIcon}
                             </div>
                         </ListItem>
                     </NavLink>
                     <NavLink to={"/settings/deactivate"}>
                         <ListItem>
-                            <div className={classes.icon}>
+                            <div className={globalClasses.listIconWrapper}>
                                 {DeleteAccountIcon}
                             </div>
                             <div>
-                                <Typography component={"div"} className={classes.title}>
+                                <Typography variant={"body1"} component={"div"}>
                                     Deactivate your account
                                 </Typography>
-                                <Typography component={"div"} className={classes.text}>
+                                <Typography variant={"subtitle2"} component={"div"}>
                                     Find out how you can deactivate your account.
                                 </Typography>
                             </div>
-                            <div className={classes.arrowIcon}>
+                            <div className={globalClasses.arrowIcon}>
                                 {ArrowRightIcon}
                             </div>
                         </ListItem>

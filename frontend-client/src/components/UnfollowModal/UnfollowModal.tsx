@@ -16,34 +16,44 @@ interface UnfollowModalProps {
 const UnfollowModal: FC<UnfollowModalProps> = ({user, visible, onClose, handleUnfollow}): ReactElement | null => {
     const classes = useUnfollowModalStyles();
 
+    const handleClick = (event: React.MouseEvent<HTMLDivElement, MouseEvent>): void => {
+        event.stopPropagation();
+    };
+
     if (!visible) {
         return null;
     }
 
     return (
-        <Dialog open={visible} onClose={onClose} aria-labelledby="form-dialog-title">
+        <Dialog
+            open={visible}
+            onClose={onClose}
+            onClick={(event) => handleClick(event)}
+            aria-labelledby="form-dialog-title"
+        >
             <DialogContent style={{padding: 0}}>
                 <div className={classes.modalWrapper}>
-                    <Typography className={classes.modalFullName}>
+                    <Typography variant={"h5"} component={"div"}>
                         Unfollow {user?.fullName}?
                     </Typography>
-                    <div className={classes.modalUsername}>
+                    <Typography variant={"subtitle1"} component={"div"}>
                         Their Tweets will no longer show up in your home timeline. You can still view their
                         profile, unless their Tweets are protected.
-                    </div>
+                    </Typography>
                     <div className={classes.modalButtonWrapper}>
                         <Button
                             className={classes.modalCancelButton}
                             onClick={onClose}
                             variant="contained"
+                            size="large"
                         >
                             Cancel
                         </Button>
                         <Button
-                            className={classes.modalUnfollowButton}
                             onClick={() => handleUnfollow(user!)}
                             variant="contained"
                             color="primary"
+                            size="large"
                         >
                             Unfollow
                         </Button>

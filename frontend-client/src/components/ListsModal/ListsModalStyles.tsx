@@ -5,7 +5,10 @@ export const useListsModalStyles = makeStyles<Theme>((theme) => ({
         "& .MuiDialogTitle-root": {
             padding: "5px 15px",
             marginBottom: 0,
-            borderBottom: `1px solid ${theme.palette.divider}`
+            borderBottom: `1px solid ${theme.palette.divider}`,
+            "& .MuiButton-root": {
+                marginLeft: "auto",
+            },
         },
     },
     content: {
@@ -14,14 +17,9 @@ export const useListsModalStyles = makeStyles<Theme>((theme) => ({
         padding: "0px 0px",
         overflowX: "hidden",
     },
-    button: {
-        marginLeft: "auto",
-        height: 30,
-    },
     createList: {
         width: "100%",
         padding: "12px 16px",
-        fontSize: 15,
         color: theme.palette.primary.main,
         borderBottom: `1px solid ${theme.palette.divider}`,
         "&:hover": {

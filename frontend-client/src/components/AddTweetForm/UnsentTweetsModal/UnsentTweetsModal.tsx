@@ -11,6 +11,7 @@ import {formatScheduleDate} from "../../../util/formatDate";
 import AddTweetForm from "../AddTweetForm";
 import CloseButton from "../../CloseButton/CloseButton";
 import Spinner from "../../Spinner/Spinner";
+import {useGlobalStyles} from "../../../util/globalClasses";
 
 interface UnsentTweetsModalProps {
     visible?: boolean;
@@ -18,6 +19,7 @@ interface UnsentTweetsModalProps {
 }
 
 const UnsentTweetsModal: FC<UnsentTweetsModalProps> = ({visible, onClose}): ReactElement | null => {
+    const globalClasses = useGlobalStyles();
     const [tweets, setTweets] = useState<Tweet[]>([]);
     const [activeTab, setActiveTab] = useState<number>(0);
     const [unsentTweet, setUnsentTweet] = useState<Tweet | null>(null);
@@ -122,18 +124,18 @@ const UnsentTweetsModal: FC<UnsentTweetsModalProps> = ({visible, onClose}): Reac
                         className={classes.outlinedButton}
                         onClick={onCloseEditTweetModal}
                         type="submit"
-                        variant="outlined"
+                        variant="text"
                         color="primary"
                     >
                         Unsent Tweets
                     </Button>
                 ) : (
                     <Button
-                        className={classes.containedButton}
                         onClick={visibleEditListFooter ? onCloseEditTweetList : onOpenEditTweetList}
                         type="submit"
                         variant="contained"
                         color="primary"
+                        size="small"
                     >
                         {visibleEditListFooter ? "Done" : "Edit"}
                     </Button>
@@ -151,17 +153,22 @@ const UnsentTweetsModal: FC<UnsentTweetsModalProps> = ({visible, onClose}): Reac
                         <Spinner/>
                     ) : (
                         (tweets.length === 0) ? (
-                            <div className={classes.infoWrapper}>
-                                <Typography component={"div"} className={classes.title}>
-                                    {(activeTab === 0) ? ("You don’t have any scheduled Tweets") : ("You don’t have any unsent Tweets")}
+                            <div className={globalClasses.infoText}>
+                                <Typography variant={"h4"} component={"div"}>
+                                    {(activeTab === 0) ? (
+                                        "You don’t have any scheduled Tweets"
+                                    ) : (
+                                        "You don’t have any unsent Tweets"
+                                    )}
                                 </Typography>
-                                <Typography component={"div"} className={classes.text}>
+                                <Typography variant={"subtitle1"} component={"div"}>
                                     When you do, you’ll find them here.
                                 </Typography>
                             </div>
                         ) : (
                             tweets.map((tweet) => (
                                 <div
+                                    key={tweet.id}
                                     className={classes.tweetContainer}
                                     onClick={() => onOpenEditTweetModal(tweet)}
                                 >
@@ -177,18 +184,20 @@ const UnsentTweetsModal: FC<UnsentTweetsModalProps> = ({visible, onClose}): Reac
                                     <div className={classes.tweetWrapper}>
                                         <div className={classes.scheduledDateWrapper}>
                                             {ScheduleIcon}
-                                            <Typography component={"span"} className={classes.scheduledDateText}>
+                                            <Typography variant={"subtitle2"} component={"span"}>
                                                 {`Will send on ${formatScheduleDate(new Date(tweet.scheduledDate!))}`}
                                             </Typography>
                                         </div>
                                         <div className={classes.tweetInfo}>
-                                            <Typography component={"span"} className={classes.tweetText}>
+                                            <Typography variant={"body1"} component={"span"}>
                                                 {tweet.text}
                                             </Typography>
                                             {(tweet?.images?.length !== 0) && (
                                                 <div className={classes.imageWrapper}>
-                                                    <img src={tweet?.images?.[0].src}
-                                                         alt={String(tweet?.images?.[0].id)}/>
+                                                    <img
+                                                        src={tweet?.images?.[0].src}
+                                                        alt={String(tweet?.images?.[0].id)}
+                                                    />
                                                 </div>
                                             )}
                                         </div>
@@ -200,11 +209,11 @@ const UnsentTweetsModal: FC<UnsentTweetsModalProps> = ({visible, onClose}): Reac
                     {visibleEditListFooter && (
                         <div className={classes.footer}>
                             <Button
-                                className={classes.footerOutlinedButton}
                                 onClick={(checkboxIndexes.length === 0) ? onSelectAllTweets : onDeselectAllTweets}
                                 type="submit"
-                                variant="outlined"
+                                variant="text"
                                 color="primary"
+                                size="small"
                             >
                                 {(checkboxIndexes.length === 0) ? "Select All" : "Deselect All"}
                             </Button>
@@ -213,8 +222,9 @@ const UnsentTweetsModal: FC<UnsentTweetsModalProps> = ({visible, onClose}): Reac
                                 onClick={handleDeleteScheduledTweets}
                                 disabled={checkboxIndexes.length === 0}
                                 type="submit"
-                                variant="outlined"
+                                variant="text"
                                 color="primary"
+                                size="small"
                             >
                                 Delete
                             </Button>

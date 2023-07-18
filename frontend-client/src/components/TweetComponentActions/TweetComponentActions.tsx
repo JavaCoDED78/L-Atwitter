@@ -1,6 +1,7 @@
 import React, {FC, ReactElement, useEffect, useRef, useState} from 'react';
 import {useDispatch, useSelector} from "react-redux";
 import {ClickAwayListener, IconButton, List, ListItem, Typography} from "@material-ui/core";
+import classnames from "classnames";
 
 import {useTweetComponentMoreStyles} from "./TweetComponentActionsStyles";
 import {
@@ -30,7 +31,6 @@ import {
 } from "../../store/ducks/user/actionCreators";
 import TweetComponentActionsModal from "./TweetComponentActionsModal/TweetComponentActionsModal";
 import {changeReplyType, fetchDeleteTweet} from "../../store/ducks/tweets/actionCreators";
-import TweetComponentChangeReply from "./TweetComponentChangeReply/TweetComponentChangeReply";
 import {selectTweetData} from "../../store/ducks/tweet/selectors";
 import {deleteTweetReply} from "../../store/ducks/tweet/actionCreators";
 import ListsModal from "../ListsModal/ListsModal";
@@ -39,6 +39,8 @@ import BlockUserModal from "../BlockUserModal/BlockUserModal";
 import ActionSnackbar from "../ActionSnackbar/ActionSnackbar";
 import {SnackbarProps, withSnackbar} from "../../hoc/withSnackbar";
 import {HoverActions} from "../../hoc/withHoverAction";
+import {useGlobalStyles} from "../../util/globalClasses";
+import ChangeReplyWindow from "../ChangeReplyWindow/ChangeReplyWindow";
 
 interface TweetComponentActionsProps {
     tweet: Tweet;
@@ -66,6 +68,7 @@ const TweetComponentActions: FC<TweetComponentActionsProps & SnackbarProps> = (
         onCloseSnackBar
     }
 ): ReactElement => {
+    const globalClasses = useGlobalStyles();
     const classes = useTweetComponentMoreStyles({isFullTweet});
     const dispatch = useDispatch();
     const tweetData = useSelector(selectTweetData);
@@ -205,12 +208,13 @@ const TweetComponentActions: FC<TweetComponentActionsProps & SnackbarProps> = (
                         onClick={handleClickActionsDropdown}
                         onMouseEnter={() => handleHoverAction?.(HoverActions.MORE)}
                         onMouseLeave={handleLeaveAction}
+                        size={"small"}
                     >
-                        <span>{EditIcon}</span>
+                        <>{EditIcon}</>
                         <HoverAction visible={visibleMoreAction} actionText={"More"}/>
                     </IconButton>
                     {openActionsDropdown ? (
-                        <div className={classes.dropdown}>
+                        <div className={classnames(classes.dropdown, globalClasses.svg)}>
                             <List>
                                 {(myProfile?.id === tweet.user.id) ? (
                                     <>
@@ -219,13 +223,13 @@ const TweetComponentActions: FC<TweetComponentActionsProps & SnackbarProps> = (
                                             onClick={() => onOpenTweetComponentActionsModal("Delete")}
                                         >
                                             <>{DeleteIcon}</>
-                                            <Typography component={"span"}>
+                                            <Typography variant={"body1"} component={"span"}>
                                                 Delete
                                             </Typography>
                                         </ListItem>
                                         <ListItem onClick={() => onOpenTweetComponentActionsModal("Pin")}>
                                             <>{PinIcon}</>
-                                            <Typography component={"span"}>
+                                            <Typography variant={"body1"} component={"span"}>
                                                 {(isTweetPinned) ? (
                                                     "Unpin from profile"
                                                 ) : (
@@ -235,25 +239,25 @@ const TweetComponentActions: FC<TweetComponentActionsProps & SnackbarProps> = (
                                         </ListItem>
                                         <ListItem onClick={onOpenListsModal}>
                                             <>{AddListsIcon}</>
-                                            <Typography component={"span"}>
+                                            <Typography variant={"body1"} component={"span"}>
                                                 {`Add/remove @${tweet.user.username} from Lists`}
                                             </Typography>
                                         </ListItem>
                                         <ListItem onClick={handleClickReplyDropdown}>
                                             <>{ReplyIcon}</>
-                                            <Typography component={"span"}>
+                                            <Typography variant={"body1"} component={"span"}>
                                                 Change who can reply
                                             </Typography>
                                         </ListItem>
                                         <ListItem>
                                             <>{EmbedTweetIcon}</>
-                                            <Typography component={"span"}>
+                                            <Typography variant={"body1"} component={"span"}>
                                                 Embed Tweet
                                             </Typography>
                                         </ListItem>
                                         <ListItem onClick={onOpenTweetAnalytics}>
                                             <>{TweetActivityIcon}</>
-                                            <Typography component={"span"}>
+                                            <Typography variant={"body1"} component={"span"}>
                                                 View Tweet activity
                                             </Typography>
                                         </ListItem>
@@ -265,14 +269,14 @@ const TweetComponentActions: FC<TweetComponentActionsProps & SnackbarProps> = (
                                                 <ListItem onClick={handleFollow}>
                                                     <>
                                                         <>{follower ? UnfollowIcon : FollowIcon}</>
-                                                        <Typography component={"span"}>
+                                                        <Typography variant={"body1"} component={"span"}>
                                                             {follower ? "Unfollow" : "Follow"} @{tweet.user.username}
                                                         </Typography>
                                                     </>
                                                 </ListItem>
                                                 <ListItem onClick={onOpenListsModal}>
                                                     <>{AddListsIcon}</>
-                                                    <Typography component={"span"}>
+                                                    <Typography variant={"body1"} component={"span"}>
                                                         {`Add/remove @${tweet.user.username} from Lists`}
                                                     </Typography>
                                                 </ListItem>
@@ -280,25 +284,25 @@ const TweetComponentActions: FC<TweetComponentActionsProps & SnackbarProps> = (
                                         )}
                                         <ListItem onClick={onMuteUser}>
                                             <>{isUserMuted ? UnmuteIcon : MuteIcon}</>
-                                            <Typography component={"span"}>
+                                            <Typography variant={"body1"} component={"span"}>
                                                 {isUserMuted ? "Unmute" : "Mute"} @{tweet.user.username}
                                             </Typography>
                                         </ListItem>
                                         <ListItem onClick={onOpenBlockUserModal}>
                                             <>{isUserBlocked ? UnblockIcon : BlockIcon}</>
-                                            <Typography component={"span"}>
+                                            <Typography variant={"body1"} component={"span"}>
                                                 {isUserBlocked ? "Unblock" : "Block"} @{tweet.user.username}
                                             </Typography>
                                         </ListItem>
                                         <ListItem>
                                             <>{EmbedTweetIcon}</>
-                                            <Typography component={"span"}>
+                                            <Typography variant={"body1"} component={"span"}>
                                                 Embed Tweet
                                             </Typography>
                                         </ListItem>
                                         <ListItem>
                                             <>{ReportIcon}</>
-                                            <Typography component={"span"}>
+                                            <Typography variant={"body1"} component={"span"}>
                                                 Report Tweet
                                             </Typography>
                                         </ListItem>
@@ -307,11 +311,14 @@ const TweetComponentActions: FC<TweetComponentActionsProps & SnackbarProps> = (
                             </List>
                         </div>
                     ) : null}
-                    <TweetComponentChangeReply
-                        replyType={tweet.replyType}
-                        openChangeReplyDropdown={openChangeReplyDropdown}
-                        onChangeTweetReplyType={onChangeTweetReplyType}
-                    />
+                    {openChangeReplyDropdown && (
+                        <div className={classes.replyWindowWrapper}>
+                            <ChangeReplyWindow
+                                replyType={tweet.replyType}
+                                onChangeTweetReplyType={onChangeTweetReplyType}
+                            />
+                        </div>
+                    )}
                     <ActionSnackbar
                         snackBarMessage={snackBarMessage!}
                         openSnackBar={openSnackBar!}

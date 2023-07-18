@@ -1,36 +1,45 @@
 import React, {ComponentType, FC, ReactElement, useEffect, useState} from 'react';
 import {useDispatch, useSelector} from "react-redux";
-import {Link} from 'react-router-dom';
-import Paper from '@material-ui/core/Paper';
-import {Avatar, Button, Typography} from "@material-ui/core";
+import {Link} from "react-router-dom";
+import ListItemAvatar from "@material-ui/core/ListItemAvatar/ListItemAvatar";
+import Avatar from "@material-ui/core/Avatar/Avatar";
+import {Typography} from "@material-ui/core";
+import Button from "@material-ui/core/Button/Button";
+import ListItem from "@material-ui/core/ListItem/ListItem";
 import classNames from "classnames";
 import {compose} from "recompose";
 
 import {User} from "../../store/ducks/user/contracts/state";
 import {selectUserData} from "../../store/ducks/user/selectors";
-import {useFollowerStyles} from "./FollowerStyles";
+import {addUserToBlocklist, followUser, unfollowUser} from "../../store/ducks/user/actionCreators";
+import {useUsersItemStyles} from "./UsersItemStyles";
 import {DEFAULT_PROFILE_IMG} from "../../util/url";
+import {followProfile, processFollowRequest, unfollowProfile} from "../../store/ducks/userProfile/actionCreators";
 import PopperUserWindow from "../PopperUserWindow/PopperUserWindow";
-import {HoverUserProps, withHoverUser} from "../../hoc/withHoverUser";
 import UnfollowModal from "../UnfollowModal/UnfollowModal";
 import {LockIcon} from "../../icons";
-import {processFollowRequest} from "../../store/ducks/userProfile/actionCreators";
-import {addUserToBlocklist} from "../../store/ducks/user/actionCreators";
+import {HoverUserProps, withHoverUser} from "../../hoc/withHoverUser";
 import BlockUserModal from "../BlockUserModal/BlockUserModal";
-import ActionSnackbar from "../ActionSnackbar/ActionSnackbar";
 import {SnackbarProps, withSnackbar} from "../../hoc/withSnackbar";
+import {HoverActionProps} from "../../hoc/withHoverAction";
+import ActionSnackbar from "../ActionSnackbar/ActionSnackbar";
+import {useGlobalStyles} from "../../util/globalClasses";
 
-interface FollowerProps<T> {
-    item?: T;
-    follow?: (user: User) => void;
-    unfollow?: (user: User) => void;
+export interface UsersItemProps<T> {
+    item?: T,
+    size?: UserItemSize
 }
 
-const Follower: FC<FollowerProps<User> & HoverUserProps & SnackbarProps> = (
+export enum UserItemSize {
+    SMALL = "SMALL",
+    MEDIUM = "MEDIUM",
+    LARGE = "LARGE",
+}
+
+const UsersItem: FC<UsersItemProps<User> & SnackbarProps & HoverUserProps> = (
     {
         item: user,
-        follow,
-        unfollow,
+        size,
         visiblePopperWindow,
         handleHoverPopper,
         handleLeavePopper,
@@ -41,7 +50,8 @@ const Follower: FC<FollowerProps<User> & HoverUserProps & SnackbarProps> = (
         onCloseSnackBar
     }
 ): ReactElement => {
-    const classes = useFollowerStyles();
+    const classes = useUsersItemStyles({size});
+    const globalClasses = useGlobalStyles();
     const dispatch = useDispatch();
     const myProfile = useSelector(selectUserData);
     const [btnText, setBtnText] = useState<string>("Following");
@@ -61,7 +71,8 @@ const Follower: FC<FollowerProps<User> & HoverUserProps & SnackbarProps> = (
         setIsWaitingForApprove(waitingForApprove);
     }, [myProfile, user]);
 
-    const handleClickOpenUnfollowModal = (): void => {
+    const handleClickOpenUnfollowModal = (event: React.MouseEvent<HTMLButtonElement>): void => {
+        event.preventDefault();
         setVisibleUnfollowModal(true);
     };
 
@@ -69,15 +80,19 @@ const Follower: FC<FollowerProps<User> & HoverUserProps & SnackbarProps> = (
         setVisibleUnfollowModal(false);
     };
 
-    const handleProcessFollowRequest = (user: User): void => {
-        dispatch(processFollowRequest(user.id!));
+    const cancelFollow = (event: React.MouseEvent<HTMLButtonElement>): void => {
+        event.preventDefault();
+        handleProcessFollowRequest(user!);
     };
 
-    const handleFollow = (user: User): void => {
+    const handleFollow = (event: React.MouseEvent<HTMLButtonElement>, user: User): void => {
+        event.preventDefault();
+
         if (user?.privateProfile) {
             handleProcessFollowRequest(user);
         } else {
-            follow!(user);
+            dispatch(followUser(user));
+            dispatch(followProfile(user));
         }
     };
 
@@ -85,9 +100,14 @@ const Follower: FC<FollowerProps<User> & HoverUserProps & SnackbarProps> = (
         if (user?.privateProfile) {
             handleProcessFollowRequest(user);
         } else {
-            unfollow!(user);
+            dispatch(unfollowUser(user));
+            dispatch(unfollowProfile(user));
             setVisibleUnfollowModal(false);
         }
+    };
+
+    const handleProcessFollowRequest = (user: User): void => {
+        dispatch(processFollowRequest(user.id!));
     };
 
     const onBlockUser = (): void => {
@@ -98,7 +118,8 @@ const Follower: FC<FollowerProps<User> & HoverUserProps & SnackbarProps> = (
         setOpenSnackBar!(true);
     };
 
-    const onOpenBlockUserModal = (): void => {
+    const onOpenBlockUserModal = (event: React.MouseEvent<HTMLButtonElement>): void => {
+        event.preventDefault();
         setVisibleBlockUserModal(true);
     };
 
@@ -107,68 +128,73 @@ const Follower: FC<FollowerProps<User> & HoverUserProps & SnackbarProps> = (
     };
 
     return (
-        <Paper className={classes.container} variant="outlined">
-            <Link to={`/user/${user?.id}`} className={classes.link}>
-                <Avatar
-                    className={classes.listAvatar}
-                    src={user?.avatar?.src ? user?.avatar.src : DEFAULT_PROFILE_IMG}
-                />
-            </Link>
-            <div style={{flex: 1}}>
-                <div className={classes.header}>
-                    <div onMouseEnter={handleHoverPopper} onMouseLeave={handleLeavePopper}>
-                        <Link to={`/user/${user?.id}`} className={classes.link}>
-                            <div className={classes.followerInfo}>
-                                <div>
-                                    <Typography component={"span"} className={classes.fullName}>
-                                        {user?.fullName}
-                                    </Typography>
-                                    {user?.privateProfile && (
-                                        <span className={classes.lockIcon}>
-                                            {LockIcon}
-                                        </span>
-                                    )}
-                                </div>
-                                <Typography component={"div"} className={classes.username}>
-                                    @{user?.username}
+        <>
+            <Link to={`/user/${user?.id}`} className={globalClasses.link}>
+                <ListItem className={classes.container}>
+                    <ListItemAvatar>
+                        <Avatar
+                            className={globalClasses.avatar}
+                            alt={`${user?.id}`}
+                            src={user?.avatar?.src ? user?.avatar.src : DEFAULT_PROFILE_IMG}
+                        />
+                    </ListItemAvatar>
+                    <div className={classes.userInfo} onMouseEnter={handleHoverPopper} onMouseLeave={handleLeavePopper}>
+                        <Typography variant={"h6"} display={"inline"}>
+                            {user?.fullName}
+                        </Typography>
+                        {user?.privateProfile && (
+                            <span className={classes.lockIcon}>
+                                {LockIcon}
+                            </span>
+                        )}
+                        <Typography variant={"subtitle1"} component={"div"}>
+                            @{user?.username}
+                        </Typography>
+                        {(isMyProfileBlocked) ? null : (
+                            (size !== UserItemSize.SMALL) && (
+                                <Typography variant={"body1"} display="block">
+                                    {user?.about}
                                 </Typography>
-                            </div>
-                        </Link>
+                            )
+                        )}
                         <PopperUserWindow visible={visiblePopperWindow} user={user!}/>
                     </div>
-                    <div>
+                    <div className={classes.buttonWrapper}>
                         {(myProfile?.id === user?.id) ? null : (
                             (isMyProfileBlocked) ? null : (
                                 (!isFollower) ? (
                                     (isUserBlocked) ? (
                                         <Button
-                                            onClick={onOpenBlockUserModal}
                                             className={classNames(classes.containedButton, classes.blockButton)}
-                                            color="primary"
-                                            variant="contained"
+                                            onClick={(event) => onOpenBlockUserModal(event)}
                                             onMouseOver={() => setBtnText("Unblock")}
                                             onMouseLeave={() => setBtnText("Blocked")}
+                                            color="primary"
+                                            variant="contained"
+                                            size="small"
                                         >
                                             {btnText}
                                         </Button>
                                     ) : (
                                         (isWaitingForApprove) ? (
                                             <Button
-                                                onClick={() => handleProcessFollowRequest(user!)}
                                                 className={classes.outlinedButton}
-                                                color="primary"
-                                                variant="outlined"
+                                                onClick={(event) => cancelFollow(event)}
                                                 onMouseOver={() => setBtnText("Cancel")}
                                                 onMouseLeave={() => setBtnText("Pending")}
+                                                color="primary"
+                                                variant="outlined"
+                                                size="small"
                                             >
                                                 {btnText}
                                             </Button>
                                         ) : (
                                             <Button
                                                 className={classes.outlinedButton}
-                                                onClick={() => handleFollow(user!)}
+                                                onClick={(event) => handleFollow(event, user!)}
                                                 color="primary"
                                                 variant="outlined"
+                                                size="small"
                                             >
                                                 Follow
                                             </Button>
@@ -177,11 +203,12 @@ const Follower: FC<FollowerProps<User> & HoverUserProps & SnackbarProps> = (
                                 ) : (
                                     <Button
                                         className={classes.containedButton}
+                                        onClick={(event) => handleClickOpenUnfollowModal(event)}
                                         onMouseOver={() => setBtnText("Unfollow")}
                                         onMouseLeave={() => setBtnText("Following")}
-                                        onClick={handleClickOpenUnfollowModal}
                                         color="primary"
                                         variant="contained"
+                                        size="small"
                                     >
                                         {btnText}
                                     </Button>
@@ -189,33 +216,28 @@ const Follower: FC<FollowerProps<User> & HoverUserProps & SnackbarProps> = (
                             )
                         )}
                     </div>
-                </div>
-                {(isMyProfileBlocked) ? null : (
-                    <Typography display="block">
-                        {user?.about}
-                    </Typography>
-                )}
-                <UnfollowModal
-                    user={user!}
-                    visible={visibleUnfollowModal}
-                    onClose={onCloseUnfollowModal}
-                    handleUnfollow={handleUnfollow}
-                />
-                <BlockUserModal
-                    username={user?.username!}
-                    isUserBlocked={isUserBlocked}
-                    visible={visibleBlockUserModal}
-                    onClose={onCloseBlockUserModal}
-                    onBlockUser={onBlockUser}
-                />
-                <ActionSnackbar
-                    snackBarMessage={snackBarMessage!}
-                    openSnackBar={openSnackBar!}
-                    onCloseSnackBar={onCloseSnackBar!}
-                />
-            </div>
-        </Paper>
+                </ListItem>
+            </Link>
+            <UnfollowModal
+                user={user!}
+                visible={visibleUnfollowModal}
+                onClose={onCloseUnfollowModal}
+                handleUnfollow={handleUnfollow}
+            />
+            <BlockUserModal
+                username={user?.username!}
+                isUserBlocked={isUserBlocked}
+                visible={visibleBlockUserModal}
+                onClose={onCloseBlockUserModal}
+                onBlockUser={onBlockUser}
+            />
+            <ActionSnackbar
+                snackBarMessage={snackBarMessage!}
+                openSnackBar={openSnackBar!}
+                onCloseSnackBar={onCloseSnackBar!}
+            />
+        </>
     );
 };
 
-export default compose(withSnackbar, withHoverUser)(Follower) as ComponentType<FollowerProps<User> & HoverUserProps & SnackbarProps>;
+export default compose(withSnackbar, withHoverUser)(UsersItem) as ComponentType<UsersItemProps<User> & SnackbarProps & HoverActionProps>;

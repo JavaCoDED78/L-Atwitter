@@ -2,44 +2,13 @@ import {makeStyles, Theme} from "@material-ui/core";
 
 export const useNotificationsStyles = makeStyles((theme: Theme) => ({
     container: {
-        borderRadius: 0,
-        minHeight: '100vh',
-        borderTop: '0',
-        borderBottom: '0',
         "& a": {
             color: theme.palette.primary.main,
             textDecoration: "none",
         },
     },
     header: {
-        marginLeft: 15,
-        position: "fixed",
-        display: 'flex',
-        width: 580,
-        height: 53,
-        zIndex: 1,
         border: 0,
-        alignItems: 'center',
-        flex: 1,
-        '& h6': {
-            fontWeight: 800,
-        },
-        "& svg": {
-            marginRight: 20
-        },
-    },
-    title: {
-        textAlign: "center",
-        marginTop: 30,
-        marginBottom: 8,
-        fontSize: 29,
-        fontWeight: 800,
-    },
-    text: {
-        textAlign: "center",
-        fontSize: 14,
-        fontWeight: 400,
-        color: theme.palette.text.secondary,
     },
     tabs: {
         borderBottom: `1px solid ${theme.palette.divider}`,
@@ -51,6 +20,12 @@ export const useNotificationsStyles = makeStyles((theme: Theme) => ({
         },
         "& .MuiTab-root": {
             fontWeight: 700,
+        },
+    },
+    infoWindow: {
+        textAlign: "center",
+        "& .MuiTypography-h4": {
+            marginTop: 30,
         },
     },
     tab: {
@@ -107,19 +82,16 @@ export const useNotificationsStyles = makeStyles((theme: Theme) => ({
         marginBottom: 11,
     },
     notificationInfo: {
-        fontSize: 15,
         marginBottom: 11,
     },
     notificationText: {
-        fontSize: 15,
         '& #hashtag': {
             color: theme.palette.primary.main,
         },
     },
     notificationInfoText: {
-        fontSize: 15,
-        "& span": {
-            fontWeight: 500
+        "& .MuiTypography-h5": {
+            fontWeight: 700
         },
     },
 }));

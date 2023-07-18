@@ -1,5 +1,5 @@
 import React, {FC, ReactElement} from 'react';
-import {Button, Dialog, DialogContent, Radio, Typography} from "@material-ui/core";
+import {Button, Dialog, DialogContent, Link as MuiLink, Radio, Typography} from "@material-ui/core";
 import TwitterIcon from "@material-ui/icons/Twitter";
 
 import {useCustomizeModalStyles} from "./CustomizeModalStyles";
@@ -25,27 +25,34 @@ const CustomizeModal: FC<CustomizeModalProps> = ({open, onClose, onOpenCreateAcc
                 <div className={classes.logoIcon}>
                     <TwitterIcon/>
                 </div>
-                <Typography component={"div"} className={classes.title}>
+                <Typography variant={"h3"} component={"div"} className={classes.title}>
                     Customize your experience
                 </Typography>
                 <Typography component={"div"} className={classes.subtitle}>
                     Track where you see Twitter content across the web
                 </Typography>
-                <Typography component={"div"} className={classes.text}>
+                <Typography variant={"subtitle1"} component={"div"} className={classes.text}>
                     Twitter uses this data to personalize your experience. This web browsing history will never be
                     stored with your name, email, or phone number.
                 </Typography>
                 <Radio className={classes.radio} checked={true} color="primary"/>
-                <Typography component={"div"}>
-                    For more details about these settings, visit the <a
-                    href={"https://help.twitter.com/managing-your-account/new-account-settings"} target={"_blank"}
-                    className={classes.link}>Help Center</a>.
+                <Typography variant={"body1"} component={"div"}>
+                    {"For more details about these settings, visit the "}
+                    <MuiLink
+                        href="https://help.twitter.com/managing-your-account/new-account-settings"
+                        variant="body1"
+                        target="_blank"
+                        rel="noopener"
+                    >
+                        Help Center
+                    </MuiLink>.
                 </Typography>
                 <div className={classes.buttonWrapper}>
                     <Button
                         onClick={() => onOpenCreateAccount(true)}
                         variant="contained"
                         color="primary"
+                        size="small"
                         fullWidth
                     >
                         Next

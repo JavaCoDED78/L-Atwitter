@@ -5,6 +5,7 @@ import {Avatar, Typography} from "@material-ui/core";
 import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
 import Paper from "@material-ui/core/Paper";
+import classnames from "classnames";
 
 import {useNotificationsStyles} from "./NotificationsStyles";
 import {LikeIcon, NotificationsIconFilled, ProfileIconFilled, RetweetIcon} from "../../icons";
@@ -15,12 +16,13 @@ import {
     selectNotificationsList,
     selectNotificationsTweetAuthors
 } from "../../store/ducks/notifications/selectors";
-import {fetchNotifications} from "../../store/ducks/notifications/actionCreators";
+import {fetchNotifications, resetNotificationState} from "../../store/ducks/notifications/actionCreators";
 import {fetchUserData} from "../../store/ducks/user/actionCreators";
 import {Notification, NotificationType} from "../../store/ducks/notifications/contracts/state";
 import Spinner from "../../components/Spinner/Spinner";
 import {HoverUserProps, withHoverUser} from "../../hoc/withHoverUser";
 import PopperUserWindow from "../../components/PopperUserWindow/PopperUserWindow";
+import {useGlobalStyles} from "../../util/globalClasses";
 
 const Notifications: FC<HoverUserProps> = (
     {
@@ -31,6 +33,7 @@ const Notifications: FC<HoverUserProps> = (
         handleLeavePopper
     }
 ): ReactElement => {
+    const globalClasses = useGlobalStyles();
     const classes = useNotificationsStyles();
     const dispatch = useDispatch();
     const history = useHistory();
@@ -43,6 +46,10 @@ const Notifications: FC<HoverUserProps> = (
         window.scrollTo(0, 0);
         dispatch(fetchNotifications());
         dispatch(fetchUserData());
+
+        return () => {
+            dispatch(resetNotificationState());
+        };
     }, []);
 
     const handleChangeTab = (event: ChangeEvent<{}>, newValue: number): void => {
@@ -56,15 +63,15 @@ const Notifications: FC<HoverUserProps> = (
     };
 
     return (
-        <Paper className={classes.container} variant="outlined">
-            <Paper className={classes.header}>
-                <div>
-                    <Typography variant="h6">
+        <Paper className={classnames(globalClasses.pageContainer, classes.container)} variant="outlined">
+            <Paper className={classnames(globalClasses.pageHeader, classes.header)}>
+                <div className={globalClasses.pageHeaderTitleWrapper}>
+                    <Typography variant="h5">
                         Notifications
                     </Typography>
                 </div>
             </Paper>
-            <div style={{paddingTop: 57,}}>
+            <div className={globalClasses.contentWrapper}>
                 <div className={classes.tabs}>
                     <Tabs value={activeTab} indicatorColor="primary" textColor="primary" onChange={handleChangeTab}>
                         <Tab className={classes.tab} label="All"/>
@@ -76,11 +83,11 @@ const Notifications: FC<HoverUserProps> = (
                 ) : (
                     (activeTab === 0) ? (
                         (notifications.length === 0) ? (
-                            <div>
-                                <Typography component={"div"} className={classes.title}>
+                            <div className={classes.infoWindow}>
+                                <Typography variant={"h4"} component={"div"}>
                                     Nothing to see here — yet
                                 </Typography>
-                                <Typography component={"div"} className={classes.text}>
+                                <Typography variant={"subtitle1"} component={"div"}>
                                     From like to Retweets and whole lot more, this is where all the actions happens.
                                 </Typography>
                             </div>
@@ -90,11 +97,14 @@ const Notifications: FC<HoverUserProps> = (
                                     <Link to={"/notifications/timeline"}>
                                         <Paper className={classes.notificationWrapper} variant="outlined">
                                             <div className={classes.notificationIcon}>
-                                                <span id={"notification"}>{NotificationsIconFilled}</span>
+                                                <span id={"notification"}>
+                                                    {NotificationsIconFilled}
+                                                </span>
                                             </div>
                                             <div style={{flex: 1}}>
                                                 {tweetAuthors.slice(0, 6).map((tweetAuthor) => (
                                                     <div
+                                                        key={tweetAuthor.id}
                                                         className={classes.notificationAvatarWrapper}
                                                         onMouseEnter={() => handleHoverPopperWithUser!(tweetAuthor)}
                                                         onMouseLeave={handleLeavePopper}
@@ -114,20 +124,28 @@ const Notifications: FC<HoverUserProps> = (
                                                         />
                                                     </div>
                                                 ))}
-                                                <div className={classes.notificationInfoText}>
-                                                    New Tweet notifications for <span>{tweetAuthors[0].fullName}</span>
+                                                <Typography variant={"body1"} component={"div"} className={classes.notificationInfoText}>
+                                                    {"New Tweet notifications for "}
+                                                    <Typography variant={"h6"} component={"span"}>
+                                                        {tweetAuthors[0].fullName}
+                                                    </Typography>
                                                     {(tweetAuthors.length > 2) ? (
                                                         ` and ${tweetAuthors.length -1} others`
                                                     ) : (
-                                                        (tweetAuthors.length === 2) && (" and " + <span>{tweetAuthors[1].fullName}</span>)
+                                                        (tweetAuthors.length === 2) && (
+                                                            " and " +
+                                                            <Typography variant={"h6"} component={"span"}>
+                                                                {tweetAuthors[1].fullName}
+                                                            </Typography>
+                                                        )
                                                     )}
-                                                </div>
+                                                </Typography>
                                             </div>
                                         </Paper>
                                     </Link>
                                 )}
                                 {notifications.map((notification) => (
-                                    <NotificationWithLink notification={notification}>
+                                    <NotificationWithLink key={notification.id} notification={notification}>
                                         <Paper className={classes.notificationWrapper} variant="outlined">
                                             <div className={classes.notificationIcon}>
                                                 {(notification.notificationType === NotificationType.LIKE) && (
@@ -161,22 +179,26 @@ const Notifications: FC<HoverUserProps> = (
                                                     />
                                                 </a>
                                                 <div className={classes.notificationInfo}>
-                                                    <b>{notification.user.username} </b>
-                                                    {notification.notificationType === NotificationType.FOLLOW ? (
-                                                        <>followed you</>
-                                                    ) : (
-                                                        <>
-                                                            {(notification.notificationType === NotificationType.LIKE) ? (
-                                                                "liked"
-                                                            ) : (
-                                                                "Retweeted"
-                                                            )} your Tweet
-                                                        </>
-                                                    )}
+                                                    <Typography variant={"h6"} component={"span"}>
+                                                        {`${notification.user.username} `}
+                                                    </Typography>
+                                                    <Typography variant={"body1"} component={"span"}>
+                                                        {notification.notificationType === NotificationType.FOLLOW ? (
+                                                            <>followed you</>
+                                                        ) : (
+                                                            <>
+                                                                {(notification.notificationType === NotificationType.LIKE) ? (
+                                                                    "liked"
+                                                                ) : (
+                                                                    "Retweeted"
+                                                                )} your Tweet
+                                                            </>
+                                                        )}
+                                                    </Typography>
                                                 </div>
-                                                <div className={classes.notificationText}>
+                                                <Typography variant={"body1"} component={"div"} className={classes.notificationText}>
                                                     {notification.tweet && textFormatter(notification.tweet.text)}
-                                                </div>
+                                                </Typography>
                                             </div>
                                         </Paper>
                                     </NotificationWithLink>
@@ -184,11 +206,11 @@ const Notifications: FC<HoverUserProps> = (
                             </div>
                         )
                     ) : (
-                        <div>
-                            <Typography component={"div"} className={classes.title}>
+                        <div className={classes.infoWindow}>
+                            <Typography variant={"h4"} component={"div"}>
                                 Nothing to see here — yet
                             </Typography>
-                            <Typography component={"div"} className={classes.text}>
+                            <Typography variant={"subtitle1"} component={"div"}>
                                 When someone mentions you, you’ll find it here.
                             </Typography>
                         </div>

@@ -37,10 +37,10 @@ const ProfilePictureModal: FC<ProfilePictureModalProps> = (
                 <div className={classes.logoIcon}>
                     <TwitterIcon/>
                 </div>
-                <Typography component={"div"} className={classes.title}>
+                <Typography variant={"h3"} component={"div"} className={classes.title}>
                     Pick a profile picture
                 </Typography>
-                <Typography component={"div"} className={classes.text}>
+                <Typography variant={"subtitle1"} component={"div"}>
                     Have a favorite selfie? Upload it now.
                 </Typography>
                 <div className={classes.avatarWrapper}>
@@ -60,6 +60,7 @@ const ProfilePictureModal: FC<ProfilePictureModalProps> = (
                     onClick={() => onOpenProfileHeaderModal(true)}
                     variant={(avatar?.src !== undefined) ? "contained" : "text"}
                     color="primary"
+                    size="medium"
                     fullWidth
                 >
                     {(avatar?.src !== undefined) ? "Next" : "Skip for now"}

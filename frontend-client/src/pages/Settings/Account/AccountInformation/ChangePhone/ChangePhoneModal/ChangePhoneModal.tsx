@@ -1,6 +1,15 @@
 import React, {ChangeEvent, FC, ReactElement, useEffect, useState} from 'react';
 import {useDispatch, useSelector} from "react-redux";
-import {Button, Checkbox, Dialog, DialogContent, FormControl, InputLabel, Typography} from "@material-ui/core";
+import {
+    Button,
+    Checkbox,
+    Dialog,
+    DialogContent,
+    FormControl,
+    InputLabel,
+    Link as MuiLink,
+    Typography
+} from "@material-ui/core";
 import {Controller, useForm} from "react-hook-form";
 import {yupResolver} from "@hookform/resolvers/yup";
 import classNames from "classnames";
@@ -70,10 +79,10 @@ const ChangePhoneModal: FC<ChangePhoneModalProps> = ({visible, onClose}): ReactE
                     {TweetIcon}
                 </div>
                 <div>
-                    <Typography component={"div"} className={classes.title}>
+                    <Typography variant={"h3"} component={"div"}>
                         Change phone
                     </Typography>
-                    <Typography component={"div"} className={classNames(classes.text, classes.textSecondary)}>
+                    <Typography variant={"subtitle1"} component={"div"}>
                         {`Your current phone number is ${phoneCode !== "" ? phoneCode : "none"}${myProfile?.phone}. What would you like to update it to?`}
                     </Typography>
                 </div>
@@ -119,10 +128,16 @@ const ChangePhoneModal: FC<ChangePhoneModalProps> = ({visible, onClose}): ReactE
                         )}
                     />
                     <div className={classes.infoWrapper}>
-                        <Typography component={"span"} className={classNames(classes.text, classes.textPrimary)}>
-                            Let people who have your phone number find and connect with you on Twitter. <a
-                            href="https://help.twitter.com/safety-and-security/email-and-phone-discoverability-settings"
-                            target={"_blank"} className={classes.link}>Learn more</a>
+                        <Typography variant={"body1"} component={"span"}>
+                            {"Let people who have your phone number find and connect with you on Twitter. "}
+                            <MuiLink
+                                href="https://help.twitter.com/safety-and-security/email-and-phone-discoverability-settings"
+                                variant="body1"
+                                target="_blank"
+                                rel="noopener"
+                            >
+                                Learn more
+                            </MuiLink>
                         </Typography>
                         <span><Checkbox/></span>
                     </div>
@@ -131,6 +146,7 @@ const ChangePhoneModal: FC<ChangePhoneModalProps> = ({visible, onClose}): ReactE
                             color="primary"
                             variant={(!getValues("phone") || !!errors.phone) ? "outlined" : "contained"}
                             type="submit"
+                            size="small"
                             fullWidth
                         >
                             {(!getValues("phone") || !!errors.phone) ? "Cancel" : "Next"}

@@ -1,5 +1,5 @@
 import React, {ChangeEvent, FC, ReactElement, ReactNode, useState} from 'react';
-import {FormControl, Grid, InputLabel, Paper} from "@material-ui/core";
+import {FormControl, Grid, InputLabel, Paper, Typography} from "@material-ui/core";
 import AddIcon from '@material-ui/icons/Add';
 import IconButton from "@material-ui/core/IconButton";
 
@@ -8,6 +8,7 @@ import PollInput from "./PollInput/PollInput";
 import {FilledSelect} from "../../FilledSelect/FilledSelect";
 import {HoverActionProps, HoverActions, withHoverAction} from "../../../hoc/withHoverAction";
 import HoverAction from "../../HoverAction/HoverAction";
+import {PlusIcon} from "../../../icons";
 
 interface PollProps {
     choice1: string;
@@ -112,12 +113,12 @@ const Poll: FC<PollProps & HoverActionProps> = (
                                 <IconButton
                                     className={classes.addPollInputButton}
                                     onClick={addPollInput}
-                                    color="secondary"
-                                    aria-label="close"
                                     onMouseEnter={() => handleHoverAction?.(HoverActions.OTHER)}
                                     onMouseLeave={handleLeaveAction}
+                                    color="primary"
+                                    size="small"
                                 >
-                                    <AddIcon color="primary"/>
+                                    {PlusIcon}
                                     <HoverAction visible={visibleHoverAction?.visibleOtherAction} actionText={"Add"}/>
                                 </IconButton>
                             </div>
@@ -126,9 +127,9 @@ const Poll: FC<PollProps & HoverActionProps> = (
                 </Grid>
             </div>
             <Paper className={classes.pollLength} variant="outlined">
-                <div className={classes.pollLengthTitle}>
+                <Typography variant={"body1"} component={"div"} className={classes.pollLengthTitle}>
                     Poll length
-                </div>
+                </Typography>
                 <FormControl variant="filled">
                     <InputLabel variant="filled" htmlFor="select-days">
                         Days
@@ -182,7 +183,9 @@ const Poll: FC<PollProps & HoverActionProps> = (
                 </FormControl>
             </Paper>
             <Paper onClick={onClosePool} className={classes.footer} variant="outlined">
-                <div>Remove poll</div>
+                <Typography variant={"body1"} component={"div"}>
+                    Remove poll
+                </Typography>
             </Paper>
         </Paper>
     );

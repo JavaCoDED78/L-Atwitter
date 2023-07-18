@@ -11,19 +11,19 @@ import {fetchTweets, resetTweets, setTweetsLoadingState,} from "../../store/duck
 import {selectIsTweetsLoading, selectPagesCount, selectTweetsItems} from "../../store/ducks/tweets/selectors";
 import BackButton from "../../components/BackButton/BackButton";
 import {fetchUserData} from "../../store/ducks/user/actionCreators";
-import {fetchRelevantUsers} from "../../store/ducks/users/actionCreators";
-import {fetchTags} from "../../store/ducks/tags/actionCreators";
 import Connect from "../Connect/Connect";
 import Trends from "../Trends/Trends";
 import {TopTweets} from "../../icons";
 import {selectUserData} from "../../store/ducks/user/selectors";
 import Welcome from "../../components/Welcome/Welcome";
 import {LoadingStatus} from "../../store/types";
-import {fetchNotifications} from "../../store/ducks/notifications/actionCreators";
 import FullTweet from "../FullTweet/FullTweet";
 import Spinner from "../../components/Spinner/Spinner";
+import {useGlobalStyles} from "../../util/globalClasses";
+import classnames from "classnames";
 
 const Home: FC = (): ReactElement => {
+    const globalClasses = useGlobalStyles();
     const classes = useHomeStyles();
     const dispatch = useDispatch();
     const location = useLocation<{ background: Location }>();
@@ -36,14 +36,9 @@ const Home: FC = (): ReactElement => {
     useEffect(() => {
         dispatch(setTweetsLoadingState(LoadingStatus.NEVER));
         dispatch(fetchUserData());
-        dispatch(fetchNotifications());
-        dispatch(fetchTags());
 
         if (location.pathname !== "/search") {
             loadTweets();
-        }
-        if (location.pathname !== "/home/connect") {
-            dispatch(fetchRelevantUsers());
         }
         document.body.style.overflow = 'unset';
         window.scrollTo(0, 0);
@@ -66,10 +61,10 @@ const Home: FC = (): ReactElement => {
             hasMore={page < pagesCount}
             loader={null}
         >
-            <Paper className={classes.container} variant="outlined">
-                <Paper className={classes.header} variant="outlined">
+            <Paper className={globalClasses.pageContainer} variant="outlined">
+                <Paper className={classnames(globalClasses.pageHeader, classes.header)} variant="outlined">
                     <Route path='/home' exact>
-                        <Typography variant="h6">
+                        <Typography variant="h5">
                             Home
                         </Typography>
                         <div className={classes.headerIcon}>
@@ -79,22 +74,28 @@ const Home: FC = (): ReactElement => {
                         </div>
                     </Route>
                     <Route path="/home/tweet">
-                        <BackButton/>
-                        <Typography variant="h6">
-                            Tweet
-                        </Typography>
+                        <div>
+                            <BackButton/>
+                            <Typography variant="h5">
+                                Tweet
+                            </Typography>
+                        </div>
                     </Route>
                     <Route path="/home/connect">
-                        <BackButton/>
-                        <Typography variant="h6">
-                            Connect
-                        </Typography>
+                        <div>
+                            <BackButton/>
+                            <Typography variant="h5">
+                                Connect
+                            </Typography>
+                        </div>
                     </Route>
                     <Route path="/home/trends">
-                        <BackButton/>
-                        <Typography variant="h6">
-                            Trends
-                        </Typography>
+                        <div>
+                            <BackButton/>
+                            <Typography variant="h5">
+                                Trends
+                            </Typography>
+                        </div>
                     </Route>
                 </Paper>
 
@@ -114,9 +115,14 @@ const Home: FC = (): ReactElement => {
                 </Route>
 
                 <Route path='/home' exact>
-                    {(!myProfile?.profileStarted && !isLoading) && (<Welcome/>)}
-                    {tweets.map((tweet) => <TweetComponent key={tweet.id} item={tweet}/>)}
-                    {isLoading && <Spinner/>}
+                    {!myProfile?.profileStarted ? (
+                        <Welcome/>
+                    ) : (
+                        <>
+                            {tweets.map((tweet) => <TweetComponent key={tweet.id} item={tweet}/>)}
+                            {isLoading && <Spinner/>}
+                        </>
+                    )}
                 </Route>
                 <Route path="/home/tweet/:id" exact>
                     <FullTweet/>

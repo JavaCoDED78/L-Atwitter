@@ -11,11 +11,6 @@ export const useAddTweetFormStyles = makeStyles<Theme, AddTweetFormStyles>((them
         display: 'flex',
         width: '100%',
     },
-    contentAvatar: {
-        width: "46px !important",
-        height: "46px !important",
-        marginRight: 15,
-    },
     infoWrapper: {
         marginBottom: 10,
         "& svg": {
@@ -25,13 +20,8 @@ export const useAddTweetFormStyles = makeStyles<Theme, AddTweetFormStyles>((them
             height: "1.30em",
         },
     },
-    text: {
-        fontSize: 13,
-        fontWeight: 400,
-        lineHeight: "16px",
-        color: theme.palette.text.secondary,
-    },
     textareaWrapper: {
+        marginLeft: 15,
         width: "100%",
     },
     contentTextarea: {
@@ -56,11 +46,6 @@ export const useAddTweetFormStyles = makeStyles<Theme, AddTweetFormStyles>((them
             borderRadius: 20,
             borderColor: theme.palette.info.light,
         },
-        "& svg": {
-            verticalAlign: "top",
-            fill: theme.palette.common.white,
-            height: "0.75em",
-        },
     },
     imageSmall: {
         position: 'relative',
@@ -73,18 +58,25 @@ export const useAddTweetFormStyles = makeStyles<Theme, AddTweetFormStyles>((them
             borderRadius: 20,
             borderColor: theme.palette.info.light,
         },
-        "& svg": {
-            verticalAlign: "top",
-            fill: theme.palette.common.white,
-            height: "0.75em",
-        },
     },
     imageRemove: {
         padding: 6,
         top: 15,
         left: 65,
         position: 'absolute',
-        backgroundColor: '#322C28 !important',
+        backgroundColor: theme.palette.common.black,
+        opacity: 0.75,
+        "& svg": {
+            verticalAlign: "top",
+            fill: theme.palette.common.white,
+            width: 18,
+            height: 18,
+        },
+        "&.MuiIconButton-root": {
+            "&:hover": {
+                backgroundColor: "rgba(39, 44, 48, 0.75) !important"
+            },
+        },
     },
     footer: {
         display: 'flex',
@@ -102,26 +94,10 @@ export const useAddTweetFormStyles = makeStyles<Theme, AddTweetFormStyles>((them
         marginTop: 10,
         paddingLeft: 70,
     },
-    footerImage: {
-        "& .MuiIconButton-root": {
-            color: theme.palette.primary.main,
-            padding: 7,
-            "& svg": {
-                verticalAlign: "bottom",
-                height: "0.9em",
-            },
-            "&:hover": {
-                backgroundColor: theme.palette.secondary.light,
-            },
-        },
-    },
     quoteImage: {
         "& .MuiIconButton-root": {
-            padding: 7,
             "& svg": {
                 color: props => props.quoteTweet || props.isScheduled ? theme.palette.primary.light : theme.palette.primary.main,
-                verticalAlign: "bottom",
-                height: "0.9em",
             },
         },
     },

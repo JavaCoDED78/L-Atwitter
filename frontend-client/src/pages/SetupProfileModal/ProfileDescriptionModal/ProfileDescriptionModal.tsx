@@ -36,10 +36,10 @@ const ProfileDescriptionModal: FC<ProfileDescriptionModalProps> = (
                 <div className={classes.logoIcon}>
                     <TwitterIcon/>
                 </div>
-                <Typography component={"div"} className={classes.title}>
+                <Typography variant={"h3"} component={"div"}>
                     Describe yourself
                 </Typography>
-                <Typography component={"div"} className={classes.text}>
+                <Typography variant={"subtitle1"} component={"div"}>
                     What makes you special? Don't think too hard, just have fun with it.
                 </Typography>
                 <ProfileDescriptionInput
@@ -54,6 +54,7 @@ const ProfileDescriptionModal: FC<ProfileDescriptionModalProps> = (
                     onClick={() => onOpenProfileUpdatedModal(true)}
                     variant={(text !== "") ? "contained" : "text"}
                     color="primary"
+                    size="medium"
                     fullWidth
                 >
                     {text !== "" ? "Next" : "Skip for now"}

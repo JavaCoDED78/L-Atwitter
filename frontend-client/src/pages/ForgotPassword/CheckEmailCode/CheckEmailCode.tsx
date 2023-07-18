@@ -1,6 +1,6 @@
 import React, {ChangeEvent, FC, FormEvent, ReactElement, useState} from 'react';
 import {useHistory} from "react-router-dom";
-import {Button, Typography} from "@material-ui/core";
+import {Button, Link as MuiLink, Typography} from "@material-ui/core";
 
 import {ForgotPasswordTextField} from "../ForgotPasswordTextField/ForgotPasswordTextField";
 import {AuthApi} from "../../../services/api/authApi";
@@ -34,10 +34,10 @@ const CheckEmailCode: FC = (): ReactElement => {
 
     return (
         <>
-            <Typography component={"h1"}>
+            <Typography variant={"h3"} component={"div"}>
                 Check your email
             </Typography>
-            <Typography component={"div"} className={classes.text}>
+            <Typography variant={"body1"} component={"div"} className={classes.text}>
                 You'll receive a code to verify here so you can reset your account password.
             </Typography>
             <form onSubmit={verifyResetCode}>
@@ -58,18 +58,24 @@ const CheckEmailCode: FC = (): ReactElement => {
                     type="submit"
                     variant="contained"
                     color="primary"
+                    size="small"
                 >
                     Verify
                 </Button>
             </form>
             <div>
-                <Typography className={classes.footerText}>
+                <Typography variant={"body1"} component={"div"} className={classes.footerText}>
                     If you don't see the email, check other places it might be, like your junk, spam, social,
                     or other folders.
                 </Typography>
-                <Typography className={classes.link}>
+                <MuiLink
+                    href="https://help.twitter.com/forms/account-access/regain-access"
+                    variant="subtitle2"
+                    target="_blank"
+                    rel="noopener"
+                >
                     Didn’t receive your code?
-                </Typography>
+                </MuiLink>
             </div>
         </>
     );

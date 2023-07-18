@@ -1,5 +1,5 @@
 import React, {FC, ReactElement, useState} from 'react';
-import {Button, CircularProgress, Dialog, DialogContent, Typography} from "@material-ui/core";
+import {Button, Dialog, DialogContent, Link as MuiLink, Typography} from "@material-ui/core";
 
 import {useCreateAccountModalStyles} from "./CreateAccountModalStyles";
 import {RegistrationInputField} from "../RegistrationInput/RegistrationInputField";
@@ -55,7 +55,7 @@ const CreateAccountModal: FC<CustomizeModalProps> = (
                     <Spinner/>
                 ) : (
                     <>
-                        <Typography component={"div"} className={classes.subtitle}>
+                        <Typography variant={"h5"} component={"div"} className={classes.subtitle}>
                             Create your account
                         </Typography>
                         <div className={classes.form}>
@@ -81,21 +81,31 @@ const CreateAccountModal: FC<CustomizeModalProps> = (
                                 fullWidth
                             />
                         </div>
-                        <Typography component={"div"} className={classes.text}>
-                            By signing up, you agree to
-                            the <a href={"https://twitter.com/tos#new"} target={"_blank"} className={classes.link}>Terms
-                            of Service</a> and <a href={"https://twitter.com/privacy"} target={"_blank"} className={classes.link}>
-                            Privacy Policy</a>, including <a href={"https://help.twitter.com/rules-and-policies/twitter-cookies"}
-                            target={"_blank"} className={classes.link}>Cookie Use</a>. Others
-                            will be able to find you by email or phone number
-                            when
-                            provided · <a href={""} target={"_blank"} className={classes.link}>Privacy Options</a>
+                        <Typography variant={"body1"} component={"div"} className={classes.text}>
+                            {"By signing up, you agree to the "}
+                            <MuiLink href="https://twitter.com/tos#new" variant="body1" target="_blank" rel="noopener">
+                                Terms of Service
+                            </MuiLink>
+                            {" and "}
+                            <MuiLink href="https://twitter.com/privacy" variant="body1" target="_blank" rel="noopener">
+                                Privacy Policy
+                            </MuiLink>
+                            {", including "}
+                            <MuiLink href="https://help.twitter.com/rules-and-policies/twitter-cookies" variant="body1"
+                                target="_blank" rel="noopener">
+                                Cookie Use
+                            </MuiLink>
+                            {". Others will be able to find you by email or phone number when provided · "}
+                            <MuiLink href="https://twitter.com/privacy" variant="body1" target="_blank" rel="noopener">
+                                Privacy Options
+                            </MuiLink>
                         </Typography>
                         <Button
                             className={classes.button}
                             onClick={onSubmit}
                             variant="contained"
                             color="primary"
+                            size="small"
                             fullWidth
                         >
                             Sign up

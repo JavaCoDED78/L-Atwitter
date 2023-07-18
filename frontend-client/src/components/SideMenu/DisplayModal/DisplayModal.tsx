@@ -81,11 +81,11 @@ const DisplayModal: FC<DisplayModalProps & DisplayProps> = (
 
     return (
         <Dialog open={visible} onClose={onClose} className={classes.dialog} aria-labelledby="form-dialog-title">
-            <Typography component={"div"} className={classes.title}>
+            <Typography variant={"h3"} component={"div"} className={classes.title}>
                 Customize your view
             </Typography>
             <DialogContent className={classes.content}>
-                <Typography component={"div"} className={classes.text}>
+                <Typography variant={"subtitle1"} component={"div"} className={classes.text}>
                     Manage your font size, color, and background. These settings affect all the Twitter accounts on this
                     browser.
                 </Typography>
@@ -99,31 +99,31 @@ const DisplayModal: FC<DisplayModalProps & DisplayProps> = (
                     </div>
                     <div>
                         <div>
-                            <Typography component={"span"} className={classes.tweetTitle}>
+                            <Typography variant={"h6"} component={"span"} className={classes.tweetTitle}>
                                 Twitter
                             </Typography>
                             <span className={classes.tweetVerifiedIcon}>
                                 {VerifiedIcon}
                             </span>
-                            <Typography component={"span"} className={classes.tweetInfoText}>
+                            <Typography variant={"subtitle1"} component={"span"}>
                                 @Twitter
                             </Typography>
-                            <Typography component={"span"} className={classes.tweetInfoText}>
+                            <Typography variant={"subtitle1"} component={"span"}>
                                 {" · 31m"}
                             </Typography>
                         </div>
-                        <Typography component={"div"} className={classes.tweetText}>
+                        <Typography variant={"body1"} component={"div"} className={classes.tweetText}>
                             At the heart of Twitter are short messages called Tweets — just like this one — which can
                             include photos, videos, links, text, hashtags, and mentions like <span
                             className={classes.tweetLink}>@Twitter</span>
                         </Typography>
                     </div>
                 </div>
-                <Typography component={"div"} className={classes.subtitle}>
+                <Typography variant={"subtitle2"} component={"div"} className={classes.subtitle}>
                     Font size
                 </Typography>
                 <div className={classes.stepperWrapper}>
-                    <Typography id={"xs"} component={"span"} className={classes.tweetText}>
+                    <Typography variant={"body1"} id={"xs"} component={"span"} className={classes.tweetText}>
                         Aa
                     </Typography>
                     <span className={classes.stepper}>
@@ -133,11 +133,11 @@ const DisplayModal: FC<DisplayModalProps & DisplayProps> = (
                         <div id={"lg"} className={classes.stepperPoint}/>
                         <div id={"xl"} className={classes.stepperPoint}/>
                     </span>
-                    <Typography id={"xl"} component={"span"} className={classes.tweetText}>
+                    <Typography variant={"body1"} id={"xl"} component={"span"} className={classes.tweetText}>
                         Aa
                     </Typography>
                 </div>
-                <Typography component={"div"} className={classes.subtitle}>
+                <Typography variant={"subtitle2"} component={"div"} className={classes.subtitle}>
                     Color
                 </Typography>
                 <div className={classes.colorWrapper}>
@@ -148,7 +148,7 @@ const DisplayModal: FC<DisplayModalProps & DisplayProps> = (
                     <ColorSelector color={ColorScheme.ORANGE}/>
                     <ColorSelector color={ColorScheme.GREEN}/>
                 </div>
-                <Typography component={"div"} className={classes.subtitle}>
+                <Typography variant={"subtitle2"} component={"div"} className={classes.subtitle}>
                     Background
                 </Typography>
                 <div className={classes.backgroundContainer}>
@@ -168,7 +168,7 @@ const DisplayModal: FC<DisplayModalProps & DisplayProps> = (
                                     size="small"
                                 />
                             </div>
-                            <Typography component={"span"} className={classes.backgroundItemText}>
+                            <Typography variant={"h6"} component={"span"}>
                                 Default
                             </Typography>
                         </div>
@@ -189,7 +189,7 @@ const DisplayModal: FC<DisplayModalProps & DisplayProps> = (
                                     size="small"
                                 />
                             </div>
-                            <Typography component={"span"} className={classes.backgroundItemText}>
+                            <Typography variant={"h6"} component={"span"}>
                                 Dim
                             </Typography>
                         </div>
@@ -210,14 +210,19 @@ const DisplayModal: FC<DisplayModalProps & DisplayProps> = (
                                     size="small"
                                 />
                             </div>
-                            <Typography component={"span"} className={classes.backgroundItemText}>
+                            <Typography variant={"h6"} component={"span"}>
                                 Lights out
                             </Typography>
                         </div>
                     </div>
                 </div>
                 <div className={classes.buttonWrapper}>
-                    <Button onClick={onClose} variant="contained" color="primary">
+                    <Button
+                        onClick={onClose}
+                        variant="contained"
+                        color="primary"
+                        size="small"
+                    >
                         Done
                     </Button>
                 </div>

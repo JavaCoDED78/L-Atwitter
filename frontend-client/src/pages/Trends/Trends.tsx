@@ -18,12 +18,13 @@ const Trends: FC = (): ReactElement => {
     useEffect(() => {
         dispatch(fetchTrends());
         window.scrollTo(0, 0);
+
     }, []);
 
     return (
         <div>
             {isTrendsLoaded ? (
-                <Spinner/>
+                <Spinner paddingTop={80}/>
             ) : (
                 <List style={{paddingTop: 48,}}>
                     {trends.map(item => (

@@ -6,7 +6,7 @@ import {TagsState} from './contracts/state';
 
 const initialTagsState: TagsState = {
     items: [],
-    loadingState: LoadingStatus.NEVER,
+    loadingState: LoadingStatus.LOADING,
 };
 
 export const tagsReducer = produce((draft: Draft<TagsState>, action: TagsActions) => {
@@ -14,6 +14,11 @@ export const tagsReducer = produce((draft: Draft<TagsState>, action: TagsActions
         case TagsActionsType.SET_TAGS:
             draft.items = action.payload;
             draft.loadingState = LoadingStatus.LOADED;
+            break;
+
+        case TagsActionsType.RESET_TAGS_STATE:
+            draft.items = [];
+            draft.loadingState = LoadingStatus.LOADING;
             break;
 
         case TagsActionsType.SET_LOADING_STATE:

@@ -23,13 +23,7 @@ export const useMutedAccountItemStyles = makeStyles<Theme, MutedAccountItemStyle
             backgroundColor: theme.palette.secondary.main,
         },
     },
-    link: {
-        color: theme.palette.text.primary,
-        textDecoration: 'none',
-    },
     listAvatar: {
-        width: "46px !important",
-        height: "46px !important",
         marginRight: 15,
     },
     userInfo: {
@@ -40,18 +34,6 @@ export const useMutedAccountItemStyles = makeStyles<Theme, MutedAccountItemStyle
         display: "flex",
         alignItems: "center",
         justifyContent: "space-between"
-    },
-    fullName: {
-        lineHeight: "20px",
-        color: theme.palette.text.primary,
-        fontWeight: 800,
-        fontSize: 15,
-    },
-    username: {
-        lineHeight: "20px",
-        color: theme.palette.text.secondary,
-        fontWeight: 400,
-        fontSize: 15,
     },
     muteButton: {
         marginRight: 16,

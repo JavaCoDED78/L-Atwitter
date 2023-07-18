@@ -4,7 +4,7 @@ import {useDispatch, useSelector} from "react-redux";
 import InfiniteScroll from "react-infinite-scroll-component";
 import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
-import {IconButton, InputAdornment, Paper} from "@material-ui/core";
+import {IconButton, InputAdornment, List, Paper} from "@material-ui/core";
 
 import {MainSearchTextField} from "../../components/SearchTextField/MainSearchTextField";
 import {
@@ -23,16 +23,16 @@ import {
     selectPagesCount,
     selectTweetsItems
 } from "../../store/ducks/tweets/selectors";
-import {User} from "../../store/ducks/user/contracts/state";
-import Follower from "../../components/Follower/Follower";
-import {followUser, unfollowUser} from "../../store/ducks/user/actionCreators";
 import {useExploreStyles} from "./ExploreStyles";
 import {EditIcon, SearchIcon} from "../../icons";
 import {fetchUsersSearch, fetchUsersSearchByUsername} from "../../store/ducks/usersSearch/actionCreators";
 import {selectUsersSearch, selectUsersSearchIsLoading} from "../../store/ducks/usersSearch/selectors";
 import Spinner from "../../components/Spinner/Spinner";
+import UsersItem, {UserItemSize} from "../../components/UsersItem/UsersItem";
+import {useGlobalStyles} from "../../util/globalClasses";
 
 const Explore: FC = (): ReactElement => {
+    const globalClasses = useGlobalStyles();
     const classes = useExploreStyles();
     const dispatch = useDispatch();
     const isTweetsLoading = useSelector(selectIsTweetsLoading);
@@ -128,14 +128,6 @@ const Explore: FC = (): ReactElement => {
         setPage(prevState => prevState + 1);
     };
 
-    const handleFollow = (user: User): void => {
-        dispatch(followUser(user));
-    };
-
-    const handleUnfollow = (user: User): void => {
-        dispatch(unfollowUser(user));
-    };
-
     return (
         <InfiniteScroll
             style={{overflow: "unset"}}
@@ -144,8 +136,8 @@ const Explore: FC = (): ReactElement => {
             hasMore={page < pagesCount}
             loader={null}
         >
-            <Paper className={classes.container} variant="outlined">
-                <Paper className={classes.header} variant="outlined">
+            <Paper className={globalClasses.pageContainer} variant="outlined">
+                <Paper className={globalClasses.pageHeader} variant="outlined">
                     <div>
                         <form style={{display: "block"}} onSubmit={handleClickSearch}>
                             <div className={classes.backButtonWrapper}>
@@ -164,11 +156,9 @@ const Explore: FC = (): ReactElement => {
                                     ),
                                 }}
                             />
-                            <div className={classes.editButton}>
-                                <IconButton>
-                                    <>{EditIcon}</>
-                                </IconButton>
-                            </div>
+                            <IconButton className={classes.editButton} color="primary" size="small">
+                                <>{EditIcon}</>
+                            </IconButton>
                         </form>
                         <div className={classes.tabs}>
                             <Tabs value={activeTab} indicatorColor="primary" textColor="primary" onChange={handleChangeTab}>
@@ -182,20 +172,17 @@ const Explore: FC = (): ReactElement => {
                     </div>
                 </Paper>
                 <div className={classes.contentWrapper}>
-                    {(isUsersLoading) ? (
-                        <Spinner/>
+                    {(activeTab !== 2) ? (
+                        tweets.map((tweet) => <TweetComponent key={tweet.id} item={tweet}/>)
                     ) : (
-                        (activeTab !== 2) ? (
-                            tweets.map((tweet) => <TweetComponent key={tweet.id} item={tweet}/>)
+                        isUsersLoading ? (
+                            <Spinner/>
                         ) : (
-                            users?.map((user) => (
-                                <Follower
-                                    key={user.id}
-                                    item={user}
-                                    follow={handleFollow}
-                                    unfollow={handleUnfollow}
-                                />
-                            ))
+                            <List>
+                                {users?.map((user) => (
+                                    <UsersItem key={user.id} item={user} size={UserItemSize.MEDIUM}/>
+                                ))}
+                            </List>
                         )
                     )}
                     {isTweetsLoading && <Spinner/>}

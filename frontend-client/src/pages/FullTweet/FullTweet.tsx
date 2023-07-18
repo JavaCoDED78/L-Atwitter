@@ -16,7 +16,12 @@ import {
     selectIsTweetLoading,
     selectTweetData
 } from '../../store/ducks/tweet/selectors';
-import {fetchTweetData, setTweetData, setTweetLoadingState} from '../../store/ducks/tweet/actionCreators';
+import {
+    fetchTweetData,
+    resetTweetState,
+    setTweetData,
+    setTweetLoadingState
+} from '../../store/ducks/tweet/actionCreators';
 import {likeTweet, retweet} from "../../store/ducks/tweets/actionCreators";
 import {selectUserData} from "../../store/ducks/user/selectors";
 import UsersListModal from "../../components/UsersListModal/UsersListModal";
@@ -29,11 +34,9 @@ import {
     LikeIcon,
     LikeOutlinedIcon,
     MentionReplyIcon,
-    PinOutlinedIcon,
     ReplyIcon,
     RetweetIcon,
     RetweetOutlinedIcon,
-    RetweetOutlinedIconSm,
 } from "../../icons";
 import {textFormatter} from "../../util/textFormatter";
 import VoteComponent from "../../components/VoteComponent/VoteComponent";
@@ -50,7 +53,9 @@ import {HoverActionProps, HoverActions, withHoverAction} from "../../hoc/withHov
 import TweetAnalyticsModal from "../../components/TweetAnalyticsModal/TweetAnalyticsModal";
 import Spinner from "../../components/Spinner/Spinner";
 import {HoverUserProps, withHoverUser} from "../../hoc/withHoverUser";
-import {LoadingStatus} from "../../store/types";
+import {useGlobalStyles} from "../../util/globalClasses";
+import classnames from "classnames";
+import TweetActionResult, {TweetActionResults} from "../../components/TweetActionResult/TweetActionResult";
 
 let stompClient: CompatClient | null = null;
 
@@ -70,6 +75,7 @@ const FullTweet: FC<HoverUserProps & FullTweetProps & HoverActionProps> = (
         handleLeaveAction
     }
 ): ReactElement | null => {
+    const globalClasses = useGlobalStyles();
     const dispatch = useDispatch();
     const location = useLocation();
     const tweetData = useSelector(selectTweetData);
@@ -105,8 +111,7 @@ const FullTweet: FC<HoverUserProps & FullTweetProps & HoverActionProps> = (
 
         return () => {
             stompClient?.disconnect();
-            dispatch(setTweetData(undefined));
-            dispatch(setTweetLoadingState(LoadingStatus.NEVER));
+            dispatch(resetTweetState());
         };
     }, [dispatch, params.id]);
 
@@ -149,28 +154,24 @@ const FullTweet: FC<HoverUserProps & FullTweetProps & HoverActionProps> = (
         return <Spinner paddingTop={200}/>;
     } else if (tweetData !== undefined && isLoadedSuccess) {
         return (
-            <div style={{paddingTop: 48}}>
-                {isTweetRetweeted && (
-                    <div className={classes.retweetWrapper}>
-                        <span>{RetweetOutlinedIconSm}</span>
-                        <Typography>
-                            You Retweeted
-                        </Typography>
-                    </div>
-                )}
-                {(myProfile?.pinnedTweet?.id === tweetData.id) && (
-                    <div className={classes.retweetWrapper}>
-                        <span>{PinOutlinedIcon}</span>
-                        <Typography>
-                            Pinned Tweet
-                        </Typography>
-                    </div>
-                )}
+            <div className={globalClasses.contentWrapper}>
                 <Paper className={classes.container}>
+                    {isTweetRetweeted && (
+                        <TweetActionResult
+                            action={TweetActionResults.RETWEET}
+                            text={((myProfile?.id === tweetData.user.id) ? ("You") : (tweetData.user.fullName)) + " Retweeted"}
+                        />
+                    )}
+                    {(myProfile?.pinnedTweet?.id === tweetData.id) && (
+                        <TweetActionResult
+                            action={TweetActionResults.PIN}
+                            text={"Pinned Tweet"}
+                        />
+                    )}
                     <div className={classes.header}>
                         <div className={classes.headerWrapper}>
                             <Avatar
-                                className={classes.avatar}
+                                className={globalClasses.avatar}
                                 alt={`avatar ${tweetData.user.id}`}
                                 src={tweetData.user.avatar?.src ? tweetData.user.avatar?.src : DEFAULT_PROFILE_IMG}
                             />
@@ -180,12 +181,14 @@ const FullTweet: FC<HoverUserProps & FullTweetProps & HoverActionProps> = (
                                 onMouseLeave={handleLeavePopper}
                             >
                                 <Link to={`/user/${tweetData.user.id}`}>
-                                    <b>{tweetData.user.fullName}</b>&nbsp;
+                                    <Typography variant={"h6"} component={"div"}>
+                                        {tweetData.user.fullName}
+                                    </Typography>
                                 </Link>
                                 <div>
-                                    <Typography component={"span"} className={classes.username}>
+                                    <Typography variant={"subtitle1"} component={"span"}>
                                         @{tweetData.user.username}
-                                    </Typography>&nbsp;
+                                    </Typography>
                                 </div>
                                 <PopperUserWindow visible={visiblePopperWindow} user={tweetData.user}/>
                             </div>
@@ -199,7 +202,7 @@ const FullTweet: FC<HoverUserProps & FullTweetProps & HoverActionProps> = (
                             onOpenTweetAnalytics={onOpenTweetAnalyticsModalWindow}
                         />
                     </div>
-                    <Typography className={classes.textWrapper} gutterBottom>
+                    <Typography variant={"h3"} className={classes.textWrapper}>
                         {textFormatter(tweetData.text)}
                         {(tweetData.images?.length !== 0) && (
                             <Link to={{pathname: `/modal/${params.id}`, state: {background: location}}}>
@@ -237,10 +240,10 @@ const FullTweet: FC<HoverUserProps & FullTweetProps & HoverActionProps> = (
                         ) : null}
                     </Typography>
                     <div className={classes.dateWrapper}>
-                        <Typography component={"span"} className={classes.date}>
+                        <Typography variant={"subtitle1"} component={"span"}>
                             {format(new Date(tweetData.dateTime), 'hh:mm a', {locale: usLang})} ·
                         </Typography>
-                        <Typography component={"span"} className={classes.date}>
+                        <Typography variant={"subtitle1"} component={"span"}>
                             {format(new Date(tweetData.dateTime), ' MMM dd, yyyy')} · Twitter Web App
                         </Typography>
                     </div>
@@ -251,8 +254,10 @@ const FullTweet: FC<HoverUserProps & FullTweetProps & HoverActionProps> = (
                                 {(tweetData.retweets.length !== 0) && (
                                     <a href={"javascript:void(0);"} onClick={onOpenRetweetsModalWindow}>
                                         <div className={classes.contentItem}>
-                                            <b>{tweetData.retweets.length}</b>
-                                            <Typography component={"span"}>
+                                            <Typography variant={"h6"} component={"span"}>
+                                                {tweetData.retweets.length}
+                                            </Typography>
+                                            <Typography variant={"subtitle1"} component={"span"}>
                                                 Retweets
                                             </Typography>
                                         </div>
@@ -261,8 +266,10 @@ const FullTweet: FC<HoverUserProps & FullTweetProps & HoverActionProps> = (
                                 {(tweetData.likedTweets.length !== 0) && (
                                     <a href={"javascript:void(0);"} onClick={onOpenLikesModalWindow}>
                                         <div className={classes.contentItem}>
-                                            <b>{tweetData.likedTweets.length}</b>
-                                            <Typography component={"span"}>
+                                            <Typography variant={"h6"} component={"span"}>
+                                                {tweetData.likedTweets.length}
+                                            </Typography>
+                                            <Typography variant={"subtitle1"} component={"span"}>
                                                 Likes
                                             </Typography>
                                         </div>
@@ -281,7 +288,7 @@ const FullTweet: FC<HoverUserProps & FullTweetProps & HoverActionProps> = (
                                 <HoverAction visible={visibleHoverAction?.visibleReplyAction} actionText={"Reply"}/>
                             </IconButton>
                         </div>
-                        <div className={classes.retweetIcon}>
+                        <div className={classnames(globalClasses.svgLarge, classes.retweetIcon)}>
                             <IconButton
                                 onClick={handleRetweet}
                                 onMouseEnter={() => handleHoverAction?.(HoverActions.RETWEET)}
@@ -292,8 +299,10 @@ const FullTweet: FC<HoverUserProps & FullTweetProps & HoverActionProps> = (
                                 ) : (
                                     <>{RetweetOutlinedIcon}</>
                                 )}
-                                <HoverAction visible={visibleHoverAction?.visibleRetweetAction}
-                                             actionText={isTweetRetweeted ? "Undo Retweet" : "Retweet"}/>
+                                <HoverAction
+                                    visible={visibleHoverAction?.visibleRetweetAction}
+                                    actionText={isTweetRetweeted ? "Undo Retweet" : "Retweet"}
+                                />
                             </IconButton>
                         </div>
                         <div className={classes.likeIcon}>
@@ -307,8 +316,10 @@ const FullTweet: FC<HoverUserProps & FullTweetProps & HoverActionProps> = (
                                 ) : (
                                     <>{LikeOutlinedIcon}</>
                                 )}
-                                <HoverAction visible={visibleHoverAction?.visibleLikeAction}
-                                             actionText={isTweetLiked ? "Unlike" : "Like"}/>
+                                <HoverAction
+                                    visible={visibleHoverAction?.visibleLikeAction}
+                                    actionText={isTweetLiked ? "Unlike" : "Like"}
+                                />
                             </IconButton>
                         </div>
                         <ShareTweet
@@ -332,10 +343,10 @@ const FullTweet: FC<HoverUserProps & FullTweetProps & HoverActionProps> = (
                                     </div>
                                 </div>
                                 <div className={classes.replyTextInfoWrapper}>
-                                    <Typography component={"div"} className={classes.replyInfoTitle}>
+                                    <Typography variant={"h6"} component={"div"}>
                                         Who can reply?
                                     </Typography>
-                                    <Typography component={"div"} className={classes.replyInfoText}>
+                                    <Typography variant={"body1"} component={"div"}>
                                         People @{tweetData.user.fullName}
                                         {(tweetData.replyType === ReplyType.FOLLOW) ? (" follows or ") : (" ")}
                                         mentioned can reply
@@ -348,7 +359,7 @@ const FullTweet: FC<HoverUserProps & FullTweetProps & HoverActionProps> = (
                         (myProfile?.id === tweetData?.user.id) || (isFollower && tweetData.replyType === ReplyType.FOLLOW)
                     ) ? (
                         <>
-                            <Typography className={classes.replyWrapper}>
+                            <Typography variant={"subtitle1"} className={classes.replyWrapper}>
                                 {"Replying to "}
                                 <Link to={`/user/${tweetData.user.id}`}>
                                     @{tweetData.user.username}
@@ -382,7 +393,7 @@ const FullTweet: FC<HoverUserProps & FullTweetProps & HoverActionProps> = (
         );
     } else if (tweetData === undefined && isError) {
         return (
-            <Typography component={"div"} className={classes.error}>
+            <Typography variant={"h5"} component={"div"} className={classes.error}>
                 Hmm...this page doesn’t exist. <br/>
                 Try searching for something else.
             </Typography>

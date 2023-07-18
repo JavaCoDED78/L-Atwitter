@@ -10,10 +10,6 @@ export const usePinnedListsItemStyles = makeStyles((theme: Theme) => ({
             backgroundColor: "rgba(0, 0, 0, 0.03)",
         },
     },
-    link: {
-        color: theme.palette.text.primary,
-        textDecoration: "none",
-    },
     listAvatar: {
         width: "68px !important",
         height: "68px !important",
@@ -24,6 +20,7 @@ export const usePinnedListsItemStyles = makeStyles((theme: Theme) => ({
         textOverflow: "ellipsis",
         whiteSpace: "nowrap",
         overflow: "hidden",
+        textAlign: "center"
     },
     lockIcon: {
         "& svg": {

@@ -1,20 +1,16 @@
 import {makeStyles, Theme} from "@material-ui/core";
-import {LikeTweet} from "../../store/ducks/tweets/contracts/state";
 
 interface TweetComponentStylesProps {
-    isTweetLiked?: LikeTweet;
+    isTweetLiked: boolean;
     isUserCanReply: boolean;
 }
 
 export const useTweetComponentStyles = makeStyles<Theme, TweetComponentStylesProps>((theme) => ({
     container: {
         position: "relative",
-        display: 'flex',
         cursor: 'pointer',
-        alignItems: 'flex-start',
-        paddingTop: 15,
+        paddingTop: 12,
         paddingLeft: 20,
-        flex: 1,
         borderTop: '0',
         borderLeft: '0',
         borderRight: '0',
@@ -22,14 +18,15 @@ export const useTweetComponentStyles = makeStyles<Theme, TweetComponentStylesPro
         '&:hover': {
             backgroundColor: theme.palette.secondary.main,
         },
-        '& h6': {
-            fontWeight: 800,
-        },
     },
-    avatar: {
-        width: "46px !important",
-        height: "46px !important",
-        marginRight: 15,
+    tweetWrapper: {
+        display: 'flex',
+        alignItems: 'flex-start',
+        flex: 1,
+    },
+    tweetContainer: {
+        flex: 1,
+        marginLeft: 15,
     },
     headerWrapper: {
         color: 'inherit',
@@ -43,16 +40,17 @@ export const useTweetComponentStyles = makeStyles<Theme, TweetComponentStylesPro
         display: 'flex',
         height: 20,
         justifyContent: 'space-between',
+        "& .MuiTypography-h6": {
+            fontWeight: 700,
+        },
     },
     lockIcon: {
         "& svg": {
             marginLeft: 3,
             marginBottom: -3,
-            height: "1.2em",
+            width: 16,
+            height: 16,
         },
-    },
-    headerText: {
-        color: theme.palette.text.secondary,
     },
     headerIcon: {
         padding: 0,
@@ -62,14 +60,8 @@ export const useTweetComponentStyles = makeStyles<Theme, TweetComponentStylesPro
             height: "0.8em",
         },
     },
-    replyWrapper: {
-        zIndex: 2,
-        fontSize: 15,
-        color: theme.palette.info.light,
-    },
-    replyLink: {
-        textDecoration: "none",
-        color: theme.palette.primary.main,
+    tweetContent: {
+        width: 500,
     },
     text: {
         "& a": {
@@ -120,11 +112,6 @@ export const useTweetComponentStyles = makeStyles<Theme, TweetComponentStylesPro
             fill: theme.palette.common.white,
         },
     },
-    replyText: {
-        display: "inline-block",
-        color: theme.palette.text.secondary,
-        fontSize: 13,
-    },
     footer: {
         display: 'flex',
         position: 'relative',
@@ -136,24 +123,19 @@ export const useTweetComponentStyles = makeStyles<Theme, TweetComponentStylesPro
     },
     replyIcon: {
         "& .MuiIconButton-root": {
-            padding: 7,
             "& svg" : {
                 color: props => props.isUserCanReply ? "rgb(185, 192, 197)" : theme.palette.text.secondary,
-                verticalAlign: "bottom",
-                height: "0.80em",
             },
         },
         "& span": {
-            color: props => props.isUserCanReply ? "rgb(224, 36, 94)" : theme.palette.text.secondary,
+            verticalAlign: "middle",
+            color: props => props.isUserCanReply ? "rgb(185, 192, 197)" : theme.palette.text.secondary,
         },
     },
     likeIcon: {
         "& .MuiIconButton-root": {
-            padding: 7,
             "& svg" : {
                 color: props => props.isTweetLiked ? "rgb(224, 36, 94)" : theme.palette.text.secondary,
-                verticalAlign: "bottom",
-                height: "0.80em",
             },
             "&:hover": {
                 backgroundColor: "rgba(249, 24, 128, 0.1) !important",
@@ -163,27 +145,8 @@ export const useTweetComponentStyles = makeStyles<Theme, TweetComponentStylesPro
             },
         },
         "& span": {
+            verticalAlign: "middle",
             color: props => props.isTweetLiked ? "rgb(224, 36, 94)" : theme.palette.text.secondary,
-        },
-    },
-    bottomLine: {
-        height: 12,
-        backgroundColor: '#E6ECF0',
-    },
-    retweetWrapper: {
-        display: "flex",
-        alignItems: "center",
-        marginLeft: 45,
-        marginTop: 5,
-        color: theme.palette.text.secondary,
-        "& svg": {
-            verticalAlign: "bottom",
-            height: "1.20em",
-        },
-        "& p": {
-            marginLeft: 15,
-            fontSize: 14,
-            fontWeight: 700
         },
     },
     popperUserWindow: {

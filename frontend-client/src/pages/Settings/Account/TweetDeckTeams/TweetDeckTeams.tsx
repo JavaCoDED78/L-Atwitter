@@ -1,10 +1,12 @@
 import React, {FC, ReactElement, useState} from 'react';
-import {Divider, Radio, Switch, Typography} from "@material-ui/core";
+import {Divider, Link as MuiLink, Radio, Switch, Typography} from "@material-ui/core";
 import {CheckCircle, RadioButtonUnchecked} from "@material-ui/icons";
 
 import {useTweetDeckTeamsStyles} from "./TweetDeckTeamsStyles";
+import {useGlobalStyles} from "../../../../util/globalClasses";
 
 const TweetDeckTeams: FC = (): ReactElement => {
+    const globalClasses = useGlobalStyles();
     const classes = useTweetDeckTeamsStyles();
     const [selectedValue, setSelectedValue] = useState<string>("Anyone");
 
@@ -14,28 +16,34 @@ const TweetDeckTeams: FC = (): ReactElement => {
 
     return (
         <>
-            <div className={classes.infoItemWrapper}>
-                <Typography component={"div"} className={classes.text}>
+            <div className={globalClasses.itemInfoWrapper}>
+                <Typography variant={"subtitle2"} component={"div"}>
                     Invite anyone to Tweet from this account using the Teams feature in TweetDeck.
                 </Typography>
             </div>
-            <div className={classes.infoItemWrapper}>
-                <Typography component={"div"} className={classes.title}>
+            <div className={globalClasses.itemInfoWrapper}>
+                <Typography variant={"h6"} component={"div"} className={classes.title}>
                     Turn on TweetDeck Teams
                     <span className={classes.switch}>
-                                <Switch defaultChecked/>
-                            </span>
+                        <Switch defaultChecked/>
+                    </span>
                 </Typography>
-                <Typography component={"div"} className={classes.text}>
-                    When this setting is on, you can invite anyone to Tweet from this account using TweetDeck
-                    Teams. <a href={"https://help.twitter.com/using-twitter/tweetdeck-teams"} target="_blank"
-                              className={classes.link}>Learn more</a>
+                <Typography variant={"subtitle2"} component={"div"}>
+                    {"When this setting is on, you can invite anyone to Tweet from this account using TweetDeck Teams. "}
+                    <MuiLink
+                        href="https://help.twitter.com/using-twitter/tweetdeck-teams"
+                        variant="subtitle2"
+                        target="_blank"
+                        rel="noopener"
+                    >
+                        Learn more
+                    </MuiLink>
                 </Typography>
             </div>
             <Divider/>
-            <div className={classes.infoItemWrapper}>
-                <div className={classes.tweetDeckItemWrapper}>
-                    <Typography component={"span"}>
+            <div className={globalClasses.itemInfoWrapper}>
+                <div className={globalClasses.infoItemRadioCheckbox}>
+                    <Typography variant={"body1"} component={"span"}>
                         Allow anyone to add you to their team
                     </Typography>
                     <Radio
@@ -49,8 +57,8 @@ const TweetDeckTeams: FC = (): ReactElement => {
                         size="small"
                     />
                 </div>
-                <div className={classes.tweetDeckItemWrapper}>
-                    <Typography component={"span"}>
+                <div className={globalClasses.infoItemRadioCheckbox}>
+                    <Typography variant={"body1"} component={"span"}>
                         Only allow people you follow to add you to their team
                     </Typography>
                     <Radio

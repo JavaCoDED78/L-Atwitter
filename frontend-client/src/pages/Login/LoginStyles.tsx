@@ -9,29 +9,23 @@ export const useLoginStyles = makeStyles((theme: Theme) => ({
             color: theme.palette.primary.main,
             fontSize: 45,
         },
+        "& .MuiTypography-h4": {
+            fontWeight: 700,
+            margin: "18px 0px",
+        },
     },
     error: {
         padding: "12px 16px",
         borderRadius: 12,
         marginBottom: 12,
-        fontSize: 15,
-        fontWeight: 400,
         backgroundColor: "rgb(255, 210, 218)",
     },
     input: {
         marginBottom: 24,
     },
-    button: {
-        height: 46,
-        "& .MuiButton-label": {
-            fontSize: 15,
-        },
-    },
     footer: {
         marginTop: 32,
         textAlign: "center",
-        fontSize: 15,
-        fontWeight: 400,
         "& a": {
             textDecoration: "none",
             color: theme.palette.primary.main,

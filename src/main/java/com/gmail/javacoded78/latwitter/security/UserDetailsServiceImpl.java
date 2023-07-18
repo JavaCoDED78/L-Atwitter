@@ -1,7 +1,6 @@
 package com.gmail.javacoded78.latwitter.security;
 
 import com.gmail.javacoded78.latwitter.exception.ApiRequestException;
-import com.gmail.javacoded78.latwitter.model.User;
 import com.gmail.javacoded78.latwitter.repository.UserRepository;
 import com.gmail.javacoded78.latwitter.repository.projection.UserPrincipalProjection;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +25,6 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         if (user.getActivationCode() != null) {
             throw new LockedException("email not activated");
         }
-        return new UserPrincipal(user.getEmail(), user.getPassword());
+        return new UserPrincipal(user.getId(), user.getEmail(), user.getPassword());
     }
 }

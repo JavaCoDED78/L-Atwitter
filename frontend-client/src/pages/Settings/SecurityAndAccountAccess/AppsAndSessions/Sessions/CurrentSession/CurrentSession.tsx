@@ -4,15 +4,17 @@ import {Divider, Typography} from "@material-ui/core";
 
 import {useCurrentSessionStyles} from "./CurrentSessionStyles";
 import {DeviceIcon} from "../../../../../../icons";
+import {useGlobalStyles} from "../../../../../../util/globalClasses";
 
 const CurrentSession: FC = (): ReactElement => {
+    const globalClasses = useGlobalStyles();
     const classes = useCurrentSessionStyles();
     const location = useLocation<{ OSName: string; browserName: string; countryName: string; }>();
 
     return (
         <>
             <div>
-                <div className={classes.infoItemWrapper}>
+                <div className={globalClasses.itemInfoWrapper}>
                     <div className={classes.sessionInfo}>
                         <div className={classes.deviceIconWrapper}>
                             <span className={classes.deviceIcon}>
@@ -20,10 +22,10 @@ const CurrentSession: FC = (): ReactElement => {
                             </span>
                         </div>
                         <div>
-                            <Typography component={"div"} className={classes.OSTypeText}>
+                            <Typography variant={"body1"} component={"div"}>
                                 {location.state.OSName}
                             </Typography>
-                            <Typography component={"div"} className={classes.text}>
+                            <Typography variant={"subtitle2"} component={"div"}>
                                 {location.state.browserName}
                             </Typography>
                         </div>
@@ -31,24 +33,24 @@ const CurrentSession: FC = (): ReactElement => {
                 </div>
             </div>
             <Divider/>
-            <div className={classes.infoItemWrapper}>
-                <Typography component={"div"} className={classes.title}>
+            <div className={globalClasses.itemInfoWrapper}>
+                <Typography variant={"h6"} component={"div"}>
                     Date and time
                 </Typography>
             </div>
-            <div className={classes.infoItemWrapper}>
-                <Typography component={"div"} className={classes.text}>
+            <div className={globalClasses.itemInfoWrapper}>
+                <Typography variant={"subtitle2"} component={"div"}>
                     Active now
                 </Typography>
             </div>
             <Divider/>
-            <div className={classes.infoItemWrapper}>
-                <Typography component={"div"} className={classes.title}>
+            <div className={globalClasses.itemInfoWrapper}>
+                <Typography variant={"h6"} component={"div"}>
                     Location
                 </Typography>
             </div>
-            <div className={classes.infoItemWrapper}>
-                <Typography component={"div"} className={classes.text}>
+            <div className={globalClasses.itemInfoWrapper}>
+                <Typography variant={"subtitle2"} component={"div"}>
                     {location.state?.countryName}
                 </Typography>
             </div>

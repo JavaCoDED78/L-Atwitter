@@ -1,10 +1,12 @@
 import React, {FC, ReactElement, useState} from 'react';
-
-import {useAutoplayStyles} from "./AutoplayStyles";
-import {Radio, Typography} from "@material-ui/core";
+import {Link as MuiLink, Radio, Typography} from "@material-ui/core";
 import {CheckCircle, RadioButtonUnchecked} from "@material-ui/icons";
 
+import {useAutoplayStyles} from "./AutoplayStyles";
+import {useGlobalStyles} from "../../../../../util/globalClasses";
+
 const Autoplay: FC = (): ReactElement => {
+    const globalClasses = useGlobalStyles();
     const classes = useAutoplayStyles();
     const [selectedValue, setSelectedValue] = useState<string>("Never");
 
@@ -15,17 +17,22 @@ const Autoplay: FC = (): ReactElement => {
     return (
         <>
             <div className={classes.infoItemWrapper}>
-                <Typography component={"div"} className={classes.subtitle}>
+                <Typography variant={"h6"} component={"div"}>
                     Autoplay
                 </Typography>
-                <Typography component={"div"} className={classes.text}>
-                    Select whether videos and GIFs should play automatically on this device. <a
-                    href={"https://help.twitter.com/safety-and-security/public-and-protected-tweets"}
-                    target="_blank"
-                    className={classes.link}> Learn more</a>
+                <Typography variant={"subtitle2"} component={"div"}>
+                    {"Select whether videos and GIFs should play automatically on this device. "}
+                    <MuiLink
+                        href="https://help.twitter.com/safety-and-security/public-and-protected-tweets"
+                        variant="subtitle2"
+                        target="_blank"
+                        rel="noopener"
+                    >
+                        Learn more
+                    </MuiLink>
                 </Typography>
-                <div className={classes.autoplayItemWrapper}>
-                    <Typography component={"span"}>
+                <div className={globalClasses.infoItemRadioCheckbox}>
+                    <Typography variant={"body1"} component={"span"}>
                         On cellular or Wi-Fi
                     </Typography>
                     <Radio
@@ -39,8 +46,8 @@ const Autoplay: FC = (): ReactElement => {
                         size="small"
                     />
                 </div>
-                <div className={classes.autoplayItemWrapper}>
-                    <Typography component={"span"}>
+                <div className={globalClasses.infoItemRadioCheckbox}>
+                    <Typography variant={"body1"} component={"span"}>
                         Never
                     </Typography>
                     <Radio

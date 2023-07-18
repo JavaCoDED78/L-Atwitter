@@ -31,29 +31,17 @@ export const usePopperUserWindowStyles = makeStyles<Theme, PopperUserWindowStyle
     avatar: {
         width: "60px !important",
         height: "60px !important",
-        marginRight: 15,
     },
     outlinedButton: {
         float: 'right',
-        fontSize: 15,
-        fontWeight: 700,
         width: 79,
-        height: 32,
-        borderRadius: '25px',
-        padding: '0 15px !important',
         '&:hover': {
             backgroundColor: theme.palette.secondary.light,
         },
     },
-    primaryButton: {
-        display: "inline-block",
+    containedButton: {
         float: 'right',
-        fontSize: 15,
-        fontWeight: 700,
         width: 105,
-        height: 32,
-        borderRadius: '25px',
-        padding: '0 15px !important',
         '&:hover': {
             backgroundColor: 'rgb(202, 32, 85) !important',
         },
@@ -61,25 +49,12 @@ export const usePopperUserWindowStyles = makeStyles<Theme, PopperUserWindowStyle
     userInfoWrapper: {
         display: "inline-block",
         marginTop: 4,
-        fontSize: 15,
         "& a": {
             textDecoration: "none",
             "&:hover": {
                 textDecoration: "underline !important",
             },
         },
-    },
-    fullName: {
-        color: theme.palette.text.primary,
-        fontWeight: 700,
-        fontSize: 15,
-        lineHeight: "20px",
-    },
-    username: {
-        color: theme.palette.text.secondary,
-        fontWeight: 400,
-        fontSize: 15,
-        lineHeight: "20px",
     },
     lockIcon: {
         "& svg": {
@@ -92,9 +67,7 @@ export const usePopperUserWindowStyles = makeStyles<Theme, PopperUserWindowStyle
     userInfo: {
         marginTop: 12,
         marginBottom: 12,
-        fontWeight: 400,
-        fontSize: 15,
-        lineHeight: "20px",
+        whiteSpace: "initial",
     },
     details: {
         display: "flex",
@@ -103,9 +76,11 @@ export const usePopperUserWindowStyles = makeStyles<Theme, PopperUserWindowStyle
         color: theme.palette.info.light,
     },
     userFollowersWrapper: {
-        "& .MuiTypography-root": {
-            fontSize: 15,
-            lineHeight: "20px",
+        "& .MuiTypography-h6": {
+            marginRight: 2,
+        },
+        "& .MuiTypography-subtitle1": {
+            marginRight: 10,
         },
     },
     followLink: {
@@ -114,15 +89,6 @@ export const usePopperUserWindowStyles = makeStyles<Theme, PopperUserWindowStyle
         "&:hover": {
             textDecoration: "underline !important",
         },
-    },
-    followerCount: {
-        fontWeight: 700,
-        marginRight: 2,
-        color: theme.palette.text.primary,
-    },
-    followerText: {
-        marginRight: 10,
-        color: theme.palette.text.secondary,
     },
     blockButton: {
         backgroundColor: theme.palette.error.main,

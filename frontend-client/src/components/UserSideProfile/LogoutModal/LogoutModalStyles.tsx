@@ -8,20 +8,16 @@ export const useLogoutModalStyles = makeStyles((theme: Theme) => ({
         margin: "32px 20px",
         "& svg": {
             color: theme.palette.primary.main,
-            fontSize: 45,
+            height: "2em",
+            width: "2em",
         },
-    },
-    modalFullName: {
-        color: theme.palette.text.primary,
-        fontWeight: 700,
-        fontSize: 20,
-    },
-    modalUsername: {
-        color: theme.palette.text.secondary,
-        fontWeight: 400,
-        fontSize: 15,
-        marginTop: 8,
-        marginBottom: 24,
+        "& .MuiTypography-subtitle1": {
+            marginTop: 8,
+            marginBottom: 24,
+        },
+        "& .MuiButton-root": {
+            width: 134,
+        },
     },
     modalButtonWrapper: {
         display: "flex",
@@ -29,16 +25,7 @@ export const useLogoutModalStyles = makeStyles((theme: Theme) => ({
         justifyContent: "space-between",
     },
     modalCancelButton: {
-        width: 134,
-        height: 40,
         color: theme.palette.text.primary,
         backgroundColor: theme.palette.divider,
-        borderRadius: '25px',
-    },
-    modalLogoutButton: {
-        width: 134,
-        height: 40,
-        border: '1px solid',
-        borderRadius: '25px',
     },
 }));

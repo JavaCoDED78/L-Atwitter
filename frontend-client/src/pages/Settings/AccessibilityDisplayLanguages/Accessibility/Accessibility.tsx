@@ -1,55 +1,64 @@
 import React, {FC, ReactElement} from 'react';
+import {Link} from "react-router-dom";
+import {Checkbox, Divider, Typography} from "@material-ui/core";
+import classnames from "classnames";
 
 import {useAccessibilityStyles} from "./AccessibilityStyles";
-import {Checkbox, Divider, Typography} from "@material-ui/core";
 import {ArrowRightIcon} from "../../../../icons";
-import {Link} from "react-router-dom";
+import {useGlobalStyles} from "../../../../util/globalClasses";
 
 const Accessibility: FC = (): ReactElement => {
     const classes = useAccessibilityStyles();
+    const globalClasses = useGlobalStyles();
 
     return (
         <>
-            <div className={classes.infoItemWrapper}>
-                <Typography component={"div"} className={classes.text}>
+            <div className={globalClasses.itemInfoWrapper}>
+                <Typography variant={"subtitle2"} component={"div"}>
                     Manage aspects of your Twitter experience such as limiting color contrast and motion. These settings
                     affect all the Twitter accounts on this browser.
                 </Typography>
             </div>
-            <div className={classes.infoItemWrapper}>
-                <Typography component={"div"} className={classes.title}>
+            <div className={globalClasses.itemInfoWrapper}>
+                <Typography variant={"h5"} component={"div"}>
                     Vision
                 </Typography>
             </div>
-            <div className={classes.infoItemWrapper}>
-                <div className={classes.infoItem}>
-                    <span>Increase color contrast</span>
+            <div className={globalClasses.itemInfoWrapper}>
+                <div className={globalClasses.infoItemCheckbox}>
+                    <Typography variant={"body1"} component={"div"}>
+                        Increase color contrast
+                    </Typography>
                     <Checkbox/>
                 </div>
-                <Typography component={"div"} className={classes.text}>
+                <Typography variant={"subtitle2"} component={"div"}>
                     Improves legibility by increasing the contrast between text and background colors.
                 </Typography>
             </div>
             <Divider/>
-            <div className={classes.infoItemWrapper}>
-                <Typography component={"div"} className={classes.title}>
+            <div className={globalClasses.itemInfoWrapper}>
+                <Typography variant={"h5"} component={"div"}>
                     Motion
                 </Typography>
             </div>
-            <div className={classes.infoItemWrapper}>
-                <div className={classes.infoItem}>
-                    <span>Reduce motion</span>
+            <div className={globalClasses.itemInfoWrapper}>
+                <div className={globalClasses.infoItemCheckbox}>
+                    <Typography variant={"body1"} component={"div"}>
+                        Reduce motion
+                    </Typography>
                     <Checkbox/>
                 </div>
-                <Typography component={"div"} className={classes.text}>
+                <Typography variant={"subtitle2"} component={"div"}>
                     Limits the amount of in-app animations, including live engagement counts.
                 </Typography>
             </div>
-            <Link to={"/settings/accessibility_display_and_languages/autoplay"} className={classes.accessibilityWrapper}>
-                <div className={classes.accessibilityLink}>
+            <Link to={"/settings/accessibility_display_and_languages/autoplay"} className={globalClasses.linkWrapper}>
+                <div className={classnames(classes.accessibilityLink, globalClasses.contentLink)}>
                     <div className={classes.accessibilityInfo}>
-                        <div>Autoplay</div>
-                        <Typography component={"div"} className={classes.text}>
+                        <Typography variant={"body1"} component={"div"}>
+                            Autoplay
+                        </Typography>
+                        <Typography variant={"subtitle2"} component={"div"}>
                             Never
                         </Typography>
                     </div>

@@ -6,33 +6,38 @@ import {Divider, Typography} from "@material-ui/core";
 import {useLanguagesStyles} from "./LanguagesStyles";
 import {ArrowRightIcon} from "../../../../icons";
 import {selectUserData} from "../../../../store/ducks/user/selectors";
+import {useGlobalStyles} from "../../../../util/globalClasses";
+import classnames from "classnames";
 
 const Languages: FC = (): ReactElement => {
+    const globalClasses = useGlobalStyles();
     const classes = useLanguagesStyles();
     const myProfile = useSelector(selectUserData);
 
     return (
         <>
-            <div className={classes.infoItemWrapper}>
-                <Typography component={"div"} className={classes.text}>
+            <div className={globalClasses.itemInfoWrapper}>
+                <Typography variant={"subtitle2"} component={"div"}>
                     Manage which languages are used to personalize your Twitter experience.
                 </Typography>
             </div>
-            <div className={classes.infoItemWrapper}>
-                <Typography component={"div"} className={classes.title}>
+            <div className={globalClasses.itemInfoWrapper}>
+                <Typography variant={"h5"} component={"div"}>
                     Display language
                 </Typography>
             </div>
-            <div className={classes.infoItemWrapper}>
-                <Typography component={"div"} className={classes.text}>
+            <div className={globalClasses.itemInfoWrapper}>
+                <Typography variant={"subtitle2"} component={"div"}>
                     Select your preferred language for headlines, buttons, and other text from Twitter.
                 </Typography>
             </div>
-            <Link to={"/settings/info/languages"} className={classes.accessibilityWrapper}>
-                <div className={classes.accessibilityLink}>
+            <Link to={"/settings/info/languages"} className={globalClasses.linkWrapper}>
+                <div className={classnames(globalClasses.contentLink, classes.accessibilityWrapper)}>
                     <div className={classes.accessibilityInfo}>
-                        <div>Display language</div>
-                        <Typography component={"div"} className={classes.text}>
+                        <Typography variant={"body1"} component={"div"}>
+                            Display language
+                        </Typography>
+                        <Typography variant={"subtitle1"} component={"div"}>
                             {myProfile?.language}
                         </Typography>
                     </div>
@@ -40,38 +45,38 @@ const Languages: FC = (): ReactElement => {
                 </div>
             </Link>
             <Divider/>
-            <div className={classes.infoItemWrapper}>
-                <Typography component={"div"} className={classes.title}>
+            <div className={globalClasses.itemInfoWrapper}>
+                <Typography variant={"h5"} component={"div"}>
                     Select additional languages
                 </Typography>
             </div>
-            <div className={classes.infoItemWrapper}>
-                <Typography component={"div"} className={classes.text}>
+            <div className={globalClasses.itemInfoWrapper}>
+                <Typography variant={"subtitle2"} component={"div"}>
                     Select additional languages for the content you want to see on Twitter.
                 </Typography>
             </div>
-            <div className={classes.accessibilityLink}>
-                <div className={classes.accessibilityInfo}>
-                    <div>Additional languages you speak</div>
-                </div>
+            <div className={globalClasses.contentLink}>
+                <Typography variant={"body1"} component={"span"}>
+                    Additional languages you speak
+                </Typography>
                 {ArrowRightIcon}
             </div>
             <Divider/>
-            <div className={classes.infoItemWrapper}>
-                <Typography component={"div"} className={classes.title}>
+            <div className={globalClasses.itemInfoWrapper}>
+                <Typography variant={"h5"} component={"div"}>
                     Languages you may know
                 </Typography>
             </div>
-            <div className={classes.infoItemWrapper}>
-                <Typography component={"div"} className={classes.text}>
+            <div className={globalClasses.itemInfoWrapper}>
+                <Typography variant={"subtitle2"} component={"div"}>
                     Manage the languages Twitter inferred based on your activity, such as the accounts you follow and
                     the Tweets you engage with.
                 </Typography>
             </div>
-            <div className={classes.accessibilityLink}>
-                <div className={classes.accessibilityInfo}>
-                    <div>Languages you may know</div>
-                </div>
+            <div className={globalClasses.contentLink}>
+                <Typography variant={"body1"} component={"span"}>
+                    Languages you may know
+                </Typography>
                 {ArrowRightIcon}
             </div>
         </>

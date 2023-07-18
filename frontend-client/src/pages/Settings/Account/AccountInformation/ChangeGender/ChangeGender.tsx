@@ -8,8 +8,10 @@ import {ChangeInfoTextField} from "../../../ChangeInfoTextField/ChangeInfoTextFi
 import {setUserLoadingStatus, updateGender} from "../../../../../store/ducks/user/actionCreators";
 import {LoadingStatus} from "../../../../../store/types";
 import {selectUserData, selectUserIsLoading} from "../../../../../store/ducks/user/selectors";
+import {useGlobalStyles} from "../../../../../util/globalClasses";
 
 const ChangeGender: FC = (): ReactElement => {
+    const globalClasses = useGlobalStyles();
     const classes = useChangeGenderStyles();
     const dispatch = useDispatch();
     const myProfile = useSelector(selectUserData);
@@ -51,14 +53,14 @@ const ChangeGender: FC = (): ReactElement => {
 
     return (
         <>
-            <Typography component={"div"} className={classes.text}>
+            <Typography variant={"subtitle1"} component={"div"} className={globalClasses.itemInfoWrapper}>
                 If you haven’t already specified a gender, this is the one associated with your account based on
                 your profile and activity. This information won’t be displayed publicly.
             </Typography>
             <Divider/>
-            <div className={classes.genderInfoWrapper}>
-                <div className={classes.genderItemWrapper}>
-                    <Typography component={"span"}>
+            <div className={globalClasses.itemInfoWrapper}>
+                <div className={globalClasses.infoItemRadioCheckbox}>
+                    <Typography variant={"body1"} component={"span"}>
                         Female
                     </Typography>
                     <Radio
@@ -72,8 +74,8 @@ const ChangeGender: FC = (): ReactElement => {
                         size="small"
                     />
                 </div>
-                <div className={classes.genderItemWrapper}>
-                    <Typography component={"span"}>
+                <div className={globalClasses.infoItemRadioCheckbox}>
+                    <Typography variant={"body1"} component={"span"}>
                         Male
                     </Typography>
                     <Radio
@@ -87,8 +89,8 @@ const ChangeGender: FC = (): ReactElement => {
                         size="small"
                     />
                 </div>
-                <div className={classes.genderItemWrapper}>
-                    <Typography component={"span"}>
+                <div className={globalClasses.infoItemRadioCheckbox}>
+                    <Typography variant={"body1"} component={"span"}>
                         Other
                     </Typography>
                     <Radio
@@ -123,6 +125,7 @@ const ChangeGender: FC = (): ReactElement => {
                     type="submit"
                     variant="contained"
                     color="primary"
+                    size="small"
                 >
                     Save
                 </Button>
