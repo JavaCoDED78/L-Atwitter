@@ -11,6 +11,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface BookmarkRepository extends JpaRepository<Bookmark, Long> {
 
-    @Query(value = "SELECT * FROM bookmarks WHERE users_id = ?1 ORDER BY bookmarks.bookmark_date DESC", nativeQuery = true)
-    Page<Bookmark> findByUser(User user, Pageable pageable);
+    @Query("SELECT bookmark FROM Bookmark bookmark WHERE bookmark.user.id = :userId ORDER BY bookmark.bookmarkDate DESC")
+    Page<Bookmark> findByUser(Long userId, Pageable pageable);
 }

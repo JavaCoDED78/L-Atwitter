@@ -18,6 +18,7 @@ import com.gmail.javacoded78.latwitter.repository.NotificationRepository;
 import com.gmail.javacoded78.latwitter.repository.RetweetRepository;
 import com.gmail.javacoded78.latwitter.repository.TweetRepository;
 import com.gmail.javacoded78.latwitter.repository.UserRepository;
+import com.gmail.javacoded78.latwitter.repository.projection.user.UserDetailProjection;
 import com.gmail.javacoded78.latwitter.service.AuthenticationService;
 import com.gmail.javacoded78.latwitter.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -68,8 +69,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<User> getUsers() {
-        User user = authenticationService.getAuthenticatedUser();
-        return userRepository.findByActiveTrueAndIdNot(user.getId());
+        Long userId = authenticationService.getAuthenticatedUserId();
+        return userRepository.findByActiveTrueAndIdNot(userId);
     }
 
     @Override
@@ -91,24 +92,27 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Page<Tweet> getUserTweets(Long userId, Pageable pageable) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new ApiRequestException("User not found", HttpStatus.NOT_FOUND));
-        List<Tweet> tweets = tweetRepository.findTweetsByUserId(user.getId());
-        List<Retweet> retweets = retweetRepository.findRetweetsByUserId(user.getId());
+        checkIsUserExist(userId);
+        List<Tweet> tweets = tweetRepository.findTweetsByUserId(userId);
+        List<Retweet> retweets = retweetRepository.findRetweetsByUserId(userId);
         List<Tweet> userTweets = combineTweetsArrays(tweets, retweets);
-        boolean isTweetExist = userTweets.removeIf(tweet -> tweet.equals(user.getPinnedTweet()));
-        if (isTweetExist) {
-            userTweets.add(0, user.getPinnedTweet());
+        Optional<Tweet> pinnedTweet = tweetRepository.getPinnedTweetByUserId(userId);
+
+        if (pinnedTweet.isPresent()) {
+            boolean isTweetExist = userTweets.removeIf(tweet -> tweet.getId().equals(pinnedTweet.get().getId()));
+
+            if (isTweetExist) {
+                userTweets.add(0, pinnedTweet.get());
+            }
         }
         return getPageableTweetList(pageable, userTweets, tweets.size() + retweets.size());
     }
 
     @Override
     public Page<Tweet> getUserRetweetsAndReplies(Long userId, Pageable pageable) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new ApiRequestException("User not found", HttpStatus.NOT_FOUND));
-        List<Tweet> replies = tweetRepository.findRepliesByUserId(user.getId());
-        List<Retweet> retweets = retweetRepository.findRetweetsByUserId(user.getId());
+        checkIsUserExist(userId);
+        List<Tweet> replies = tweetRepository.findRepliesByUserId(userId);
+        List<Retweet> retweets = retweetRepository.findRetweetsByUserId(userId);
         List<Tweet> userTweets = combineTweetsArrays(replies, retweets);
         return getPageableTweetList(pageable, userTweets, replies.size() + retweets.size());
     }
@@ -146,8 +150,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Page<Bookmark> getUserBookmarks(Pageable pageable) {
-        User user = authenticationService.getAuthenticatedUser();
-        return bookmarkRepository.findByUser(user, pageable);
+        Long userId = authenticationService.getAuthenticatedUserId();
+        return bookmarkRepository.findByUser(userId, pageable);
     }
 
     @Override
@@ -176,16 +180,14 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Page<LikeTweet> getUserLikedTweets(Long userId, Pageable pageable) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new ApiRequestException("User not found", HttpStatus.NOT_FOUND));
-        return likeTweetRepository.findByUserId(user.getId(), pageable);
+        checkIsUserExist(userId);
+        return likeTweetRepository.findByUserId(userId, pageable);
     }
 
     @Override
     public Page<Tweet> getUserMediaTweets(Long userId, Pageable pageable) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new ApiRequestException("User not found", HttpStatus.NOT_FOUND));
-        return tweetRepository.findAllUserMediaTweets(user.getId(), pageable);
+        checkIsUserExist(userId);
+        return tweetRepository.findAllUserMediaTweets(userId, pageable);
     }
 
     @Override
@@ -362,8 +364,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<User> getBlockList() {
-        User user = authenticationService.getAuthenticatedUser();
-        return user.getUserBlockedList();
+        Long authUserId = authenticationService.getAuthenticatedUserId();
+        return userRepository.getUserBlockListById(authUserId);
     }
 
     @Override
@@ -380,8 +382,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<User> getMutedList() {
-        User user = authenticationService.getAuthenticatedUser();
-        return user.getUserMutedList();
+        Long authUserId = authenticationService.getAuthenticatedUserId();
+        return userRepository.getUserMutedListById(authUserId);
     }
 
     @Override
@@ -390,6 +392,12 @@ public class UserServiceImpl implements UserService {
         User currentUser = userRepository.findById(userId)
                 .orElseThrow(() -> new ApiRequestException("User not found", HttpStatus.NOT_FOUND));
         return processUserList(user, currentUser, user.getUserMutedList());
+    }
+
+    @Override
+    public UserDetailProjection getUserDetails(Long userId) {
+        return userRepository.getUserDetails(userId)
+                .orElseThrow(() -> new ApiRequestException("User not found", HttpStatus.NOT_FOUND));
     }
 
     private void checkIsUserExist(Long userId) {
@@ -407,6 +415,31 @@ public class UserServiceImpl implements UserService {
         if (userBlocked) {
             throw new ApiRequestException("User (id:" + authUserId + ") is blocked", HttpStatus.BAD_REQUEST);
         }
+    }
+
+    public boolean isUserFollowByOtherUser(Long userId) {
+        Long authUserId = authenticationService.getAuthenticatedUserId();
+        return userRepository.isUserFollowByOtherUser(authUserId, userId);
+    }
+
+    public boolean isUserBlockedByMyProfile(Long userId) {
+        Long authUserId = authenticationService.getAuthenticatedUserId();
+        return userRepository.isUserBlocked(authUserId, userId);
+    }
+
+    public boolean isMyProfileBlockedByUser(Long userId) {
+        Long authUserId = authenticationService.getAuthenticatedUserId();
+        return userRepository.isUserBlocked(userId, authUserId);
+    }
+
+    public boolean isMyProfileWaitingForApprove(Long userId) {
+        Long authUserId = authenticationService.getAuthenticatedUserId();
+        return userRepository.isMyProfileWaitingForApprove(userId, authUserId);
+    }
+
+    public List<UserDetailProjection.SameFollower> getSameFollowers(Long userId) {
+        Long authUserId = authenticationService.getAuthenticatedUserId();
+        return userRepository.getSameFollowers(userId, authUserId);
     }
 
     private User processUserList(User authenticatedUser, User currentUser, List<User> userLists) {

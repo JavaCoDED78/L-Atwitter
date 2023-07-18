@@ -1,12 +1,7 @@
 package com.gmail.javacoded78.latwitter.controller;
 
 import com.gmail.javacoded78.latwitter.dto.request.UserRequest;
-import com.gmail.javacoded78.latwitter.dto.response.ImageResponse;
-import com.gmail.javacoded78.latwitter.dto.response.TweetHeaderResponse;
-import com.gmail.javacoded78.latwitter.dto.response.NotificationResponse;
-import com.gmail.javacoded78.latwitter.dto.response.NotificationsResponse;
-import com.gmail.javacoded78.latwitter.dto.response.TweetResponse;
-import com.gmail.javacoded78.latwitter.dto.response.UserResponse;
+import com.gmail.javacoded78.latwitter.dto.response.*;
 import com.gmail.javacoded78.latwitter.mapper.UserMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -182,5 +177,11 @@ public class UserController {
     @GetMapping("/muted/{userId}")
     public ResponseEntity<UserResponse> processMutedList(@PathVariable Long userId) {
         return ResponseEntity.ok(userMapper.processMutedList(userId));
+    }
+
+    // Projection
+    @GetMapping("/details/{userId}") // TODO Add tests
+    public ResponseEntity<UserDetailProjectionResponse> getUserDetails(@PathVariable Long userId) {
+        return ResponseEntity.ok(userMapper.getUserDetails(userId));
     }
 }

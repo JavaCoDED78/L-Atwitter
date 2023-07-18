@@ -28,7 +28,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
-@TestPropertySource("/application-test.yml")
+@TestPropertySource("/application-test.properties")
 @Sql(value = {"/sql/populate-table-before.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
 @Sql(value = {"/sql/populate-table-after.sql"}, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
 public class UserControllerTest {
@@ -297,7 +297,7 @@ public class UserControllerTest {
     public void getUserTweets_ShouldUserNotFound() throws Exception {
         mockMvc.perform(get(URL_USER_BASIC + "/99/tweets"))
                 .andExpect(status().isNotFound())
-                .andExpect(jsonPath("$", is("User not found")));
+                .andExpect(jsonPath("$", is("User (id:99) not found")));
     }
 
     @Test
@@ -334,7 +334,7 @@ public class UserControllerTest {
     public void getUserLikedTweets_ShouldUserNotFound() throws Exception {
         mockMvc.perform(get(URL_USER_BASIC + "/99/liked"))
                 .andExpect(status().isNotFound())
-                .andExpect(jsonPath("$", is("User not found")));
+                .andExpect(jsonPath("$", is("User (id:99) not found")));
     }
 
     @Test
@@ -371,7 +371,7 @@ public class UserControllerTest {
     public void getUserMediaTweets_ShouldUserNotFound() throws Exception {
         mockMvc.perform(get(URL_USER_BASIC + "/99/media"))
                 .andExpect(status().isNotFound())
-                .andExpect(jsonPath("$", is("User not found")));
+                .andExpect(jsonPath("$", is("User (id:99) not found")));
     }
 
     @Test
@@ -408,7 +408,7 @@ public class UserControllerTest {
     public void getUserRetweetsAndReplies_ShouldUserNotFound() throws Exception {
         mockMvc.perform(get(URL_USER_BASIC + "/99/replies"))
                 .andExpect(status().isNotFound())
-                .andExpect(jsonPath("$", is("User not found")));
+                .andExpect(jsonPath("$", is("User (id:99) not found")));
     }
 
     @Test

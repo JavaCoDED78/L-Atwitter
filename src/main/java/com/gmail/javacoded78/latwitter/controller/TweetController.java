@@ -5,6 +5,7 @@ import com.gmail.javacoded78.latwitter.dto.request.TweetRequest;
 import com.gmail.javacoded78.latwitter.dto.request.VoteRequest;
 import com.gmail.javacoded78.latwitter.dto.response.TweetHeaderResponse;
 import com.gmail.javacoded78.latwitter.dto.response.NotificationResponse;
+import com.gmail.javacoded78.latwitter.dto.response.TweetProjectionResponse;
 import com.gmail.javacoded78.latwitter.dto.response.TweetResponse;
 import com.gmail.javacoded78.latwitter.mapper.TweetMapper;
 import com.gmail.javacoded78.latwitter.model.ReplyType;
@@ -166,5 +167,11 @@ public class TweetController {
         messagingTemplate.convertAndSend("/topic/tweet/" + tweet.getId(), tweet);
         messagingTemplate.convertAndSend("/topic/user/update/tweet/" + tweet.getUser().getId(), tweet);
         return ResponseEntity.ok(tweet);
+    }
+
+    // Projection
+    @GetMapping("/projection/{tweetId}")
+    public ResponseEntity<TweetProjectionResponse> getTweetByIdProjection(@PathVariable Long tweetId) {
+        return ResponseEntity.ok(tweetMapper.getTweetByIdProjection(tweetId));
     }
 }

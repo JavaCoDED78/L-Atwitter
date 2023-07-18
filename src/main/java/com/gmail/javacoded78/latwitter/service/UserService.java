@@ -6,6 +6,7 @@ import com.gmail.javacoded78.latwitter.model.LikeTweet;
 import com.gmail.javacoded78.latwitter.model.Notification;
 import com.gmail.javacoded78.latwitter.model.Tweet;
 import com.gmail.javacoded78.latwitter.model.User;
+import com.gmail.javacoded78.latwitter.repository.projection.user.UserDetailProjection;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
@@ -70,4 +71,6 @@ public interface UserService {
     List<User> getMutedList();
 
     User processMutedList(Long userId);
+
+    UserDetailProjection getUserDetails(Long userId);
 }

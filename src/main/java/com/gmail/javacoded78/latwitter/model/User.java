@@ -8,6 +8,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -118,19 +119,19 @@ public class User {
     @Enumerated(EnumType.STRING)
     private ColorSchemeType colorScheme;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinTable(name = "user_pinned_tweet",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "tweet_id"))
     private Tweet pinnedTweet;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinTable(name = "user_avatar",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "avatar_id"))
     private Image avatar;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinTable(name = "user_wallpaper",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "wallpaper_id"))

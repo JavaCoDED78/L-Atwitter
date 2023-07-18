@@ -25,6 +25,7 @@ import com.gmail.javacoded78.latwitter.repository.RetweetRepository;
 import com.gmail.javacoded78.latwitter.repository.TagRepository;
 import com.gmail.javacoded78.latwitter.repository.TweetRepository;
 import com.gmail.javacoded78.latwitter.repository.UserRepository;
+import com.gmail.javacoded78.latwitter.repository.projection.TweetProjection;
 import com.gmail.javacoded78.latwitter.service.AuthenticationService;
 import com.gmail.javacoded78.latwitter.service.TweetService;
 import lombok.RequiredArgsConstructor;
@@ -80,9 +81,25 @@ public class TweetServiceImpl implements TweetService {
     @Value("${google.api.key}")
     private String googleApiKey;
 
+    public boolean isUserLikedTweet(Long tweetId) {
+        Long authUserId = authenticationService.getAuthenticatedUserId();
+        return tweetRepository.isUserLikedTweet(authUserId, tweetId);
+    }
+
+    public boolean isUserRetweetedTweet(Long tweetId) {
+        Long authUserId = authenticationService.getAuthenticatedUserId();
+        return tweetRepository.isUserRetweetedTweet(authUserId, tweetId);
+    }
+
     @Override
     public Page<Tweet> getTweets(Pageable pageable) {
         return tweetRepository.findAllTweets(pageable);
+    }
+
+    @Override
+    public TweetProjection getTweetByIdProjection(Long tweetId) {
+        return tweetRepository.findTweetById(tweetId)
+                .orElseThrow(() -> new ApiRequestException("Tweet not found", HttpStatus.NOT_FOUND));
     }
 
     @Override
@@ -103,8 +120,8 @@ public class TweetServiceImpl implements TweetService {
 
     @Override
     public List<Tweet> getScheduledTweets() {
-        User user = authenticationService.getAuthenticatedUser();
-        return tweetRepository.findAllScheduledTweetsByUserId(user.getId());
+        Long userId = authenticationService.getAuthenticatedUserId();
+        return tweetRepository.findAllScheduledTweetsByUserId(userId);
     }
 
     @Override

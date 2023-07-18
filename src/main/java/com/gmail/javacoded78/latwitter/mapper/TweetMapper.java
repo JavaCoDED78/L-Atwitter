@@ -3,12 +3,10 @@ package com.gmail.javacoded78.latwitter.mapper;
 import com.gmail.javacoded78.latwitter.dto.request.TweetDeleteRequest;
 import com.gmail.javacoded78.latwitter.dto.request.TweetRequest;
 import com.gmail.javacoded78.latwitter.dto.request.VoteRequest;
-import com.gmail.javacoded78.latwitter.dto.response.TweetHeaderResponse;
-import com.gmail.javacoded78.latwitter.dto.response.NotificationResponse;
-import com.gmail.javacoded78.latwitter.dto.response.TweetResponse;
-import com.gmail.javacoded78.latwitter.dto.response.TweetResponseCommon;
+import com.gmail.javacoded78.latwitter.dto.response.*;
 import com.gmail.javacoded78.latwitter.model.ReplyType;
 import com.gmail.javacoded78.latwitter.model.Tweet;
+import com.gmail.javacoded78.latwitter.repository.projection.TweetProjection;
 import com.gmail.javacoded78.latwitter.service.TweetService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -130,5 +128,14 @@ public class TweetMapper {
 
     public TweetResponse voteInPoll(VoteRequest voteRequest) {
         return convertToTweetResponse(tweetService.voteInPoll(voteRequest.getTweetId(), voteRequest.getPollId(), voteRequest.getPollChoiceId()));
+    }
+
+    // Projection
+    TweetProjectionResponse convertToProjectionResponse(TweetProjection tweet) {
+        return modelMapper.map(tweet, TweetProjectionResponse.class);
+    }
+
+    public TweetProjectionResponse getTweetByIdProjection(Long tweetId) {
+        return convertToProjectionResponse(tweetService.getTweetByIdProjection(tweetId));
     }
 }

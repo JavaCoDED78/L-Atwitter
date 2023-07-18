@@ -1,12 +1,14 @@
 package com.gmail.javacoded78.latwitter.repository.projection;
 
-public interface UserPrincipalProjection {
+import lombok.AllArgsConstructor;
+import lombok.Data;
 
-    Long getId();
+@Data
+@AllArgsConstructor
+public class UserPrincipalProjection {
 
-    String getEmail();
-
-    String getPassword();
-
-    String getActivationCode();
+    private Long id;
+    private String email;
+    private String password;
+    private String activationCode;
 }
