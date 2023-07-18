@@ -14,7 +14,8 @@ import java.util.Collections;
 @AllArgsConstructor
 public class UserPrincipal implements UserDetails {
 
-    private final User user;
+    private final String email;
+    private final String password;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -23,12 +24,12 @@ public class UserPrincipal implements UserDetails {
 
     @Override
     public String getPassword() {
-        return user.getPassword();
+        return password;
     }
 
     @Override
     public String getUsername() {
-        return user.getEmail();
+        return email;
     }
 
     @Override

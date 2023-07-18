@@ -2,6 +2,7 @@ package com.gmail.javacoded78.latwitter.repository;
 
 import com.gmail.javacoded78.latwitter.model.Tweet;
 import com.gmail.javacoded78.latwitter.model.User;
+import com.gmail.javacoded78.latwitter.repository.projection.UserPrincipalProjection;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -14,6 +15,9 @@ import java.util.Optional;
 public interface UserRepository extends JpaRepository<User, Long> {
 
     List<User> findByActiveTrueAndIdNot(Long id);
+
+    @Query("SELECT u FROM User u WHERE u.email = :email")
+    Optional<UserPrincipalProjection> findUserPrincipalByEmail(String email);
 
     Optional<User> findByEmail(String email);
 

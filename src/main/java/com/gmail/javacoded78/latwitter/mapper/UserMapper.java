@@ -5,10 +5,9 @@ import com.gmail.javacoded78.latwitter.dto.request.UserRequest;
 import com.gmail.javacoded78.latwitter.dto.response.AuthenticationResponse;
 import com.gmail.javacoded78.latwitter.dto.response.ImageResponse;
 import com.gmail.javacoded78.latwitter.dto.response.TweetHeaderResponse;
-import com.gmail.javacoded78.latwitter.dto.response.notification.NotificationResponse;
-import com.gmail.javacoded78.latwitter.dto.response.notification.NotificationUserResponse;
-import com.gmail.javacoded78.latwitter.dto.response.notification.NotificationsResponse;
-import com.gmail.javacoded78.latwitter.dto.response.tweet.TweetResponse;
+import com.gmail.javacoded78.latwitter.dto.response.NotificationResponse;
+import com.gmail.javacoded78.latwitter.dto.response.NotificationsResponse;
+import com.gmail.javacoded78.latwitter.dto.response.TweetResponse;
 import com.gmail.javacoded78.latwitter.dto.response.UserResponse;
 import com.gmail.javacoded78.latwitter.model.Bookmark;
 import com.gmail.javacoded78.latwitter.model.Image;
@@ -26,10 +25,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Component
@@ -59,15 +55,9 @@ public class UserMapper {
         return modelMapper.map(user, UserResponse.class);
     }
 
-    private List<UserResponse> convertUserListToResponse(List<User> users) {
+    private List<UserResponse> convertUserListToResponse(Collection<User> users) {
         return users.stream()
                 .map(this::convertToUserResponse)
-                .collect(Collectors.toList());
-    }
-
-    private List<NotificationUserResponse> convertUserListToNotificationResponse(Set<User> users) {
-        return users.stream()
-                .map(user -> modelMapper.map(user, NotificationUserResponse.class))
                 .collect(Collectors.toList());
     }
 
@@ -176,7 +166,7 @@ public class UserMapper {
         Map<String, Object> userNotifications = userService.getUserNotifications();
         NotificationsResponse notificationsResponse = new NotificationsResponse();
         notificationsResponse.setNotifications(convertListToNotificationResponse((List<Notification>) userNotifications.get("notifications")));
-        notificationsResponse.setTweetAuthors(convertUserListToNotificationResponse((Set<User>) userNotifications.get("tweetAuthors")));
+        notificationsResponse.setTweetAuthors(convertUserListToResponse((Set<User>) userNotifications.get("tweetAuthors")));
         return notificationsResponse;
     }
 

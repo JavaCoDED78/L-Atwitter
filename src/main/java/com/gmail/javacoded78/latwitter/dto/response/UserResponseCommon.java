@@ -2,13 +2,14 @@ package com.gmail.javacoded78.latwitter.dto.response;
 
 import com.gmail.javacoded78.latwitter.model.BackgroundColorType;
 import com.gmail.javacoded78.latwitter.model.ColorSchemeType;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
-@Data
-public class UserResponse {
+@Getter
+@Setter
+public class UserResponseCommon {
 
     private Long id;
     private String email;
@@ -38,21 +39,6 @@ public class UserResponse {
     private boolean privateProfile;
     private BackgroundColorType backgroundColor;
     private ColorSchemeType colorScheme;
-    private List<TweetResponseCommon> tweets;
-    private TweetResponseCommon pinnedTweet;
     private ImageResponse avatar;
     private ImageResponse wallpaper;
-    //    private List<LikeTweetResponse> likedTweets;
-//    private List<RetweetResponse> retweets;
-    private List<BookmarkResponse> bookmarks;
-    //    private List<NotificationResponse> notifications;
-//    private List<ListsResponse> userLists;
-//    private List<ChatParticipantResponse> chats;
-    private List<ChatMessageResponse> unreadMessages;
-    private List<UserResponseCommon> userMutedList;
-    private List<UserResponseCommon> userBlockedList;
-    private List<UserResponseCommon> followers;
-    private List<UserResponseCommon> following;
-    private List<UserResponseCommon> followerRequests;
-    private List<UserResponseCommon> subscribers;
 }

@@ -1,28 +1,30 @@
-package com.gmail.javacoded78.latwitter.dto.response.tweet;
+package com.gmail.javacoded78.latwitter.dto.response;
 
-import com.gmail.javacoded78.latwitter.dto.response.ImageResponse;
-import com.gmail.javacoded78.latwitter.dto.response.UserResponse;
+import com.gmail.javacoded78.latwitter.model.LinkCoverSize;
 import com.gmail.javacoded78.latwitter.model.ReplyType;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
-@Data
-public class TweetReplyResponse {
+@Getter
+@Setter
+public class TweetResponseCommon {
 
     private Long id;
     private String text;
+    private LocalDateTime dateTime;
+    private LocalDateTime scheduledDate;
     private String addressedUsername;
     private Long addressedId;
+    private Long addressedTweetId;
     private ReplyType replyType;
-    private LocalDateTime dateTime;
     private String link;
     private String linkTitle;
     private String linkDescription;
     private String linkCover;
+    private LinkCoverSize linkCoverSize;
     private List<ImageResponse> images;
-    private List<UserResponse> retweets;
-    private List<UserResponse> likedTweets;
-    private UserResponse user;
+    private UserResponseCommon user;
 }

@@ -1,4 +1,4 @@
-package com.gmail.javacoded78.latwitter.dto.response.chat;
+package com.gmail.javacoded78.latwitter.dto.response;
 
 import lombok.Data;
 
@@ -10,7 +10,7 @@ public class ChatMessageResponse {
     private Long id;
     private String text;
     private LocalDateTime date;
-    private ChatTweetResponse tweet;
-    private ChatUserResponse author;
+    private TweetResponseCommon tweet;
+    private UserResponseCommon author;
     private ChatResponse chat;
 }

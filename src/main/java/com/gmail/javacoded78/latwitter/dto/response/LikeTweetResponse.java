@@ -1,6 +1,5 @@
-package com.gmail.javacoded78.latwitter.dto.response.tweet;
+package com.gmail.javacoded78.latwitter.dto.response;
 
-import com.gmail.javacoded78.latwitter.dto.response.UserResponse;
 import lombok.Data;
 
 import java.time.LocalDateTime;
@@ -11,4 +10,5 @@ public class LikeTweetResponse {
     private Long id;
     private LocalDateTime likeTweetDate;
     private UserResponse user;
+    private TweetResponseCommon tweet;
 }

@@ -1,4 +1,4 @@
-package com.gmail.javacoded78.latwitter.dto.response.notification;
+package com.gmail.javacoded78.latwitter.dto.response;
 
 import com.gmail.javacoded78.latwitter.model.NotificationType;
 import lombok.Data;
@@ -11,7 +11,7 @@ public class NotificationResponse {
     private Long id;
     private LocalDateTime date;
     private NotificationType notificationType;
-    private NotificationUserResponse user;
-    private NotificationUserResponse userToFollow;
-    private NotificationTweetResponse tweet;
+    private UserResponse user;
+    private UserResponse userToFollow;
+    private TweetResponse tweet;
 }

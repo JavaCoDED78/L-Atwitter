@@ -1,6 +1,5 @@
-package com.gmail.javacoded78.latwitter.dto.response.poll;
+package com.gmail.javacoded78.latwitter.dto.response;
 
-import com.gmail.javacoded78.latwitter.dto.response.UserResponse;
 import lombok.Data;
 
 import java.util.List;

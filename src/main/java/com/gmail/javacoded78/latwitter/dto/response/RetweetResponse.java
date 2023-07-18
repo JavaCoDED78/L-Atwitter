@@ -5,10 +5,10 @@ import lombok.Data;
 import java.time.LocalDateTime;
 
 @Data
-public class QuoteTweetResponse {
+public class RetweetResponse {
 
     private Long id;
-    private String text;
+    private LocalDateTime retweetDate;
     private UserResponse user;
-    private LocalDateTime dateTime;
+    private TweetResponseCommon tweet;
 }

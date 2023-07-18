@@ -1,6 +1,8 @@
 package com.gmail.javacoded78.latwitter.model;
 
-import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -13,13 +15,15 @@ import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import java.util.List;
 
-@Data
 @Entity
+@Getter
+@Setter
+@EqualsAndHashCode
 @Table(name = "tags")
 public class Tag {
 
     @Id
-    @GeneratedValue(strategy= GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(name = "tag_name")

@@ -9,5 +9,6 @@ public class BookmarkResponse {
 
     private Long id;
     private LocalDateTime bookmarkDate;
-    private CommonTweetResponse tweet;
+    private UserResponseCommon user;
+    private TweetResponseCommon tweet;
 }

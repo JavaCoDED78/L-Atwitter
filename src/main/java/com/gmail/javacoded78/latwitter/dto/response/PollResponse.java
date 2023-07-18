@@ -1,4 +1,4 @@
-package com.gmail.javacoded78.latwitter.dto.response.poll;
+package com.gmail.javacoded78.latwitter.dto.response;
 
 import lombok.Data;
 
@@ -10,5 +10,6 @@ public class PollResponse {
 
     private Long id;
     private LocalDateTime dateTime;
+    //    private TweetResponse tweet;
     private List<PollChoiceResponse> pollChoices;
 }

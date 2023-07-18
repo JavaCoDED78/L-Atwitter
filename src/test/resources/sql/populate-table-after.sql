@@ -9,6 +9,10 @@ FROM user_blocked;
 DELETE
 FROM subscribers;
 DELETE
+FROM user_avatar;
+DELETE
+FROM user_wallpaper;
+DELETE
 FROM user_muted;
 DELETE
 FROM user_follower_requests;
