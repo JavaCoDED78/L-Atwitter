@@ -24,7 +24,7 @@ INSERT INTO users (id, about, activation_code, active, birthday, email, full_nam
                    gender, language, muted_direct_messages, phone, private_profile, country_code, background_color,
                    color_scheme)
 VALUES (1, 'Hello2', null, true, null, 'merikbest2015@gmail.com', 'Vbhjckfd1', 'Kyiv', 0,
-        '$2a$08$T1SpeJPoOfEDpMdhPKMp.elE6XBXIGN2wNMuDNh0vNnsOice4K4cu', null, true, true, '2021-08-01 23:34:32.000000',
+        '$2a$08$1D3LToUL9ccJYqGDZNPH8uvTBwVFou5MobYvtgAakra6WdACQZWJK', null, true, true, '2021-08-01 23:34:32.000000',
         'USER', 126, 'Vbhjckfd1', 'https://www.google.com', 11, 22, 40, 44, 'UA', 'Cat', 'Ukrainian - українська', true,
         666966623, false, 'UA', 'DEFAULT', 'BLUE');
 INSERT INTO users (id, about, activation_code, active, birthday, email, full_name, location, notifications_count,
@@ -33,7 +33,7 @@ INSERT INTO users (id, about, activation_code, active, birthday, email, full_nam
                    gender, language, muted_direct_messages, phone, private_profile, country_code, background_color,
                    color_scheme)
 VALUES (2, 'Hello twitter!', null, true, 'Mar 10, 1991', 'test2015@test.test', 'MrCat', 'New York', 3,
-        '$2a$08$T1SpeJPoOfEDpMdhPKMp.elE6XBXIGN2wNMuDNh0vNnsOice4K4cu', null, true, true, '2021-08-01 23:34:32.000000',
+        '$2a$08$1D3LToUL9ccJYqGDZNPH8uvTBwVFou5MobYvtgAakra6WdACQZWJK', null, true, true, '2021-08-01 23:34:32.000000',
         'USER', 126, 'MrCat', 'https://www.google.com', 33, 44, 40, 44, 'UA', 'Cat', 'Ukrainian - українська', true,
         666966623, false, 'UA', 'DEFAULT', 'BLUE');
 INSERT INTO users (id, about, activation_code, active, birthday, email, full_name, location, notifications_count,
@@ -42,7 +42,7 @@ INSERT INTO users (id, about, activation_code, active, birthday, email, full_nam
                    gender, language, muted_direct_messages, phone, private_profile, country_code, background_color,
                    color_scheme)
 VALUES (3, 'Hello twitter!', '1234567890', true, 'Mar 10, 1991', 'test2016@test.test', 'MrCat', 'New York', 3,
-        '$2a$08$T1SpeJPoOfEDpMdhPKMp.elE6XBXIGN2wNMuDNh0vNnsOice4K4cu', '1234567890', true, true,
+        '$2a$08$1D3LToUL9ccJYqGDZNPH8uvTBwVFou5MobYvtgAakra6WdACQZWJK', '1234567890', true, true,
         '2021-08-01 23:34:32.000000', 'USER', 126, 'MrCat', 'https://www.google.com', 33, 44, 40, 44, 'UA', 'Cat',
         'Ukrainian - українська', true, 666966623, true, 'UA', 'DEFAULT', 'BLUE');
 INSERT INTO users (id, about, activation_code, active, birthday, email, full_name, location, notifications_count,
@@ -51,7 +51,7 @@ INSERT INTO users (id, about, activation_code, active, birthday, email, full_nam
                    gender, language, muted_direct_messages, phone, private_profile, country_code, background_color,
                    color_scheme)
 VALUES (4, 'Hello twitter!', null, true, 'Mar 10, 1991', 'test2017@test.test', 'MrCat', 'New York', 3,
-        '$2a$08$T1SpeJPoOfEDpMdhPKMp.elE6XBXIGN2wNMuDNh0vNnsOice4K4cu', null, true, true, '2021-08-01 23:34:32.000000',
+        '$2a$08$1D3LToUL9ccJYqGDZNPH8uvTBwVFou5MobYvtgAakra6WdACQZWJK', null, true, true, '2021-08-01 23:34:32.000000',
         'USER', 126, 'MrCat', 'https://www.google.com', 33, 44, 40, 44, 'UA', 'Cat', 'Ukrainian - українська', true,
         666966623, true, 'UA', 'DEFAULT', 'BLUE');
 INSERT INTO users (id, about, activation_code, active, birthday, email, full_name, location, notifications_count,
@@ -60,9 +60,27 @@ INSERT INTO users (id, about, activation_code, active, birthday, email, full_nam
                    gender, language, muted_direct_messages, phone, private_profile, country_code, background_color,
                    color_scheme)
 VALUES (5, 'Hello twitter!', null, true, 'Mar 10, 1991', 'test2018@test.test', 'MrCat', 'New York', 3,
-        '$2a$08$T1SpeJPoOfEDpMdhPKMp.elE6XBXIGN2wNMuDNh0vNnsOice4K4cu', null, true, true, '2021-08-01 23:34:32.000000',
+        '$2a$08$1D3LToUL9ccJYqGDZNPH8uvTBwVFou5MobYvtgAakra6WdACQZWJK', null, true, true, '2021-08-01 23:34:32.000000',
         'USER', 126, 'MrCat', 'https://www.google.com', 33, 44, 40, 44, 'UA', 'Cat', 'Ukrainian - українська', true,
         666966623, true, 'UA', 'DEFAULT', 'BLUE');
+INSERT INTO users (id, about, activation_code, active, birthday, email, full_name, location, notifications_count,
+                   password, password_reset_code, profile_customized, profile_started, registration_date, role,
+                   tweet_count, username, website, avatar_id, wallpaper_id, like_count, media_tweet_count, country,
+                   gender, language, muted_direct_messages, phone, private_profile, country_code, background_color,
+                   color_scheme)
+VALUES (6, 'Hello twitter!', null, true, 'Mar 10, 1991', 'test2019@test.test', 'MrCat', 'New York', 3,
+        '$2a$08$1D3LToUL9ccJYqGDZNPH8uvTBwVFou5MobYvtgAakra6WdACQZWJK', null, true, true, '2021-08-01 23:34:32.000000',
+        'USER', 126, 'MrCat', 'https://www.google.com', 33, 44, 40, 44, 'UA', 'Cat', 'Ukrainian - українська', true,
+        666966623, false, 'UA', 'DEFAULT', 'BLUE');
+INSERT INTO users (id, about, activation_code, active, birthday, email, full_name, location, notifications_count,
+                   password, password_reset_code, profile_customized, profile_started, registration_date, role,
+                   tweet_count, username, website, avatar_id, wallpaper_id, like_count, media_tweet_count, country,
+                   gender, language, muted_direct_messages, phone, private_profile, country_code, background_color,
+                   color_scheme)
+VALUES (7, 'Hello twitter!', null, true, 'Mar 10, 1991', 'test2020@test.test', 'MrCat', 'New York', 3,
+        '$2a$08$1D3LToUL9ccJYqGDZNPH8uvTBwVFou5MobYvtgAakra6WdACQZWJK', null, true, true, '2021-08-01 23:34:32.000000',
+        'USER', 126, 'MrCat', 'https://www.google.com', 33, 44, 40, 44, 'UA', 'Cat', 'Ukrainian - українська', true,
+        666966623, false, 'UA', 'DEFAULT', 'BLUE');
 
 -- tweets
 INSERT INTO tweets (id, addressed_id, addressed_tweet_id, addressed_username, date_time, reply_type, text, users_id,
@@ -127,10 +145,14 @@ VALUES (1, 45);
 -- pools
 INSERT INTO pools (id, date_time)
 VALUES (2, '2021-10-10 20:29:03.812910');
+INSERT INTO pools (id, date_time)
+VALUES (8, '2021-10-10 20:29:03.812910');
 
 -- tweet_pool
 INSERT INTO tweet_pool (tweets_id, pools_id)
 VALUES (40, 2);
+INSERT INTO tweet_pool (tweets_id, pools_id)
+VALUES (48, 8);
 
 -- tweet_quote
 INSERT INTO tweet_quote (tweets_id, quote_tweet_id)
@@ -164,19 +186,27 @@ VALUES (2, 40);
 
 -- pool_choices
 INSERT INTO pool_choices (id, choice)
-VALUES (3, 'test 1');
+VALUES (9, 'test 1');
 INSERT INTO pool_choices (id, choice)
-VALUES (4, 'test 2');
+VALUES (10, 'test 2');
+INSERT INTO pool_choices (id, choice)
+VALUES (11, 'test 3');
+INSERT INTO pool_choices (id, choice)
+VALUES (12, 'test 4');
 
 -- pools_poll_choices
 INSERT INTO pools_poll_choices (poll_id, poll_choices_id)
-VALUES (2, 3);
+VALUES (2, 9);
 INSERT INTO pools_poll_choices (poll_id, poll_choices_id)
-VALUES (2, 4);
+VALUES (2, 10);
+INSERT INTO pools_poll_choices (poll_id, poll_choices_id)
+VALUES (8, 11);
+INSERT INTO pools_poll_choices (poll_id, poll_choices_id)
+VALUES (8, 12);
 
 -- pool_choices_voted_user
 INSERT INTO pool_choices_voted_user (poll_choice_id, voted_user_id)
-VALUES (4, 1);
+VALUES (10, 1);
 
 -- tags
 INSERT INTO tags (id, tag_name, tweets_quantity)
@@ -240,6 +270,9 @@ VALUES (7, 'https://pbs.twimg.com/media/EXZ2rMvVAAAAfrN?format=png&name=small', 
 INSERT INTO lists (id, alt_wallpaper, description, private, name, user_id, wallpaper_id, pinned_date)
 VALUES (8, 'https://pbs.twimg.com/media/EXZ2rMvVAAAAfrN?format=png&name=small', 'test list description', true,
         'test list name', 1, null, '2021-10-03 20:42:53.000000');
+INSERT INTO lists (id, alt_wallpaper, description, private, name, user_id, wallpaper_id, pinned_date)
+VALUES (9, 'https://pbs.twimg.com/media/EXZ2rMvVAAAAfrN?format=png&name=small', 'test list description', false,
+        'test list name', 1, null, '2021-10-03 20:42:53.000000');
 
 -- lists_followers
 INSERT INTO lists_followers (lists_id, followers_id)
@@ -254,6 +287,8 @@ VALUES (4, 1);
 -- users_user_lists
 INSERT INTO users_user_lists (user_id, user_lists_id)
 VALUES (2, 4);
+INSERT INTO users_user_lists (user_id, user_lists_id)
+VALUES (2, 6);
 INSERT INTO users_user_lists (user_id, user_lists_id)
 VALUES (1, 4);
 
@@ -306,6 +341,8 @@ INSERT INTO user_blocked (user_id, blocked_user_id)
 VALUES (2, 4);
 INSERT INTO user_blocked (user_id, blocked_user_id)
 VALUES (5, 2);
+INSERT INTO user_blocked (user_id, blocked_user_id)
+VALUES (6, 2);
 
 -- user_muted
 INSERT INTO user_muted (user_id, muted_user_id)

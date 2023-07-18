@@ -1,5 +1,6 @@
 package com.gmail.javacoded78.latwitter.controller;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -17,7 +18,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
-@TestPropertySource("/application-test.properties")
+@TestPropertySource("/application-test.yml")
 @Sql(value = {"/sql/populate-table-before.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
 @Sql(value = {"/sql/populate-table-after.sql"}, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
 public class TagControllerTest {
@@ -27,6 +28,7 @@ public class TagControllerTest {
 
     @Test
     @WithUserDetails(USER_EMAIL)
+    @DisplayName("[200] GET /api/v1/tags - Get all tags")
     public void getTags() throws Exception {
         mockMvc.perform(get(URL_TAG_BASIC))
                 .andExpect(status().isOk())
@@ -38,6 +40,7 @@ public class TagControllerTest {
 
     @Test
     @WithUserDetails(USER_EMAIL)
+    @DisplayName("[200] GET /api/v1/tags/trends - Get trends")
     public void getTrends() throws Exception {
         mockMvc.perform(get(URL_TAG_BASIC + "/trends"))
                 .andExpect(status().isOk())
@@ -49,6 +52,7 @@ public class TagControllerTest {
 
     @Test
     @WithUserDetails(USER_EMAIL)
+    @DisplayName("[200] GET /api/v1/tags/#JetBrains - Get tweets by hashtag")
     public void getTweetsByTag() throws Exception {
         mockMvc.perform(get(URL_TAG_BASIC + "/" + HASHTAG))
                 .andExpect(status().isOk())

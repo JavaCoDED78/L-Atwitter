@@ -25,7 +25,7 @@ import java.util.List;
 @Entity
 @Getter
 @Setter
-@EqualsAndHashCode
+@EqualsAndHashCode(exclude = {"poll", "user"})
 @Table(name = "tweets")
 public class Tweet {
 
