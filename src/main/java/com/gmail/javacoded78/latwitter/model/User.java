@@ -17,6 +17,7 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -30,7 +31,8 @@ import java.util.List;
 public class User {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "users_seq")
+    @SequenceGenerator(name = "users_seq", sequenceName = "users_seq", initialValue = 100, allocationSize = 1)
     private Long id;
 
     @Column(name = "email")
@@ -84,16 +86,16 @@ public class User {
     @Column(name = "role")
     private String role;
 
-    @Column(name = "tweet_count", columnDefinition = "int default 0")
+    @Column(name = "tweet_count", columnDefinition = "int8 default 0")
     private Long tweetCount;
 
-    @Column(name = "media_tweet_count", columnDefinition = "int default 0")
+    @Column(name = "media_tweet_count", columnDefinition = "int8 default 0")
     private Long mediaTweetCount;
 
-    @Column(name = "like_count", columnDefinition = "int default 0")
+    @Column(name = "like_count", columnDefinition = "int8 default 0")
     private Long likeCount;
 
-    @Column(name = "notifications_count", columnDefinition = "int default 0")
+    @Column(name = "notifications_count", columnDefinition = "int8 default 0")
     private Long notificationsCount;
 
     @Column(name = "active", columnDefinition = "boolean default false")

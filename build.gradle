@@ -36,6 +36,9 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-websocket'
     implementation "com.amazonaws:aws-java-sdk:${versions.aws}"
     implementation "io.jsonwebtoken:jjwt-api:${versions.jjwt}"
+
+    implementation 'org.flywaydb:flyway-core:7.15.0'
+
 //    testImplementation 'junit:junit:4.13.1'
     runtimeOnly "io.jsonwebtoken:jjwt-impl:${versions.jjwt}",
             "io.jsonwebtoken:jjwt-jackson:${versions.jjwt}"
@@ -45,8 +48,8 @@ dependencies {
     implementation 'org.json:json:20230618'
 
 
-
     compileOnly 'org.projectlombok:lombok'
+
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
     runtimeOnly 'org.postgresql:postgresql'
     annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
