@@ -1,5 +1,6 @@
-package com.gmail.javacoded78.latwitter.dto.response;
+package com.gmail.javacoded78.latwitter.dto.response.projection;
 
+import com.gmail.javacoded78.latwitter.dto.response.projection.ImageProjectionResponse;
 import com.gmail.javacoded78.latwitter.model.LinkCoverSize;
 import com.gmail.javacoded78.latwitter.model.ReplyType;
 import lombok.Getter;

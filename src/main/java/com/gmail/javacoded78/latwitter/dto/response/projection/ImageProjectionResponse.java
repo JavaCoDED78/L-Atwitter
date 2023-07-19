@@ -1,4 +1,4 @@
-package com.gmail.javacoded78.latwitter.dto.response;
+package com.gmail.javacoded78.latwitter.dto.response.projection;
 
 import lombok.Getter;
 import lombok.Setter;

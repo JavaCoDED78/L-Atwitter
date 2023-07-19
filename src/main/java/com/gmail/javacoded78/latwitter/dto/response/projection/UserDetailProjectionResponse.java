@@ -1,10 +1,9 @@
-package com.gmail.javacoded78.latwitter.dto.response;
+package com.gmail.javacoded78.latwitter.dto.response.projection;
 
 import lombok.Getter;
 import lombok.Setter;
 
 import java.util.List;
-import java.util.Map;
 
 @Getter
 @Setter
@@ -23,12 +22,4 @@ public class UserDetailProjectionResponse {
     private Integer followersSize;
     private Integer followingSize;
     private List<SameFollowerResponse> sameFollowers;
-
-    @Getter
-    @Setter
-    static class SameFollowerResponse {
-        private Long id;
-        private String fullName;
-        private Map<String, Object> avatar;
-    }
 }

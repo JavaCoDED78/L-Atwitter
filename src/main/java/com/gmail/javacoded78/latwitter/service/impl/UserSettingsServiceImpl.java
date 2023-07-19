@@ -5,14 +5,18 @@ import com.gmail.javacoded78.latwitter.model.BackgroundColorType;
 import com.gmail.javacoded78.latwitter.model.ColorSchemeType;
 import com.gmail.javacoded78.latwitter.model.User;
 import com.gmail.javacoded78.latwitter.repository.UserRepository;
+import com.gmail.javacoded78.latwitter.repository.projection.user.AuthUserProjection;
+import com.gmail.javacoded78.latwitter.repository.projection.user.UserCommonProjection;
 import com.gmail.javacoded78.latwitter.security.JwtProvider;
 import com.gmail.javacoded78.latwitter.service.AuthenticationService;
 import com.gmail.javacoded78.latwitter.service.UserSettingsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.security.Principal;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -37,13 +41,14 @@ public class UserSettingsServiceImpl implements UserSettingsService {
     }
 
     @Override
+    @Transactional
     public Map<String, Object> updateEmail(String email) {
-        User user = authenticationService.getAuthenticatedUser();
-        Optional<User> userByEmail = userRepository.findByEmail(email);
+        Optional<UserCommonProjection> userByEmail = userRepository.findCommonUserByEmail(email);
 
         if (userByEmail.isEmpty()) {
-            user.setEmail(email);
-            userRepository.save(user);
+            Principal principal = SecurityContextHolder.getContext().getAuthentication();
+            Optional<AuthUserProjection> user = userRepository.findAuthUserByEmail(principal.getName());
+            userRepository.updateEmail(email, user.get().getId());
             String token = jwtProvider.createToken(email, "USER");
             Map<String, Object> response = new HashMap<>();
             response.put("user", user);

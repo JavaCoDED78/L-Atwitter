@@ -3,7 +3,11 @@ package com.gmail.javacoded78.latwitter.mapper;
 import com.gmail.javacoded78.latwitter.dto.request.TweetDeleteRequest;
 import com.gmail.javacoded78.latwitter.dto.request.TweetRequest;
 import com.gmail.javacoded78.latwitter.dto.request.VoteRequest;
-import com.gmail.javacoded78.latwitter.dto.response.*;
+import com.gmail.javacoded78.latwitter.dto.response.NotificationResponse;
+import com.gmail.javacoded78.latwitter.dto.response.TweetHeaderResponse;
+import com.gmail.javacoded78.latwitter.dto.response.TweetResponse;
+import com.gmail.javacoded78.latwitter.dto.response.TweetResponseCommon;
+import com.gmail.javacoded78.latwitter.dto.response.projection.TweetProjectionResponse;
 import com.gmail.javacoded78.latwitter.model.ReplyType;
 import com.gmail.javacoded78.latwitter.model.Tweet;
 import com.gmail.javacoded78.latwitter.repository.projection.TweetProjection;
@@ -133,6 +137,12 @@ public class TweetMapper {
     // Projection
     TweetProjectionResponse convertToProjectionResponse(TweetProjection tweet) {
         return modelMapper.map(tweet, TweetProjectionResponse.class);
+    }
+
+    public List<TweetProjectionResponse> convertListToProjectionResponse(List<TweetProjection> tweets) {
+        return tweets.stream()
+                .map(this::convertToProjectionResponse)
+                .collect(Collectors.toList());
     }
 
     public TweetProjectionResponse getTweetByIdProjection(Long tweetId) {

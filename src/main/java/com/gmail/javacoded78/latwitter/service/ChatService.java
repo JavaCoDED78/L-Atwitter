@@ -1,23 +1,25 @@
 package com.gmail.javacoded78.latwitter.service;
 
-import com.gmail.javacoded78.latwitter.model.Chat;
 import com.gmail.javacoded78.latwitter.model.ChatMessage;
 import com.gmail.javacoded78.latwitter.model.Tweet;
 import com.gmail.javacoded78.latwitter.model.User;
+import com.gmail.javacoded78.latwitter.repository.projection.chat.ChatMessageProjection;
+import com.gmail.javacoded78.latwitter.repository.projection.chat.ChatProjection;
 
 import java.util.List;
+import java.util.Map;
 
 public interface ChatService {
 
-    List<Chat> getUserChats();
+    List<ChatProjection> getUserChats();
 
-    Chat createChat(Long userId);
+    ChatProjection createChat(Long userId);
 
-    List<ChatMessage> getChatMessages(Long chatId);
+    List<ChatMessageProjection> getChatMessages(Long chatId);
 
-    User readChatMessages(Long chatId);
+    Integer readChatMessages(Long chatId);
 
-    ChatMessage addMessage(ChatMessage chatMessage, Long chatId);
+    Map<String, Object> addMessage(ChatMessage chatMessage, Long chatId);
 
     List<ChatMessage> addMessageWithTweet(String text, Tweet tweet, List<User> users);
 

@@ -5,14 +5,20 @@ import com.gmail.javacoded78.latwitter.dto.request.MessageWithTweetRequest;
 import com.gmail.javacoded78.latwitter.dto.response.ChatMessageResponse;
 import com.gmail.javacoded78.latwitter.dto.response.ChatResponse;
 import com.gmail.javacoded78.latwitter.dto.response.UserResponse;
+import com.gmail.javacoded78.latwitter.dto.response.projection.chats.ChatMessageProjectionResponse;
+import com.gmail.javacoded78.latwitter.dto.response.projection.chats.ChatProjectionResponse;
 import com.gmail.javacoded78.latwitter.model.Chat;
 import com.gmail.javacoded78.latwitter.model.ChatMessage;
+import com.gmail.javacoded78.latwitter.repository.projection.chat.ChatMessageProjection;
+import com.gmail.javacoded78.latwitter.repository.projection.chat.ChatProjection;
 import com.gmail.javacoded78.latwitter.service.ChatService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Component
@@ -47,25 +53,35 @@ public class ChatMapper {
                 .collect(Collectors.toList());
     }
 
-    public List<ChatResponse> getUserChats() {
-        return convertListToChatResponse(chatService.getUserChats());
+    public List<ChatProjectionResponse> getUserChats() {
+        List<ChatProjection> userChats = chatService.getUserChats();
+        return userChats.contains(null) ? new ArrayList<>() : userChats.stream()
+                .map(chat -> modelMapper.map(chat, ChatProjectionResponse.class))
+                .collect(Collectors.toList());
     }
 
-    public ChatResponse createChat(Long userId) {
-        return convertToChatResponse(chatService.createChat(userId));
+    public ChatProjectionResponse createChat(Long userId) {
+        ChatProjection chat = chatService.createChat(userId);
+        return modelMapper.map(chat, ChatProjectionResponse.class);
     }
 
-    public List<ChatMessageResponse> getChatMessages(Long chatId) {
-        return convertListToChatMessageResponse(chatService.getChatMessages(chatId));
+    public List<ChatMessageProjectionResponse> getChatMessages(Long chatId) {
+        List<ChatMessageProjection> chatMessages = chatService.getChatMessages(chatId);
+        return chatMessages.contains(null) ? new ArrayList<>() : chatMessages.stream()
+                .map(message -> modelMapper.map(message, ChatMessageProjectionResponse.class))
+                .collect(Collectors.toList());
     }
 
-    public UserResponse readChatMessages(Long chatId) {
-        return userMapper.convertToUserResponse(chatService.readChatMessages(chatId));
+    public Integer readChatMessages(Long chatId) {
+        return chatService.readChatMessages(chatId);
     }
 
-    public ChatMessageResponse addMessage(ChatMessageRequest chatMessageRequest) {
-        return convertToChatMessageResponse(chatService.addMessage(
-                convertToChatMessageEntity(chatMessageRequest), chatMessageRequest.getChatId()));
+    public ChatMessageProjectionResponse addMessage(ChatMessageRequest chatMessageRequest) {
+        Map<String, Object> messageMap = chatService.addMessage(
+                convertToChatMessageEntity(chatMessageRequest), chatMessageRequest.getChatId());
+        ChatMessageProjectionResponse message = modelMapper.map((ChatMessageProjection) messageMap.get("message"), ChatMessageProjectionResponse.class);
+        message.setChatParticipantsIds((List<Long>) messageMap.get("chatParticipantsIds"));
+        return message;
     }
 
     public List<ChatMessageResponse> addMessageWithTweet(MessageWithTweetRequest request) {

@@ -3,6 +3,8 @@ package com.gmail.javacoded78.latwitter.repository.projection.user;
 import com.gmail.javacoded78.latwitter.repository.projection.ImageProjection;
 import org.springframework.beans.factory.annotation.Value;
 
+import java.util.Map;
+
 public interface BaseUserProjection {
 
     Long getId();
@@ -13,9 +15,10 @@ public interface BaseUserProjection {
 
     String getAbout();
 
-    ImageProjection getAvatar();
-
     boolean getIsPrivateProfile();
+
+    @Value("#{T(com.gmail.javacoded78.latwitter.repository.projection.user.BaseUserProjection).convertToAvatar(target.img_id, target.img_src)}")
+    Map<String, Object> getAvatar();
 
     @Value("#{@userServiceImpl.isUserBlockedByMyProfile(target.id)}")
     boolean getIsUserBlocked();
@@ -28,4 +31,8 @@ public interface BaseUserProjection {
 
     @Value("#{@userServiceImpl.isUserFollowByOtherUser(target.id)}")
     boolean getIsFollower();
+
+    static Map<String, Object> convertToAvatar(Long id, String src) {
+        return Map.of("id", id, "src", src);
+    }
 }

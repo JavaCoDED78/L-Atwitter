@@ -1,15 +1,15 @@
 package com.gmail.javacoded78.latwitter.service;
 
-import com.gmail.javacoded78.latwitter.model.Tag;
-import com.gmail.javacoded78.latwitter.model.Tweet;
+import com.gmail.javacoded78.latwitter.repository.projection.TweetProjection;
+import com.gmail.javacoded78.latwitter.repository.projection.tag.TagProjection;
 
 import java.util.List;
 
 public interface TagService {
 
-    List<Tag> getTags();
+    List<TagProjection> getTags();
 
-    List<Tag> getTrends();
+    List<TagProjection> getTrends();
 
-    List<Tweet> getTweetsByTag(String tagName);
+    List<TweetProjection> getTweetsByTag(String tagName);
 }
