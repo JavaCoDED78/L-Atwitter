@@ -59,7 +59,7 @@ import {
     followUserProfile,
     processFollowRequest,
     processSubscribe,
-    resetUserProfile,
+    resetUserProfile, resetUserProfileStateAction,
     unfollowUserProfile
 } from "../../store/ducks/userProfile/actionCreators";
 import UserPageTweets from "./UserPageTweets";
@@ -153,7 +153,7 @@ const UserPage: FC<SnackbarProps & HoverActionProps> = (
         });
 
         return () => {
-            dispatch(resetUserProfile());
+            dispatch(resetUserProfileStateAction());
             dispatch(resetUserTweets());
             stompClient?.disconnect();
         };
@@ -256,11 +256,11 @@ const UserPage: FC<SnackbarProps & HoverActionProps> = (
             dispatch(processFollowRequest(userProfile.id!));
         } else {
             if (isFollower) {
-                dispatch(unfollowUserProfile(userProfile!));
-                dispatch(unfollow(userProfile!));
+                // dispatch(unfollowUserProfile(userProfile!));
+                // dispatch(unfollow(userProfile!.id));
             } else {
-                dispatch(followUserProfile(userProfile!));
-                dispatch(follow(userProfile!));
+                // dispatch(followUserProfile(userProfile!));
+                // dispatch(follow(userProfile!.id));
             }
         }
     };
@@ -291,13 +291,13 @@ const UserPage: FC<SnackbarProps & HoverActionProps> = (
     };
 
     const onMuteUser = (): void => {
-        dispatch(addUserToMuteList(userProfile?.id!));
+        dispatch(addUserToMuteList({userId: userProfile?.id!}));
         setSnackBarMessage!(`@${userProfile?.username} has been ${isUserMuted ? "unmuted" : "muted"}.`);
         setOpenSnackBar!(true);
     };
 
     const onBlockUser = (): void => {
-        dispatch(addUserToBlocklist(userProfile?.id!));
+        dispatch(addUserToBlocklist({userId: userProfile?.id!}));
         setVisibleBlockUserModal(false);
         setBtnText(isUserBlocked ? "Following" : "Blocked");
         setSnackBarMessage!(`@${userProfile?.username} has been ${isUserBlocked ? "unblocked" : "blocked"}.`);

@@ -6,7 +6,17 @@ import com.gmail.javacoded78.latwitter.model.ColorSchemeType;
 import com.gmail.javacoded78.latwitter.model.Tweet;
 import com.gmail.javacoded78.latwitter.model.User;
 import com.gmail.javacoded78.latwitter.repository.projection.UserPrincipalProjection;
-import com.gmail.javacoded78.latwitter.repository.projection.user.*;
+import com.gmail.javacoded78.latwitter.repository.projection.user.AuthUserProjection;
+import com.gmail.javacoded78.latwitter.repository.projection.user.BaseUserProjection;
+import com.gmail.javacoded78.latwitter.repository.projection.user.BlockedUserProjection;
+import com.gmail.javacoded78.latwitter.repository.projection.user.FollowerUserProjection;
+import com.gmail.javacoded78.latwitter.repository.projection.user.MutedUserProjection;
+import com.gmail.javacoded78.latwitter.repository.projection.user.TweetAuthorProjection;
+import com.gmail.javacoded78.latwitter.repository.projection.user.UserCommonProjection;
+import com.gmail.javacoded78.latwitter.repository.projection.user.UserDetailProjection;
+import com.gmail.javacoded78.latwitter.repository.projection.user.UserListProjection;
+import com.gmail.javacoded78.latwitter.repository.projection.user.UserProfileProjection;
+import com.gmail.javacoded78.latwitter.repository.projection.user.UserProjection;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -34,6 +44,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
     Optional<UserProfileProjection> getUserProfileById(Long userId);
 
     Optional<User> findByEmail(String email);
+
+    List<User> findByIdIn(List<Long> ids);
 
     @Query("SELECT u AS user FROM User u " +
             "WHERE UPPER(u.fullName) LIKE UPPER(CONCAT('%',:name,'%')) " +

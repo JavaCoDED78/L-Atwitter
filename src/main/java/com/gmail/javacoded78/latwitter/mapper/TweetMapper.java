@@ -3,9 +3,11 @@ package com.gmail.javacoded78.latwitter.mapper;
 import com.gmail.javacoded78.latwitter.dto.request.TweetDeleteRequest;
 import com.gmail.javacoded78.latwitter.dto.request.TweetRequest;
 import com.gmail.javacoded78.latwitter.dto.request.VoteRequest;
+import com.gmail.javacoded78.latwitter.dto.response.notification.NotificationReplyResponse;
 import com.gmail.javacoded78.latwitter.dto.response.notification.NotificationResponse;
 import com.gmail.javacoded78.latwitter.dto.response.tweet.TweetHeaderResponse;
 import com.gmail.javacoded78.latwitter.dto.response.tweet.TweetResponse;
+import com.gmail.javacoded78.latwitter.model.NotificationType;
 import com.gmail.javacoded78.latwitter.model.ReplyType;
 import com.gmail.javacoded78.latwitter.model.Tweet;
 import com.gmail.javacoded78.latwitter.repository.projection.TweetProjection;
@@ -111,8 +113,13 @@ public class TweetMapper {
         return convertListToProjectionResponse(tweetService.searchTweets(text));
     }
 
-    public TweetResponse replyTweet(Long tweetId, TweetRequest tweetRequest) {
-        return convertToProjectionResponse(tweetService.replyTweet(tweetId, convertToTweetEntity(tweetRequest)));
+    public NotificationReplyResponse replyTweet(Long tweetId, TweetRequest tweetRequest) {
+        TweetResponse replyTweet = convertToProjectionResponse(tweetService.replyTweet(tweetId, convertToTweetEntity(tweetRequest)));
+        NotificationReplyResponse notificationReplyResponse = new NotificationReplyResponse();
+        notificationReplyResponse.setTweetId(tweetId);
+        notificationReplyResponse.setNotificationType(NotificationType.REPLY);
+        notificationReplyResponse.setTweet(replyTweet);
+        return notificationReplyResponse;
     }
 
     public TweetResponse quoteTweet(Long tweetId, TweetRequest tweetRequest) {

@@ -16,6 +16,8 @@ public interface ChatMessageProjection {
 
     ChatTweetProjection getTweet();
 
+    ChatProjection getChat();
+
     interface ChatAuthorProjection {
 
         Long getId();
@@ -41,5 +43,10 @@ public interface ChatMessageProjection {
 
             ImageProjection getAvatar();
         }
+    }
+
+    interface ChatProjection {
+
+        Long getId();
     }
 }

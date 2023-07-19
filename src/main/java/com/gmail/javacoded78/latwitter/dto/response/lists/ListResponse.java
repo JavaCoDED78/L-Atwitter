@@ -1,5 +1,6 @@
 package com.gmail.javacoded78.latwitter.dto.response.lists;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gmail.javacoded78.latwitter.dto.response.ImageResponse;
 import lombok.Getter;
 import lombok.Setter;
@@ -17,5 +18,7 @@ public class ListResponse {
     private String altWallpaper;
     private ImageResponse wallpaper;
     private ListOwnerResponse listOwner;
+
+    @JsonProperty("isFollower")
     private boolean follower;
 }

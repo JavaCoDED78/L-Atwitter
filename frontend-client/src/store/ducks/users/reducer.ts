@@ -11,23 +11,35 @@ const initialUsersState: UsersState = {
 
 export const usersReducer = produce((draft: Draft<UsersState>, action: UsersActions) => {
     switch (action.type) {
-        case UsersActionsType.SET_USERS:
+        case UsersActionsType.SET_USERS: //+
             draft.users = action.payload;
             draft.loadingState = LoadingStatus.SUCCESS;
             break;
 
-        case UsersActionsType.SET_UPDATED_USER:
-            const updatedUserIndex = draft.users.findIndex((user) => user.id === action.payload.id);
-            if (updatedUserIndex !== -1) draft.users[updatedUserIndex] = action.payload;
+        case UsersActionsType.SET_FOLLOW_TO_USERS_STATE: //+
+            const followUserIndex = draft.users.findIndex((user) => user.id === action.payload.userId);
+            if (followUserIndex !== -1) draft.users[followUserIndex].isFollower = action.payload.isFollower;
             draft.loadingState = LoadingStatus.SUCCESS;
             break;
 
-        case UsersActionsType.RESET_USERS_STATE:
+        case UsersActionsType.SET_BLOCKED_USERS_STATE: //+
+            const blockedUserIndex = draft.users.findIndex((user) => user.id === action.payload.userId);
+            if (blockedUserIndex !== -1) draft.users[blockedUserIndex].isUserBlocked = action.payload.isUserBlocked;
+            draft.loadingState = LoadingStatus.SUCCESS;
+            break;
+
+        case UsersActionsType.SET_MUTED_USERS_STATE: //+
+            const mutedUserIndex = draft.users.findIndex((user) => user.id === action.payload.userId);
+            if (mutedUserIndex !== -1) draft.users[mutedUserIndex].isUserMuted = action.payload.isUserMuted;
+            draft.loadingState = LoadingStatus.SUCCESS;
+            break;
+
+        case UsersActionsType.RESET_USERS_STATE: //+
             draft.users = [];
             draft.loadingState = LoadingStatus.LOADING;
             break;
 
-        case UsersActionsType.SET_USER_LOADING_STATE:
+        case UsersActionsType.SET_USER_LOADING_STATE: //+
             draft.loadingState = action.payload;
             break;
 

@@ -2,12 +2,7 @@ package com.gmail.javacoded78.latwitter.repository;
 
 import com.gmail.javacoded78.latwitter.model.Lists;
 import com.gmail.javacoded78.latwitter.repository.projection.TweetProjection;
-import com.gmail.javacoded78.latwitter.repository.projection.lists.BaseListProjection;
-import com.gmail.javacoded78.latwitter.repository.projection.lists.ListUserProjection;
-import com.gmail.javacoded78.latwitter.repository.projection.lists.ListsMemberProjection;
-import com.gmail.javacoded78.latwitter.repository.projection.lists.ListsProjection;
-import com.gmail.javacoded78.latwitter.repository.projection.lists.ListsUserProjection;
-import com.gmail.javacoded78.latwitter.repository.projection.lists.PinnedListsProjection;
+import com.gmail.javacoded78.latwitter.repository.projection.lists.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -45,6 +40,9 @@ public interface ListsRepository extends JpaRepository<Lists, Long> {
             "AND l.pinnedDate IS NOT NULL " +
             "ORDER BY l.pinnedDate DESC")
     List<PinnedListsProjection> getUserPinnedLists(Long userId);
+
+    @Query("SELECT l FROM Lists l WHERE l.id = :userId")
+    PinnedListProjection getUserPinnedListById(Long listId);
 
     @Query("SELECT t FROM Lists l " +
             "LEFT JOIN l.members m " +

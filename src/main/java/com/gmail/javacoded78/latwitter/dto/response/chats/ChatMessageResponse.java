@@ -17,6 +17,8 @@ public class ChatMessageResponse {
     private LocalDateTime date;
     private ChatAuthorResponse author;
     private ChatTweetResponse tweet;
+    private ChatResponse chat;
+
     @JsonIgnore
     private List<Long> chatParticipantsIds;
 
@@ -45,5 +47,12 @@ public class ChatMessageResponse {
             private String username;
             private ImageProjection avatar;
         }
+    }
+
+    @Getter
+    @Setter
+    static class ChatResponse {
+
+        private Long id;
     }
 }

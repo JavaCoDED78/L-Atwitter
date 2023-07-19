@@ -67,12 +67,12 @@ public class ListsController {
     }
 
     @GetMapping("/follow/{listId}")
-    public ResponseEntity<Boolean> followList(@PathVariable Long listId) {
+    public ResponseEntity<ListUserResponse> followList(@PathVariable Long listId) {
         return ResponseEntity.ok(listsMapper.followList(listId));
     }
 
     @GetMapping("/pin/{listId}")
-    public ResponseEntity<Boolean> pinList(@PathVariable Long listId) {
+    public ResponseEntity<PinnedListResponse> pinList(@PathVariable Long listId) {
         return ResponseEntity.ok(listsMapper.pinList(listId));
     }
 

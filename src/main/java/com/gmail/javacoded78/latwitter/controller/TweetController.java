@@ -3,6 +3,7 @@ package com.gmail.javacoded78.latwitter.controller;
 import com.gmail.javacoded78.latwitter.dto.request.TweetDeleteRequest;
 import com.gmail.javacoded78.latwitter.dto.request.TweetRequest;
 import com.gmail.javacoded78.latwitter.dto.request.VoteRequest;
+import com.gmail.javacoded78.latwitter.dto.response.notification.NotificationReplyResponse;
 import com.gmail.javacoded78.latwitter.dto.response.notification.NotificationResponse;
 import com.gmail.javacoded78.latwitter.dto.response.notification.NotificationTweetResponse;
 import com.gmail.javacoded78.latwitter.dto.response.tweet.TweetHeaderResponse;
@@ -135,12 +136,12 @@ public class TweetController {
     }
 
     @PostMapping("/reply/{tweetId}")
-    public ResponseEntity<TweetResponse> replyTweet(@PathVariable Long tweetId, @RequestBody TweetRequest tweetRequest) {
-        TweetResponse tweet = tweetMapper.replyTweet(tweetId, tweetRequest);
-        messagingTemplate.convertAndSend("/topic/feed", tweet);
-        messagingTemplate.convertAndSend("/topic/tweet/" + tweet.getId(), tweet);
-        messagingTemplate.convertAndSend("/topic/user/update/tweet/" + tweet.getUser().getId(), tweet);
-        return ResponseEntity.ok(tweet);
+    public ResponseEntity<NotificationReplyResponse> replyTweet(@PathVariable Long tweetId, @RequestBody TweetRequest tweetRequest) {
+        NotificationReplyResponse notification = tweetMapper.replyTweet(tweetId, tweetRequest);
+        messagingTemplate.convertAndSend("/topic/feed", notification);
+        messagingTemplate.convertAndSend("/topic/tweet/" + notification.getTweet().getId(), notification);
+        messagingTemplate.convertAndSend("/topic/user/update/tweet/" + notification.getTweet().getUser().getId(), notification);
+        return ResponseEntity.ok(notification);
     }
 
     @PostMapping("/quote/{tweetId}")

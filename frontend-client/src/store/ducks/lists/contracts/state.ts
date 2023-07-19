@@ -1,6 +1,7 @@
 import {LoadingStatus} from "../../../types";
 import {Image, Tweet} from "../../tweets/contracts/state";
 import {User} from "../../user/contracts/state";
+import {ListResponse, ListUserResponse, PinnedListResponse} from "../../../types/lists";
 
 export interface Lists {
     id: number;
@@ -33,20 +34,14 @@ export interface EditLists {
     wallpaper?: Image;
 }
 
-export interface AddUserToLists {
-    userId: number;
-    listId: number;
-    lists: Lists[];
-}
-
 export interface MemberToList {
     userId: number;
     listId: number;
 }
 
 export interface ListsState {
-    lists: Lists[];
-    userLists: Lists[];
-    pinnedLists: Lists[];
+    lists: ListResponse[];
+    userLists: ListUserResponse[];
+    pinnedLists: PinnedListResponse[];
     loadingState: LoadingStatus;
 }

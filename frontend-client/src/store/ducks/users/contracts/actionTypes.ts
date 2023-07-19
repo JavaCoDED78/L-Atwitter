@@ -1,55 +1,66 @@
 import {Action} from "redux";
-
-import {User} from "../../user/contracts/state";
 import {LoadingStatus} from "../../../types";
+import {BaseUserResponse} from "../../../types/user";
 
 export enum UsersActionsType {
-    SET_USERS = 'users/SET_USERS',
-    SET_UPDATED_USER = 'users/SET_UPDATED_USER',
-    FETCH_USERS = 'users/FETCH_USERS',
-    FETCH_RELEVANT_USERS = 'users/FETCH_RELEVANT_USERS',
-    FETCH_BLOCKED_USERS = 'users/FETCH_BLOCKED_USERS',
-    FETCH_MUTED_USERS = 'users/FETCH_MUTED_USERS',
-    RESET_USERS_STATE = 'users/RESET_USERS_STATE',
-    SET_USER_LOADING_STATE = 'users/SET_USER_LOADING_STATE',
+    FETCH_USERS = 'users/FETCH_USERS', // +
+    FETCH_RELEVANT_USERS = 'users/FETCH_RELEVANT_USERS', // +
+    SET_USERS = 'users/SET_USERS', // +
+    SET_FOLLOW_TO_USERS_STATE = 'users/SET_FOLLOW_TO_USERS_STATE', // +
+    SET_BLOCKED_USERS_STATE = 'users/SET_BLOCKED_USERS_STATE', //+
+    SET_MUTED_USERS_STATE = 'users/SET_MUTED_USERS_STATE', //+
+    SET_SUBSCRIBED_USERS_STATE = 'users/SET_SUBSCRIBED_USERS_STATE', //+
+    RESET_USERS_STATE = 'users/RESET_USERS_STATE', // +
+    SET_USER_LOADING_STATE = 'users/SET_USER_LOADING_STATE', // +
 }
 
-export interface SetUsersActionInterface extends Action<UsersActionsType> {
-    type: UsersActionsType.SET_USERS;
-    payload: User[];
-}
-
-export interface SetUpdatedUserActionInterface extends Action<UsersActionsType> {
-    type: UsersActionsType.SET_UPDATED_USER;
-    payload: User;
-}
-
-export interface FetchUsersActionInterface extends Action<UsersActionsType> {
+export interface FetchUsersActionInterface extends Action<UsersActionsType> { // +
     type: UsersActionsType.FETCH_USERS;
 }
 
-export interface FetchRelevantUsersActionInterface extends Action<UsersActionsType> {
+export interface FetchRelevantUsersActionInterface extends Action<UsersActionsType> { // +
     type: UsersActionsType.FETCH_RELEVANT_USERS;
 }
 
-export interface FetchBlockedUsersActionInterface extends Action<UsersActionsType> {
-    type: UsersActionsType.FETCH_BLOCKED_USERS;
+export interface SetUsersActionInterface extends Action<UsersActionsType> { //+
+    type: UsersActionsType.SET_USERS;
+    payload: BaseUserResponse[];
 }
 
-export interface FetchMutedUsersActionInterface extends Action<UsersActionsType> {
-    type: UsersActionsType.FETCH_MUTED_USERS;
+export interface SetFollowToUsersStateActionInterface extends Action<UsersActionsType> { //+
+    type: UsersActionsType.SET_FOLLOW_TO_USERS_STATE;
+    payload: { userId: number; isFollower: boolean; };
 }
 
-export interface ResetUsersStateActionInterface extends Action<UsersActionsType> {
+export interface SetBlockedUsersStateActionInterface extends Action<UsersActionsType> { //+
+    type: UsersActionsType.SET_BLOCKED_USERS_STATE;
+    payload: { userId: number; isUserBlocked: boolean; };
+}
+
+export interface SetMutedUsersStateActionInterface extends Action<UsersActionsType> { //+
+    type: UsersActionsType.SET_MUTED_USERS_STATE;
+    payload: { userId: number; isUserMuted: boolean; };
+}
+
+export interface SetSubscribedUsersStateActionInterface extends Action<UsersActionsType> { //+
+    type: UsersActionsType.SET_SUBSCRIBED_USERS_STATE;
+    payload: { userId: number; isSubscriber: boolean; };
+}
+
+export interface ResetUsersStateActionInterface extends Action<UsersActionsType> { //+
     type: UsersActionsType.RESET_USERS_STATE;
 }
 
-export interface SetUsersLoadingStatusActionInterface extends Action<UsersActionsType> {
+export interface SetUsersLoadingStatusActionInterface extends Action<UsersActionsType> { //+
     type: UsersActionsType.SET_USER_LOADING_STATE;
     payload: LoadingStatus;
 }
+
 export type UsersActions =
-    | SetUsersActionInterface
-    | SetUpdatedUserActionInterface
-    | ResetUsersStateActionInterface
-    | SetUsersLoadingStatusActionInterface;
+    | SetUsersActionInterface //+
+    | ResetUsersStateActionInterface //+
+    | SetUsersLoadingStatusActionInterface //+
+    | SetFollowToUsersStateActionInterface //+
+    | SetBlockedUsersStateActionInterface //+
+    | SetMutedUsersStateActionInterface //+
+    | SetSubscribedUsersStateActionInterface; //+

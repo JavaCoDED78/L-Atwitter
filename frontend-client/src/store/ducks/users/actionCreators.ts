@@ -1,48 +1,56 @@
-import {User} from "../user/contracts/state";
 import {
-    FetchBlockedUsersActionInterface,
-    FetchMutedUsersActionInterface,
     FetchRelevantUsersActionInterface,
     FetchUsersActionInterface,
     ResetUsersStateActionInterface,
-    SetUpdatedUserActionInterface,
+    SetBlockedUsersStateActionInterface,
+    SetFollowToUsersStateActionInterface,
+    SetMutedUsersStateActionInterface,
+    SetSubscribedUsersStateActionInterface,
     SetUsersActionInterface,
     SetUsersLoadingStatusActionInterface,
     UsersActionsType
 } from './contracts/actionTypes';
 import {UsersState} from "./contracts/state";
+import {BaseUserResponse} from "../../types/user";
 
-export const setUsers = (payload: User[]): SetUsersActionInterface => ({
+export const setUsers = (payload: BaseUserResponse[]): SetUsersActionInterface => ({ // +
     type: UsersActionsType.SET_USERS,
     payload
 });
 
-export const setUpdatedUsers = (payload: User): SetUpdatedUserActionInterface => ({
-    type: UsersActionsType.SET_UPDATED_USER,
+export const setFollowToUsersState = (payload: { userId: number; isFollower: boolean; }): SetFollowToUsersStateActionInterface => ({ // +
+    type: UsersActionsType.SET_FOLLOW_TO_USERS_STATE,
     payload
 });
 
-export const fetchUsers = (): FetchUsersActionInterface => ({
+export const setBlockedUsersState = (payload: { userId: number; isUserBlocked: boolean; }): SetBlockedUsersStateActionInterface => ({ // +
+    type: UsersActionsType.SET_BLOCKED_USERS_STATE,
+    payload
+});
+
+export const setMutedUsersState = (payload: { userId: number; isUserMuted: boolean; }): SetMutedUsersStateActionInterface => ({ // +
+    type: UsersActionsType.SET_MUTED_USERS_STATE,
+    payload
+});
+
+export const setSubscribedUsersState = (payload: { userId: number; isSubscriber: boolean; }): SetSubscribedUsersStateActionInterface => ({ // +
+    type: UsersActionsType.SET_SUBSCRIBED_USERS_STATE,
+    payload
+});
+
+export const fetchUsers = (): FetchUsersActionInterface => ({ // +
     type: UsersActionsType.FETCH_USERS
 });
 
-export const fetchRelevantUsers = (): FetchRelevantUsersActionInterface => ({
+export const fetchRelevantUsers = (): FetchRelevantUsersActionInterface => ({ // +
     type: UsersActionsType.FETCH_RELEVANT_USERS
 });
 
-export const fetchBlockedUsers = (): FetchBlockedUsersActionInterface => ({
-    type: UsersActionsType.FETCH_BLOCKED_USERS
-});
-
-export const fetchMutedUsers = (): FetchMutedUsersActionInterface => ({
-    type: UsersActionsType.FETCH_MUTED_USERS
-});
-
-export const resetUsersState = (): ResetUsersStateActionInterface => ({
+export const resetUsersState = (): ResetUsersStateActionInterface => ({ // +
     type: UsersActionsType.RESET_USERS_STATE,
 });
 
-export const setUsersLoadingState = (payload: UsersState["loadingState"]): SetUsersLoadingStatusActionInterface => ({
+export const setUsersLoadingState = (payload: UsersState["loadingState"]): SetUsersLoadingStatusActionInterface => ({ // +
     type: UsersActionsType.SET_USER_LOADING_STATE,
     payload
 });

@@ -6,10 +6,7 @@ import com.gmail.javacoded78.latwitter.model.ChatMessage;
 import com.gmail.javacoded78.latwitter.model.ChatParticipant;
 import com.gmail.javacoded78.latwitter.model.Tweet;
 import com.gmail.javacoded78.latwitter.model.User;
-import com.gmail.javacoded78.latwitter.repository.ChatMessageRepository;
-import com.gmail.javacoded78.latwitter.repository.ChatParticipantRepository;
-import com.gmail.javacoded78.latwitter.repository.ChatRepository;
-import com.gmail.javacoded78.latwitter.repository.UserRepository;
+import com.gmail.javacoded78.latwitter.repository.*;
 import com.gmail.javacoded78.latwitter.repository.projection.chat.ChatMessageProjection;
 import com.gmail.javacoded78.latwitter.repository.projection.chat.ChatMessagesProjection;
 import com.gmail.javacoded78.latwitter.repository.projection.chat.ChatParticipantsProjection;
@@ -35,6 +32,7 @@ public class ChatServiceImpl implements ChatService {
 
     private final AuthenticationService authenticationService;
     private final UserRepository userRepository;
+    private final TweetRepository tweetRepository;
     private final ChatRepository chatRepository;
     private final ChatParticipantRepository chatParticipantRepository;
     private final ChatMessageRepository chatMessageRepository;
@@ -137,8 +135,11 @@ public class ChatServiceImpl implements ChatService {
 
     @Override
     @Transactional
-    public List<ChatMessageProjection> addMessageWithTweet(String text, Tweet tweet, List<User> users) {
+    public List<ChatMessageProjection> addMessageWithTweet(String text, Long tweetId, List<Long> usersIds) {
         User author = authenticationService.getAuthenticatedUser();
+        Tweet tweet = tweetRepository.findById(tweetId)
+                .orElseThrow(() -> new ApiRequestException("Tweet not found", HttpStatus.NOT_FOUND));
+        List<User> users = userRepository.findByIdIn(usersIds);
         List<ChatMessageProjection> chatMessages = new ArrayList<>();
         ChatMessage chatMessage = new ChatMessage();
         chatMessage.setAuthor(author);
