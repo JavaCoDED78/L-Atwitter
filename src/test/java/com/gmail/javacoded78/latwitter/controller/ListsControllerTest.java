@@ -3,7 +3,6 @@ package com.gmail.javacoded78.latwitter.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gmail.javacoded78.latwitter.dto.request.ListsRequest;
 import com.gmail.javacoded78.latwitter.dto.request.UserToListsRequest;
-import com.gmail.javacoded78.latwitter.dto.response.ListsResponse;
 import com.gmail.javacoded78.latwitter.dto.response.UserResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -20,7 +19,15 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import static com.gmail.javacoded78.latwitter.util.TestConstants.*;
+import static com.gmail.javacoded78.latwitter.util.TestConstants.LINK_DESCRIPTION;
+import static com.gmail.javacoded78.latwitter.util.TestConstants.LIST_ALT_WALLPAPER;
+import static com.gmail.javacoded78.latwitter.util.TestConstants.LIST_DESCRIPTION;
+import static com.gmail.javacoded78.latwitter.util.TestConstants.LIST_NAME;
+import static com.gmail.javacoded78.latwitter.util.TestConstants.LIST_PINNED_DATE;
+import static com.gmail.javacoded78.latwitter.util.TestConstants.LIST_USER_ID;
+import static com.gmail.javacoded78.latwitter.util.TestConstants.URL_LISTS_BASIC;
+import static com.gmail.javacoded78.latwitter.util.TestConstants.USER_EMAIL;
+import static com.gmail.javacoded78.latwitter.util.TestConstants.USER_ID;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -50,17 +57,17 @@ public class ListsControllerTest {
 
         UserResponse userResponse = new UserResponse();
         userResponse.setId(3L);
-        ListsResponse listsResponse1 = new ListsResponse();
+        ListsRequest listsResponse1 = new ListsRequest();
         listsResponse1.setId(4L);
         listsResponse1.setMembers(Collections.singletonList(userResponse));
-        ListsResponse listsResponse2 = new ListsResponse();
+        ListsRequest listsResponse2 = new ListsRequest();
         listsResponse2.setId(6L);
         listsResponse2.setMembers(new ArrayList<>());
 
-        List<ListsResponse> listsResponses = new ArrayList<>();
+        List<ListsRequest> listsResponses = new ArrayList<>();
         listsResponses.add(listsResponse1);
         listsResponses.add(listsResponse2);
-        userToListsRequest.setLists(listsResponses);
+//        userToListsRequest.setLists(listsResponses); // TODO fix
     }
 
     @Test
@@ -196,7 +203,7 @@ public class ListsControllerTest {
     @WithUserDetails(USER_EMAIL)
     @DisplayName("[200] POST /api/v1/lists - Create Tweet List")
     public void createTweetList() throws Exception {
-        ListsRequest listsRequest = new ListsRequest();
+        com.gmail.javacoded78.latwitter.dto.request.ListsRequest listsRequest = new com.gmail.javacoded78.latwitter.dto.request.ListsRequest();
         listsRequest.setName(LIST_NAME);
         listsRequest.setDescription(LIST_DESCRIPTION);
         listsRequest.setAltWallpaper(LIST_ALT_WALLPAPER);
@@ -220,7 +227,7 @@ public class ListsControllerTest {
     @WithUserDetails(USER_EMAIL)
     @DisplayName("[400] POST /api/v1/lists - Should list name length is 0")
     public void createTweetList_ShouldListNameLengthIs0() throws Exception {
-        ListsRequest listsRequest = new ListsRequest();
+        com.gmail.javacoded78.latwitter.dto.request.ListsRequest listsRequest = new com.gmail.javacoded78.latwitter.dto.request.ListsRequest();
         listsRequest.setName("");
         listsRequest.setDescription(LIST_DESCRIPTION);
         listsRequest.setAltWallpaper(LIST_ALT_WALLPAPER);
@@ -236,7 +243,7 @@ public class ListsControllerTest {
     @WithUserDetails(USER_EMAIL)
     @DisplayName("[400] POST /api/v1/lists - Should list name length more than 25 symbols")
     public void createTweetList_ShouldListNameLengthMoreThan25Symbols() throws Exception {
-        ListsRequest listsRequest = new ListsRequest();
+        com.gmail.javacoded78.latwitter.dto.request.ListsRequest listsRequest = new com.gmail.javacoded78.latwitter.dto.request.ListsRequest();
         listsRequest.setName(LINK_DESCRIPTION);
         listsRequest.setDescription(LIST_DESCRIPTION);
         listsRequest.setAltWallpaper(LIST_ALT_WALLPAPER);
@@ -252,7 +259,7 @@ public class ListsControllerTest {
     @WithUserDetails(USER_EMAIL)
     @DisplayName("[200] PUT /api/v1/lists - Edit Tweet List")
     public void editTweetList() throws Exception {
-        ListsRequest listsRequest = new ListsRequest();
+        com.gmail.javacoded78.latwitter.dto.request.ListsRequest listsRequest = new com.gmail.javacoded78.latwitter.dto.request.ListsRequest();
         listsRequest.setId(4L);
         listsRequest.setName("edited name");
         listsRequest.setDescription("edited description");
@@ -277,7 +284,7 @@ public class ListsControllerTest {
     @WithUserDetails(USER_EMAIL)
     @DisplayName("[400] PUT /api/v1/lists - Should list name length is 0")
     public void editTweetList_ShouldListNameLengthIs0() throws Exception {
-        ListsRequest listsRequest = new ListsRequest();
+        com.gmail.javacoded78.latwitter.dto.request.ListsRequest listsRequest = new com.gmail.javacoded78.latwitter.dto.request.ListsRequest();
         listsRequest.setId(4L);
         listsRequest.setName("");
         listsRequest.setDescription("edited description");
@@ -293,7 +300,7 @@ public class ListsControllerTest {
     @WithUserDetails(USER_EMAIL)
     @DisplayName("[400] PUT /api/v1/lists - Should list name length more than 25 symbols")
     public void editTweetList_ShouldListNameLengthMoreThan25Symbols() throws Exception {
-        ListsRequest listsRequest = new ListsRequest();
+        com.gmail.javacoded78.latwitter.dto.request.ListsRequest listsRequest = new com.gmail.javacoded78.latwitter.dto.request.ListsRequest();
         listsRequest.setId(4L);
         listsRequest.setName(LINK_DESCRIPTION);
         listsRequest.setDescription("edited description");
@@ -311,8 +318,8 @@ public class ListsControllerTest {
     public void editTweetList_ShouldListNotFound() throws Exception {
         UserResponse userResponse = new UserResponse();
         userResponse.setId(USER_ID);
-        userResponse.setEmail(USER_EMAIL);
-        ListsRequest listsRequest = new ListsRequest();
+//        userResponse.setEmail(USER_EMAIL);
+        com.gmail.javacoded78.latwitter.dto.request.ListsRequest listsRequest = new com.gmail.javacoded78.latwitter.dto.request.ListsRequest();
         listsRequest.setListOwner(userResponse);
         listsRequest.setId(99L);
         listsRequest.setName(LIST_DESCRIPTION);
@@ -331,8 +338,8 @@ public class ListsControllerTest {
     public void editTweetList_ShouldListOwnerNotFound() throws Exception {
         UserResponse userResponse = new UserResponse();
         userResponse.setId(3L);
-        userResponse.setEmail(NOT_VALID_EMAIL);
-        ListsRequest listsRequest = new ListsRequest();
+//        userResponse.setEmail(NOT_VALID_EMAIL);
+        com.gmail.javacoded78.latwitter.dto.request.ListsRequest listsRequest = new com.gmail.javacoded78.latwitter.dto.request.ListsRequest();
         listsRequest.setListOwner(userResponse);
         listsRequest.setId(5L);
         listsRequest.setName(LIST_DESCRIPTION);

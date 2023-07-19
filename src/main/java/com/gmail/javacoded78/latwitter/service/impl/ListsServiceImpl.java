@@ -2,23 +2,33 @@ package com.gmail.javacoded78.latwitter.service.impl;
 
 import com.gmail.javacoded78.latwitter.exception.ApiRequestException;
 import com.gmail.javacoded78.latwitter.model.Lists;
-import com.gmail.javacoded78.latwitter.model.Tweet;
 import com.gmail.javacoded78.latwitter.model.User;
 import com.gmail.javacoded78.latwitter.repository.ImageRepository;
 import com.gmail.javacoded78.latwitter.repository.ListsRepository;
 import com.gmail.javacoded78.latwitter.repository.UserRepository;
 import com.gmail.javacoded78.latwitter.repository.projection.TweetProjection;
-import com.gmail.javacoded78.latwitter.repository.projection.TweetsProjection;
-import com.gmail.javacoded78.latwitter.repository.projection.lists.*;
+import com.gmail.javacoded78.latwitter.repository.projection.lists.BaseListProjection;
+import com.gmail.javacoded78.latwitter.repository.projection.lists.ListUserProjection;
+import com.gmail.javacoded78.latwitter.repository.projection.lists.ListsMemberProjection;
+import com.gmail.javacoded78.latwitter.repository.projection.lists.ListsOwnerMemberProjection;
+import com.gmail.javacoded78.latwitter.repository.projection.lists.ListsProjection;
+import com.gmail.javacoded78.latwitter.repository.projection.lists.ListsUserProjection;
+import com.gmail.javacoded78.latwitter.repository.projection.lists.PinnedListsProjection;
 import com.gmail.javacoded78.latwitter.service.AuthenticationService;
 import com.gmail.javacoded78.latwitter.service.ListsService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -31,26 +41,20 @@ public class ListsServiceImpl implements ListsService {
     private final ImageRepository imageRepository;
 
     @Override
-    public List<ListProjection> getAllTweetLists() {
-        return listsRepository.getAllTweetLists().stream()
-                .map(ListsProjection::getList)
-                .collect(Collectors.toList());
+    public List<ListsProjection> getAllTweetLists() {
+        return listsRepository.getAllTweetLists();
     }
 
     @Override
-    public List<ListUserProjection> getUserTweetLists() {
+    public List<ListsUserProjection> getUserTweetLists() {
         Long userId = authenticationService.getAuthenticatedUserId();
-        return listsRepository.getUserTweetLists(userId).stream()
-                .map(ListsUserProjection::getList)
-                .collect(Collectors.toList());
+        return listsRepository.getUserTweetLists(userId);
     }
 
     @Override
-    public List<PinnedListProjection> getUserPinnedLists() {
+    public List<PinnedListsProjection> getUserPinnedLists() {
         Long userId = authenticationService.getAuthenticatedUserId();
-        return listsRepository.getUserPinnedLists(userId).stream()
-                .map(PinnedListsProjection::getList)
-                .collect(Collectors.toList());
+        return listsRepository.getUserPinnedLists(userId);
     }
 
     @Override
@@ -75,18 +79,14 @@ public class ListsServiceImpl implements ListsService {
     }
 
     @Override
-    public List<ListProjection> getUserTweetListsById(Long userId) { // TODO add tests
-        return listsRepository.findByListOwnerIdAndIsPrivateFalse(userId).stream()
-                .map(ListsProjection::getList)
-                .collect(Collectors.toList());
+    public List<ListsProjection> getUserTweetListsById(Long userId) { // TODO add tests
+        return listsRepository.findByListOwnerIdAndIsPrivateFalse(userId);
     }
 
     @Override
-    public List<ListProjection> getTweetListsWhichUserIn() { // TODO add tests
+    public List<ListsProjection> getTweetListsWhichUserIn() { // TODO add tests
         Long userId = authenticationService.getAuthenticatedUserId();
-        return listsRepository.findByMembers_Id(userId).stream()
-                .map(ListsProjection::getList)
-                .collect(Collectors.toList());
+        return listsRepository.findByMembers_Id(userId);
     }
 
     @Override
@@ -180,8 +180,9 @@ public class ListsServiceImpl implements ListsService {
 
     @Override
     @Transactional
-    public List<Long> addUserToLists(Long userId, List<Lists> lists) {
+    public List<Long> addUserToLists(Long userId, List<Long> listsIds) {
         Long authUserId = authenticationService.getAuthenticatedUserId();
+        List<Lists> lists = listsRepository.getListsByIds(authUserId, listsIds);
         checkUserIsBlocked(authUserId, userId);
         User user = userRepository.getValidUser(userId, authUserId)
                 .orElseThrow(() -> new ApiRequestException("User not found", HttpStatus.NOT_FOUND));
@@ -242,11 +243,8 @@ public class ListsServiceImpl implements ListsService {
     }
 
     @Override
-    public List<TweetProjection> getTweetsByListId(Long listId) {
-        List<TweetsProjection> tweets = listsRepository.getTweetsByListId(listId);
-        return tweets.contains(null) ? new ArrayList<>() : tweets.stream()
-                .map(TweetsProjection::getTweet)
-                .collect(Collectors.toList());
+    public Page<TweetProjection> getTweetsByListId(Long listId, Pageable pageable) {
+        return listsRepository.getTweetsByListId(listId, pageable);
     }
 
     @Override

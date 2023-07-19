@@ -1,8 +1,15 @@
 package com.gmail.javacoded78.latwitter.repository;
 
 import com.gmail.javacoded78.latwitter.model.Lists;
-import com.gmail.javacoded78.latwitter.repository.projection.TweetsProjection;
-import com.gmail.javacoded78.latwitter.repository.projection.lists.*;
+import com.gmail.javacoded78.latwitter.repository.projection.TweetProjection;
+import com.gmail.javacoded78.latwitter.repository.projection.lists.BaseListProjection;
+import com.gmail.javacoded78.latwitter.repository.projection.lists.ListUserProjection;
+import com.gmail.javacoded78.latwitter.repository.projection.lists.ListsMemberProjection;
+import com.gmail.javacoded78.latwitter.repository.projection.lists.ListsProjection;
+import com.gmail.javacoded78.latwitter.repository.projection.lists.ListsUserProjection;
+import com.gmail.javacoded78.latwitter.repository.projection.lists.PinnedListsProjection;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -10,7 +17,6 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
-
 
 @Repository
 public interface ListsRepository extends JpaRepository<Lists, Long> {
@@ -28,8 +34,11 @@ public interface ListsRepository extends JpaRepository<Lists, Long> {
 
     Optional<Lists> findByIdAndIsPrivateFalse(Long id);
 
-    @Query("SELECT l as pinnedList FROM Lists l WHERE l.id IN :listIds")
-    List<PinnedListsProjection> getListsByIds(List<Long> listIds);
+    @Query("SELECT l FROM Lists l " +
+            "LEFT JOIN l.listOwner u " +
+            "WHERE u.id = :ownerId " +
+            "AND l.id IN :listIds")
+    List<Lists> getListsByIds(Long ownerId, List<Long> listIds);
 
     @Query("SELECT l as pinnedList FROM Lists l " +
             "WHERE l.listOwner.id = :userId " +
@@ -37,13 +46,13 @@ public interface ListsRepository extends JpaRepository<Lists, Long> {
             "ORDER BY l.pinnedDate DESC")
     List<PinnedListsProjection> getUserPinnedLists(Long userId);
 
-    @Query("SELECT t as tweet FROM Lists l " +
+    @Query("SELECT t FROM Lists l " +
             "LEFT JOIN l.members m " +
             "LEFT JOIN m.tweets t " +
             "WHERE l.id = :listId " +
             "AND t.addressedUsername IS NULL " +
             "ORDER BY t.dateTime DESC")
-    List<TweetsProjection> getTweetsByListId(Long listId);
+    Page<TweetProjection> getTweetsByListId(Long listId, Pageable pageable);
 
     @Query("SELECT lists FROM Lists lists " +
             "LEFT JOIN lists.followers listsFollower " +

@@ -3,25 +3,27 @@ package com.gmail.javacoded78.latwitter.service;
 import com.gmail.javacoded78.latwitter.model.Lists;
 import com.gmail.javacoded78.latwitter.repository.projection.TweetProjection;
 import com.gmail.javacoded78.latwitter.repository.projection.lists.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 import java.util.Map;
 
 public interface ListsService {
 
-    List<ListProjection> getAllTweetLists();
+    List<ListsProjection> getAllTweetLists();
 
-    List<ListUserProjection> getUserTweetLists();
+    List<ListsUserProjection> getUserTweetLists();
 
-    List<PinnedListProjection> getUserPinnedLists();
+    List<PinnedListsProjection> getUserPinnedLists();
 
     BaseListProjection getListById(Long listId);
 
     ListUserProjection createTweetList(Lists lists);
 
-    List<ListProjection> getUserTweetListsById(Long userId);
+    List<ListsProjection> getUserTweetListsById(Long userId);
 
-    List<ListProjection> getTweetListsWhichUserIn();
+    List<ListsProjection> getTweetListsWhichUserIn();
 
     BaseListProjection editTweetList(Lists lists);
 
@@ -31,11 +33,11 @@ public interface ListsService {
 
     Boolean pinList(Long listId);
 
-    List<Long> addUserToLists(Long userId, List<Lists> lists);
+    List<Long> addUserToLists(Long userId, List<Long> listsIds);
 
     Boolean addUserToList(Long userId, Long listId);
 
-    List<TweetProjection> getTweetsByListId(Long listId);
+    Page<TweetProjection> getTweetsByListId(Long listId, Pageable pageable);
 
     BaseListProjection getListDetails(Long listId);
 

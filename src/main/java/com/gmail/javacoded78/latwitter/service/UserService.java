@@ -73,4 +73,6 @@ public interface UserService {
     Boolean processMutedList(Long userId);
 
     UserDetailProjection getUserDetails(Long userId);
+
+    List<FollowerUserProjection> getFollowerRequests();
 }

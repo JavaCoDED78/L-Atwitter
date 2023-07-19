@@ -37,7 +37,8 @@ dependencies {
     implementation "com.amazonaws:aws-java-sdk:${versions.aws}"
     implementation "io.jsonwebtoken:jjwt-api:${versions.jjwt}"
 
-    implementation 'org.flywaydb:flyway-core:7.15.0'
+    implementation 'org.flywaydb:flyway-core:9.18.0'
+    testImplementation 'org.projectlombok:lombok:1.18.26'
 
 //    testImplementation 'junit:junit:4.13.1'
     runtimeOnly "io.jsonwebtoken:jjwt-impl:${versions.jjwt}",

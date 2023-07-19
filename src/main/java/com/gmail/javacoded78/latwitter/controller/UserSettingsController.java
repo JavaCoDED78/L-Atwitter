@@ -3,7 +3,6 @@ package com.gmail.javacoded78.latwitter.controller;
 import com.gmail.javacoded78.latwitter.dto.request.SettingsRequest;
 import com.gmail.javacoded78.latwitter.dto.response.AuthenticationResponse;
 import com.gmail.javacoded78.latwitter.dto.response.UserPhoneResponse;
-import com.gmail.javacoded78.latwitter.dto.response.projection.AuthenticationProjectionResponse;
 import com.gmail.javacoded78.latwitter.mapper.UserMapper;
 import com.gmail.javacoded78.latwitter.model.BackgroundColorType;
 import com.gmail.javacoded78.latwitter.model.ColorSchemeType;
@@ -27,7 +26,7 @@ public class UserSettingsController {
     }
 
     @PutMapping("/update/email")
-    public ResponseEntity<AuthenticationProjectionResponse> updateEmail(@RequestBody SettingsRequest request) {
+    public ResponseEntity<AuthenticationResponse> updateEmail(@RequestBody SettingsRequest request) {
         return ResponseEntity.ok(userMapper.updateEmail(request));
     }
 

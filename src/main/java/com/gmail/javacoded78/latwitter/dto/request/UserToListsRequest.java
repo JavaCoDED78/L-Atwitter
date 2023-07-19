@@ -1,7 +1,8 @@
 package com.gmail.javacoded78.latwitter.dto.request;
 
-import com.gmail.javacoded78.latwitter.dto.response.ListsResponse;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.List;
 
@@ -9,5 +10,12 @@ import java.util.List;
 public class UserToListsRequest {
 
     private Long userId;
-    private List<ListsResponse> lists;
+    private List<ListsRequest> lists;
+
+    @Getter
+    @Setter
+    public static class ListsRequest {
+
+        private Long id;
+    }
 }

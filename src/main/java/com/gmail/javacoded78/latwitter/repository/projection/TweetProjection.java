@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public interface TweetProjection {
+
     Long getId();
 
     String getText();
@@ -47,6 +48,9 @@ public interface TweetProjection {
 
     @Value("#{@tweetServiceImpl.isUserRetweetedTweet(target.id)}")
     boolean getIsTweetRetweeted();
+
+    @Value("#{@tweetServiceImpl.isUserBookmarkedTweet(target.id)}")
+    boolean getIsTweetBookmarked();
 
     @Value("#{@userServiceImpl.isUserFollowByOtherUser(target.user.id)}")
     boolean getIsUserFollowByOtherUser();

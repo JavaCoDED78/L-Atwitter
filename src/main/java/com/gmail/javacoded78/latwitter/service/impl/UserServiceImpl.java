@@ -1,16 +1,10 @@
 package com.gmail.javacoded78.latwitter.service.impl;
 
+
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.gmail.javacoded78.latwitter.exception.ApiRequestException;
-import com.gmail.javacoded78.latwitter.model.Bookmark;
-import com.gmail.javacoded78.latwitter.model.Image;
-import com.gmail.javacoded78.latwitter.model.LikeTweet;
-import com.gmail.javacoded78.latwitter.model.Notification;
-import com.gmail.javacoded78.latwitter.model.NotificationType;
-import com.gmail.javacoded78.latwitter.model.Retweet;
-import com.gmail.javacoded78.latwitter.model.Tweet;
-import com.gmail.javacoded78.latwitter.model.User;
+import com.gmail.javacoded78.latwitter.model.*;
 import com.gmail.javacoded78.latwitter.repository.BookmarkRepository;
 import com.gmail.javacoded78.latwitter.repository.ImageRepository;
 import com.gmail.javacoded78.latwitter.repository.LikeTweetRepository;
@@ -36,14 +30,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -414,6 +401,12 @@ public class UserServiceImpl implements UserService {
     public UserDetailProjection getUserDetails(Long userId) {
         return userRepository.getUserDetails(userId)
                 .orElseThrow(() -> new ApiRequestException("User not found", HttpStatus.NOT_FOUND));
+    }
+
+    @Override
+    public List<FollowerUserProjection> getFollowerRequests() {
+        Long authUserId = authenticationService.getAuthenticatedUserId();
+        return userRepository.getFollowerRequests(authUserId);
     }
 
     private void checkIsUserExist(Long userId) {

@@ -2,16 +2,19 @@ package com.gmail.javacoded78.latwitter.controller;
 
 import com.gmail.javacoded78.latwitter.dto.request.ChatMessageRequest;
 import com.gmail.javacoded78.latwitter.dto.request.MessageWithTweetRequest;
-import com.gmail.javacoded78.latwitter.dto.response.ChatMessageResponse;
-import com.gmail.javacoded78.latwitter.dto.response.ChatResponse;
-import com.gmail.javacoded78.latwitter.dto.response.UserResponse;
-import com.gmail.javacoded78.latwitter.dto.response.projection.chats.ChatMessageProjectionResponse;
-import com.gmail.javacoded78.latwitter.dto.response.projection.chats.ChatProjectionResponse;
+import com.gmail.javacoded78.latwitter.dto.response.BaseUserResponse;
+import com.gmail.javacoded78.latwitter.dto.response.chats.ChatMessageResponse;
+import com.gmail.javacoded78.latwitter.dto.response.chats.ChatResponse;
 import com.gmail.javacoded78.latwitter.mapper.ChatMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
@@ -24,17 +27,17 @@ public class ChatController {
     private final SimpMessagingTemplate messagingTemplate;
 
     @GetMapping("/users")
-    public ResponseEntity<List<ChatProjectionResponse>> getUserChats() {
+    public ResponseEntity<List<ChatResponse>> getUserChats() {
         return ResponseEntity.ok(chatMapper.getUserChats());
     }
 
     @GetMapping("/create/{userId}")
-    public ResponseEntity<ChatProjectionResponse> createChat(@PathVariable Long userId) {
+    public ResponseEntity<ChatResponse> createChat(@PathVariable Long userId) {
         return ResponseEntity.ok(chatMapper.createChat(userId));
     }
 
     @GetMapping("/{chatId}/messages")
-    public ResponseEntity<List<ChatMessageProjectionResponse>> getChatMessages(@PathVariable Long chatId) {
+    public ResponseEntity<List<ChatMessageResponse>> getChatMessages(@PathVariable Long chatId) {
         return ResponseEntity.ok(chatMapper.getChatMessages(chatId));
     }
 
@@ -44,23 +47,23 @@ public class ChatController {
     }
 
     @PostMapping("/add/message")
-    public ResponseEntity<ChatMessageProjectionResponse> addMessage(@RequestBody ChatMessageRequest chatMessage) {
-        ChatMessageProjectionResponse message = chatMapper.addMessage(chatMessage);
+    public ResponseEntity<ChatMessageResponse> addMessage(@RequestBody ChatMessageRequest chatMessage) {
+        ChatMessageResponse message = chatMapper.addMessage(chatMessage);
         message.getChatParticipantsIds()
-                .forEach(userid -> messagingTemplate.convertAndSend("/topic/chat/" + userid, message));
+                .forEach(userId -> messagingTemplate.convertAndSend("/topic/chat/" + userId, message));
         return ResponseEntity.ok(message);
     }
 
     @PostMapping("/add/message/tweet")
     public ResponseEntity<List<ChatMessageResponse>> addMessageWithTweet(@RequestBody MessageWithTweetRequest request) {
         List<ChatMessageResponse> chatMessages = chatMapper.addMessageWithTweet(request);
-        chatMessages.forEach(chatMessage -> chatMessage.getChat().getParticipants()
-                .forEach(user -> messagingTemplate.convertAndSend("/topic/chat/" + user.getId(), chatMessage)));
+        chatMessages.forEach(chatMessage -> chatMessage.getChatParticipantsIds()
+                .forEach(userId -> messagingTemplate.convertAndSend("/topic/chat/" + userId, chatMessage)));
         return ResponseEntity.ok(chatMessages);
     }
 
     @GetMapping("/participant/{participantId}/{chatId}")
-    public ResponseEntity<UserResponse> getParticipant(@PathVariable Long participantId, @PathVariable Long chatId) {
+    public ResponseEntity<BaseUserResponse> getParticipant(@PathVariable Long participantId, @PathVariable Long chatId) {
         return ResponseEntity.ok(chatMapper.getParticipant(participantId, chatId));
     }
 

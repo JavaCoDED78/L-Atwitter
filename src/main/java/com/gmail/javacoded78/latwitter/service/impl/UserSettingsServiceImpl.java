@@ -3,7 +3,6 @@ package com.gmail.javacoded78.latwitter.service.impl;
 import com.gmail.javacoded78.latwitter.exception.ApiRequestException;
 import com.gmail.javacoded78.latwitter.model.BackgroundColorType;
 import com.gmail.javacoded78.latwitter.model.ColorSchemeType;
-import com.gmail.javacoded78.latwitter.model.User;
 import com.gmail.javacoded78.latwitter.repository.UserRepository;
 import com.gmail.javacoded78.latwitter.repository.projection.user.AuthUserProjection;
 import com.gmail.javacoded78.latwitter.repository.projection.user.UserCommonProjection;

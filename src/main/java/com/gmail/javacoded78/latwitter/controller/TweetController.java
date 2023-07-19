@@ -3,10 +3,11 @@ package com.gmail.javacoded78.latwitter.controller;
 import com.gmail.javacoded78.latwitter.dto.request.TweetDeleteRequest;
 import com.gmail.javacoded78.latwitter.dto.request.TweetRequest;
 import com.gmail.javacoded78.latwitter.dto.request.VoteRequest;
-import com.gmail.javacoded78.latwitter.dto.response.TweetHeaderResponse;
-import com.gmail.javacoded78.latwitter.dto.response.NotificationResponse;
-import com.gmail.javacoded78.latwitter.dto.response.projection.TweetProjectionResponse;
-import com.gmail.javacoded78.latwitter.dto.response.TweetResponse;
+import com.gmail.javacoded78.latwitter.dto.response.notification.NotificationResponse;
+import com.gmail.javacoded78.latwitter.dto.response.notification.NotificationTweetResponse;
+import com.gmail.javacoded78.latwitter.dto.response.tweet.TweetHeaderResponse;
+
+import com.gmail.javacoded78.latwitter.dto.response.tweet.TweetResponse;
 import com.gmail.javacoded78.latwitter.mapper.TweetMapper;
 import com.gmail.javacoded78.latwitter.model.ReplyType;
 import lombok.RequiredArgsConstructor;
@@ -108,28 +109,28 @@ public class TweetController {
     }
 
     @GetMapping("/like/{tweetId}")
-    public ResponseEntity<TweetResponse> likeTweet(@PathVariable Long tweetId) {
+    public ResponseEntity<NotificationTweetResponse> likeTweet(@PathVariable Long tweetId) {
         NotificationResponse notification = tweetMapper.likeTweet(tweetId);
 
         if (notification.getId() != null) {
             messagingTemplate.convertAndSend("/topic/notifications/" + notification.getTweet().getUser().getId(), notification);
         }
-        messagingTemplate.convertAndSend("/topic/feed", notification.getTweet());
-        messagingTemplate.convertAndSend("/topic/tweet/" + notification.getTweet().getId(), notification.getTweet());
-        messagingTemplate.convertAndSend("/topic/user/update/tweet/" + notification.getTweet().getUser().getId(), notification.getTweet());
+        messagingTemplate.convertAndSend("/topic/feed", notification);
+        messagingTemplate.convertAndSend("/topic/tweet/" + notification.getTweet().getId(), notification);
+        messagingTemplate.convertAndSend("/topic/user/update/tweet/" + notification.getTweet().getUser().getId(), notification);
         return ResponseEntity.ok(notification.getTweet());
     }
 
     @GetMapping("/retweet/{tweetId}")
-    public ResponseEntity<TweetResponse> retweet(@PathVariable Long tweetId) {
+    public ResponseEntity<NotificationTweetResponse> retweet(@PathVariable Long tweetId) {
         NotificationResponse notification = tweetMapper.retweet(tweetId);
 
         if (notification.getId() != null) {
             messagingTemplate.convertAndSend("/topic/notifications/" + notification.getTweet().getUser().getId(), notification);
         }
-        messagingTemplate.convertAndSend("/topic/feed", notification.getTweet());
-        messagingTemplate.convertAndSend("/topic/tweet/" + notification.getTweet().getId(), notification.getTweet());
-        messagingTemplate.convertAndSend("/topic/user/update/tweet/" + notification.getTweet().getUser().getId(), notification.getTweet());
+        messagingTemplate.convertAndSend("/topic/feed", notification);
+        messagingTemplate.convertAndSend("/topic/tweet/" + notification.getTweet().getId(), notification);
+        messagingTemplate.convertAndSend("/topic/user/update/tweet/" + notification.getTweet().getUser().getId(), notification);
         return ResponseEntity.ok(notification.getTweet());
     }
 
@@ -167,11 +168,5 @@ public class TweetController {
         messagingTemplate.convertAndSend("/topic/tweet/" + tweet.getId(), tweet);
         messagingTemplate.convertAndSend("/topic/user/update/tweet/" + tweet.getUser().getId(), tweet);
         return ResponseEntity.ok(tweet);
-    }
-
-    // Projection
-    @GetMapping("/projection/{tweetId}")
-    public ResponseEntity<TweetProjectionResponse> getTweetByIdProjection(@PathVariable Long tweetId) {
-        return ResponseEntity.ok(tweetMapper.getTweetByIdProjection(tweetId));
     }
 }

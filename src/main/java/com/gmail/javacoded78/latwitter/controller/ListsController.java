@@ -2,11 +2,13 @@ package com.gmail.javacoded78.latwitter.controller;
 
 import com.gmail.javacoded78.latwitter.dto.request.ListsRequest;
 import com.gmail.javacoded78.latwitter.dto.request.UserToListsRequest;
-import com.gmail.javacoded78.latwitter.dto.response.ListsResponse;
-import com.gmail.javacoded78.latwitter.dto.response.projection.TweetProjectionResponse;
-import com.gmail.javacoded78.latwitter.dto.response.projection.lists.*;
+import com.gmail.javacoded78.latwitter.dto.response.lists.*;
+import com.gmail.javacoded78.latwitter.dto.response.tweet.TweetHeaderResponse;
+import com.gmail.javacoded78.latwitter.dto.response.tweet.TweetResponse;
 import com.gmail.javacoded78.latwitter.mapper.ListsMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,42 +22,42 @@ public class ListsController {
     private final ListsMapper listsMapper;
 
     @GetMapping
-    public ResponseEntity<List<ListProjectionResponse>> getAllTweetLists() {
+    public ResponseEntity<List<ListResponse>> getAllTweetLists() {
         return ResponseEntity.ok(listsMapper.getAllTweetLists());
     }
 
     @GetMapping("/user")
-    public ResponseEntity<List<ListUserProjectionResponse>> getUserTweetLists() {
+    public ResponseEntity<List<ListUserResponse>> getUserTweetLists() {
         return ResponseEntity.ok(listsMapper.getUserTweetLists());
     }
 
     @GetMapping("/user/{userId}")
-    public ResponseEntity<List<ListProjectionResponse>> getUserTweetListsById(@PathVariable Long userId) {
+    public ResponseEntity<List<ListResponse>> getUserTweetListsById(@PathVariable Long userId) {
         return ResponseEntity.ok(listsMapper.getUserTweetListsById(userId));
     }
 
     @GetMapping("/user/consist")
-    public ResponseEntity<List<ListProjectionResponse>> getTweetListsWhichUserIn() {
+    public ResponseEntity<List<ListResponse>> getTweetListsWhichUserIn() {
         return ResponseEntity.ok(listsMapper.getTweetListsWhichUserIn());
     }
 
     @GetMapping("/pined")
-    public ResponseEntity<List<PinnedListProjectionResponse>> getUserPinnedLists() {
+    public ResponseEntity<List<PinnedListResponse>> getUserPinnedLists() {
         return ResponseEntity.ok(listsMapper.getUserPinnedLists());
     }
 
     @GetMapping("/{listId}")
-    public ResponseEntity<BaseListProjectionResponse> getListById(@PathVariable Long listId) {
+    public ResponseEntity<BaseListResponse> getListById(@PathVariable Long listId) {
         return ResponseEntity.ok(listsMapper.getListById(listId));
     }
 
     @PostMapping
-    public ResponseEntity<ListUserProjectionResponse> createTweetList(@RequestBody ListsRequest listsRequest) {
+    public ResponseEntity<ListUserResponse> createTweetList(@RequestBody ListsRequest listsRequest) {
         return ResponseEntity.ok(listsMapper.createTweetList(listsRequest));
     }
 
     @PutMapping
-    public ResponseEntity<BaseListProjectionResponse> editTweetList(@RequestBody ListsRequest listsRequest) {
+    public ResponseEntity<BaseListResponse> editTweetList(@RequestBody ListsRequest listsRequest) {
         return ResponseEntity.ok(listsMapper.editTweetList(listsRequest));
     }
 
@@ -85,12 +87,13 @@ public class ListsController {
     }
 
     @GetMapping("/{listId}/tweets") // TODO add tests
-    public ResponseEntity<List<TweetProjectionResponse>> getTweetsByListId(@PathVariable Long listId) {
-        return ResponseEntity.ok(listsMapper.getTweetsByListId(listId));
+    public ResponseEntity<List<TweetResponse>> getTweetsByListId(@PathVariable Long listId, @PageableDefault(size = 10) Pageable pageable) {
+        TweetHeaderResponse response = listsMapper.getTweetsByListId(listId, pageable);
+        return ResponseEntity.ok().headers(response.getHeaders()).body(response.getTweets());
     }
 
     @GetMapping("/{listId}/details") // TODO add tests
-    public ResponseEntity<BaseListProjectionResponse> getListDetails(@PathVariable Long listId) {
+    public ResponseEntity<BaseListResponse> getListDetails(@PathVariable Long listId) {
         return ResponseEntity.ok(listsMapper.getListDetails(listId));
     }
 
@@ -100,7 +103,7 @@ public class ListsController {
     }
 
     @GetMapping("/search/{listId}/{username}") // TODO add tests
-    public ResponseEntity<List<ListsOwnerMemberProjectionResponse>> searchListMembersByUsername(
+    public ResponseEntity<List<ListsOwnerMemberResponse>> searchListMembersByUsername(
             @PathVariable Long listId, @PathVariable String username) {
         return ResponseEntity.ok(listsMapper.searchListMembersByUsername(listId, username));
     }

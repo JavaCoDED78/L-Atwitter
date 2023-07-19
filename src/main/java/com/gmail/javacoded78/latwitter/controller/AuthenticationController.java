@@ -3,10 +3,8 @@ package com.gmail.javacoded78.latwitter.controller;
 import com.gmail.javacoded78.latwitter.dto.request.AuthenticationRequest;
 import com.gmail.javacoded78.latwitter.dto.request.PasswordResetRequest;
 import com.gmail.javacoded78.latwitter.dto.request.RegistrationRequest;
+import com.gmail.javacoded78.latwitter.dto.response.AuthUserResponse;
 import com.gmail.javacoded78.latwitter.dto.response.AuthenticationResponse;
-import com.gmail.javacoded78.latwitter.dto.response.UserResponse;
-import com.gmail.javacoded78.latwitter.dto.response.projection.AuthUserProjectionResponse;
-import com.gmail.javacoded78.latwitter.dto.response.projection.AuthenticationProjectionResponse;
 import com.gmail.javacoded78.latwitter.mapper.AuthenticationMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -26,7 +24,7 @@ public class AuthenticationController {
     private final AuthenticationMapper authenticationMapper;
 
     @PostMapping("/login")
-    public ResponseEntity<AuthenticationProjectionResponse> login(@RequestBody AuthenticationRequest authenticationRequest) {
+    public ResponseEntity<AuthenticationResponse> login(@RequestBody AuthenticationRequest authenticationRequest) { //+
         return ResponseEntity.ok(authenticationMapper.login(authenticationRequest));
     }
 
@@ -46,12 +44,12 @@ public class AuthenticationController {
     }
 
     @PostMapping("/registration/confirm")
-    public ResponseEntity<AuthenticationProjectionResponse> endRegistration(@RequestBody RegistrationRequest registrationRequest) {
+    public ResponseEntity<AuthenticationResponse> endRegistration(@RequestBody RegistrationRequest registrationRequest) {
         return ResponseEntity.ok(authenticationMapper.endRegistration(registrationRequest));
     }
 
     @GetMapping("/user")
-    public ResponseEntity<AuthenticationProjectionResponse> getUserByToken() {
+    public ResponseEntity<AuthenticationResponse> getUserByToken() {
         return ResponseEntity.ok(authenticationMapper.getUserByToken());
     }
 
@@ -66,7 +64,7 @@ public class AuthenticationController {
     }
 
     @GetMapping("/reset/{code}")
-    public ResponseEntity<AuthUserProjectionResponse> getUserByResetCode(@PathVariable String code) {
+    public ResponseEntity<AuthUserResponse> getUserByResetCode(@PathVariable String code) {
         return ResponseEntity.ok(authenticationMapper.findByPasswordResetCode(code));
     }
 

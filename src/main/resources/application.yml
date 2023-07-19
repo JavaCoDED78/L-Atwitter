@@ -14,7 +14,7 @@ spring:
       format_sql: false
     #     open-in-view: false
     hibernate:
-    #      ddl-auto: validate
+      ddl-auto: validate
     generate-ddl: false
     show-sql: false
 
