@@ -1,13 +1,14 @@
-package com.gmail.javacoded78.latwitter.repository.projection;
+package com.gmail.javacoded78.latwitter.repository.projection.tweet;
 
 import com.gmail.javacoded78.latwitter.model.LinkCoverSize;
 import com.gmail.javacoded78.latwitter.model.ReplyType;
+import com.gmail.javacoded78.latwitter.repository.projection.ImageProjection;
 import org.springframework.beans.factory.annotation.Value;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
-public interface TweetProjection {
+public interface TweetUserProjection {
 
     Long getId();
 
@@ -43,11 +44,14 @@ public interface TweetProjection {
 
     PollProjection getPoll();
 
+    @Value("#{@tweetServiceImpl.getRetweetsUserIds(target.id)}")
+    List<Long> getRetweetsUserIds(); // isTweetRetweetedByUser
+
     @Value("#{@tweetServiceImpl.isUserLikedTweet(target.id)}")
     boolean getIsTweetLiked();
 
     @Value("#{@tweetServiceImpl.isUserRetweetedTweet(target.id)}")
-    boolean getIsTweetRetweeted();
+    boolean getIsTweetRetweeted(); // isTweetRetweetedByMe
 
     @Value("#{@tweetServiceImpl.isUserBookmarkedTweet(target.id)}")
     boolean getIsTweetBookmarked();
@@ -92,6 +96,7 @@ public interface TweetProjection {
     }
 
     interface QuoteTweetProjection {
+
         Long getId();
 
         String getText();
@@ -112,6 +117,7 @@ public interface TweetProjection {
     }
 
     interface PollProjection {
+
         Long getId();
 
         LocalDateTime getDateTime();
@@ -120,6 +126,7 @@ public interface TweetProjection {
     }
 
     interface PollChoiceProjection {
+
         Long getId();
 
         String getChoice();
@@ -128,6 +135,7 @@ public interface TweetProjection {
     }
 
     interface VotedUser {
+
         Long getId();
     }
 }

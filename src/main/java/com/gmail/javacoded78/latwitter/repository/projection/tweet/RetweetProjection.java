@@ -1,4 +1,4 @@
-package com.gmail.javacoded78.latwitter.repository.projection;
+package com.gmail.javacoded78.latwitter.repository.projection.tweet;
 
 import java.time.LocalDateTime;
 
@@ -8,5 +8,5 @@ public interface RetweetProjection {
 
     LocalDateTime getRetweetDate();
 
-    TweetProjection getTweet();
+    TweetUserProjection getTweet();
 }

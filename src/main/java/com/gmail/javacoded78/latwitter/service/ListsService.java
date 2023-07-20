@@ -1,7 +1,7 @@
 package com.gmail.javacoded78.latwitter.service;
 
 import com.gmail.javacoded78.latwitter.model.Lists;
-import com.gmail.javacoded78.latwitter.repository.projection.TweetProjection;
+import com.gmail.javacoded78.latwitter.repository.projection.tweet.TweetProjection;
 import com.gmail.javacoded78.latwitter.repository.projection.lists.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -40,6 +40,8 @@ public interface ListsService {
     Page<TweetProjection> getTweetsByListId(Long listId, Pageable pageable);
 
     BaseListProjection getListDetails(Long listId);
+
+    List<ListMemberProjection> getListFollowers(Long listId, Long listOwnerId);
 
     Map<String, Object> getListMembers(Long listId, Long listOwnerId);
 

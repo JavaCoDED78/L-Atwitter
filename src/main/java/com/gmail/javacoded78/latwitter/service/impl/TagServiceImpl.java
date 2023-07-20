@@ -2,8 +2,8 @@ package com.gmail.javacoded78.latwitter.service.impl;
 
 import com.gmail.javacoded78.latwitter.repository.TagRepository;
 import com.gmail.javacoded78.latwitter.repository.TweetRepository;
-import com.gmail.javacoded78.latwitter.repository.projection.TweetProjection;
-import com.gmail.javacoded78.latwitter.repository.projection.TweetsProjection;
+import com.gmail.javacoded78.latwitter.repository.projection.tweet.TweetProjection;
+import com.gmail.javacoded78.latwitter.repository.projection.tweet.TweetsProjection;
 import com.gmail.javacoded78.latwitter.repository.projection.tag.TagProjection;
 import com.gmail.javacoded78.latwitter.service.TagService;
 import lombok.RequiredArgsConstructor;

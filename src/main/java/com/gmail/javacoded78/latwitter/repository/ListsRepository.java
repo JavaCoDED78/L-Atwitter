@@ -1,7 +1,7 @@
 package com.gmail.javacoded78.latwitter.repository;
 
 import com.gmail.javacoded78.latwitter.model.Lists;
-import com.gmail.javacoded78.latwitter.repository.projection.TweetProjection;
+import com.gmail.javacoded78.latwitter.repository.projection.tweet.TweetProjection;
 import com.gmail.javacoded78.latwitter.repository.projection.lists.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -41,7 +41,7 @@ public interface ListsRepository extends JpaRepository<Lists, Long> {
             "ORDER BY l.pinnedDate DESC")
     List<PinnedListsProjection> getUserPinnedLists(Long userId);
 
-    @Query("SELECT l FROM Lists l WHERE l.id = :userId")
+    @Query("SELECT l FROM Lists l WHERE l.id = :listId")
     PinnedListProjection getUserPinnedListById(Long listId);
 
     @Query("SELECT t FROM Lists l " +
@@ -58,6 +58,16 @@ public interface ListsRepository extends JpaRepository<Lists, Long> {
             "OR lists.id = :listId AND lists.isPrivate = false " +
             "OR lists.id = :listId AND lists.listOwner.id = :userId")
     Optional<BaseListProjection> getListById(Long listId, Long userId);
+
+    @Query("SELECT list.isPrivate FROM Lists list " +
+            "WHERE list.id = :listId " +
+            "AND list.listOwner.id != :authUserId")
+    boolean isListPrivate(Long listId, Long authUserId);
+
+    @Query("SELECT CASE WHEN count(list) > 0 THEN true ELSE false END FROM Lists list " +
+            "WHERE list.id = :listId " +
+            "AND list.listOwner.id = :listOwnerId")
+    boolean isListExist(Long listId, Long listOwnerId);
 
     @Query("SELECT CASE WHEN count(follower) > 0 THEN true ELSE false END FROM Lists list " +
             "LEFT JOIN list.followers follower " +
@@ -83,6 +93,12 @@ public interface ListsRepository extends JpaRepository<Lists, Long> {
             "WHERE lists.id = :listId AND lists.isPrivate = false " +
             "OR lists.id = :listId AND lists.listOwner.id = :authUserId")
     Optional<BaseListProjection> getListDetails(Long listId, Long authUserId);
+
+    @Query("SELECT f as member FROM Lists l " +
+            "LEFT JOIN l.followers f " +
+            "WHERE l.id = :listId " +
+            "AND l.listOwner.id = :listOwnerId")
+    List<ListsMemberProjection> getListFollowers(Long listId, Long listOwnerId);
 
     @Query("SELECT m as member, l.id as listId FROM Lists l LEFT JOIN l.members m WHERE l.id = :listId")
     <T> List<T> getListMembers(Long listId, Class<T> type);

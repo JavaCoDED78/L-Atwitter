@@ -3,6 +3,7 @@ package com.gmail.javacoded78.latwitter.repository.projection.user;
 import com.gmail.javacoded78.latwitter.repository.projection.ImageProjection;
 import org.springframework.beans.factory.annotation.Value;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 public interface UserProfileProjection {
@@ -22,6 +23,8 @@ public interface UserProfileProjection {
     String getCountry();
 
     String getBirthday();
+
+    LocalDateTime getRegistrationDate();
 
     Long getTweetCount();
 

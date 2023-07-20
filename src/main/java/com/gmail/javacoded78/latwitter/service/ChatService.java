@@ -6,6 +6,7 @@ import com.gmail.javacoded78.latwitter.model.User;
 import com.gmail.javacoded78.latwitter.repository.projection.chat.ChatMessageProjection;
 import com.gmail.javacoded78.latwitter.repository.projection.chat.ChatProjection;
 import com.gmail.javacoded78.latwitter.repository.projection.user.BaseUserProjection;
+import com.gmail.javacoded78.latwitter.repository.projection.user.UserProjection;
 
 import java.util.List;
 import java.util.Map;
@@ -24,7 +25,7 @@ public interface ChatService {
 
     List<ChatMessageProjection> addMessageWithTweet(String text, Long tweetId, List<Long> usersIds);
 
-    BaseUserProjection getParticipant(Long participantId, Long chatId);
+    UserProjection getParticipant(Long participantId, Long chatId);
 
     String leaveFromConversation(Long participantId, Long chatId);
 }

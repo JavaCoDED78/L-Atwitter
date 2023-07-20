@@ -6,7 +6,7 @@ import com.gmail.javacoded78.latwitter.model.User;
 import com.gmail.javacoded78.latwitter.repository.ImageRepository;
 import com.gmail.javacoded78.latwitter.repository.ListsRepository;
 import com.gmail.javacoded78.latwitter.repository.UserRepository;
-import com.gmail.javacoded78.latwitter.repository.projection.TweetProjection;
+import com.gmail.javacoded78.latwitter.repository.projection.tweet.TweetProjection;
 import com.gmail.javacoded78.latwitter.repository.projection.lists.*;
 import com.gmail.javacoded78.latwitter.service.AuthenticationService;
 import com.gmail.javacoded78.latwitter.service.ListsService;
@@ -18,11 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -257,6 +253,21 @@ public class ListsServiceImpl implements ListsService {
     }
 
     @Override
+    public List<ListMemberProjection> getListFollowers(Long listId, Long listOwnerId) {
+        Long authUserId = authenticationService.getAuthenticatedUserId();
+
+        if (!Objects.equals(listOwnerId, authUserId)) {
+            checkUserIsBlocked(listOwnerId, authUserId);
+            checkIsListExist(listOwnerId, authUserId);
+            checkIsListPrivate(listId);
+        }
+        List<ListsMemberProjection> listFollowers = listsRepository.getListFollowers(listId, listOwnerId);
+        return listFollowers.contains(null) ? new ArrayList<>() : listFollowers.stream()
+                .map(ListsMemberProjection::getMember)
+                .collect(Collectors.toList());
+    }
+
+    @Override  // add checks like in getListFollowers ^^^
     public Map<String, Object> getListMembers(Long listId, Long listOwnerId) {
         Long authUserId = authenticationService.getAuthenticatedUserId();
 
@@ -296,6 +307,23 @@ public class ListsServiceImpl implements ListsService {
 
         if (isPresent) {
             throw new ApiRequestException("User with ID:" + supposedBlockedUserId + " is blocked", HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    private void checkIsListPrivate(Long listId) {
+        Long authUserId = authenticationService.getAuthenticatedUserId();
+        boolean isPrivate = listsRepository.isListPrivate(listId, authUserId);
+
+        if (isPrivate && !isMyProfileFollowList(listId)) {
+            throw new ApiRequestException("List not found", HttpStatus.NOT_FOUND);
+        }
+    }
+
+    private void checkIsListExist(Long listId, Long listOwnerId) {
+        boolean isListExist = listsRepository.isListExist(listId, listOwnerId);
+
+        if (isListExist) {
+            throw new ApiRequestException("List not found", HttpStatus.NOT_FOUND);
         }
     }
 }

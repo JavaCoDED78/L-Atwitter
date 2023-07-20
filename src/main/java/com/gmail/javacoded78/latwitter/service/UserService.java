@@ -4,9 +4,17 @@ import com.gmail.javacoded78.latwitter.model.Image;
 import com.gmail.javacoded78.latwitter.model.User;
 import com.gmail.javacoded78.latwitter.repository.projection.BookmarkProjection;
 import com.gmail.javacoded78.latwitter.repository.projection.LikeTweetProjection;
-import com.gmail.javacoded78.latwitter.repository.projection.TweetProjection;
-import com.gmail.javacoded78.latwitter.repository.projection.TweetsProjection;
-import com.gmail.javacoded78.latwitter.repository.projection.user.*;
+import com.gmail.javacoded78.latwitter.repository.projection.tweet.TweetProjection;
+import com.gmail.javacoded78.latwitter.repository.projection.tweet.TweetUserProjection;
+import com.gmail.javacoded78.latwitter.repository.projection.tweet.TweetsProjection;
+import com.gmail.javacoded78.latwitter.repository.projection.user.AuthUserProjection;
+import com.gmail.javacoded78.latwitter.repository.projection.user.BaseUserProjection;
+import com.gmail.javacoded78.latwitter.repository.projection.user.BlockedUserProjection;
+import com.gmail.javacoded78.latwitter.repository.projection.user.FollowerUserProjection;
+import com.gmail.javacoded78.latwitter.repository.projection.user.MutedUserProjection;
+import com.gmail.javacoded78.latwitter.repository.projection.user.UserDetailProjection;
+import com.gmail.javacoded78.latwitter.repository.projection.user.UserProfileProjection;
+import com.gmail.javacoded78.latwitter.repository.projection.user.UserProjection;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
@@ -26,13 +34,13 @@ public interface UserService {
 
     Boolean startUseTwitter();
 
-    Page<TweetProjection> getUserTweets(Long userId, Pageable pageable);
+    Page<TweetUserProjection> getUserTweets(Long userId, Pageable pageable);
 
     Page<LikeTweetProjection> getUserLikedTweets(Long userId, Pageable pageable);
 
     Page<TweetProjection> getUserMediaTweets(Long userId, Pageable pageable);
 
-    Page<TweetProjection> getUserRetweetsAndReplies(Long userId, Pageable pageable);
+    Page<TweetUserProjection> getUserRetweetsAndReplies(Long userId, Pageable pageable);
 
     Map<String, Object> getUserNotifications();
 
@@ -46,9 +54,9 @@ public interface UserService {
 
     AuthUserProjection updateUserProfile(User userInfo);
 
-    List<BaseUserProjection> getFollowers(Long userId);
+    List<UserProjection> getFollowers(Long userId);
 
-    List<BaseUserProjection> getFollowing(Long userId);
+    List<UserProjection> getFollowing(Long userId);
 
     Map<String, Object> processFollow(Long userId);
 

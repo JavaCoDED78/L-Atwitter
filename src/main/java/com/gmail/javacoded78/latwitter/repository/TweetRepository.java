@@ -1,8 +1,11 @@
 package com.gmail.javacoded78.latwitter.repository;
 
 import com.gmail.javacoded78.latwitter.model.Tweet;
-import com.gmail.javacoded78.latwitter.repository.projection.TweetProjection;
-import com.gmail.javacoded78.latwitter.repository.projection.TweetsProjection;
+import com.gmail.javacoded78.latwitter.repository.projection.tweet.TweetProjection;
+import com.gmail.javacoded78.latwitter.repository.projection.tweet.TweetUserProjection;
+import com.gmail.javacoded78.latwitter.repository.projection.tweet.TweetsProjection;
+import com.gmail.javacoded78.latwitter.repository.projection.tweet.TweetsUserProjection;
+import com.gmail.javacoded78.latwitter.repository.projection.user.UserProjection;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -73,17 +76,17 @@ public interface TweetRepository extends JpaRepository<Tweet, Long> {
             "AND t.addressedUsername IS NULL " +
             "AND t.scheduledDate IS NULL " +
             "ORDER BY t.dateTime DESC")
-    List<TweetsProjection> findTweetsByUserId(Long userId);
+    List<TweetsUserProjection> findTweetsByUserId(Long userId);
 
     @Query("SELECT t as tweet FROM Tweet t " +
             "WHERE t.user.id = :userId " +
             "AND t.addressedUsername IS NOT NULL " +
             "AND t.scheduledDate IS NULL " +
             "ORDER BY t.dateTime DESC")
-    List<TweetsProjection> findRepliesByUserId(Long userId);
+    List<TweetsUserProjection> findRepliesByUserId(Long userId);
 
     @Query("SELECT tweet FROM User user LEFT JOIN user.pinnedTweet tweet WHERE user.id = :userId")
-    Optional<TweetProjection> getPinnedTweetByUserId(Long userId);
+    Optional<TweetUserProjection> getPinnedTweetByUserId(Long userId);
 
     @Query("SELECT notificationTweet as tweet " +
             "FROM User user " +
@@ -100,6 +103,12 @@ public interface TweetRepository extends JpaRepository<Tweet, Long> {
             "WHERE tag.tagName = :tagName " +
             "ORDER BY tagTweet.dateTime DESC")
     List<TweetsProjection> getTweetsByTagName(String tagName);
+
+    @Query("SELECT u.id FROM Tweet tweet " +
+            "LEFT JOIN tweet.retweets retweet " +
+            "LEFT JOIN retweet.user u " +
+            "WHERE tweet.id = :tweetId")
+    List<Long> getRetweetsUserIds(Long tweetId);
 
     @Query("SELECT CASE WHEN count(user) > 0 THEN true ELSE false END " +
             "FROM User user " +
@@ -121,4 +130,24 @@ public interface TweetRepository extends JpaRepository<Tweet, Long> {
             "WHERE user.id = :userId " +
             "AND bookmark.tweet.id = :tweetId")
     boolean isUserBookmarkedTweet(Long userId, Long tweetId);
+
+    @Query("SELECT rp as tweet FROM Tweet t " +
+            "LEFT JOIN t.replies rp " +
+            "WHERE t.id = :tweetId " +
+            "ORDER BY rp.dateTime DESC")
+    List<TweetsProjection> getRepliesByTweetId(Long tweetId);
+
+    @Query("SELECT user FROM User user " +
+            "LEFT JOIN user.likedTweets likedTweet " +
+            "LEFT JOIN likedTweet.tweet tweet " +
+            "WHERE tweet.id = :tweetId " +
+            "ORDER BY likedTweet.likeTweetDate DESC")
+    List<UserProjection> getLikedUsersByTweetId(Long tweetId);
+
+    @Query("SELECT user FROM User user " +
+            "LEFT JOIN user.retweets retweet " +
+            "LEFT JOIN retweet.tweet tweet " +
+            "WHERE tweet.id = :tweetId " +
+            "ORDER BY retweet.retweetDate DESC")
+    List<UserProjection> getRetweetedUsersByTweetId(Long tweetId);
 }

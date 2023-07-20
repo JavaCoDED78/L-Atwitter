@@ -10,6 +10,8 @@ public interface SameFollower {
 
     String getFullName();
 
+    String getUsername();
+
     @Value("#{T(com.gmail.javacoded78.latwitter.repository.projection.user.SameFollower).convertToAvatar(target.img_id, target.img_src)}")
     Map<String, Object> getAvatar();
 

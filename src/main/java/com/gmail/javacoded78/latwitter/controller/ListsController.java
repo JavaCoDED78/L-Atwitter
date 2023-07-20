@@ -88,13 +88,18 @@ public class ListsController {
 
     @GetMapping("/{listId}/tweets") // TODO add tests
     public ResponseEntity<List<TweetResponse>> getTweetsByListId(@PathVariable Long listId, @PageableDefault(size = 10) Pageable pageable) {
-        TweetHeaderResponse response = listsMapper.getTweetsByListId(listId, pageable);
+        TweetHeaderResponse<TweetResponse> response = listsMapper.getTweetsByListId(listId, pageable);
         return ResponseEntity.ok().headers(response.getHeaders()).body(response.getTweets());
     }
 
     @GetMapping("/{listId}/details") // TODO add tests
     public ResponseEntity<BaseListResponse> getListDetails(@PathVariable Long listId) {
         return ResponseEntity.ok(listsMapper.getListDetails(listId));
+    }
+
+    @GetMapping("/{listId}/{listOwnerId}/followers") // TODO add tests
+    public ResponseEntity<List<ListMemberResponse>> getListFollowers(@PathVariable Long listId, @PathVariable Long listOwnerId) {
+        return ResponseEntity.ok(listsMapper.getListFollowers(listId, listOwnerId));
     }
 
     @GetMapping("/{listId}/{listOwnerId}/members") // TODO add tests

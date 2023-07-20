@@ -3,6 +3,7 @@ package com.gmail.javacoded78.latwitter.mapper;
 import com.gmail.javacoded78.latwitter.dto.request.TweetDeleteRequest;
 import com.gmail.javacoded78.latwitter.dto.request.TweetRequest;
 import com.gmail.javacoded78.latwitter.dto.request.VoteRequest;
+import com.gmail.javacoded78.latwitter.dto.response.UserResponse;
 import com.gmail.javacoded78.latwitter.dto.response.notification.NotificationReplyResponse;
 import com.gmail.javacoded78.latwitter.dto.response.notification.NotificationResponse;
 import com.gmail.javacoded78.latwitter.dto.response.tweet.TweetHeaderResponse;
@@ -10,7 +11,8 @@ import com.gmail.javacoded78.latwitter.dto.response.tweet.TweetResponse;
 import com.gmail.javacoded78.latwitter.model.NotificationType;
 import com.gmail.javacoded78.latwitter.model.ReplyType;
 import com.gmail.javacoded78.latwitter.model.Tweet;
-import com.gmail.javacoded78.latwitter.repository.projection.TweetProjection;
+import com.gmail.javacoded78.latwitter.repository.projection.tweet.TweetProjection;
+import com.gmail.javacoded78.latwitter.repository.projection.user.UserProjection;
 import com.gmail.javacoded78.latwitter.service.TweetService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -34,54 +36,85 @@ public class TweetMapper {
         return modelMapper.map(tweetRequest, Tweet.class);
     }
 
-    TweetResponse convertToProjectionResponse(TweetProjection tweet) {
-        return modelMapper.map(tweet, TweetResponse.class);
+    <T, S> S convertProjectionToResponse(T tweet, Class<S> type) {
+        return modelMapper.map(tweet, type);
     }
 
-    List<TweetResponse> convertListToProjectionResponse(List<TweetProjection> tweets) {
+    <T, S> List<S> convertProjectionListToResponseList(List<T> tweets, Class<S> type) {
         return tweets.stream()
-                .map(this::convertToProjectionResponse)
+                .map(tweet -> convertProjectionToResponse(tweet, type))
                 .collect(Collectors.toList());
     }
 
-    TweetHeaderResponse getTweetHeaderProjectionResponse(Page<TweetProjection> tweets) {
-        List<TweetResponse> tweetResponses = convertListToProjectionResponse(tweets.getContent());
+    <T, S> TweetHeaderResponse<S> getTweetHeaderResponse(Page<T> pageableTweets, Class<S> type) {
+        List<S> tweetResponses = convertProjectionListToResponseList(pageableTweets.getContent(), type);
+        return constructTweetHeaderResponse(tweetResponses, pageableTweets.getTotalPages());
+    }
+
+    <T, S> TweetHeaderResponse<S> getTweetHeaderResponse(List<T> tweets, Integer totalPages, Class<S> type) {
+        List<S> tweetResponses = convertProjectionListToResponseList(tweets, type);
+        return constructTweetHeaderResponse(tweetResponses, totalPages);
+    }
+
+    <S> TweetHeaderResponse<S> constructTweetHeaderResponse(List<S> tweetResponses, Integer totalPages) {
         HttpHeaders responseHeaders = new HttpHeaders();
-        responseHeaders.add("page-total-count", String.valueOf(tweets.getTotalPages()));
-        return new TweetHeaderResponse(tweetResponses, responseHeaders);
+        responseHeaders.add("page-total-count", String.valueOf(totalPages));
+        return new TweetHeaderResponse<S>(tweetResponses, responseHeaders);
     }
 
-    public TweetHeaderResponse getTweets(Pageable pageable) {
-        return getTweetHeaderProjectionResponse(tweetService.getTweets(pageable));
+    public TweetHeaderResponse<TweetResponse> getTweets(Pageable pageable) {
+        Page<TweetProjection> tweets = tweetService.getTweets(pageable);
+        return getTweetHeaderResponse(tweets, TweetResponse.class);
     }
 
-    public TweetHeaderResponse getMediaTweets(Pageable pageable) {
-        return getTweetHeaderProjectionResponse(tweetService.getMediaTweets(pageable));
+    public TweetHeaderResponse<TweetResponse> getMediaTweets(Pageable pageable) {
+        Page<TweetProjection> tweets = tweetService.getMediaTweets(pageable);
+        return getTweetHeaderResponse(tweets, TweetResponse.class);
     }
 
-    public TweetHeaderResponse getTweetsWithVideo(Pageable pageable) {
-        return getTweetHeaderProjectionResponse(tweetService.getTweetsWithVideo(pageable));
+    public TweetHeaderResponse<TweetResponse> getTweetsWithVideo(Pageable pageable) {
+        Page<TweetProjection> tweets = tweetService.getTweetsWithVideo(pageable);
+        return getTweetHeaderResponse(tweets, TweetResponse.class);
     }
 
     public List<TweetResponse> getScheduledTweets() {
-        return convertListToProjectionResponse(tweetService.getScheduledTweets());
+        List<TweetProjection> tweets = tweetService.getScheduledTweets();
+        return convertProjectionListToResponseList(tweets, TweetResponse.class);
     }
 
     public TweetResponse getTweetById(Long tweetId) {
-        return convertToProjectionResponse(tweetService.getTweetById(tweetId));
+        TweetProjection tweet = tweetService.getTweetById(tweetId);
+        return convertProjectionToResponse(tweet, TweetResponse.class);
+    }
+
+    public List<TweetResponse> getRepliesByTweetId(Long tweetId) {
+        List<TweetProjection> tweets = tweetService.getRepliesByTweetId(tweetId);
+        return convertProjectionListToResponseList(tweets, TweetResponse.class);
+    }
+
+    public List<UserResponse> getLikedUsersByTweetId(Long tweetId) {
+        List<UserProjection> users = tweetService.getLikedUsersByTweetId(tweetId);
+        return convertProjectionListToResponseList(users, UserResponse.class);
+    }
+
+    public List<UserResponse> getRetweetedUsersByTweetId(Long tweetId) {
+        List<UserProjection> users = tweetService.getRetweetedUsersByTweetId(tweetId);
+        return convertProjectionListToResponseList(users, UserResponse.class);
     }
 
     public TweetResponse createTweet(TweetRequest tweetRequest) {
-        return convertToProjectionResponse(tweetService.createNewTweet(convertToTweetEntity(tweetRequest)));
+        TweetProjection tweet = tweetService.createNewTweet(convertToTweetEntity(tweetRequest));
+        return convertProjectionToResponse(tweet, TweetResponse.class);
     }
 
     public TweetResponse createPoll(TweetRequest tweetRequest) {
-        return convertToProjectionResponse(tweetService.createPoll(tweetRequest.getPollDateTime(), tweetRequest.getChoices(),
-                convertToTweetEntity(tweetRequest)));
+        TweetProjection tweet = tweetService.createPoll(tweetRequest.getPollDateTime(), tweetRequest.getChoices(), convertToTweetEntity(tweetRequest));
+        return convertProjectionToResponse(tweet, TweetResponse.class);
     }
 
     public TweetResponse updateScheduledTweet(TweetRequest tweetRequest) {
-        return convertToProjectionResponse(tweetService.updateScheduledTweet(convertToTweetEntity(tweetRequest)));
+        TweetProjection tweet = tweetService.updateScheduledTweet(convertToTweetEntity(tweetRequest));
+        return convertProjectionToResponse(tweet, TweetResponse.class);
     }
 
     public String deleteScheduledTweets(TweetDeleteRequest tweetRequest) {
@@ -90,7 +123,7 @@ public class TweetMapper {
 
     public TweetResponse deleteTweet(Long tweetId) {
         Tweet tweet = tweetService.deleteTweet(tweetId);
-        TweetResponse tweetResponse = modelMapper.map(tweet, TweetResponse.class);
+        TweetResponse tweetResponse = convertProjectionToResponse(tweet, TweetResponse.class);
         tweetResponse.setTweetDeleted(true);
         return tweetResponse;
     }
@@ -110,11 +143,13 @@ public class TweetMapper {
     }
 
     public List<TweetResponse> searchTweets(String text) {
-        return convertListToProjectionResponse(tweetService.searchTweets(text));
+        List<TweetProjection> tweets = tweetService.searchTweets(text);
+        return convertProjectionListToResponseList(tweets, TweetResponse.class);
     }
 
     public NotificationReplyResponse replyTweet(Long tweetId, TweetRequest tweetRequest) {
-        TweetResponse replyTweet = convertToProjectionResponse(tweetService.replyTweet(tweetId, convertToTweetEntity(tweetRequest)));
+        TweetProjection tweet = tweetService.replyTweet(tweetId, convertToTweetEntity(tweetRequest));
+        TweetResponse replyTweet = convertProjectionToResponse(tweet, TweetResponse.class);
         NotificationReplyResponse notificationReplyResponse = new NotificationReplyResponse();
         notificationReplyResponse.setTweetId(tweetId);
         notificationReplyResponse.setNotificationType(NotificationType.REPLY);
@@ -123,14 +158,17 @@ public class TweetMapper {
     }
 
     public TweetResponse quoteTweet(Long tweetId, TweetRequest tweetRequest) {
-        return convertToProjectionResponse(tweetService.quoteTweet(tweetId, convertToTweetEntity(tweetRequest)));
+        TweetProjection tweet = tweetService.quoteTweet(tweetId, convertToTweetEntity(tweetRequest));
+        return convertProjectionToResponse(tweet, TweetResponse.class);
     }
 
     public TweetResponse changeTweetReplyType(Long tweetId, ReplyType replyType) {
-        return convertToProjectionResponse(tweetService.changeTweetReplyType(tweetId, replyType));
+        TweetProjection tweet = tweetService.changeTweetReplyType(tweetId, replyType);
+        return convertProjectionToResponse(tweet, TweetResponse.class);
     }
 
     public TweetResponse voteInPoll(VoteRequest voteRequest) {
-        return convertToProjectionResponse(tweetService.voteInPoll(voteRequest.getTweetId(), voteRequest.getPollId(), voteRequest.getPollChoiceId()));
+        TweetProjection tweet = tweetService.voteInPoll(voteRequest.getTweetId(), voteRequest.getPollId(), voteRequest.getPollChoiceId());
+        return convertProjectionToResponse(tweet, TweetResponse.class);
     }
 }

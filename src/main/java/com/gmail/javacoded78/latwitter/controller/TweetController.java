@@ -3,6 +3,7 @@ package com.gmail.javacoded78.latwitter.controller;
 import com.gmail.javacoded78.latwitter.dto.request.TweetDeleteRequest;
 import com.gmail.javacoded78.latwitter.dto.request.TweetRequest;
 import com.gmail.javacoded78.latwitter.dto.request.VoteRequest;
+import com.gmail.javacoded78.latwitter.dto.response.UserResponse;
 import com.gmail.javacoded78.latwitter.dto.response.notification.NotificationReplyResponse;
 import com.gmail.javacoded78.latwitter.dto.response.notification.NotificationResponse;
 import com.gmail.javacoded78.latwitter.dto.response.notification.NotificationTweetResponse;
@@ -38,7 +39,7 @@ public class TweetController {
 
     @GetMapping
     public ResponseEntity<List<TweetResponse>> getTweets(@PageableDefault(size = 10) Pageable pageable) {
-        TweetHeaderResponse response = tweetMapper.getTweets(pageable);
+        TweetHeaderResponse<TweetResponse> response = tweetMapper.getTweets(pageable);
         return ResponseEntity.ok().headers(response.getHeaders()).body(response.getTweets());
     }
 
@@ -47,15 +48,30 @@ public class TweetController {
         return ResponseEntity.ok(tweetMapper.getTweetById(tweetId));
     }
 
+    @GetMapping("/{tweetId}/replies")
+    public ResponseEntity<List<TweetResponse>> getRepliesByTweetId(@PathVariable Long tweetId) {
+        return ResponseEntity.ok(tweetMapper.getRepliesByTweetId(tweetId));
+    }
+
+    @GetMapping("/{tweetId}/liked-users")
+    public ResponseEntity<List<UserResponse>> getLikedUsersByTweetId(@PathVariable Long tweetId) {
+        return ResponseEntity.ok(tweetMapper.getLikedUsersByTweetId(tweetId));
+    }
+
+    @GetMapping("/{tweetId}/retweeted-users")
+    public ResponseEntity<List<UserResponse>> getRetweetedUsersByTweetId(@PathVariable Long tweetId) {
+        return ResponseEntity.ok(tweetMapper.getRetweetedUsersByTweetId(tweetId));
+    }
+
     @GetMapping("/media")
     public ResponseEntity<List<TweetResponse>> getMediaTweets(@PageableDefault(size = 10) Pageable pageable) {
-        TweetHeaderResponse response = tweetMapper.getMediaTweets(pageable);
+        TweetHeaderResponse<TweetResponse> response = tweetMapper.getMediaTweets(pageable);
         return ResponseEntity.ok().headers(response.getHeaders()).body(response.getTweets());
     }
 
     @GetMapping("/video")
     public ResponseEntity<List<TweetResponse>> getTweetsWithVideo(@PageableDefault(size = 10) Pageable pageable) {
-        TweetHeaderResponse response = tweetMapper.getTweetsWithVideo(pageable);
+        TweetHeaderResponse<TweetResponse> response = tweetMapper.getTweetsWithVideo(pageable);
         return ResponseEntity.ok().headers(response.getHeaders()).body(response.getTweets());
     }
 

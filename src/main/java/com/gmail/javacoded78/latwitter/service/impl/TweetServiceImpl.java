@@ -25,8 +25,9 @@ import com.gmail.javacoded78.latwitter.repository.RetweetRepository;
 import com.gmail.javacoded78.latwitter.repository.TagRepository;
 import com.gmail.javacoded78.latwitter.repository.TweetRepository;
 import com.gmail.javacoded78.latwitter.repository.UserRepository;
-import com.gmail.javacoded78.latwitter.repository.projection.TweetProjection;
-import com.gmail.javacoded78.latwitter.repository.projection.TweetsProjection;
+import com.gmail.javacoded78.latwitter.repository.projection.tweet.TweetProjection;
+import com.gmail.javacoded78.latwitter.repository.projection.tweet.TweetsProjection;
+import com.gmail.javacoded78.latwitter.repository.projection.user.UserProjection;
 import com.gmail.javacoded78.latwitter.service.AuthenticationService;
 import com.gmail.javacoded78.latwitter.service.TweetService;
 import lombok.RequiredArgsConstructor;
@@ -87,6 +88,24 @@ public class TweetServiceImpl implements TweetService {
     public TweetProjection getTweetById(Long tweetId) {
         return tweetRepository.findTweetById(tweetId)
                 .orElseThrow(() -> new ApiRequestException("Tweet not found", HttpStatus.NOT_FOUND));
+    }
+
+    @Override
+    public List<TweetProjection> getRepliesByTweetId(Long tweetId) {
+        List<TweetsProjection> repliesByTweetId = tweetRepository.getRepliesByTweetId(tweetId);
+        return repliesByTweetId.contains(null) ? new ArrayList<>() : repliesByTweetId.stream()
+                .map(TweetsProjection::getTweet)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<UserProjection> getLikedUsersByTweetId(Long tweetId) {
+        return tweetRepository.getLikedUsersByTweetId(tweetId);
+    }
+
+    @Override
+    public List<UserProjection> getRetweetedUsersByTweetId(Long tweetId) {
+        return tweetRepository.getRetweetedUsersByTweetId(tweetId);
     }
 
     @Override
@@ -359,6 +378,11 @@ public class TweetServiceImpl implements TweetService {
                 .collect(Collectors.toList());
         tweet.getPoll().setPollChoices(pollChoices);
         return getTweetById(tweet.getId());
+    }
+
+    public List<Long> getRetweetsUserIds(Long tweetId) {
+        List<Long> retweetsUserIds = tweetRepository.getRetweetsUserIds(tweetId);
+        return retweetsUserIds.contains(null) ? new ArrayList<>() : retweetsUserIds;
     }
 
     public boolean isUserLikedTweet(Long tweetId) {

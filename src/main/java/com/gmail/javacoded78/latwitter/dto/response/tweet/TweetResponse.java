@@ -27,7 +27,7 @@ public class TweetResponse {
     private String linkDescription;
     private String linkCover;
     private LinkCoverSize linkCoverSize;
-    private TweetUserResponse user;
+    private UserTweetResponse user;
     private List<ImageResponse> images;
     private QuoteTweetResponse quoteTweet;
     private PollResponse poll;
@@ -53,7 +53,6 @@ public class TweetResponse {
     @Getter
     @Setter
     static class QuoteTweetResponse {
-
         private Long id;
         private String text;
         private LocalDateTime dateTime;
@@ -62,7 +61,7 @@ public class TweetResponse {
         private String linkDescription;
         private String linkCover;
         private LinkCoverSize linkCoverSize;
-        private TweetUserResponse user;
+        private UserTweetResponse user;
     }
 
     @Getter

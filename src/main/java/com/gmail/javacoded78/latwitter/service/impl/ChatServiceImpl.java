@@ -12,6 +12,7 @@ import com.gmail.javacoded78.latwitter.repository.projection.chat.ChatMessagesPr
 import com.gmail.javacoded78.latwitter.repository.projection.chat.ChatParticipantsProjection;
 import com.gmail.javacoded78.latwitter.repository.projection.chat.ChatProjection;
 import com.gmail.javacoded78.latwitter.repository.projection.user.BaseUserProjection;
+import com.gmail.javacoded78.latwitter.repository.projection.user.UserProjection;
 import com.gmail.javacoded78.latwitter.service.AuthenticationService;
 import com.gmail.javacoded78.latwitter.service.ChatService;
 import lombok.RequiredArgsConstructor;
@@ -174,7 +175,7 @@ public class ChatServiceImpl implements ChatService {
     }
 
     @Override
-    public BaseUserProjection getParticipant(Long participantId, Long chatId) {
+    public UserProjection getParticipant(Long participantId, Long chatId) {
         Long userId = authenticationService.getAuthenticatedUserId();
 
         if (!chatRepository.getChatByUserId(chatId, userId)) {

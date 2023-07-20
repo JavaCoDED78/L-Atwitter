@@ -6,17 +6,7 @@ import com.gmail.javacoded78.latwitter.model.ColorSchemeType;
 import com.gmail.javacoded78.latwitter.model.Tweet;
 import com.gmail.javacoded78.latwitter.model.User;
 import com.gmail.javacoded78.latwitter.repository.projection.UserPrincipalProjection;
-import com.gmail.javacoded78.latwitter.repository.projection.user.AuthUserProjection;
-import com.gmail.javacoded78.latwitter.repository.projection.user.BaseUserProjection;
-import com.gmail.javacoded78.latwitter.repository.projection.user.BlockedUserProjection;
-import com.gmail.javacoded78.latwitter.repository.projection.user.FollowerUserProjection;
-import com.gmail.javacoded78.latwitter.repository.projection.user.MutedUserProjection;
-import com.gmail.javacoded78.latwitter.repository.projection.user.TweetAuthorProjection;
-import com.gmail.javacoded78.latwitter.repository.projection.user.UserCommonProjection;
-import com.gmail.javacoded78.latwitter.repository.projection.user.UserDetailProjection;
-import com.gmail.javacoded78.latwitter.repository.projection.user.UserListProjection;
-import com.gmail.javacoded78.latwitter.repository.projection.user.UserProfileProjection;
-import com.gmail.javacoded78.latwitter.repository.projection.user.UserProjection;
+import com.gmail.javacoded78.latwitter.repository.projection.user.*;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -77,19 +67,11 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Query("SELECT CASE WHEN count(user) > 0 THEN true ELSE false END FROM User user WHERE user.id = :userId")
     boolean isUserExist(Long userId);
 
-    @Query("SELECT f.id as id, f.fullName as fullName, f.username as username, f.about as about, " +
-            "f.privateProfile as isPrivateProfile, f.avatar.id as img_id, f.avatar.src as img_src " +
-            "FROM User user " +
-            "LEFT JOIN user.followers f " +
-            "WHERE user.id = :userId")
-    List<BaseUserProjection> getFollowersById(Long userId);
+    @Query("SELECT f as user FROM User u LEFT JOIN u.followers f WHERE u.id = :userId")
+    List<UsersProjection> getFollowersById(Long userId);
 
-    @Query("SELECT f.id as id, f.fullName as fullName, f.username as username, f.about as about, " +
-            "f.privateProfile as isPrivateProfile, f.avatar.id as img_id, f.avatar.src as img_src " +
-            "FROM User user " +
-            "LEFT JOIN user.following f " +
-            "WHERE user.id = :userId")
-    List<BaseUserProjection> getFollowingById(Long userId);
+    @Query("SELECT f as user FROM User u LEFT JOIN u.following f WHERE u.id = :userId")
+    List<UsersProjection> getFollowingById(Long userId);
 
     @Query("SELECT b.id as id, b.fullName as fullName, b.username as username, " +
             "b.about as about, b.avatar as avatar, b.privateProfile as isPrivateProfile " +

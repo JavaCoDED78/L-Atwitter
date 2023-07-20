@@ -3,6 +3,7 @@ package com.gmail.javacoded78.latwitter.controller;
 import com.gmail.javacoded78.latwitter.dto.request.ChatMessageRequest;
 import com.gmail.javacoded78.latwitter.dto.request.MessageWithTweetRequest;
 import com.gmail.javacoded78.latwitter.dto.response.BaseUserResponse;
+import com.gmail.javacoded78.latwitter.dto.response.UserResponse;
 import com.gmail.javacoded78.latwitter.dto.response.chats.ChatMessageResponse;
 import com.gmail.javacoded78.latwitter.dto.response.chats.ChatResponse;
 import com.gmail.javacoded78.latwitter.mapper.ChatMapper;
@@ -63,7 +64,7 @@ public class ChatController {
     }
 
     @GetMapping("/participant/{participantId}/{chatId}")
-    public ResponseEntity<BaseUserResponse> getParticipant(@PathVariable Long participantId, @PathVariable Long chatId) {
+    public ResponseEntity<UserResponse> getParticipant(@PathVariable Long participantId, @PathVariable Long chatId) {
         return ResponseEntity.ok(chatMapper.getParticipant(participantId, chatId));
     }
 

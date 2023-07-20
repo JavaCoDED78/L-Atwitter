@@ -8,8 +8,8 @@ import java.util.List;
 
 @Data
 @AllArgsConstructor
-public class TweetHeaderResponse {
+public class TweetHeaderResponse<T> {
 
-    private List<TweetResponse> tweets;
+    private List<T> tweets;
     private HttpHeaders headers;
 }

@@ -38,6 +38,6 @@ public class TagMapper {
     }
 
     public List<TweetResponse> getTweetsByTag(String tagName) {
-        return tweetMapper.convertListToProjectionResponse(tagService.getTweetsByTag(tagName));
+        return tweetMapper.convertProjectionListToResponseList(tagService.getTweetsByTag(tagName), TweetResponse.class);
     }
 }
