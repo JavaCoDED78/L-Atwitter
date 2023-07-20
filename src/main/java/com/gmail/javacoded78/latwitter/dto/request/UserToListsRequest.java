@@ -16,6 +16,7 @@ public class UserToListsRequest {
     @Setter
     public static class ListsRequest {
 
-        private Long id;
+        private Long listId;
+        private Boolean isMemberInList;
     }
 }

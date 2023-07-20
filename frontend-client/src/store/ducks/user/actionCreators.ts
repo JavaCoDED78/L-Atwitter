@@ -1,13 +1,14 @@
-import {Settings, UserState} from "./contracts/state";
+import {Settings, UserRequest, UserState} from "./contracts/state";
 import {
-    AddUserToBlocklistActionInterface,
-    AddUserToMuteListActionInterface,
     FetchPinTweetActionInterface,
     FetchReadMessagesActionInterface,
     FetchSignInActionInterface,
     FetchSignUpActionInterface,
     FetchUserDataActionInterface,
     FollowUserActionInterface,
+    ProcessFollowRequestActionInterface,
+    ProcessUserToBlocklistActionInterface,
+    ProcessUserToMuteListActionInterface,
     SetBackgroundColorActionInterface,
     SetColorSchemeActionInterface,
     SetCountryActionInterface,
@@ -24,6 +25,7 @@ import {
     SetReadMessageActionInterface,
     SetUnreadMessageActionInterface,
     SetUserDataActionInterface,
+    SetUserFollowingActionInterface,
     SetUserLoadingStateActionInterface,
     SetUsernameActionInterface,
     SignOutActionInterface,
@@ -44,10 +46,9 @@ import {
 } from "./contracts/actionTypes";
 import {RegistrationProps} from "../../../pages/RegistrationModal/SetPasswordModal/SetPasswordModal";
 import {LoginProps} from "../../../pages/Login/Login";
-import {AuthUserResponse} from "../../types/user";
 import {ChatMessageResponse} from "../../types/chat";
 
-export const updatedUserData = (payload: AuthUserResponse): UpdateUserDataActionInterface => ({  // +
+export const updatedUserData = (payload: UserRequest): UpdateUserDataActionInterface => ({  // +
     type: UserActionsType.UPDATE_USER_DATA,
     payload
 });
@@ -109,18 +110,28 @@ export const unfollowUser = (payload: { userId: number; tweetId?: number; }): Un
     payload,
 });
 
-export const fetchPinTweet = (payload: string): FetchPinTweetActionInterface => ({ //+
+export const setUserFollowing = (payload: boolean): SetUserFollowingActionInterface => ({ //+
+    type: UserActionsType.SET_USER_FOLLOWING,
+    payload,
+});
+
+export const fetchPinTweet = (payload: number): FetchPinTweetActionInterface => ({ //+
     type: UserActionsType.FETCH_PIN_TWEET,
     payload,
 });
 
-export const addUserToBlocklist = (payload: { userId: number; tweetId?: number; }): AddUserToBlocklistActionInterface => ({ // +
-    type: UserActionsType.ADD_USER_TO_BLOCKLIST,
+export const processFollowRequest = (payload: number): ProcessFollowRequestActionInterface => ({ // +
+    type: UserActionsType.PROCESS_FOLLOW_REQUEST,
     payload,
 });
 
-export const addUserToMuteList = (payload: { userId: number; tweetId?: number; }): AddUserToMuteListActionInterface => ({ // +
-    type: UserActionsType.ADD_USER_TO_MUTELIST,
+export const processUserToBlocklist = (payload: { userId: number; tweetId?: number; }): ProcessUserToBlocklistActionInterface => ({ // +
+    type: UserActionsType.PROCESS_USER_TO_BLOCKLIST,
+    payload,
+});
+
+export const processUserToMuteList = (payload: { userId: number; tweetId?: number; }): ProcessUserToMuteListActionInterface => ({ // +
+    type: UserActionsType.PROCESS_USER_TO_MUTELIST,
     payload,
 });
 

@@ -1,4 +1,4 @@
-alter sequence users_id_seq restart with 10;
+-- alter sequence users_id_seq restart with 10;
 
 -- images
 INSERT INTO images (id, src)

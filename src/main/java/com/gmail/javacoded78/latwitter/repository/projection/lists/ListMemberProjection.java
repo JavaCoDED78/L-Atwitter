@@ -12,5 +12,7 @@ public interface ListMemberProjection {
 
     String getAbout();
 
+    boolean isPrivateProfile();
+
     ImageProjection getAvatar();
 }

@@ -1,18 +1,20 @@
-import React, {FC, ReactElement, useState} from 'react';
+import React, {ComponentType, FC, ReactElement, useState} from 'react';
 import {Link} from 'react-router-dom';
 import {useDispatch, useSelector} from "react-redux";
 import {Avatar, Button, IconButton, Paper, Typography} from "@material-ui/core";
+import {compose} from "recompose";
 
-import {Lists} from "../../../store/ducks/lists/contracts/state";
 import {useListsItemStyles} from "./ListsItemStyles";
 import {DEFAULT_PROFILE_IMG} from "../../../util/url";
 import {selectUserData} from "../../../store/ducks/user/selectors";
 import {LockIcon, PinIcon, PinIconFilled} from "../../../icons";
 import {followList, pinList, unfollowList, unpinList} from "../../../store/ducks/lists/actionCreators";
-import PopperListWindow from "../PopperListWindow/PopperListWindow";
 import HoverAction from "../../../components/HoverAction/HoverAction";
 import {HoverActionProps, HoverActions, withHoverAction} from "../../../hoc/withHoverAction";
 import {useGlobalStyles} from "../../../util/globalClasses";
+import {ListResponse, ListUserResponse} from "../../../store/types/lists";
+import {HoverListProps, withHoverList} from "../../../hoc/withHoverList";
+import PopperListWindow from "../PopperListWindow/PopperListWindow";
 
 interface ListsItemProps<T> {
     item?: T;
@@ -20,30 +22,30 @@ interface ListsItemProps<T> {
     isMyList?: boolean;
 }
 
-const ListsItem: FC<ListsItemProps<Lists> & HoverActionProps> = (
+const ListsItem: FC<ListsItemProps<ListResponse | ListUserResponse> & HoverActionProps & HoverListProps> = (
     {
         item: list,
         listIndex,
         isMyList,
         visibleHoverAction,
         handleHoverAction,
-        handleLeaveAction
+        handleLeaveAction,
+        visiblePopperWindow,
+        handleHoverPopper,
+        handleLeavePopper
     }
 ): ReactElement => {
     const globalClasses = useGlobalStyles();
     const classes = useListsItemStyles();
     const dispatch = useDispatch();
     const myProfile = useSelector(selectUserData);
-    const follower = list?.followers.find((follower) => follower.id === myProfile?.id);
     const [btnText, setBtnText] = useState<string>("Following");
-    const [visiblePopperListWindow, setVisiblePopperListWindow] = useState<boolean>(false);
-    const [delayHandler, setDelayHandler] = useState<any>(null);
 
     const onClickFollow = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>): void => {
         event.preventDefault();
         event.stopPropagation();
 
-        if (follower) {
+        if ("isFollower" in list! && list.isFollower) {
             dispatch(unfollowList(list?.id!));
         } else {
             dispatch(followList(list?.id!));
@@ -61,15 +63,6 @@ const ListsItem: FC<ListsItemProps<Lists> & HoverActionProps> = (
         }
     };
 
-    const handleHoverList = (): void => {
-        setDelayHandler(setTimeout(() => setVisiblePopperListWindow(true), 1000));
-    };
-
-    const handleLeaveList = (): void => {
-        clearTimeout(delayHandler);
-        setVisiblePopperListWindow(false);
-    };
-
     return (
         <Link to={`/lists/${list?.id}`} className={globalClasses.link}>
             <Paper className={classes.container} style={{border: (listIndex === 2) ? 0 : 1}} variant="outlined">
@@ -79,12 +72,16 @@ const ListsItem: FC<ListsItemProps<Lists> & HoverActionProps> = (
                     src={list?.wallpaper?.src ? list?.wallpaper?.src : list?.altWallpaper}
                 />
                 <div className={classes.listInfoContainer}>
-                    <div className={classes.listInfoWrapper} onMouseEnter={handleHoverList} onMouseLeave={handleLeaveList}>
+                    <div
+                        className={classes.listInfoWrapper}
+                        onMouseEnter={() => handleHoverPopper!(list?.id!)}
+                        onMouseLeave={handleLeavePopper}
+                    >
                         <div>
                             <Typography variant={"h6"} component={"span"} className={classes.listTitle}>
                                 {list?.name}
                             </Typography>
-                            {list?.private && (
+                            {"isPrivate" in list! && list?.isPrivate && (
                                 <span className={classes.lockIcon}>
                                     {LockIcon}
                                 </span>
@@ -107,7 +104,7 @@ const ListsItem: FC<ListsItemProps<Lists> & HoverActionProps> = (
                                 @{list?.listOwner.username}
                             </Typography>
                         </div>
-                        <PopperListWindow visible={visiblePopperListWindow} list={list!}/>
+                        <PopperListWindow visible={visiblePopperWindow}/>
                     </div>
                     {isMyList && (
                         <div className={classes.listPinWrapper}>
@@ -130,7 +127,7 @@ const ListsItem: FC<ListsItemProps<Lists> & HoverActionProps> = (
                         </div>
                     )}
                     {(myProfile?.id === list?.listOwner.id || isMyList) ? null : (
-                        follower ? (
+                        "isFollower" in list! && list.isFollower ? (
                             <Button
                                 className={classes.listPrimaryButton}
                                 onMouseOver={() => setBtnText("Unfollow")}
@@ -160,4 +157,4 @@ const ListsItem: FC<ListsItemProps<Lists> & HoverActionProps> = (
     );
 };
 
-export default withHoverAction(ListsItem);
+export default compose(withHoverAction, withHoverList)(ListsItem) as ComponentType<ListsItemProps<ListResponse | ListUserResponse> & HoverActionProps & HoverListProps>;

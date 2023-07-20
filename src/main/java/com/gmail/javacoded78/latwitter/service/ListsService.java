@@ -1,5 +1,6 @@
 package com.gmail.javacoded78.latwitter.service;
 
+import com.gmail.javacoded78.latwitter.dto.request.UserToListsRequest;
 import com.gmail.javacoded78.latwitter.model.Lists;
 import com.gmail.javacoded78.latwitter.repository.projection.tweet.TweetProjection;
 import com.gmail.javacoded78.latwitter.repository.projection.lists.*;
@@ -33,7 +34,9 @@ public interface ListsService {
 
     PinnedListProjection pinList(Long listId);
 
-    List<Long> addUserToLists(Long userId, List<Long> listsIds);
+    List<Map<String, Object>> getListsToAddUser(Long userId);
+
+    String addUserToLists(UserToListsRequest userToListsRequest);
 
     Boolean addUserToList(Long userId, Long listId);
 

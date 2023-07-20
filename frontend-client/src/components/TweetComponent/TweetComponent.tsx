@@ -10,7 +10,6 @@ import {
     LikeIcon,
     LikeOutlinedIcon,
     LockIcon,
-    PinOutlinedIcon,
     ReplyIcon
 } from "../../icons";
 import {useTweetComponentStyles} from "./TweetComponentStyles";
@@ -37,6 +36,7 @@ import TweetAnalyticsModal from "../TweetAnalyticsModal/TweetAnalyticsModal";
 import {HoverUserProps, withHoverUser} from "../../hoc/withHoverUser";
 import {useGlobalStyles} from "../../util/globalClasses";
 import TweetActionResult, {TweetActionResults} from "../TweetActionResult/TweetActionResult";
+import {TweetResponse} from "../../store/types/tweet";
 
 export interface TweetComponentProps<T> {
     item?: T;
@@ -44,7 +44,7 @@ export interface TweetComponentProps<T> {
     userProfileId?: number;
 }
 
-const TweetComponent: FC<HoverUserProps & TweetComponentProps<Tweet> & HoverActionProps> = (
+const TweetComponent: FC<HoverUserProps & TweetComponentProps<TweetResponse> & HoverActionProps> = (
     {
         item: tweet,
         activeTab,
@@ -66,14 +66,11 @@ const TweetComponent: FC<HoverUserProps & TweetComponentProps<Tweet> & HoverActi
     const [visibleAnalyticsModalWindow, setVisibleAnalyticsModalWindow] = useState<boolean>(false);
     const [openYouTubeVideo, setOpenYouTubeVideo] = useState<boolean>(false);
 
-    const isTweetLiked = tweet?.likedTweets.findIndex((like) => like.user.id === myProfile?.id) !== -1;
-    const isTweetRetweetedByMe = tweet?.retweets.findIndex((retweet) => retweet.user.id === myProfile?.id) !== -1;
-    const isTweetRetweetedByUser = tweet?.retweets.findIndex((retweet) => retweet.user.id === userProfile?.id) !== -1;
-    const isFollower = myProfile?.following?.findIndex((follower) => follower.id === tweet?.user?.id) !== -1;
+    const isTweetRetweetedByUser = tweet?.retweetsUserIds?.findIndex((id) => id === userProfile?.id) !== -1;
     const isUserCanReply = (tweet?.replyType === ReplyType.MENTION) && (myProfile?.id !== tweet?.user.id);
     const isYouTubeLink = tweet?.link && tweet?.link.includes("youtu");
     const isModal = location.pathname.includes("/modal");
-    const classes = useTweetComponentStyles({isTweetLiked, isUserCanReply});
+    const classes = useTweetComponentStyles({isTweetLiked: tweet!.isTweetLiked, isUserCanReply: isUserCanReply});
     const image = tweet?.images?.[0];
 
     const handleClickTweet = (event: React.MouseEvent<HTMLAnchorElement>): void => {
@@ -119,17 +116,14 @@ const TweetComponent: FC<HoverUserProps & TweetComponentProps<Tweet> & HoverActi
 
     return (
         <Paper className={classes.container} variant="outlined">
-            {isTweetRetweetedByUser && (
+            {isTweetRetweetedByUser && userProfile ? (
                 <TweetActionResult
                     action={TweetActionResults.RETWEET}
                     text={((myProfile?.id === userProfile?.id) ? ("You") : (userProfile?.fullName)) + " Retweeted"}
                 />
-            )}
-            {((myProfile?.id === userProfile?.id && activeTab === 0) && myProfile?.pinnedTweet?.id === tweet?.id) && (
-                <TweetActionResult
-                    action={TweetActionResults.PIN}
-                    text={"Pinned Tweet"}
-                />
+            ) : null}
+            {((myProfile?.pinnedTweetId === tweet?.id || userProfile?.pinnedTweetId === tweet?.id) && activeTab === 0) && (
+                <TweetActionResult action={TweetActionResults.PIN} text={"Pinned Tweet"}/>
             )}
             <div className={classes.tweetWrapper}>
                 <a onClick={handleClickUser}>
@@ -143,13 +137,13 @@ const TweetComponent: FC<HoverUserProps & TweetComponentProps<Tweet> & HoverActi
                     <div className={classes.header}>
                         <a
                             onClick={handleClickUser}
-                            onMouseEnter={handleHoverPopper}
+                            onMouseEnter={() => handleHoverPopper!(tweet?.user.id!)}
                             onMouseLeave={handleLeavePopper}
                         >
                             <Typography variant={"h6"} component={"span"}>
                                 {tweet?.user.fullName}
                             </Typography>
-                            {tweet?.user.privateProfile && (
+                            {tweet?.user.isPrivateProfile && (
                                 <span className={classes.lockIcon}>
                                     {LockIcon}
                                 </span>
@@ -160,7 +154,7 @@ const TweetComponent: FC<HoverUserProps & TweetComponentProps<Tweet> & HoverActi
                             <Typography variant={"subtitle1"} component={"span"}>
                                 {formatDate(new Date(tweet!.dateTime))}
                             </Typography>
-                            <PopperUserWindow visible={visiblePopperWindow} user={tweet!.user} isTweetComponent={true}/>
+                            <PopperUserWindow visible={visiblePopperWindow} isTweetComponent={true}/>
                         </a>
                         <TweetComponentActions
                             tweet={tweet!}
@@ -196,7 +190,7 @@ const TweetComponent: FC<HoverUserProps & TweetComponentProps<Tweet> & HoverActi
                             </Link>
                         )}
                         {tweet?.poll && <VoteComponent tweetId={tweet?.id} poll={tweet?.poll}/>}
-                        {(isFollower && tweet?.replyType === ReplyType.FOLLOW) && (
+                        {(tweet?.user.isFollower && tweet?.replyType === ReplyType.FOLLOW) && (
                             <>
                                 <div className={classes.iconWrapper}>
                                     <div className={classes.iconCircle}>
@@ -239,12 +233,12 @@ const TweetComponent: FC<HoverUserProps & TweetComponentProps<Tweet> & HoverActi
                                 <>{ReplyIcon}</>
                                 <HoverAction visible={visibleHoverAction?.visibleReplyAction} actionText={"Reply"}/>
                             </IconButton>
-                            {(tweet?.replies?.length !== 0) && (<span>{tweet?.replies?.length}</span>)}
+                            {(tweet?.repliesCount !== 0) && (<span>{tweet?.repliesCount}</span>)}
                         </div>
                         <QuoteTweet
                             quoteTweet={tweet!}
-                            retweets={tweet!.retweets}
-                            isTweetRetweetedByMe={isTweetRetweetedByMe}
+                            retweetsCount={tweet!.retweetsCount}
+                            isTweetRetweetedByMe={tweet?.isTweetRetweeted!}
                             handleRetweet={handleRetweet}
                             visibleRetweetAction={visibleHoverAction?.visibleRetweetAction}
                             handleHoverAction={handleHoverAction}
@@ -257,17 +251,17 @@ const TweetComponent: FC<HoverUserProps & TweetComponentProps<Tweet> & HoverActi
                                 onMouseLeave={handleLeaveAction}
                                 size="small"
                             >
-                                {isTweetLiked ? (
+                                {tweet?.isTweetLiked ? (
                                     <>{LikeIcon}</>
                                 ) : (
                                     <>{LikeOutlinedIcon}</>
                                 )}
                                 <HoverAction
                                     visible={visibleHoverAction?.visibleLikeAction}
-                                    actionText={isTweetLiked ? "Unlike" : "Like"}
+                                    actionText={tweet?.isTweetLiked ? "Unlike" : "Like"}
                                 />
                             </IconButton>
-                            {(tweet?.likedTweets.length !== 0) && (<span>{tweet?.likedTweets.length}</span>)}
+                            {(tweet?.likedTweetsCount !== 0) && (<span>{tweet?.likedTweetsCount}</span>)}
                         </div>
                         <ShareTweet
                             tweet={tweet!}
@@ -285,7 +279,8 @@ const TweetComponent: FC<HoverUserProps & TweetComponentProps<Tweet> & HoverActi
                                     size="small"
                                 >
                                     <>{AnalyticsIcon}</>
-                                    <HoverAction visible={visibleHoverAction?.visibleAnalyticsAction} actionText={"Analytics"}/>
+                                    <HoverAction visible={visibleHoverAction?.visibleAnalyticsAction}
+                                                 actionText={"Analytics"}/>
                                 </IconButton>
                             </div>
                         )}
@@ -310,4 +305,4 @@ const TweetComponent: FC<HoverUserProps & TweetComponentProps<Tweet> & HoverActi
     );
 };
 
-export default compose(withHoverUser, withHoverAction)(TweetComponent) as ComponentType<HoverUserProps & TweetComponentProps<Tweet> & HoverActionProps>;
+export default compose(withHoverUser, withHoverAction)(TweetComponent) as ComponentType<HoverUserProps & TweetComponentProps<TweetResponse> & HoverActionProps>;

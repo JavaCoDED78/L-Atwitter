@@ -3,7 +3,6 @@ import {axios} from "../../core/axios";
 import {API_URL} from "../../util/url";
 import {
     AuthUserResponse,
-    BaseUserResponse,
     BlockedUserResponse,
     FollowerUserResponse,
     MutedUserResponse,
@@ -11,8 +10,13 @@ import {
     UserProfileResponse,
     UserResponse
 } from "../../store/types/user";
-import {NotificationsResponse, NotificationUserResponse} from "../../store/types/notification";
+import {
+    NotificationInfoResponse,
+    NotificationsResponse,
+    NotificationUserResponse
+} from "../../store/types/notification";
 import {TweetResponse} from "../../store/types/tweet";
+import {UserRequest} from "../../store/ducks/user/contracts/state";
 
 export interface Response<T> {
     status: string;
@@ -36,16 +40,16 @@ export const UserApi = {
         const {data} = await axios.get<UserProfileResponse>(`${API_URL}/user/${userId}`);
         return data;
     },
-    async updateUserProfile(userData: AuthUserResponse): Promise<AuthUserResponse> { // +
+    async updateUserProfile(userData: UserRequest): Promise<AuthUserResponse> { // +
         const {data} = await axios.put<AuthUserResponse>(`${API_URL}/user`, userData);
         return data;
     },
-    async getFollowers(userId: string): Promise<BaseUserResponse[]> { // +
-        const {data} = await axios.get<BaseUserResponse[]>(`${API_URL}/user/followers/${userId}`);
+    async getFollowers(userId: string): Promise<UserResponse[]> { // +
+        const {data} = await axios.get<UserResponse[]>(`${API_URL}/user/followers/${userId}`);
         return data;
     },
-    async getFollowing(userId: string): Promise<BaseUserResponse[]> { // +
-        const {data} = await axios.get<BaseUserResponse[]>(`${API_URL}/user/following/${userId}`);
+    async getFollowing(userId: string): Promise<UserResponse[]> { // +
+        const {data} = await axios.get<UserResponse[]>(`${API_URL}/user/following/${userId}`);
         return data;
     },
     async getFollowerRequests(): Promise<FollowerUserResponse[]> { // +
@@ -56,8 +60,8 @@ export const UserApi = {
         const {data} = await axios.get<NotificationUserResponse>(`${API_URL}/user/follow/${userId}`);
         return data;
     },
-    async overallFollowers(userId: string): Promise<BaseUserResponse[]> { // +
-        const {data} = await axios.get<BaseUserResponse[]>(`${API_URL}/user/follow/overall/${userId}`);
+    async overallFollowers(userId: string): Promise<UserResponse[]> { // +
+        const {data} = await axios.get<UserResponse[]>(`${API_URL}/user/follow/overall/${userId}`);
         return data;
     },
     async processFollowRequestToPrivateProfile(userId: number): Promise<UserProfileResponse> { // +
@@ -92,13 +96,17 @@ export const UserApi = {
         const {data} = await axios.get<Response<NotificationsResponse>>(`${API_URL}/user/notifications`);
         return data;
     },
+    async getUserNotificationById(payload: number): Promise<Response<NotificationInfoResponse>> { // +
+        const {data} = await axios.get<Response<NotificationInfoResponse>>(`${API_URL}/user/notifications/${payload}`);
+        return data;
+    },
     async getNotificationsFromTweetAuthors(payload: number): Promise<AxiosResponse<TweetResponse[]>> { // +
         return await axios.get<TweetResponse[]>(`${API_URL}/user/notifications/timeline`, {params: {page: payload}});
     },
     async getUserBookmarks(payload: number): Promise<AxiosResponse<TweetResponse[]>> { // +
         return await axios.get<TweetResponse[]>(`${API_URL}/user/bookmarks`, {params: {page: payload}});
     },
-    async addTweetToBookmarks(tweetId: string): Promise<Response<boolean>> { // +
+    async addTweetToBookmarks(tweetId: number): Promise<Response<boolean>> { // +
         const {data} = await axios.get<Response<boolean>>(`${API_URL}/user/bookmarks/${tweetId}`);
         return data;
     },
@@ -106,7 +114,7 @@ export const UserApi = {
         const {data} = await axios.get<Response<boolean>>(`${API_URL}/user/${id}/start`);
         return data;
     },
-    async pinTweet(tweetId: string): Promise<Response<number>> { // +
+    async pinTweet(tweetId: number): Promise<Response<number>> { // +
         const {data} = await axios.get<Response<number>>(`${API_URL}/user/pin/tweet/${tweetId}`);
         return data;
     },

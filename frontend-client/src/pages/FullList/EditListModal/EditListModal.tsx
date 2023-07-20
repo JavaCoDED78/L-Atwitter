@@ -14,10 +14,10 @@ import {ForwardArrowIcon} from "../../../icons";
 import ManageMembersModal from "./ManageMembersModal/ManageMembersModal";
 import DeleteListModal from "./DeleteListModal/DeleteListModal";
 import {deleteList, editList} from "../../../store/ducks/list/actionCreators";
-import {Image} from "../../../store/ducks/tweets/contracts/state";
 import {uploadImage} from "../../../util/uploadImage";
 import CloseButton from "../../../components/CloseButton/CloseButton";
 import {selectListItem} from "../../../store/ducks/list/selectors";
+import {Image} from "../../../store/types/common";
 
 interface EditListModalProps {
     visible?: boolean;
@@ -26,10 +26,10 @@ interface EditListModalProps {
 
 export interface EditListModalFormProps {
     id: number;
-    name?: string;
-    description?: string;
+    name: string;
+    description: string;
     isPrivate: boolean;
-    wallpaper?: Image;
+    wallpaper: Image;
 }
 
 export const EditListModalFormSchema = yup.object().shape({
@@ -52,7 +52,7 @@ const EditListModal: FC<EditListModalProps> = ({visible, onClose}): ReactElement
             id: list?.id,
             name: list?.name,
             description: list?.description,
-            isPrivate: list?.private,
+            isPrivate: list?.isPrivate,
             wallpaper: list?.wallpaper,
         },
         resolver: yupResolver(EditListModalFormSchema),
@@ -60,7 +60,7 @@ const EditListModal: FC<EditListModalProps> = ({visible, onClose}): ReactElement
     });
 
     useEffect(() => {
-        setIsListPrivate(list?.private!);
+        setIsListPrivate(list?.isPrivate!);
     }, [visible]);
 
     const onSubmit = async (data: EditListModalFormProps): Promise<void> => {
@@ -139,6 +139,7 @@ const EditListModal: FC<EditListModalProps> = ({visible, onClose}): ReactElement
                             render={({field: {onChange, value}}) => (
                                 <CreateListsModalInput
                                     label={"Name"}
+                                    name="name"
                                     helperText={errors.name?.message}
                                     error={!!errors.name}
                                     onChange={onChange}
@@ -154,6 +155,7 @@ const EditListModal: FC<EditListModalProps> = ({visible, onClose}): ReactElement
                             render={({field: {onChange, value}}) => (
                                 <CreateListsModalInput
                                     label={"Description"}
+                                    name={"description"}
                                     onChange={onChange}
                                     value={value}
                                     maxTextLength={50}

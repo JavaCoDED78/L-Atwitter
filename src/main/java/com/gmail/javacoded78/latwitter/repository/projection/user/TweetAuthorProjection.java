@@ -12,6 +12,8 @@ public interface TweetAuthorProjection {
 
         String getUsername();
 
+        String getFullName();
+
         ImageProjection getAvatar();
     }
 }

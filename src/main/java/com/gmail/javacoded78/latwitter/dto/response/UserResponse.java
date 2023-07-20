@@ -15,10 +15,10 @@ public class UserResponse {
     private ImageResponse avatar;
 
     @JsonProperty("isPrivateProfile")
-    private boolean isPrivateProfile;
+    private boolean privateProfile;
 
     @JsonProperty("isMutedDirectMessages")
-    private boolean isMutedDirectMessages;
+    private boolean mutedDirectMessages;
 
     @JsonProperty("isUserBlocked")
     private boolean isUserBlocked;

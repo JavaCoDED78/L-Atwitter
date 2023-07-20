@@ -1,10 +1,9 @@
 import {Action} from "redux";
 
 import {LoadingStatus} from "../../../types";
-import {Settings, UserState} from "./state";
+import {Settings, UserRequest, UserState} from "./state";
 import {RegistrationProps} from "../../../../pages/RegistrationModal/SetPasswordModal/SetPasswordModal";
 import {LoginProps} from "../../../../pages/Login/Login";
-import {AuthUserResponse} from "../../../types/user";
 import {ChatMessageResponse} from "../../../types/chat";
 
 export enum UserActionsType {
@@ -22,9 +21,11 @@ export enum UserActionsType {
     SET_READ_MESSAGE = 'user/SET_READ_MESSAGE', //+
     FOLLOW_USER = 'user/FOLLOW_USER', //+ ????
     UNFOLLOW_USER = 'user/UNFOLLOW_USER', // +check ????
+    SET_USER_FOLLOWING = 'user/SET_USER_FOLLOWING', // +
     FETCH_PIN_TWEET = 'user/FETCH_PIN_TWEET', //+
-    ADD_USER_TO_BLOCKLIST = 'user/ADD_USER_TO_BLOCKLIST', // +
-    ADD_USER_TO_MUTELIST = 'user/ADD_USER_TO_MUTELIST', // +
+    PROCESS_FOLLOW_REQUEST = 'user/PROCESS_FOLLOW_REQUEST', // +
+    PROCESS_USER_TO_BLOCKLIST = 'user/PROCESS_USER_TO_BLOCKLIST', // +
+    PROCESS_USER_TO_MUTELIST = 'user/PROCESS_USER_TO_MUTELIST', // +
     UPDATE_USERNAME = 'user/UPDATE_USERNAME', //+
     UPDATE_EMAIL = 'user/UPDATE_EMAIL', // +
     UPDATE_PHONE = 'user/UPDATE_PHONE', // +
@@ -81,7 +82,7 @@ export interface SetUserLoadingStateActionInterface extends Action<UserActionsTy
 
 export interface UpdateUserDataActionInterface extends Action<UserActionsType> { //+
     type: UserActionsType.UPDATE_USER_DATA;
-    payload: AuthUserResponse;
+    payload: UserRequest;
 }
 
 export interface SetFollowersSizeActionInterface extends Action<UserActionsType> { //+
@@ -113,18 +114,28 @@ export interface UnfollowUserActionInterface extends Action<UserActionsType> { /
     payload: { userId: number; tweetId?: number; };
 }
 
-export interface FetchPinTweetActionInterface extends Action<UserActionsType> { //+
-    type: UserActionsType.FETCH_PIN_TWEET;
-    payload: string;
+export interface SetUserFollowingActionInterface extends Action<UserActionsType> { // +check
+    type: UserActionsType.SET_USER_FOLLOWING;
+    payload: boolean;
 }
 
-export interface AddUserToBlocklistActionInterface extends Action<UserActionsType> { // +
-    type: UserActionsType.ADD_USER_TO_BLOCKLIST;
+export interface FetchPinTweetActionInterface extends Action<UserActionsType> { //+
+    type: UserActionsType.FETCH_PIN_TWEET;
+    payload: number;
+}
+
+export interface ProcessFollowRequestActionInterface extends Action<UserActionsType> { // +
+    type: UserActionsType.PROCESS_FOLLOW_REQUEST;
+    payload: number;
+}
+
+export interface ProcessUserToBlocklistActionInterface extends Action<UserActionsType> { // +
+    type: UserActionsType.PROCESS_USER_TO_BLOCKLIST;
     payload: { userId: number; tweetId?: number; };
 }
 
-export interface AddUserToMuteListActionInterface extends Action<UserActionsType> { // +
-    type: UserActionsType.ADD_USER_TO_MUTELIST;
+export interface ProcessUserToMuteListActionInterface extends Action<UserActionsType> { // +
+    type: UserActionsType.PROCESS_USER_TO_MUTELIST;
     payload: { userId: number; tweetId?: number; };
 }
 
@@ -266,4 +277,5 @@ export type UserActions =
     | SetFollowersSizeActionInterface // +
     | SetProfileStartedActionInterface // +
     | SetPinTweetIdActionInterface
-    | SetReadMessageActionInterface;
+    | SetReadMessageActionInterface
+    | SetUserFollowingActionInterface

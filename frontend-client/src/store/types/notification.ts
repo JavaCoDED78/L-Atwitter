@@ -1,5 +1,6 @@
 import {Image, NotificationType} from "./common";
 import {TweetResponse} from "./tweet";
+import {UserResponse} from "./user";
 
 export interface NotificationsResponse {
     notifications: NotificationResponse[];
@@ -18,6 +19,7 @@ export interface NotificationResponse {
 export interface NotificationUserResponse {
     id: number;
     username: string;
+    fullName: string;
     avatar: Image;
     isFollower: boolean;
 }
@@ -35,3 +37,10 @@ export interface NotificationReplyResponse {
     tweet: TweetResponse;
 }
 
+export interface NotificationInfoResponse {
+    id: number;
+    date: string;
+    notificationType: NotificationType;
+    user: UserResponse;
+    tweet: TweetResponse;
+}

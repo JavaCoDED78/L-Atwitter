@@ -20,6 +20,8 @@ public interface ChatProjection {
 
         ChatUserProjection getUser();
 
+        boolean getLeftChat();
+
         interface ChatUserProjection {
 
             Long getId();
@@ -30,8 +32,13 @@ public interface ChatProjection {
 
             ImageProjection getAvatar();
 
+            boolean isMutedDirectMessages();
+
             @Value("#{@userServiceImpl.isUserBlockedByMyProfile(target.id)}")
             boolean getIsUserBlocked();
+
+            @Value("#{@userServiceImpl.isMyProfileBlockedByUser(target.id)}")
+            boolean getIsMyProfileBlocked();
         }
     }
 }

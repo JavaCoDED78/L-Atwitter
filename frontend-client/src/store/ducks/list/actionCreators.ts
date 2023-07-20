@@ -2,36 +2,24 @@ import {
     DeleteListActionInterface,
     EditListActionInterface,
     FetchListByIdActionInterface,
-    FetchTweetsByListIdActionInterface,
     ListActionType,
     ResetListStateActionInterface,
-    SetFollowToFullListActionInterface,
     SetListActionInterface,
     SetListLoadingStateInterface,
-    SetListsTweetsActionInterface,
     SetMembersSizeActionInterface,
-    SetUnfollowToFullListActionInterface,
+    UpdateFollowToFullListActionInterface,
 } from "./contracts/actionTypes";
 import {LoadingStatus} from "../../types";
-import {EditLists} from "../lists/contracts/state";
 import {BaseListResponse} from "../../types/lists";
-import {TweetResponse} from "../../types/tweet";
+import {EditListsRequest} from "./contracts/state";
 
 export const setList = (payload: BaseListResponse): SetListActionInterface => ({ // +
     type: ListActionType.SET_LIST,
     payload
 });
 
-export const setFollowToFullList = (): SetFollowToFullListActionInterface => ({ // +
-    type: ListActionType.SET_FOLLOW_TO_FULL_LIST,
-});
-
-export const setUnfollowToFullList = (): SetUnfollowToFullListActionInterface => ({ // +
-    type: ListActionType.SET_UNFOLLOW_TO_FULL_LIST,
-});
-
-export const setListsTweets = (payload: TweetResponse[]): SetListsTweetsActionInterface => ({ // +
-    type: ListActionType.SET_LIST_TWEETS,
+export const updateFollowToFullList = (payload: boolean): UpdateFollowToFullListActionInterface => ({ // +
+    type: ListActionType.UPDATE_FOLLOW_TO_FULL_LIST,
     payload
 });
 
@@ -45,12 +33,7 @@ export const fetchListById = (payload: number): FetchListByIdActionInterface => 
     payload
 });
 
-export const fetchTweetsByListId = (payload: { listId: number, pageNumber: number }): FetchTweetsByListIdActionInterface => ({ // +
-    type: ListActionType.FETCH_TWEETS_BY_LIST_ID,
-    payload
-});
-
-export const editList = (payload: EditLists): EditListActionInterface => ({ // +
+export const editList = (payload: EditListsRequest): EditListActionInterface => ({ // +
     type: ListActionType.EDIT_LIST,
     payload
 });

@@ -1,5 +1,6 @@
 package com.gmail.javacoded78.latwitter.dto.response.lists;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gmail.javacoded78.latwitter.dto.response.ImageResponse;
 import lombok.Getter;
 import lombok.Setter;
@@ -13,4 +14,7 @@ public class ListMemberResponse {
     private String username;
     private String about;
     private ImageResponse avatar;
+
+    @JsonProperty("isPrivateProfile")
+    private boolean privateProfile;
 }

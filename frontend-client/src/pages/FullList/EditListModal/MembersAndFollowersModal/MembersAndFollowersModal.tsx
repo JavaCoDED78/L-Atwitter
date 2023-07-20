@@ -1,15 +1,22 @@
-import React, {FC, ReactElement, useEffect, useState} from 'react';
-import {useSelector} from "react-redux";
+import React, {FC, ReactElement, useEffect} from 'react';
+import {useDispatch, useSelector} from "react-redux";
 import {Dialog, DialogContent, DialogTitle, Typography} from "@material-ui/core";
 
 import {useMembersAndFollowersModalStyles} from "./MembersAndFollowersModalStyles";
-import {User} from "../../../../store/ducks/user/contracts/state";
 import ManageMembersItem from "../ManageMembersModal/ManageMembersItem/ManageMembersItem";
 import CloseButton from "../../../../components/CloseButton/CloseButton";
-import {selectListItem} from "../../../../store/ducks/list/selectors";
 import {useGlobalStyles} from "../../../../util/globalClasses";
+import {
+    fetchListFollowers,
+    fetchListMembers,
+    resetListMembersState
+} from "../../../../store/ducks/listMembers/actionCreators";
+import {selectIsListMembersLoading, selectListMembersItems} from "../../../../store/ducks/listMembers/selectors";
+import Spinner from "../../../../components/Spinner/Spinner";
+import {BaseListResponse} from "../../../../store/types/lists";
 
 interface MembersAndFollowersModalProps {
+    list: BaseListResponse;
     visible: boolean;
     title: string;
     onClose: () => void;
@@ -17,6 +24,7 @@ interface MembersAndFollowersModalProps {
 
 const MembersAndFollowersModal: FC<MembersAndFollowersModalProps> = (
     {
+        list,
         visible,
         title,
         onClose
@@ -24,15 +32,21 @@ const MembersAndFollowersModal: FC<MembersAndFollowersModalProps> = (
 ): ReactElement | null => {
     const globalClasses = useGlobalStyles();
     const classes = useMembersAndFollowersModalStyles();
-    const [users, setUsers] = useState<User[]>([]);
-    const list = useSelector(selectListItem);
+    const dispatch = useDispatch();
+    const users = useSelector(selectListMembersItems);
+    const isLoading = useSelector(selectIsListMembersLoading);
 
     useEffect(() => {
-        if (title === "List members") {
-            setUsers(list?.members!);
-        } else {
-            setUsers(list?.followers!);
+        if (visible) {
+            if (title === "List members") {
+                dispatch(fetchListMembers({listId: list?.id!, listOwnerId: list?.listOwner.id!}));
+            } else {
+                dispatch(fetchListFollowers({listId: list?.id!, listOwnerId: list?.listOwner.id!}));
+            }
         }
+        return () => {
+            dispatch(resetListMembersState());
+        };
     }, [visible]);
 
     if (!visible) {
@@ -56,25 +70,27 @@ const MembersAndFollowersModal: FC<MembersAndFollowersModalProps> = (
                 {title}
             </DialogTitle>
             <DialogContent className={classes.content}>
-                {(users.length !== 0) ? (
-                    users.map((user) => <ManageMembersItem key={user.id} item={list} member={user}/>)
-                ) : (
-                    <div className={globalClasses.infoText}>
-                        <Typography variant={"h4"} component={"div"}>
-                            {(title === "List members") ? (
-                                "There isn’t anyone in this List"
-                            ) : (
-                                "There aren’t any followers of this List"
-                            )}
-                        </Typography>
-                        <Typography variant={"subtitle1"} component={"div"}>
-                            {(title === "List members") ? (
-                                "When people get added, they’ll show up here."
-                            ) : (
-                                "When people follow, they’ll show up here."
-                            )}
-                        </Typography>
-                    </div>
+                {isLoading ? <Spinner/> : (
+                    (users.length !== 0) ? (
+                        users.map((user) => <ManageMembersItem key={user.id} item={list} member={user}/>)
+                    ) : (
+                        <div className={globalClasses.infoText}>
+                            <Typography variant={"h4"} component={"div"}>
+                                {(title === "List members") ? (
+                                    "There isn’t anyone in this List"
+                                ) : (
+                                    "There aren’t any followers of this List"
+                                )}
+                            </Typography>
+                            <Typography variant={"subtitle1"} component={"div"}>
+                                {(title === "List members") ? (
+                                    "When people get added, they’ll show up here."
+                                ) : (
+                                    "When people follow, they’ll show up here."
+                                )}
+                            </Typography>
+                        </div>
+                    )
                 )}
             </DialogContent>
         </Dialog>

@@ -5,6 +5,8 @@ import com.gmail.javacoded78.latwitter.model.ColorSchemeType;
 import com.gmail.javacoded78.latwitter.repository.projection.ImageProjection;
 import org.springframework.beans.factory.annotation.Value;
 
+import java.time.LocalDateTime;
+
 public interface AuthUserProjection {
 
     Long getId();
@@ -32,6 +34,8 @@ public interface AuthUserProjection {
     String getLanguage();
 
     String getBirthday();
+
+    LocalDateTime getRegistrationDate();
 
     Long getTweetCount();
 

@@ -11,7 +11,7 @@ import {selectUserProfile} from "../../store/ducks/userProfile/selectors";
 import {selectUserData} from "../../store/ducks/user/selectors";
 import Spinner from "../../components/Spinner/Spinner";
 import {useGlobalStyles} from "../../util/globalClasses";
-import {BaseUserResponse} from "../../store/types/user";
+import {UserResponse} from "../../store/types/user";
 
 const FollowersYouKnow: FC = (): ReactElement => {
     const globalClasses = useGlobalStyles();
@@ -20,11 +20,11 @@ const FollowersYouKnow: FC = (): ReactElement => {
     const history = useHistory();
     const userProfile = useSelector(selectUserProfile);
     const myProfile = useSelector(selectUserData);
-    const [overallFollowers, setOverallFollowers] = useState<BaseUserResponse[]>([]);
+    const [overallFollowers, setOverallFollowers] = useState<UserResponse[]>([]);
     const [isLoading, setIsLoading] = useState<boolean>(true);
 
     useEffect(() => {
-        dispatch(fetchUserProfile(params.id));
+        dispatch(fetchUserProfile(parseInt(params.id)));
         setOverallFollowers([]);
         setIsLoading(true);
         UserApi.overallFollowers(params.id)
@@ -35,7 +35,7 @@ const FollowersYouKnow: FC = (): ReactElement => {
     }, []);
 
     useEffect(() => {
-        if (userProfile?.privateProfile) {
+        if (userProfile?.isPrivateProfile) {
             history.push(`/user/${params.id}`);
         }
     }, [userProfile]);
@@ -50,14 +50,16 @@ const FollowersYouKnow: FC = (): ReactElement => {
         <Paper className={globalClasses.pageContainer} variant="outlined">
             <Paper className={globalClasses.pageHeader} variant="outlined">
                 <BackButton/>
-                <div>
-                    <Typography variant={"h5"} component={"span"}>
-                        {userProfile?.fullName}
-                    </Typography>
-                    <Typography variant={"subtitle2"} component={"div"}>
-                        @{userProfile?.username}
-                    </Typography>
-                </div>
+                {!isLoading && (
+                    <div>
+                        <Typography variant={"h5"} component={"span"}>
+                            {userProfile?.fullName}
+                        </Typography>
+                        <Typography variant={"subtitle2"} component={"div"}>
+                            @{userProfile?.username}
+                        </Typography>
+                    </div>
+                )}
             </Paper>
             {(isLoading && (overallFollowers.length === 0)) ? (
                 <Spinner paddingTop={150}/>

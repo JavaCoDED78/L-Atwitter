@@ -1,13 +1,24 @@
 package com.gmail.javacoded78.latwitter.service.impl;
 
+import com.gmail.javacoded78.latwitter.dto.request.UserToListsRequest;
 import com.gmail.javacoded78.latwitter.exception.ApiRequestException;
 import com.gmail.javacoded78.latwitter.model.Lists;
 import com.gmail.javacoded78.latwitter.model.User;
 import com.gmail.javacoded78.latwitter.repository.ImageRepository;
 import com.gmail.javacoded78.latwitter.repository.ListsRepository;
+import com.gmail.javacoded78.latwitter.repository.TweetRepository;
 import com.gmail.javacoded78.latwitter.repository.UserRepository;
+import com.gmail.javacoded78.latwitter.repository.projection.lists.BaseListProjection;
+import com.gmail.javacoded78.latwitter.repository.projection.lists.ListMemberProjection;
+import com.gmail.javacoded78.latwitter.repository.projection.lists.ListProjection;
+import com.gmail.javacoded78.latwitter.repository.projection.lists.ListUserProjection;
+import com.gmail.javacoded78.latwitter.repository.projection.lists.ListsMemberProjection;
+import com.gmail.javacoded78.latwitter.repository.projection.lists.ListsOwnerMemberProjection;
+import com.gmail.javacoded78.latwitter.repository.projection.lists.ListsProjection;
+import com.gmail.javacoded78.latwitter.repository.projection.lists.ListsUserProjection;
+import com.gmail.javacoded78.latwitter.repository.projection.lists.PinnedListProjection;
+import com.gmail.javacoded78.latwitter.repository.projection.lists.PinnedListsProjection;
 import com.gmail.javacoded78.latwitter.repository.projection.tweet.TweetProjection;
-import com.gmail.javacoded78.latwitter.repository.projection.lists.*;
 import com.gmail.javacoded78.latwitter.service.AuthenticationService;
 import com.gmail.javacoded78.latwitter.service.ListsService;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +29,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -27,6 +43,7 @@ public class ListsServiceImpl implements ListsService {
 
     private final AuthenticationService authenticationService;
     private final ListsRepository listsRepository;
+    private final TweetRepository tweetRepository;
     private final UserRepository userRepository;
     private final ImageRepository imageRepository;
 
@@ -177,44 +194,41 @@ public class ListsServiceImpl implements ListsService {
     }
 
     @Override
-    @Transactional
-    public List<Long> addUserToLists(Long userId, List<Long> listsIds) {
+    public List<Map<String, Object>> getListsToAddUser(Long userId) {
         Long authUserId = authenticationService.getAuthenticatedUserId();
-        List<Lists> lists = listsRepository.getListsByIds(authUserId, listsIds);
-        checkUserIsBlocked(authUserId, userId);
-        User user = userRepository.getValidUser(userId, authUserId)
+        List<Map<String, Object>> lists = new ArrayList<>();
+        listsRepository.getUserOwnerLists(authUserId)
+                .forEach(list -> lists.add(Map.of(
+                        "list", list.getList(),
+                        "isMemberInList", isListIncludeUser(list.getList().getId(), userId))
+                ));
+        return lists;
+    }
+
+    @Override
+    @Transactional(rollbackFor = ApiRequestException.class)
+    public String addUserToLists(UserToListsRequest listsRequest) {
+        Long authUserId = authenticationService.getAuthenticatedUserId();
+        checkUserIsBlocked(authUserId, listsRequest.getUserId());
+        User user = userRepository.getValidUser(listsRequest.getUserId(), authUserId)
                 .orElseThrow(() -> new ApiRequestException("User not found", HttpStatus.NOT_FOUND));
-        checkUserIsBlocked(user.getId(), authUserId);
-        List<Lists> userLists = listsRepository.findByListOwner_Id(authUserId);
-        Set<Lists> commonLists = userLists.stream()
-                .distinct()
-                .filter(lists::contains)
-                .collect(Collectors.toSet());
-        commonLists.forEach((list) -> {
-            Optional<User> userInList = list.getMembers().stream()
-                    .filter(member -> member.getId().equals(user.getId()))
-                    .findFirst();
+        listsRequest.getLists().forEach(listRequest -> {
+            checkIsListExist(listRequest.getListId(), authUserId);
+            Lists list = listsRepository.getOne(listRequest.getListId());
 
-            userLists.forEach((userList) -> {
-                Optional<User> memberInUserList = userList.getMembers().stream()
+            if (listRequest.getIsMemberInList()) {
+                boolean isMemberInList = list.getMembers().stream()
                         .filter(member -> member.getId().equals(user.getId()))
-                        .findFirst();
-
-                if (list.getId().equals(userList.getId())) {
-                    if (userInList.isPresent() && memberInUserList.isEmpty()) {
-                        userList.getMembers().add(user);
-                        listsRepository.save(userList);
-                    }
-                    if (userInList.isEmpty() && memberInUserList.isPresent()) {
-                        userList.getMembers().remove(user);
-                        listsRepository.save(userList);
-                    }
+                        .findFirst()
+                        .isEmpty();
+                if (isMemberInList) {
+                    list.getMembers().add(user);
                 }
-            });
+            } else {
+                list.getMembers().remove(user);
+            }
         });
-        return userLists.stream()
-                .map(Lists::getId)
-                .collect(Collectors.toList());
+        return "User added to lists success.";
     }
 
     @Override
@@ -242,7 +256,8 @@ public class ListsServiceImpl implements ListsService {
 
     @Override
     public Page<TweetProjection> getTweetsByListId(Long listId, Pageable pageable) {
-        return listsRepository.getTweetsByListId(listId, pageable);
+        List<Long> listMembersIds = listsRepository.getListMembersIds(listId);
+        return tweetRepository.findTweetsByUserIds(listMembersIds, pageable);
     }
 
     @Override
@@ -258,7 +273,7 @@ public class ListsServiceImpl implements ListsService {
 
         if (!Objects.equals(listOwnerId, authUserId)) {
             checkUserIsBlocked(listOwnerId, authUserId);
-            checkIsListExist(listOwnerId, authUserId);
+            checkIsListExist(listId, authUserId);
             checkIsListPrivate(listId);
         }
         List<ListsMemberProjection> listFollowers = listsRepository.getListFollowers(listId, listOwnerId);
@@ -272,10 +287,10 @@ public class ListsServiceImpl implements ListsService {
         Long authUserId = authenticationService.getAuthenticatedUserId();
 
         if (!listOwnerId.equals(authUserId)) {
-            List<ListsMemberProjection> listMembers = listsRepository.getListMembers(listId, ListsMemberProjection.class);
+            List<ListsMemberProjection> listMembers = listsRepository.getListMembers(listId);
             return Map.of("userMembers", listMembers);
         } else {
-            List<ListsOwnerMemberProjection> listMembers = listsRepository.getListMembers(listId, ListsOwnerMemberProjection.class);
+            List<ListsOwnerMemberProjection> listMembers = listsRepository.getListOwnerMembers(listId);
             return Map.of("authUserMembers", listMembers);
         }
     }
@@ -322,7 +337,7 @@ public class ListsServiceImpl implements ListsService {
     private void checkIsListExist(Long listId, Long listOwnerId) {
         boolean isListExist = listsRepository.isListExist(listId, listOwnerId);
 
-        if (isListExist) {
+        if (!isListExist) {
             throw new ApiRequestException("List not found", HttpStatus.NOT_FOUND);
         }
     }

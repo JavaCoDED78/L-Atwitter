@@ -1,10 +1,10 @@
 import {
     FetchChatParticipantActionInterface,
     FetchUserProfileActionInterface,
-    ProcessFollowRequestActionInterface,
     ProcessSubscribeActionInterface,
     ResetUserProfileStateActionInterface,
     SetBlockedActionInterface,
+    SetFollowRequestToUserProfileActionInterface,
     SetFollowToUserProfileActionInterface,
     SetMutedActionInterface,
     SetSubscribeToUserProfileActionInterface,
@@ -55,12 +55,12 @@ export const processSubscribe = (payload: number): ProcessSubscribeActionInterfa
     payload
 });
 
-export const processFollowRequest = (payload: number): ProcessFollowRequestActionInterface => ({ // +
-    type: UserProfileActionsType.PROCESS_FOLLOW_REQUEST,
+export const setFollowRequestToUserProfile = (payload: boolean): SetFollowRequestToUserProfileActionInterface => ({ // +
+    type: UserProfileActionsType.SET_FOLLOW_REQUEST_TO_USER_PROFILE,
     payload,
 });
 
-export const resetUserProfileStateAction = (): ResetUserProfileStateActionInterface => ({ // +
+export const resetUserProfileState = (): ResetUserProfileStateActionInterface => ({ // +
     type: UserProfileActionsType.RESET_USER_PROFILE_STATE
 });
 

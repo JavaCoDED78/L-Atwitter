@@ -1,21 +1,5 @@
 import {LoadingStatus} from "../../../types";
-import {User} from "../../user/contracts/state";
-import {Tweet} from "../../tweets/contracts/state";
-import {NotificationResponse, NotificationUserResponse} from "../../../types/notification";
-
-export interface Notification {
-    id: number;
-    date: string;
-    notificationType: NotificationType;
-    user: User;
-    userToFollow: User;
-    tweet: Tweet;
-}
-
-export interface Notifications {
-    notifications: Notification[];
-    tweetAuthors: User[];
-}
+import {NotificationInfoResponse, NotificationResponse, NotificationUserResponse} from "../../../types/notification";
 
 export enum NotificationType {
     LIKE = "LIKE",
@@ -26,5 +10,7 @@ export enum NotificationType {
 export interface NotificationsState {
     notificationsList: NotificationResponse[];
     tweetAuthors: NotificationUserResponse[];
+    notificationInfo?: NotificationInfoResponse;
+    notificationInfoLoadingState: LoadingStatus;
     loadingState: LoadingStatus;
 }

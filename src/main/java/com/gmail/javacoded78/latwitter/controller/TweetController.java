@@ -8,7 +8,6 @@ import com.gmail.javacoded78.latwitter.dto.response.notification.NotificationRep
 import com.gmail.javacoded78.latwitter.dto.response.notification.NotificationResponse;
 import com.gmail.javacoded78.latwitter.dto.response.notification.NotificationTweetResponse;
 import com.gmail.javacoded78.latwitter.dto.response.tweet.TweetHeaderResponse;
-
 import com.gmail.javacoded78.latwitter.dto.response.tweet.TweetResponse;
 import com.gmail.javacoded78.latwitter.mapper.TweetMapper;
 import com.gmail.javacoded78.latwitter.model.ReplyType;
@@ -155,7 +154,7 @@ public class TweetController {
     public ResponseEntity<NotificationReplyResponse> replyTweet(@PathVariable Long tweetId, @RequestBody TweetRequest tweetRequest) {
         NotificationReplyResponse notification = tweetMapper.replyTweet(tweetId, tweetRequest);
         messagingTemplate.convertAndSend("/topic/feed", notification);
-        messagingTemplate.convertAndSend("/topic/tweet/" + notification.getTweet().getId(), notification);
+        messagingTemplate.convertAndSend("/topic/tweet/" + notification.getTweetId(), notification);
         messagingTemplate.convertAndSend("/topic/user/update/tweet/" + notification.getTweet().getUser().getId(), notification);
         return ResponseEntity.ok(notification);
     }

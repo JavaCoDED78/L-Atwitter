@@ -2,7 +2,6 @@ package com.gmail.javacoded78.latwitter.controller;
 
 import com.gmail.javacoded78.latwitter.dto.request.ChatMessageRequest;
 import com.gmail.javacoded78.latwitter.dto.request.MessageWithTweetRequest;
-import com.gmail.javacoded78.latwitter.dto.response.BaseUserResponse;
 import com.gmail.javacoded78.latwitter.dto.response.UserResponse;
 import com.gmail.javacoded78.latwitter.dto.response.chats.ChatMessageResponse;
 import com.gmail.javacoded78.latwitter.dto.response.chats.ChatResponse;

@@ -19,7 +19,8 @@ import com.gmail.javacoded78.latwitter.repository.TweetRepository;
 import com.gmail.javacoded78.latwitter.repository.UserRepository;
 import com.gmail.javacoded78.latwitter.repository.projection.BookmarkProjection;
 import com.gmail.javacoded78.latwitter.repository.projection.LikeTweetProjection;
-import com.gmail.javacoded78.latwitter.repository.projection.NotificationProjection;
+import com.gmail.javacoded78.latwitter.repository.projection.notification.NotificationInfoProjection;
+import com.gmail.javacoded78.latwitter.repository.projection.notification.NotificationProjection;
 import com.gmail.javacoded78.latwitter.repository.projection.tweet.*;
 import com.gmail.javacoded78.latwitter.repository.projection.user.*;
 import com.gmail.javacoded78.latwitter.service.AuthenticationService;
@@ -105,13 +106,13 @@ public class UserServiceImpl implements UserService {
                 .map(RetweetsProjection::getRetweet)
                 .collect(Collectors.toList());
         List<TweetUserProjection> userTweets = combineTweetsArrays(tweets, retweets);
-        Optional<TweetUserProjection> pinnedTweet = tweetRepository.getPinnedTweetByUserId(userId);
+        Optional<TweetsUserProjection> pinnedTweet = tweetRepository.getPinnedTweetByUserId(userId);
 
         if (pinnedTweet.isPresent()) {
-            boolean isTweetExist = userTweets.removeIf(tweet -> tweet.getId().equals(pinnedTweet.get().getId()));
+            boolean isTweetExist = userTweets.removeIf(tweet -> tweet.getId().equals(pinnedTweet.get().getTweet().getId()));
 
             if (isTweetExist) {
-                userTweets.add(0, pinnedTweet.get());
+                userTweets.add(0, pinnedTweet.get().getTweet());
             }
         }
         return getPageableTweetProjectionList(pageable, userTweets, tweets.size() + retweets.size());
@@ -141,6 +142,13 @@ public class UserServiceImpl implements UserService {
         response.put("notifications", notifications);
         response.put("tweetAuthors", tweetAuthors);
         return response;
+    }
+
+    @Override
+    public NotificationInfoProjection getUserNotificationById(Long notificationId) {
+        Long userId = authenticationService.getAuthenticatedUserId();
+        return notificationRepository.getUserNotificationById(userId, notificationId)
+                .orElseThrow(() -> new ApiRequestException("Notification not found", HttpStatus.NOT_FOUND));
     }
 
     @Override

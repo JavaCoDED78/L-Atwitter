@@ -1,31 +1,34 @@
 import React, {FC, ReactElement, useEffect, useState} from 'react';
 import {useDispatch, useSelector} from "react-redux";
-import {Link, useHistory} from "react-router-dom";
+import {Link} from "react-router-dom";
 import {Avatar, Button, Typography} from "@material-ui/core";
 import classNames from "classnames";
 
 import {usePopperUserWindowStyles} from "./PopperUserWindowStyles";
 import {DEFAULT_PROFILE_IMG} from "../../util/url";
-import {User} from "../../store/ducks/user/contracts/state";
 import {selectUserData} from "../../store/ducks/user/selectors";
-import {addUserToBlocklist, followUser, unfollowUser} from "../../store/ducks/user/actionCreators";
-import {followProfile, processFollowRequest, unfollowProfile} from "../../store/ducks/userProfile/actionCreators";
+import {
+    processUserToBlocklist,
+    followUser,
+    unfollowUser,
+    processFollowRequest
+} from "../../store/ducks/user/actionCreators";
 import {LockIcon} from "../../icons";
 import FollowerGroup from "../FollowerGroup/FollowerGroup";
 import {SnackbarProps, withSnackbar} from "../../hoc/withSnackbar";
 import ActionSnackbar from "../ActionSnackbar/ActionSnackbar";
+import {UserDetailResponse} from "../../store/types/user";
+import {selectUserDetailItem} from "../../store/ducks/userDetail/selectors";
 
 interface PopperUserWindowProps {
     visible?: boolean;
     isTweetComponent?: boolean;
     isTweetImageModal?: boolean;
-    user: User;
 }
 
 const PopperUserWindow: FC<PopperUserWindowProps & SnackbarProps> = (
     {
         visible,
-        user,
         isTweetComponent,
         isTweetImageModal,
         snackBarMessage,
@@ -38,48 +41,34 @@ const PopperUserWindow: FC<PopperUserWindowProps & SnackbarProps> = (
     const classes = usePopperUserWindowStyles({isTweetComponent});
     const dispatch = useDispatch();
     const myProfile = useSelector(selectUserData);
-    const history = useHistory();
+    const user = useSelector(selectUserDetailItem);
     const [btnText, setBtnText] = useState<string>("Following");
-    const [sameFollowers, setSameFollowers] = useState<User[]>([]);
-    const [isUserBlocked, setIsUserBlocked] = useState<boolean>(false);
-    const [isWaitingForApprove, setIsWaitingForApprove] = useState<boolean>(false);
-
-    const isFollower = myProfile?.followers?.findIndex(follower => follower.id === user.id) !== -1;
-    const isMyProfileBlocked = user?.userBlockedList?.findIndex(blockedUser => blockedUser.id === myProfile?.id) !== -1;
 
     useEffect(() => {
         if (visible) {
-            const followers = myProfile?.followers?.filter(({id: id1}) => user?.followers?.some(({id: id2}) => id2 === id1));
-            const userBlocked = myProfile?.userBlockedList?.findIndex(blockedUser => blockedUser.id === user?.id) !== -1;
-            const waitingForApprove = user?.followerRequests?.findIndex(blockedUser => blockedUser.id === myProfile?.id) !== -1;
-            setBtnText(waitingForApprove ? ("Pending") : (userBlocked ? "Blocked" : "Following"));
-            setSameFollowers(followers!);
-            setIsUserBlocked(userBlocked);
-            setIsWaitingForApprove(waitingForApprove);
+            setBtnText(user?.isWaitingForApprove ? ("Pending") : (user?.isUserBlocked ? "Blocked" : "Following"));
         }
     }, [visible, user, myProfile]);
 
-    const handleFollow = (event: React.MouseEvent<HTMLButtonElement>, user: User): void => {
+    const handleFollow = (event: React.MouseEvent<HTMLButtonElement>, user: UserDetailResponse): void => {
         event.preventDefault();
         event.stopPropagation();
 
-        if (user?.privateProfile) {
+        if (user?.isPrivateProfile) {
             handleProcessFollowRequest(user);
         } else {
             dispatch(followUser({userId: user?.id!}));
-            // dispatch(followProfile(user));
         }
     };
 
-    const handleUnfollow = (event: React.MouseEvent<HTMLButtonElement>, user: User): void => {
+    const handleUnfollow = (event: React.MouseEvent<HTMLButtonElement>, user: UserDetailResponse): void => {
         event.preventDefault();
         event.stopPropagation();
 
-        if (user?.privateProfile) {
+        if (user?.isPrivateProfile) {
             handleProcessFollowRequest(user);
         } else {
             dispatch(unfollowUser({userId: user?.id!}));
-            // dispatch(unfollowProfile(user));
         }
     };
 
@@ -88,24 +77,20 @@ const PopperUserWindow: FC<PopperUserWindowProps & SnackbarProps> = (
         handleProcessFollowRequest(user!);
     };
 
-    const handleProcessFollowRequest = (user: User): void => {
+    const handleProcessFollowRequest = (user: UserDetailResponse): void => {
         dispatch(processFollowRequest(user.id!));
     };
 
     const onBlockUser = (): void => {
-        dispatch(addUserToBlocklist({userId: user?.id!}));
-        setBtnText(isUserBlocked ? "Following" : "Blocked");
-        setSnackBarMessage!(`@${user?.username} has been ${isUserBlocked ? "unblocked" : "blocked"}.`);
+        dispatch(processUserToBlocklist({userId: user?.id!}));
+        setBtnText(user?.isUserBlocked ? "Following" : "Blocked");
+        setSnackBarMessage!(`@${user?.username} has been ${user?.isUserBlocked ? "unblocked" : "blocked"}.`);
         setOpenSnackBar!(true);
     };
 
     if (!visible) {
         return null;
     }
-
-    const nextPage = () => {
-        history.push(`/user/${user?.id}`);
-    };
 
     return (
         <div
@@ -119,14 +104,14 @@ const PopperUserWindow: FC<PopperUserWindowProps & SnackbarProps> = (
                 <Link to={`/user/${user?.id}`}>
                     <Avatar
                         className={classes.avatar}
-                        alt={`avatar ${user.id}`}
-                        src={user.avatar?.src ? user.avatar?.src : DEFAULT_PROFILE_IMG}
+                        alt={`avatar ${user?.id}`}
+                        src={user?.avatar?.src ? user?.avatar?.src : DEFAULT_PROFILE_IMG}
                     />
                 </Link>
-                {(myProfile?.id === user.id) ? null : (
-                    (isMyProfileBlocked) ? null : (
-                        (!isFollower) ? (
-                            (isUserBlocked) ? (
+                {(myProfile?.id === user?.id) ? null : (
+                    (user?.isMyProfileBlocked) ? null : (
+                        (!user?.isFollower) ? (
+                            (user?.isUserBlocked) ? (
                                 <Button
                                     className={classNames(classes.containedButton, classes.blockButton)}
                                     onClick={onBlockUser}
@@ -138,7 +123,7 @@ const PopperUserWindow: FC<PopperUserWindowProps & SnackbarProps> = (
                                     {btnText}
                                 </Button>
                             ) : (
-                                (isWaitingForApprove) ? (
+                                (user?.isWaitingForApprove) ? (
                                     <Button
                                         className={classes.outlinedButton}
                                         onClick={(event) => cancelFollow(event)}
@@ -179,9 +164,9 @@ const PopperUserWindow: FC<PopperUserWindowProps & SnackbarProps> = (
                 <Link to={`/user/${user?.id}`}>
                     <div>
                         <Typography variant={"h6"} component={"span"}>
-                            {user.fullName}
+                            {user?.fullName}
                         </Typography>
-                        {user?.privateProfile && (
+                        {user?.isPrivateProfile && (
                             <span className={classes.lockIcon}>
                                 {LockIcon}
                             </span>
@@ -189,18 +174,18 @@ const PopperUserWindow: FC<PopperUserWindowProps & SnackbarProps> = (
                     </div>
                 </Link>
                 <Typography variant={"subtitle1"} component={"div"}>
-                    @{user.username}
+                    @{user?.username}
                 </Typography>
             </div>
-            {(isMyProfileBlocked) ? null : (
+            {(user?.isMyProfileBlocked) ? null : (
                 <>
                     <Typography variant={"body1"} component={"div"} className={classes.userInfo}>
-                        {user.about}
+                        {user?.about}
                     </Typography>
                     <div className={classes.userFollowersWrapper}>
                         <Link to={`/user/${user?.id}/following`} className={classes.followLink}>
                             <Typography variant={"h6"} component={"span"}>
-                                {user?.followers?.length ? user?.followers?.length : 0}
+                                {user?.followersSize}
                             </Typography>
                             <Typography variant={"subtitle1"} component={"span"}>
                                 {"Following"}
@@ -208,15 +193,15 @@ const PopperUserWindow: FC<PopperUserWindowProps & SnackbarProps> = (
                         </Link>
                         <Link to={`/user/${user?.id}/followers`} className={classes.followLink}>
                             <Typography variant={"h6"} component={"span"}>
-                                {user?.following?.length ? user?.following?.length : 0}
+                                {user?.followingSize}
                             </Typography>
                             <Typography variant={"subtitle1"} component={"span"}>
                                 {"Followers"}
                             </Typography>
                         </Link>
                     </div>
-                    {user.privateProfile ? null : (
-                        <FollowerGroup user={user} sameFollowers={sameFollowers}/>
+                    {user?.isPrivateProfile ? null : (
+                        <FollowerGroup user={user} sameFollowers={user?.sameFollowers}/>
                     )}
                 </>
             )}

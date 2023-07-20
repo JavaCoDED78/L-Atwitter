@@ -11,20 +11,23 @@ import {CompatClient, Stomp} from "@stomp/stompjs";
 import {compose} from "redux";
 
 import {
+    selectIsRepliesLoading,
     selectIsTweetError,
     selectIsTweetLoadedSuccess,
     selectIsTweetLoading,
+    selectReplies,
     selectTweetData
 } from '../../store/ducks/tweet/selectors';
 import {
+    fetchReplies,
     fetchTweetData,
+    resetRepliesState,
     resetTweetState,
-    setTweetData,
-    setTweetLoadingState
+    updateTweetData,
 } from '../../store/ducks/tweet/actionCreators';
 import {likeTweet, retweet} from "../../store/ducks/tweets/actionCreators";
 import {selectUserData} from "../../store/ducks/user/selectors";
-import UsersListModal from "../../components/UsersListModal/UsersListModal";
+import UsersListModal, {UsersListModalAction} from "../../components/UsersListModal/UsersListModal";
 import AddTweetForm from "../../components/AddTweetForm/AddTweetForm";
 import TweetComponent from "../../components/TweetComponent/TweetComponent";
 import {useFullTweetStyles} from "./FullTweetStyles";
@@ -79,32 +82,30 @@ const FullTweet: FC<HoverUserProps & FullTweetProps & HoverActionProps> = (
     const dispatch = useDispatch();
     const location = useLocation();
     const tweetData = useSelector(selectTweetData);
+    const replies = useSelector(selectReplies);
     const myProfile = useSelector(selectUserData);
-    const isLoading = useSelector(selectIsTweetLoading);
-    const isLoadedSuccess = useSelector(selectIsTweetLoadedSuccess);
+    const isTweetLoading = useSelector(selectIsTweetLoading);
+    const isTweetLoadedSuccess = useSelector(selectIsTweetLoadedSuccess);
+    const isRepliesLoading = useSelector(selectIsRepliesLoading);
     const isError = useSelector(selectIsTweetError);
     const params = useParams<{ id: string }>();
     const [visibleModalWindow, setVisibleModalWindow] = useState<boolean>(false);
     const [visibleAnalyticsModalWindow, setVisibleAnalyticsModalWindow] = useState<boolean>(false);
-    const [modalWindowTitle, setModalWindowTitle] = useState<string>("");
+    const [usersListModalAction, setUsersListModalAction] = useState<UsersListModalAction>(UsersListModalAction.LIKED);
     const [openYouTubeVideo, setOpenYouTubeVideo] = useState<boolean>(false);
-
-    const isTweetLiked = tweetData?.likedTweets.find((like) => like.user.id === myProfile?.id);
-    const isTweetRetweeted = tweetData?.retweets.find((retweet) => retweet.user.id === myProfile?.id);
-    const isFollower = myProfile?.followers?.findIndex((follower) => follower.id === tweetData?.user.id);
     const isYouTubeLink = tweetData?.link && tweetData?.link.includes("youtu");
     const image = tweetData?.images?.[0];
-    const classes = useFullTweetStyles({isTweetRetweeted, isTweetLiked});
+    const classes = useFullTweetStyles({isTweetRetweeted: tweetData?.isTweetRetweeted!, isTweetLiked: tweetData?.isTweetLiked!});
 
     useEffect(() => {
         window.scrollTo(0, 0);
         if (params.id) {
-            dispatch(fetchTweetData(params.id));
+            dispatch(fetchTweetData(parseInt(params.id)));
 
             stompClient = Stomp.over(new SockJS(WS_URL));
             stompClient.connect({}, () => {
                 stompClient?.subscribe("/topic/tweet/" + params.id, (response) => {
-                    dispatch(setTweetData(JSON.parse(response.body)));
+                    dispatch(updateTweetData(JSON.parse(response.body)));
                 });
             });
         }
@@ -113,29 +114,36 @@ const FullTweet: FC<HoverUserProps & FullTweetProps & HoverActionProps> = (
             stompClient?.disconnect();
             dispatch(resetTweetState());
         };
-    }, [dispatch, params.id]);
+    }, [params.id]);
+
+    useEffect(() => {
+        dispatch(fetchReplies(parseInt(params.id)));
+
+        return () => {
+            dispatch(resetRepliesState());
+        };
+    }, [isTweetLoadedSuccess]);
 
     const handleLike = (): void => {
-        dispatch(likeTweet(params.id));
+        dispatch(likeTweet(parseInt(params.id)));
     };
 
     const handleRetweet = (): void => {
-        dispatch(retweet(params.id));
+        dispatch(retweet(parseInt(params.id)));
     };
 
     const onOpenLikesModalWindow = (): void => {
         setVisibleModalWindow(true);
-        setModalWindowTitle("Liked by");
+        setUsersListModalAction(UsersListModalAction.LIKED);
     };
 
     const onOpenRetweetsModalWindow = (): void => {
         setVisibleModalWindow(true);
-        setModalWindowTitle("Retweeted by");
+        setUsersListModalAction(UsersListModalAction.RETWEETED);
     };
 
     const onCloseModalWindow = (): void => {
         setVisibleModalWindow(false);
-        setModalWindowTitle("");
     };
 
     const onOpenYouTubeVideo = (): void => {
@@ -150,23 +158,17 @@ const FullTweet: FC<HoverUserProps & FullTweetProps & HoverActionProps> = (
         setVisibleAnalyticsModalWindow(false);
     };
 
-    if (isLoading) {
+    if (isTweetLoading) {
         return <Spinner paddingTop={200}/>;
-    } else if (tweetData !== undefined && isLoadedSuccess) {
+    } else if (tweetData !== undefined && isTweetLoadedSuccess) {
         return (
             <div className={globalClasses.contentWrapper}>
                 <Paper className={classes.container}>
-                    {isTweetRetweeted && (
-                        <TweetActionResult
-                            action={TweetActionResults.RETWEET}
-                            text={((myProfile?.id === tweetData.user.id) ? ("You") : (tweetData.user.fullName)) + " Retweeted"}
-                        />
+                    {tweetData.isTweetRetweeted && (
+                        <TweetActionResult action={TweetActionResults.RETWEET} text={"You Retweeted"}/>
                     )}
-                    {(myProfile?.pinnedTweet?.id === tweetData.id) && (
-                        <TweetActionResult
-                            action={TweetActionResults.PIN}
-                            text={"Pinned Tweet"}
-                        />
+                    {(myProfile?.pinnedTweetId === tweetData.id) && (
+                        <TweetActionResult action={TweetActionResults.PIN} text={"Pinned Tweet"}/>
                     )}
                     <div className={classes.header}>
                         <div className={classes.headerWrapper}>
@@ -177,7 +179,7 @@ const FullTweet: FC<HoverUserProps & FullTweetProps & HoverActionProps> = (
                             />
                             <div
                                 className={classes.headerUserInfo}
-                                onMouseEnter={handleHoverPopper}
+                                onMouseEnter={() => handleHoverPopper!(tweetData.user.id)}
                                 onMouseLeave={handleLeavePopper}
                             >
                                 <Link to={`/user/${tweetData.user.id}`}>
@@ -190,7 +192,7 @@ const FullTweet: FC<HoverUserProps & FullTweetProps & HoverActionProps> = (
                                         @{tweetData.user.username}
                                     </Typography>
                                 </div>
-                                <PopperUserWindow visible={visiblePopperWindow} user={tweetData.user}/>
+                                <PopperUserWindow visible={visiblePopperWindow}/>
                             </div>
                         </div>
                         <TweetComponentActions
@@ -247,15 +249,15 @@ const FullTweet: FC<HoverUserProps & FullTweetProps & HoverActionProps> = (
                             {format(new Date(tweetData.dateTime), ' MMM dd, yyyy')} · Twitter Web App
                         </Typography>
                     </div>
-                    {(tweetData.retweets.length !== 0 || tweetData.likedTweets.length !== 0) && (
+                    {(tweetData.retweetsCount !== 0 || tweetData.likedTweetsCount !== 0) && (
                         <>
                             <Divider/>
                             <div className={classes.content}>
-                                {(tweetData.retweets.length !== 0) && (
+                                {(tweetData.retweetsCount !== 0) && (
                                     <a href={"javascript:void(0);"} onClick={onOpenRetweetsModalWindow}>
                                         <div className={classes.contentItem}>
                                             <Typography variant={"h6"} component={"span"}>
-                                                {tweetData.retweets.length}
+                                                {tweetData.retweetsCount}
                                             </Typography>
                                             <Typography variant={"subtitle1"} component={"span"}>
                                                 Retweets
@@ -263,11 +265,11 @@ const FullTweet: FC<HoverUserProps & FullTweetProps & HoverActionProps> = (
                                         </div>
                                     </a>
                                 )}
-                                {(tweetData.likedTweets.length !== 0) && (
+                                {(tweetData.likedTweetsCount !== 0) && (
                                     <a href={"javascript:void(0);"} onClick={onOpenLikesModalWindow}>
                                         <div className={classes.contentItem}>
                                             <Typography variant={"h6"} component={"span"}>
-                                                {tweetData.likedTweets.length}
+                                                {tweetData.likedTweetsCount}
                                             </Typography>
                                             <Typography variant={"subtitle1"} component={"span"}>
                                                 Likes
@@ -294,14 +296,14 @@ const FullTweet: FC<HoverUserProps & FullTweetProps & HoverActionProps> = (
                                 onMouseEnter={() => handleHoverAction?.(HoverActions.RETWEET)}
                                 onMouseLeave={handleLeaveAction}
                             >
-                                {isTweetRetweeted ? (
+                                {tweetData.isTweetRetweeted ? (
                                     <>{RetweetIcon}</>
                                 ) : (
                                     <>{RetweetOutlinedIcon}</>
                                 )}
                                 <HoverAction
                                     visible={visibleHoverAction?.visibleRetweetAction}
-                                    actionText={isTweetRetweeted ? "Undo Retweet" : "Retweet"}
+                                    actionText={tweetData.isTweetRetweeted ? "Undo Retweet" : "Retweet"}
                                 />
                             </IconButton>
                         </div>
@@ -311,14 +313,14 @@ const FullTweet: FC<HoverUserProps & FullTweetProps & HoverActionProps> = (
                                 onMouseEnter={() => handleHoverAction?.(HoverActions.LIKE)}
                                 onMouseLeave={handleLeaveAction}
                             >
-                                {isTweetLiked ? (
+                                {tweetData.isTweetLiked ? (
                                     <>{LikeIcon}</>
                                 ) : (
                                     <>{LikeOutlinedIcon}</>
                                 )}
                                 <HoverAction
                                     visible={visibleHoverAction?.visibleLikeAction}
-                                    actionText={isTweetLiked ? "Unlike" : "Like"}
+                                    actionText={tweetData.isTweetLiked ? "Unlike" : "Like"}
                                 />
                             </IconButton>
                         </div>
@@ -356,7 +358,7 @@ const FullTweet: FC<HoverUserProps & FullTweetProps & HoverActionProps> = (
                         </Paper>
                     )}
                     {((tweetData.replyType !== ReplyType.FOLLOW) && (tweetData.replyType !== ReplyType.MENTION) ||
-                        (myProfile?.id === tweetData?.user.id) || (isFollower && tweetData.replyType === ReplyType.FOLLOW)
+                        (myProfile?.id === tweetData?.user.id) || (tweetData.user.isFollower && tweetData.replyType === ReplyType.FOLLOW)
                     ) ? (
                         <>
                             <Typography variant={"subtitle1"} className={classes.replyWrapper}>
@@ -376,8 +378,8 @@ const FullTweet: FC<HoverUserProps & FullTweetProps & HoverActionProps> = (
                         </>
                     ) : null}
                     <UsersListModal
-                        users={(modalWindowTitle === "Liked by") ? tweetData.likedTweets : tweetData.retweets}
-                        title={(modalWindowTitle === "Liked by") ? "Liked by" : "Retweeted by"}
+                        tweetId={tweetData.id}
+                        usersListModalAction={usersListModalAction}
                         visible={visibleModalWindow}
                         onClose={onCloseModalWindow}
                     />
@@ -388,7 +390,9 @@ const FullTweet: FC<HoverUserProps & FullTweetProps & HoverActionProps> = (
                     />
                 </Paper>
                 <div className={classes.divider}/>
-                {tweetData.replies.map((tweet) => <TweetComponent key={tweet.id} item={tweet}/>)}
+                {isRepliesLoading ? <Spinner/> : (
+                    replies.map((tweet) => <TweetComponent key={tweet.id} item={tweet}/>)
+                )}
             </div>
         );
     } else if (tweetData === undefined && isError) {

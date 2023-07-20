@@ -1,9 +1,12 @@
 package com.gmail.javacoded78.latwitter.dto.response;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gmail.javacoded78.latwitter.model.BackgroundColorType;
 import com.gmail.javacoded78.latwitter.model.ColorSchemeType;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -22,6 +25,7 @@ public class AuthUserResponse {
     private String gender;
     private String language;
     private String birthday;
+    private LocalDateTime registrationDate;
     private Long tweetCount;
     private Long mediaTweetCount;
     private Long likeCount;
@@ -29,7 +33,11 @@ public class AuthUserResponse {
     private boolean active;
     private boolean profileCustomized;
     private boolean profileStarted;
+
+    @JsonProperty("isMutedDirectMessages")
     private boolean mutedDirectMessages;
+
+    @JsonProperty("isPrivateProfile")
     private boolean privateProfile;
     private BackgroundColorType backgroundColor;
     private ColorSchemeType colorScheme;

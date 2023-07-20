@@ -11,6 +11,7 @@ import format from 'date-fns/format';
 import {CompatClient, Stomp} from "@stomp/stompjs";
 import SockJS from "sockjs-client";
 import classNames from "classnames";
+import classnames from "classnames";
 import {compose} from "recompose";
 
 import {
@@ -26,11 +27,11 @@ import {useUserPageStyles} from "./UserPageStyles";
 import BackButton from "../../components/BackButton/BackButton";
 import EditProfileModal from "../../components/EditProfileModal/EditProfileModal";
 import {
-    addUserToBlocklist,
-    addUserToMuteList,
-    fetchUserData,
-    follow,
-    unfollow
+    followUser,
+    processFollowRequest,
+    processUserToBlocklist,
+    processUserToMuteList,
+    unfollowUser
 } from "../../store/ducks/user/actionCreators";
 import {selectUserData, selectUserIsLoaded} from "../../store/ducks/user/selectors";
 import {
@@ -51,17 +52,11 @@ import {
 } from "../../store/ducks/userTweets/actionCreators";
 import {
     selectUserProfile,
-    selectUsersIsErrorLoaded, selectUsersIsLoading,
+    selectUsersIsErrorLoaded,
+    selectUsersIsLoading,
     selectUsersIsSuccessLoaded
 } from "../../store/ducks/userProfile/selectors";
-import {
-    fetchUserProfile,
-    followUserProfile,
-    processFollowRequest,
-    processSubscribe,
-    resetUserProfile, resetUserProfileStateAction,
-    unfollowUserProfile
-} from "../../store/ducks/userProfile/actionCreators";
+import {fetchUserProfile, processSubscribe, resetUserProfileState} from "../../store/ducks/userProfile/actionCreators";
 import UserPageTweets from "./UserPageTweets";
 import {DEFAULT_PROFILE_IMG, WS_URL} from "../../util/url";
 import SetupProfileModal from "../SetupProfileModal/SetupProfileModal";
@@ -73,11 +68,9 @@ import {SnackbarProps, withSnackbar} from "../../hoc/withSnackbar";
 import Spinner from "../../components/Spinner/Spinner";
 import {HoverActionProps, HoverActions, withHoverAction} from "../../hoc/withHoverAction";
 import HoverAction from "../../components/HoverAction/HoverAction";
-import {User} from "../../store/ducks/user/contracts/state";
 import FollowerGroup from "../../components/FollowerGroup/FollowerGroup";
 import UserNotFound from "./UserNotFound/UserNotFound";
 import {useGlobalStyles} from "../../util/globalClasses";
-import classnames from "classnames";
 
 interface LinkToFollowersProps {
     children: ReactNode;
@@ -116,25 +109,17 @@ const UserPage: FC<SnackbarProps & HoverActionProps> = (
 
     const [btnText, setBtnText] = useState<string>("");
     const [activeTab, setActiveTab] = useState<number>(0);
-    const [sameFollowers, setSameFollowers] = useState<User[]>([]);
     const [visibleBlockUserModal, setVisibleBlockUserModal] = useState<boolean>(false);
     const [visibleEditProfile, setVisibleEditProfile] = useState<boolean>(false);
     const [visibleSetupProfile, setVisibleSetupProfile] = useState<boolean>(false);
     const pagesCount = useSelector(selectPagesCount);
     const [page, setPage] = useState<number>(0);
 
-    const isSubscriber = userProfile?.subscribers?.findIndex(subscriber => subscriber.id === myProfile?.id) !== -1;
-    const isFollower = myProfile?.followers?.findIndex(follower => follower.id === userProfile?.id) !== -1;
-    const isUserMuted = myProfile?.userMutedList?.findIndex(mutedUser => mutedUser.id === userProfile?.id) !== -1;
-    const isUserBlocked = myProfile?.userBlockedList?.findIndex(blockedUser => blockedUser.id === userProfile?.id) !== -1;
-    const isMyProfileBlocked = userProfile?.userBlockedList?.findIndex(blockedUser => blockedUser.id === myProfile?.id) !== -1;
-    const isWaitingForApprove = userProfile?.followerRequests?.findIndex(blockedUser => blockedUser.id === myProfile?.id) !== -1;
-
     useEffect(() => {
         window.scrollTo(0, 0);
 
         if (params.id) {
-            dispatch(fetchUserProfile(params.id));
+            dispatch(fetchUserProfile(parseInt(params.id)));
         }
         document.body.style.overflow = 'unset';
 
@@ -153,16 +138,16 @@ const UserPage: FC<SnackbarProps & HoverActionProps> = (
         });
 
         return () => {
-            dispatch(resetUserProfileStateAction());
+            dispatch(resetUserProfileState());
             dispatch(resetUserTweets());
             stompClient?.disconnect();
         };
     }, [params.id]);
 
     useEffect(() => {
-        setBtnText(isWaitingForApprove ? ("Pending") : (isUserBlocked ? "Blocked" : "Following"));
+        setBtnText(userProfile?.isWaitingForApprove ? ("Pending") : (userProfile?.isUserBlocked ? "Blocked" : "Following"));
 
-        if (userProfile) {
+        if (isUserProfileSuccessLoaded) {
             dispatch(fetchUserTweets({userId: params.id, page: 0}));
             setPage(prevState => prevState + 1);
         }
@@ -173,19 +158,11 @@ const UserPage: FC<SnackbarProps & HoverActionProps> = (
         return () => {
             dispatch(resetUserTweets());
         };
-    }, [userProfile]);
+    }, [isUserProfileSuccessLoaded]);
 
     useEffect(() => {
-        const isBlocked = myProfile?.userBlockedList?.findIndex(blockedUser => blockedUser.id === userProfile?.id) !== -1;
-        setBtnText(isWaitingForApprove ? ("Pending") : (isBlocked ? "Blocked" : "Following"));
+        setBtnText(userProfile?.isWaitingForApprove ? ("Pending") : (userProfile?.isUserBlocked ? "Blocked" : "Following"));
     }, [myProfile]);
-
-    useEffect(() => {
-        if (isMyProfileLoaded && isUserProfileSuccessLoaded) {
-            const followers = myProfile?.followers?.filter(({id: id1}) => userProfile?.followers?.some(({id: id2}) => id2 === id1));
-            setSameFollowers(followers!);
-        }
-    }, [isMyProfileLoaded && isUserProfileSuccessLoaded]);
 
     const loadUserTweets = (): void => {
         if (activeTab === 1) {
@@ -244,7 +221,7 @@ const UserPage: FC<SnackbarProps & HoverActionProps> = (
     };
 
     const LinkToFollowers = ({children, linkTo}: LinkToFollowersProps): JSX.Element => {
-        if (userProfile?.privateProfile && linkTo && userProfile?.id !== myProfile?.id) {
+        if (userProfile?.isPrivateProfile && linkTo && userProfile?.id !== myProfile?.id) {
             return <div className={classes.followLink}>{children}</div>;
         } else {
             return <Link to={`/user/${userProfile?.id}/${linkTo}`} className={classes.followLink}>{children}</Link>
@@ -252,15 +229,13 @@ const UserPage: FC<SnackbarProps & HoverActionProps> = (
     };
 
     const handleFollow = (): void => {
-        if (userProfile?.privateProfile) {
+        if (userProfile?.isPrivateProfile) {
             dispatch(processFollowRequest(userProfile.id!));
         } else {
-            if (isFollower) {
-                // dispatch(unfollowUserProfile(userProfile!));
-                // dispatch(unfollow(userProfile!.id));
+            if (userProfile?.isFollower) {
+                dispatch(unfollowUser({userId: userProfile?.id!}));
             } else {
-                // dispatch(followUserProfile(userProfile!));
-                // dispatch(follow(userProfile!.id));
+                dispatch(followUser({userId: userProfile?.id!}));
             }
         }
     };
@@ -291,16 +266,16 @@ const UserPage: FC<SnackbarProps & HoverActionProps> = (
     };
 
     const onMuteUser = (): void => {
-        dispatch(addUserToMuteList({userId: userProfile?.id!}));
-        setSnackBarMessage!(`@${userProfile?.username} has been ${isUserMuted ? "unmuted" : "muted"}.`);
+        dispatch(processUserToMuteList({userId: userProfile?.id!}));
+        setSnackBarMessage!(`@${userProfile?.username} has been ${userProfile?.isUserMuted ? "unmuted" : "muted"}.`);
         setOpenSnackBar!(true);
     };
 
     const onBlockUser = (): void => {
-        dispatch(addUserToBlocklist({userId: userProfile?.id!}));
+        dispatch(processUserToBlocklist({userId: userProfile?.id!}));
         setVisibleBlockUserModal(false);
-        setBtnText(isUserBlocked ? "Following" : "Blocked");
-        setSnackBarMessage!(`@${userProfile?.username} has been ${isUserBlocked ? "unblocked" : "blocked"}.`);
+        setBtnText(userProfile?.isUserBlocked ? "Following" : "Blocked");
+        setSnackBarMessage!(`@${userProfile?.username} has been ${userProfile?.isUserBlocked ? "unblocked" : "blocked"}.`);
         setOpenSnackBar!(true);
     };
 
@@ -334,7 +309,7 @@ const UserPage: FC<SnackbarProps & HoverActionProps> = (
                             <Typography variant={"h5"} component={"span"}>
                                 {userProfile?.fullName}
                             </Typography>
-                            {userProfile?.privateProfile && (
+                            {userProfile?.isPrivateProfile && (
                                 <span className={classes.lockIcon}>
                                     {LockIcon}
                                 </span>
@@ -361,7 +336,7 @@ const UserPage: FC<SnackbarProps & HoverActionProps> = (
                                 </Avatar>
                             </div>
                             {(isMyProfileLoaded && isUserProfileSuccessLoaded) && (
-                                isMyProfileBlocked ? null : (
+                                userProfile?.isMyProfileBlocked ? null : (
                                     (userProfile?.id === myProfile?.id) ? (
                                         <Button
                                             className={classes.outlinedButton}
@@ -376,16 +351,16 @@ const UserPage: FC<SnackbarProps & HoverActionProps> = (
                                         <div className={classes.buttonWrapper}>
                                             <UserPageActions
                                                 user={userProfile!}
-                                                isUserMuted={isUserMuted}
-                                                isUserBlocked={isUserBlocked}
+                                                isUserMuted={userProfile?.isUserMuted!}
+                                                isUserBlocked={userProfile?.isUserBlocked!}
                                                 onMuteUser={onMuteUser}
                                                 onOpenBlockUserModal={onOpenBlockUserModal}
                                                 visibleMoreAction={visibleHoverAction?.visibleMoreAction}
                                                 handleHoverAction={handleHoverAction}
                                                 handleLeaveAction={handleLeaveAction}
                                             />
-                                            {!isUserBlocked && (
-                                                !userProfile?.mutedDirectMessages || isFollower ? (
+                                            {!userProfile?.isUserBlocked && (
+                                                !userProfile?.isMutedDirectMessages || userProfile?.isFollower ? (
                                                     <IconButton
                                                         className={globalClasses.userPageIconButton}
                                                         onClick={handleClickAddUserToChat}
@@ -401,7 +376,7 @@ const UserPage: FC<SnackbarProps & HoverActionProps> = (
                                                     </IconButton>
                                                 ) : null
                                             )}
-                                            {isUserBlocked ? (
+                                            {userProfile?.isUserBlocked ? (
                                                 <Button
                                                     className={classNames(classes.primaryButton, classes.blockButton)}
                                                     onClick={onOpenBlockUserModal}
@@ -414,7 +389,7 @@ const UserPage: FC<SnackbarProps & HoverActionProps> = (
                                                     {btnText}
                                                 </Button>
                                             ) : (
-                                                isFollower ? (
+                                                userProfile?.isFollower ? (
                                                     <>
                                                         <IconButton
                                                             onClick={handleSubscribeToNotifications}
@@ -423,10 +398,10 @@ const UserPage: FC<SnackbarProps & HoverActionProps> = (
                                                             className={globalClasses.userPageIconButton}
                                                             color="primary"
                                                         >
-                                                            {isSubscriber ? NotificationsAddFilledIcon : NotificationsAddIcon}
+                                                            {userProfile?.isSubscriber ? NotificationsAddFilledIcon : NotificationsAddIcon}
                                                             <HoverAction
                                                                 visible={visibleHoverAction?.visibleOtherAction}
-                                                                actionText={isSubscriber ? "Turn off notifications" : "Notify"}
+                                                                actionText={userProfile?.isSubscriber ? "Turn off notifications" : "Notify"}
                                                             />
                                                         </IconButton>
                                                         <Button
@@ -442,7 +417,7 @@ const UserPage: FC<SnackbarProps & HoverActionProps> = (
                                                         </Button>
                                                     </>
                                                 ) : ((userProfile !== undefined) ? (
-                                                        isWaitingForApprove ? (
+                                                        userProfile?.isWaitingForApprove ? (
                                                             <Button
                                                                 className={classes.outlinedButton}
                                                                 onClick={handleFollow}
@@ -479,7 +454,7 @@ const UserPage: FC<SnackbarProps & HoverActionProps> = (
                                     <Typography variant={"h5"} component={"span"}>
                                         {userProfile.fullName}
                                     </Typography>
-                                    {userProfile?.privateProfile && (
+                                    {userProfile?.isPrivateProfile && (
                                         <span className={classes.lockIcon}>
                                             {LockIcon}
                                         </span>
@@ -493,7 +468,7 @@ const UserPage: FC<SnackbarProps & HoverActionProps> = (
                                     @{userProfile.username}
                                 </Typography>
                             )}
-                            {isMyProfileBlocked ? null : (
+                            {userProfile?.isMyProfileBlocked ? null : (
                                 <Typography variant={"body1"} component={"div"} className={classes.description}>
                                     {userProfile?.about}
                                 </Typography>
@@ -506,7 +481,7 @@ const UserPage: FC<SnackbarProps & HoverActionProps> = (
                                         <Skeleton component={"span"} variant="text" width={150}/>
                                     </div>
                                 )}
-                                {isMyProfileBlocked ? null : (
+                                {userProfile?.isMyProfileBlocked ? null : (
                                     <List>
                                         {userProfile?.location && (
                                             <ListItem>
@@ -529,10 +504,10 @@ const UserPage: FC<SnackbarProps & HoverActionProps> = (
                                                 </MuiLink>
                                             </ListItem>
                                         )}
-                                        {userProfile?.dateOfBirth && (
+                                        {userProfile?.birthday && (
                                             <ListItem>
                                                 <Typography variant={"subtitle1"} component={"span"}>
-                                                    Date of Birth: {userProfile?.dateOfBirth}
+                                                    Date of Birth: {userProfile?.birthday}
                                                 </Typography>
                                             </ListItem>
                                         )}
@@ -552,15 +527,15 @@ const UserPage: FC<SnackbarProps & HoverActionProps> = (
                                         <Skeleton component={"span"} variant="text" width={80}/>
                                     </div>
                                 )}
-                                {isMyProfileBlocked ? null : (
+                                {userProfile?.isMyProfileBlocked ? null : (
                                     <List className={classes.details}>
                                         <LinkToFollowers linkTo={"following"}>
                                             <ListItem>
                                                 <Typography variant={"h6"} component={"span"}>
                                                     {(userProfile?.id === myProfile?.id) ? (
-                                                        myProfile?.followers?.length ? myProfile?.followers?.length : 0
+                                                        myProfile?.followersSize
                                                     ) : (
-                                                        userProfile?.followers?.length ? userProfile?.followers?.length : 0
+                                                        userProfile?.followersSize
                                                     )}
                                                 </Typography>
                                                 <Typography variant={"subtitle1"} component={"span"}>
@@ -572,9 +547,9 @@ const UserPage: FC<SnackbarProps & HoverActionProps> = (
                                             <ListItem>
                                                 <Typography variant={"h6"} component={"span"}>
                                                     {(userProfile?.id === myProfile?.id) ? (
-                                                        myProfile?.following?.length ? myProfile?.following?.length : 0
+                                                        myProfile?.followingSize
                                                     ) : (
-                                                        userProfile?.following?.length ? userProfile?.following?.length : 0
+                                                        userProfile?.followingSize
                                                     )}
                                                 </Typography>
                                                 <Typography variant={"subtitle1"} component={"span"}>
@@ -585,9 +560,24 @@ const UserPage: FC<SnackbarProps & HoverActionProps> = (
                                     </List>
                                 )}
                             </div>
-                            {(isMyProfileBlocked || userProfile?.privateProfile) ? null : (
+                            {userProfile?.isUserMuted && (
                                 (userProfile !== undefined) && (
-                                    <FollowerGroup user={userProfile} sameFollowers={sameFollowers}/>
+                                    <Typography variant={"subtitle1"} component={"div"} className={classes.description}>
+                                        {"You have muted Tweets from this account. "}
+                                        <Typography
+                                            className={classes.unfollowLink}
+                                            onClick={onMuteUser}
+                                            variant={"subtitle1"}
+                                            component={"span"}
+                                        >
+                                            Unmute
+                                        </Typography>
+                                    </Typography>
+                                )
+                            )}
+                            {(userProfile?.isMyProfileBlocked || userProfile?.isPrivateProfile) ? null : (
+                                (userProfile !== undefined) && (
+                                    <FollowerGroup user={userProfile} sameFollowers={userProfile.sameFollowers}/>
                                 )
                             )}
                         </div>
@@ -595,7 +585,7 @@ const UserPage: FC<SnackbarProps & HoverActionProps> = (
                             <Spinner/>
                         ) : (
                             (isUserProfileSuccessLoaded) && (
-                                isMyProfileBlocked ? (
+                                userProfile?.isMyProfileBlocked ? (
                                     <div className={classes.privateProfileInfo}>
                                         <Typography variant={"h4"} component={"div"}>
                                             You’re blocked
@@ -613,7 +603,7 @@ const UserPage: FC<SnackbarProps & HoverActionProps> = (
                                         </Typography>
                                     </div>
                                 ) : (
-                                    userProfile?.privateProfile && userProfile?.id !== myProfile?.id ? (
+                                    userProfile?.isPrivateProfile && userProfile?.id !== myProfile?.id ? (
                                         <div className={classes.privateProfileInfo}>
                                             <Typography variant={"h4"} component={"div"}>
                                                 These Tweets are protected
@@ -662,7 +652,7 @@ const UserPage: FC<SnackbarProps & HoverActionProps> = (
                     <SetupProfileModal visible={visibleSetupProfile} onClose={onCloseSetupProfile}/>
                     <BlockUserModal
                         username={userProfile?.username!}
-                        isUserBlocked={isUserBlocked}
+                        isUserBlocked={userProfile?.isUserBlocked!}
                         visible={visibleBlockUserModal}
                         onClose={onCloseBlockUserModal}
                         onBlockUser={onBlockUser}

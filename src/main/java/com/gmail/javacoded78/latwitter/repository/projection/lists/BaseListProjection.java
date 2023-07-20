@@ -20,6 +20,8 @@ public interface BaseListProjection {
 
     ListOwnerProjection getListOwner();
 
+    boolean getIsPrivate();
+
     @Value("#{@listsServiceImpl.isMyProfileFollowList(target.id)}")
     boolean getIsFollower();
 

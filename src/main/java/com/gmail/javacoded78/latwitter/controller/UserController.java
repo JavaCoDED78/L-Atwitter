@@ -2,7 +2,6 @@ package com.gmail.javacoded78.latwitter.controller;
 
 import com.gmail.javacoded78.latwitter.dto.request.UserRequest;
 import com.gmail.javacoded78.latwitter.dto.response.AuthUserResponse;
-import com.gmail.javacoded78.latwitter.dto.response.BaseUserResponse;
 import com.gmail.javacoded78.latwitter.dto.response.BlockedUserResponse;
 import com.gmail.javacoded78.latwitter.dto.response.FollowerUserResponse;
 import com.gmail.javacoded78.latwitter.dto.response.ImageResponse;
@@ -10,6 +9,7 @@ import com.gmail.javacoded78.latwitter.dto.response.MutedUserResponse;
 import com.gmail.javacoded78.latwitter.dto.response.UserDetailResponse;
 import com.gmail.javacoded78.latwitter.dto.response.UserProfileResponse;
 import com.gmail.javacoded78.latwitter.dto.response.UserResponse;
+import com.gmail.javacoded78.latwitter.dto.response.notification.NotificationInfoResponse;
 import com.gmail.javacoded78.latwitter.dto.response.notification.NotificationResponse;
 import com.gmail.javacoded78.latwitter.dto.response.notification.NotificationUserResponse;
 import com.gmail.javacoded78.latwitter.dto.response.notification.NotificationsResponse;
@@ -94,6 +94,11 @@ public class UserController {
     @GetMapping("/notifications") // +
     public ResponseEntity<NotificationsResponse> getUserNotifications() {
         return ResponseEntity.ok(userMapper.getUserNotifications());
+    }
+
+    @GetMapping("/notifications/{notificationId}") // + TODO Add tests
+    public ResponseEntity<NotificationInfoResponse> getUserNotificationById(@PathVariable Long notificationId) {
+        return ResponseEntity.ok(userMapper.getUserNotificationById(notificationId));
     }
 
     @GetMapping("/notifications/timeline") // +
