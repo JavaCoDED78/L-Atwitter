@@ -34,10 +34,13 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
     implementation 'org.springframework.boot:spring-boot-starter-mail'
     implementation 'org.springframework.boot:spring-boot-starter-websocket'
+    implementation 'org.springframework.boot:spring-boot-starter-cache'
+
     implementation "com.amazonaws:aws-java-sdk:${versions.aws}"
     implementation "io.jsonwebtoken:jjwt-api:${versions.jjwt}"
-
+    implementation 'net.sf.ehcache:ehcache:2.10.9.2'
     implementation 'org.flywaydb:flyway-core:9.18.0'
+
     testImplementation 'org.projectlombok:lombok:1.18.26'
 
 //    testImplementation 'junit:junit:4.13.1'
