@@ -6,7 +6,15 @@ import com.gmail.javacoded78.latwitter.model.ColorSchemeType;
 import com.gmail.javacoded78.latwitter.model.Tweet;
 import com.gmail.javacoded78.latwitter.model.User;
 import com.gmail.javacoded78.latwitter.repository.projection.UserPrincipalProjection;
-import com.gmail.javacoded78.latwitter.repository.projection.user.*;
+import com.gmail.javacoded78.latwitter.repository.projection.user.AuthUserProjection;
+import com.gmail.javacoded78.latwitter.repository.projection.user.BlockedUserProjection;
+import com.gmail.javacoded78.latwitter.repository.projection.user.FollowerUserProjection;
+import com.gmail.javacoded78.latwitter.repository.projection.user.MutedUserProjection;
+import com.gmail.javacoded78.latwitter.repository.projection.user.TweetAuthorProjection;
+import com.gmail.javacoded78.latwitter.repository.projection.user.UserCommonProjection;
+import com.gmail.javacoded78.latwitter.repository.projection.user.UserDetailProjection;
+import com.gmail.javacoded78.latwitter.repository.projection.user.UserProfileProjection;
+import com.gmail.javacoded78.latwitter.repository.projection.user.UserProjection;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -37,10 +45,12 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     List<User> findByIdIn(List<Long> ids);
 
-    @Query("SELECT u AS user FROM User u " +
+    @Query("SELECT u.id AS id, u.fullName AS fullName, u.username AS username, u.about AS about, u.avatar AS avatar, " +
+            "u.privateProfile AS privateProfile, u.mutedDirectMessages AS mutedDirectMessages " +
+            "FROM User u " +
             "WHERE UPPER(u.fullName) LIKE UPPER(CONCAT('%',:name,'%')) AND u.active = true " +
             "OR UPPER(u.username) LIKE UPPER(CONCAT('%',:name,'%')) AND u.active = true")
-    List<UserListProjection> findByFullNameOrUsername(String name);
+    List<UserProjection> findByFullNameOrUsername(String name);
 
     List<User> findByFullNameOrUsernameContainingIgnoreCase(
             @Param("fullName") String fullName,
@@ -67,14 +77,25 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Query("SELECT CASE WHEN count(user) > 0 THEN true ELSE false END FROM User user WHERE user.id = :userId")
     boolean isUserExist(Long userId);
 
-    @Query("SELECT f as user FROM User u LEFT JOIN u.followers f WHERE u.id = :userId")
-    List<UsersProjection> getFollowersById(Long userId);
+    @Query("SELECT follower.id FROM User user LEFT JOIN user.followers follower WHERE user.id = :userId")
+    List<Long> getUserFollowersIds(Long userId);
 
-    @Query("SELECT f as user FROM User u LEFT JOIN u.following f WHERE u.id = :userId")
-    List<UsersProjection> getFollowingById(Long userId);
+    @Query("SELECT f.id AS id, f.fullName AS fullName, f.username AS username, f.about AS about, f.avatar AS avatar, " +
+            "f.privateProfile AS privateProfile, f.mutedDirectMessages AS mutedDirectMessages " +
+            "FROM User user " +
+            "LEFT JOIN user.followers f " +
+            "WHERE user.id = :userId")
+    List<UserProjection> getFollowersById(Long userId);
 
-    @Query("SELECT b.id as id, b.fullName as fullName, b.username as username, " +
-            "b.about as about, b.avatar as avatar, b.privateProfile as isPrivateProfile " +
+    @Query("SELECT f.id AS id, f.fullName AS fullName, f.username AS username, f.about AS about, f.avatar AS avatar, " +
+            "f.privateProfile AS privateProfile, f.mutedDirectMessages AS mutedDirectMessages " +
+            "FROM User user " +
+            "LEFT JOIN user.following f " +
+            "WHERE user.id = :userId")
+    List<UserProjection> getFollowingById(Long userId);
+
+    @Query("SELECT b.id AS id, b.fullName AS fullName, b.username AS username, b.about AS about, b.avatar AS avatar, " +
+            "b.privateProfile AS isPrivateProfile " +
             "FROM User user " +
             "LEFT JOIN user.userBlockedList b " +
             "WHERE user.id = :userId")
@@ -87,8 +108,9 @@ public interface UserRepository extends JpaRepository<User, Long> {
             "WHERE user.id = :userId")
     List<MutedUserProjection> getUserMuteListById(Long userId);
 
-    @Query("SELECT followerRequest FROM User user " +
-            "LEFT JOIN user.followerRequests followerRequest " +
+    @Query("SELECT f.id AS id, f.fullName AS fullName, f.username AS username, f.about AS about, f.avatar AS avatar " +
+            "FROM User user " +
+            "LEFT JOIN user.followerRequests f " +
             "WHERE user.id = :userId")
     List<FollowerUserProjection> getFollowerRequests(Long userId);
 

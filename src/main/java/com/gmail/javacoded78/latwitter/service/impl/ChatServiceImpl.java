@@ -8,10 +8,8 @@ import com.gmail.javacoded78.latwitter.model.Tweet;
 import com.gmail.javacoded78.latwitter.model.User;
 import com.gmail.javacoded78.latwitter.repository.*;
 import com.gmail.javacoded78.latwitter.repository.projection.chat.ChatMessageProjection;
-import com.gmail.javacoded78.latwitter.repository.projection.chat.ChatMessagesProjection;
-import com.gmail.javacoded78.latwitter.repository.projection.chat.ChatParticipantsProjection;
+import com.gmail.javacoded78.latwitter.repository.projection.chat.ChatParticipantProjection;
 import com.gmail.javacoded78.latwitter.repository.projection.chat.ChatProjection;
-import com.gmail.javacoded78.latwitter.repository.projection.user.BaseUserProjection;
 import com.gmail.javacoded78.latwitter.repository.projection.user.UserProjection;
 import com.gmail.javacoded78.latwitter.service.AuthenticationService;
 import com.gmail.javacoded78.latwitter.service.ChatService;
@@ -42,11 +40,10 @@ public class ChatServiceImpl implements ChatService {
     @Override
     public List<ChatProjection> getUserChats() {
         Long userId = authenticationService.getAuthenticatedUserId();
-        List<ChatParticipantsProjection> chatParticipants = chatParticipantRepository.getChatParticipants(userId);
-        return chatParticipants.contains(null) ? new ArrayList<>() : chatParticipants.stream()
-                .filter(participant -> !participant.getParticipant().getLeftChat()
-                        || !userService.isUserBlockedByMyProfile(participant.getParticipant().getUser().getId()))
-                .map(participant -> participant.getParticipant().getChat())
+        List<ChatParticipantProjection> chatParticipants = chatParticipantRepository.getChatParticipants(userId);
+        return chatParticipants.stream()
+                .filter(participant -> !participant.getLeftChat() || !userService.isUserBlockedByMyProfile(participant.getUser().getId()))
+                .map(ChatParticipantProjection::getChat)
                 .collect(Collectors.toList());
     }
 
@@ -76,14 +73,7 @@ public class ChatServiceImpl implements ChatService {
     @Override
     public List<ChatMessageProjection> getChatMessages(Long chatId) {
         Long userId = authenticationService.getAuthenticatedUserId();
-        List<ChatMessageProjection> messages = chatMessageRepository.getAllByChatId(chatId, userId).stream()
-                .map(ChatMessagesProjection::getMessage)
-                .collect(Collectors.toList());
-
-        if (messages.contains(null)) {
-            throw new ApiRequestException("Chat messages not found", HttpStatus.NOT_FOUND);
-        }
-        return messages;
+        return chatMessageRepository.getAllByChatId(chatId, userId);
     }
 
     @Override
@@ -136,12 +126,12 @@ public class ChatServiceImpl implements ChatService {
 
     @Override
     @Transactional
-    public List<ChatMessageProjection> addMessageWithTweet(String text, Long tweetId, List<Long> usersIds) {
+    public Map<String, Object> addMessageWithTweet(String text, Long tweetId, List<Long> usersIds) {
         User author = authenticationService.getAuthenticatedUser();
         Tweet tweet = tweetRepository.findById(tweetId)
                 .orElseThrow(() -> new ApiRequestException("Tweet not found", HttpStatus.NOT_FOUND));
         List<User> users = userRepository.findByIdIn(usersIds);
-        List<ChatMessageProjection> chatMessages = new ArrayList<>();
+        List<Long> chatParticipantsIds = new ArrayList<>();
         ChatMessage chatMessage = new ChatMessage();
         chatMessage.setAuthor(author);
         chatMessage.setText(text);
@@ -167,11 +157,11 @@ public class ChatServiceImpl implements ChatService {
                 messages.add(newChatMessage);
                 chatRepository.save(participantsChat);
             }
-            ChatMessageProjection chatMessageProjection = chatMessageRepository.getChatMessageById(chatMessage.getId());
-            chatMessages.add(chatMessageProjection);
+            chatParticipantsIds.add(user.getId());
             notifyChatParticipants(chatMessage, author);
         });
-        return chatMessages;
+        ChatMessageProjection chatMessageProjection = chatMessageRepository.getChatMessageById(chatMessage.getId());
+        return Map.of("chatParticipantsIds", chatParticipantsIds, "message", chatMessageProjection);
     }
 
     @Override

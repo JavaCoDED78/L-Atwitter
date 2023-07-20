@@ -5,6 +5,7 @@ import com.gmail.javacoded78.latwitter.model.User;
 import com.gmail.javacoded78.latwitter.repository.projection.BookmarkProjection;
 import com.gmail.javacoded78.latwitter.repository.projection.LikeTweetProjection;
 import com.gmail.javacoded78.latwitter.repository.projection.notification.NotificationInfoProjection;
+import com.gmail.javacoded78.latwitter.repository.projection.tweet.TweetImageProjection;
 import com.gmail.javacoded78.latwitter.repository.projection.tweet.TweetProjection;
 import com.gmail.javacoded78.latwitter.repository.projection.tweet.TweetUserProjection;
 import com.gmail.javacoded78.latwitter.repository.projection.tweet.TweetsProjection;
@@ -54,6 +55,8 @@ public interface UserService {
     Boolean processUserBookmarks(Long tweetId);
 
     Image uploadImage(MultipartFile multipartFile);
+
+    List<TweetImageProjection> getUserTweetImages(Long userId);
 
     AuthUserProjection updateUserProfile(User userInfo);
 

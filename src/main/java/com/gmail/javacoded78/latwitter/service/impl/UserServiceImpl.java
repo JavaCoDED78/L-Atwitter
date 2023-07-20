@@ -30,6 +30,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.support.PagedListHolder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -83,9 +84,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<UserProjection> searchUsersByUsername(String text) {
-        return userRepository.findByFullNameOrUsername(text).stream()
-                .map(UserListProjection::getUser)
-                .collect(Collectors.toList());
+        return userRepository.findByFullNameOrUsername(text);
     }
 
     @Override
@@ -221,6 +220,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public List<TweetImageProjection> getUserTweetImages(Long userId) {
+        return tweetRepository.findUserTweetImages(userId, PageRequest.of(0, 6));
+    }
+
+    @Override
     @Transactional
     public AuthUserProjection updateUserProfile(User userInfo) {
         if (userInfo.getUsername().length() == 0 || userInfo.getUsername().length() > 50) {
@@ -248,18 +252,14 @@ public class UserServiceImpl implements UserService {
     public List<UserProjection> getFollowers(Long userId) {
         checkIsUserExist(userId);
         checkIsUserBlocked(userId);
-        return userRepository.getFollowersById(userId).stream()
-                .map(UsersProjection::getUser)
-                .collect(Collectors.toList());
+        return userRepository.getFollowersById(userId);
     }
 
     @Override
     public List<UserProjection> getFollowing(Long userId) {
         checkIsUserExist(userId);
         checkIsUserBlocked(userId);
-        return userRepository.getFollowingById(userId).stream()
-                .map(UsersProjection::getUser)
-                .collect(Collectors.toList());
+        return userRepository.getFollowingById(userId);
     }
 
     @Override
@@ -337,7 +337,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public String acceptFollowRequest(Long userId) { // Front-end: myProfile -> followersSize + 1
+    public String acceptFollowRequest(Long userId) {
         User user = authenticationService.getAuthenticatedUser();
         User currentUser = userRepository.findById(userId)
                 .orElseThrow(() -> new ApiRequestException("User not found", HttpStatus.NOT_FOUND));
@@ -358,7 +358,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public Boolean processSubscribeToNotifications(Long userId) { // Front-end: userProfile -> isSubscriber: true / false
+    public Boolean processSubscribeToNotifications(Long userId) {
         User user = authenticationService.getAuthenticatedUser();
         User currentUser = userRepository.findById(userId)
                 .orElseThrow(() -> new ApiRequestException("User not found", HttpStatus.NOT_FOUND));
@@ -367,7 +367,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public Long processPinTweet(Long tweetId) { // Front-end: myProfile -> pinTweetId: number
+    public Long processPinTweet(Long tweetId) {
         User user = authenticationService.getAuthenticatedUser();
         Tweet tweet = tweetRepository.findById(tweetId)
                 .orElseThrow(() -> new ApiRequestException("Tweet not found", HttpStatus.NOT_FOUND));
@@ -389,7 +389,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public Boolean processBlockList(Long userId) { // Front-end: userProfile -> isUserBlocked: boolean
+    public Boolean processBlockList(Long userId) {
         User user = authenticationService.getAuthenticatedUser();
         User currentUser = userRepository.findById(userId)
                 .orElseThrow(() -> new ApiRequestException("User not found", HttpStatus.NOT_FOUND));
@@ -419,7 +419,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public Boolean processMutedList(Long userId) { // Front-end: userProfile -> isUserMuted: boolean
+    public Boolean processMutedList(Long userId) {
         User user = authenticationService.getAuthenticatedUser();
         User currentUser = userRepository.findById(userId)
                 .orElseThrow(() -> new ApiRequestException("User not found", HttpStatus.NOT_FOUND));

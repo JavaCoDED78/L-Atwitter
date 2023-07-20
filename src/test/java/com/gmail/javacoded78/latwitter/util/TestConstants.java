@@ -19,13 +19,13 @@ public class TestConstants {
     public static final String ABOUT = "Hello twitter!";
     public static final String ACTIVATION_CODE = "1234567890";
     public static final Boolean ACTIVE = true;
-    public static final String BIRTHDAY = "Mar 10, 1991"; // null
+    public static final String BIRTHDAY = "Mar 10, 1991";
     public static final String USER_EMAIL = "test2015@test.test";
     public static final String NOT_VALID_EMAIL = "test2222@test.test";
     public static final String PASSWORD = "qwerty123";
     public static final String FULL_NAME = "MrCat";
     public static final String LOCATION = "New York";
-    public static final String PASSWORD_RESET_CODE = "1234567890"; // null
+    public static final String PASSWORD_RESET_CODE = "1234567890";
     public static final String REGISTRATION_DATE = "2021-08-01T23:34:32";
     public static final String ROLE = "USER";
     public static final String USERNAME = "MrCat";
@@ -42,10 +42,15 @@ public class TestConstants {
     public static final String LANGUAGE = "Ukrainian - українська";
     public static final String BACKGROUND_COLOR = "DEFAULT";
     public static final String COLOR_SCHEME = "BLUE";
+    public static final Long PINNED_TWEET_ID = 40L;
     public static final boolean MUTED_DIRECT_MESSAGES = true;
     public static final boolean PRIVATE_PROFILE = false;
     public static final boolean PROFILE_CUSTOMIZED = true;
     public static final boolean PROFILE_STARTED = true;
+
+    public static final String TEST_TWEET_TEXT = "test text";
+    public static final String USERNAME2 = "John Doe";
+    public static final String ABOUT2 = "Hello2";
 
     public static final String TWEET_TEXT = "#JetBrains https://www.jetbrains.com/ ";
     public static final String TWEET_DATETIME = "2021-10-03T20:34:15";
@@ -65,4 +70,5 @@ public class TestConstants {
     public static final String LIST_NAME = "test list name";
     public static final String LIST_DESCRIPTION = "test list description";
     public static final String LIST_PINNED_DATE = "2021-10-03T20:42:53";
+
 }

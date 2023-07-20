@@ -11,7 +11,7 @@ import {formatDate} from "../../util/formatDate";
 import {DEFAULT_PROFILE_IMG} from "../../util/url";
 import AddTweetForm from "../AddTweetForm/AddTweetForm";
 import {textFormatter} from "../../util/textFormatter";
-import {Image} from "../../store/ducks/tweets/contracts/state";
+import {Image} from "../../store/types/common";
 import CloseButton from "../CloseButton/CloseButton";
 import {useGlobalStyles} from "../../util/globalClasses";
 import {UserTweetResponse} from "../../store/types/tweet";
@@ -89,7 +89,7 @@ const ReplyModal: FC<ReplyModalProps> = (
                         <object>
                             <Typography variant={"subtitle1"} component={"div"} className={classes.replyWrapper}>
                                 {"Replying to "}
-                                <MuiLink variant="subtitle1" to={`/user/${user.id}`} component={Link}>
+                                <MuiLink variant="subtitle1" to={`/profile/${user.id}`} component={Link}>
                                     @{user.username}
                                 </MuiLink>
                             </Typography>

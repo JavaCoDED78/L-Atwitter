@@ -2,18 +2,22 @@ import React, {FC, ReactElement, useEffect, useState} from 'react';
 import {useDispatch, useSelector} from "react-redux";
 import {Route, useLocation} from "react-router-dom";
 import InfiniteScroll from "react-infinite-scroll-component";
-import {Divider, IconButton, Paper, Typography} from "@material-ui/core";
+import {Divider, Paper, Typography} from "@material-ui/core";
 
 import TweetComponent from "../../components/TweetComponent/TweetComponent";
 import {useHomeStyles} from './HomeStyles';
 import AddTweetForm from '../../components/AddTweetForm/AddTweetForm';
-import {fetchTweets, resetTweets, setTweetsLoadingState,} from "../../store/ducks/tweets/actionCreators";
+import {
+    fetchFollowersTweets,
+    fetchTweets,
+    resetTweets,
+    setTweetsLoadingState,
+} from "../../store/ducks/tweets/actionCreators";
 import {selectIsTweetsLoading, selectPagesCount, selectTweetsItems} from "../../store/ducks/tweets/selectors";
 import BackButton from "../../components/BackButton/BackButton";
 import {fetchUserData} from "../../store/ducks/user/actionCreators";
 import Connect from "../Connect/Connect";
 import Trends from "../Trends/Trends";
-import {TopTweets} from "../../icons";
 import {selectUserData} from "../../store/ducks/user/selectors";
 import Welcome from "../../components/Welcome/Welcome";
 import {LoadingStatus} from "../../store/types";
@@ -21,6 +25,8 @@ import FullTweet from "../FullTweet/FullTweet";
 import Spinner from "../../components/Spinner/Spinner";
 import {useGlobalStyles} from "../../util/globalClasses";
 import classnames from "classnames";
+import TopTweetActions from "./TopTweetActions/TopTweetActions";
+import {withDocumentTitle} from "../../hoc/withDocumentTitle";
 
 const Home: FC = (): ReactElement => {
     const globalClasses = useGlobalStyles();
@@ -31,6 +37,7 @@ const Home: FC = (): ReactElement => {
     const tweets = useSelector(selectTweetsItems);
     const isLoading = useSelector(selectIsTweetsLoading);
     const pagesCount = useSelector(selectPagesCount);
+    const [switchTweets, setSwitchTweets] = useState<boolean>(false);
     const [page, setPage] = useState<number>(0);
 
     useEffect(() => {
@@ -47,10 +54,24 @@ const Home: FC = (): ReactElement => {
             dispatch(resetTweets());
         };
     }, []);
+    
+    useEffect(() => {
+        loadTweets();
+    }, [switchTweets]);
 
     const loadTweets = () => {
-        dispatch(fetchTweets(page));
+        if (switchTweets) {
+            dispatch(fetchFollowersTweets(page));
+        } else {
+            dispatch(fetchTweets(page));
+        }
         setPage(prevState => prevState + 1);
+    };
+    
+    const handleSwitchTweets = (): void => {
+        setPage(0);
+        dispatch(resetTweets());
+        setSwitchTweets((prevState) => !prevState);
     };
 
     return (
@@ -67,11 +88,7 @@ const Home: FC = (): ReactElement => {
                         <Typography variant="h5">
                             Home
                         </Typography>
-                        <div className={classes.headerIcon}>
-                            <IconButton color="primary">
-                                <>{TopTweets}</>
-                            </IconButton>
-                        </div>
+                        <TopTweetActions switchTweets={switchTweets} handleSwitchTweets={handleSwitchTweets} />
                     </Route>
                     <Route path="/home/tweet">
                         <div>
@@ -132,4 +149,4 @@ const Home: FC = (): ReactElement => {
     );
 };
 
-export default Home;
+export default withDocumentTitle(Home);

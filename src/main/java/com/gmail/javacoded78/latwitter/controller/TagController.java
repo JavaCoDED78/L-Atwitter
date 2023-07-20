@@ -6,8 +6,8 @@ import com.gmail.javacoded78.latwitter.mapper.TagMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -29,8 +29,8 @@ public class TagController {
         return ResponseEntity.ok(tagMapper.getTrends());
     }
 
-    @GetMapping("/{tagName}")
-    public ResponseEntity<List<TweetResponse>> getTweetsByTag(@PathVariable String tagName) {
+    @GetMapping("/search")
+    public ResponseEntity<List<TweetResponse>> getTweetsByTag(@RequestParam String tagName) {
         return ResponseEntity.ok(tagMapper.getTweetsByTag(tagName));
     }
 }

@@ -1,5 +1,6 @@
 package com.gmail.javacoded78.latwitter.controller;
 
+import com.gmail.javacoded78.latwitter.model.ReplyType;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,13 +53,35 @@ public class TagControllerTest {
 
     @Test
     @WithUserDetails(USER_EMAIL)
-    @DisplayName("[200] GET /api/v1/tags/#JetBrains - Get tweets by hashtag")
+    @DisplayName("[200] GET /api/v1/tags/search?tagName=#JetBrains - Get tweets by hashtag")
     public void getTweetsByTag() throws Exception {
-        mockMvc.perform(get(URL_TAG_BASIC + "/" + HASHTAG))
+        mockMvc.perform(get(URL_TAG_BASIC + "/search").param("tagName", "#JetBrains"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[*]", hasSize(2)))
-                .andExpect(jsonPath("$[*].id").isNotEmpty())
-                .andExpect(jsonPath("$[*].tagName").isNotEmpty())
-                .andExpect(jsonPath("$[*].tweetsQuantity").isNotEmpty());
+                .andExpect(jsonPath("$[*]", hasSize(1)))
+                .andExpect(jsonPath("$[0].id").value(43L))
+                .andExpect(jsonPath("$[0].text").value(TWEET_TEXT))
+                .andExpect(jsonPath("$[0].dateTime").value(TWEET_DATETIME))
+                .andExpect(jsonPath("$[0].scheduledDate").isEmpty())
+                .andExpect(jsonPath("$[0].addressedUsername").isEmpty())
+                .andExpect(jsonPath("$[0].addressedId").isEmpty())
+                .andExpect(jsonPath("$[0].addressedTweetId").isEmpty())
+                .andExpect(jsonPath("$[0].replyType").value(ReplyType.EVERYONE.toString()))
+                .andExpect(jsonPath("$[0].link").value(LINK))
+                .andExpect(jsonPath("$[0].linkTitle").value(LINK_TITLE))
+                .andExpect(jsonPath("$[0].linkDescription").value(LINK_DESCRIPTION))
+                .andExpect(jsonPath("$[0].linkCover").value(LINK_COVER))
+                .andExpect(jsonPath("$[0].linkCoverSize").value("LARGE"))
+                .andExpect(jsonPath("$[0].user.id").value(2L))
+                .andExpect(jsonPath("$[0].images").isEmpty())
+                .andExpect(jsonPath("$[0].quoteTweet").isEmpty())
+                .andExpect(jsonPath("$[0].poll").isEmpty())
+                .andExpect(jsonPath("$[0].retweetsCount").value(0L))
+                .andExpect(jsonPath("$[0].likedTweetsCount").value(0L))
+                .andExpect(jsonPath("$[0].repliesCount").value(0L))
+                .andExpect(jsonPath("$[0].isTweetLiked").value(false))
+                .andExpect(jsonPath("$[0].isTweetRetweeted").value(false))
+                .andExpect(jsonPath("$[0].isUserFollowByOtherUser").value(false))
+                .andExpect(jsonPath("$[0].isTweetDeleted").value(false))
+                .andExpect(jsonPath("$[0].isTweetBookmarked").value(false));
     }
 }

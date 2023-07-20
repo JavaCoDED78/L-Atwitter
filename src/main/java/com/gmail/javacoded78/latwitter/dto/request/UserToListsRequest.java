@@ -1,5 +1,6 @@
 package com.gmail.javacoded78.latwitter.dto.request;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
@@ -14,6 +15,7 @@ public class UserToListsRequest {
 
     @Getter
     @Setter
+    @AllArgsConstructor
     public static class ListsRequest {
 
         private Long listId;

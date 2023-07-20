@@ -9,6 +9,7 @@ import {selectUserData, selectUserIsSuccess} from "../../../../../store/ducks/us
 import {getPhoneCode} from "../../../../../util/countryCodes";
 import {setUserLoadingStatus} from "../../../../../store/ducks/user/actionCreators";
 import {LoadingStatus} from "../../../../../store/types";
+import {withDocumentTitle} from "../../../../../hoc/withDocumentTitle";
 
 const ChangePhone: FC = (): ReactElement => {
     const classes = useChangePhoneStyles();
@@ -38,7 +39,7 @@ const ChangePhone: FC = (): ReactElement => {
                     label="Current"
                     type="text"
                     variant="filled"
-                    value={`${getPhoneCode(myProfile)}${myProfile?.phone}`}
+                    value={`${getPhoneCode(myProfile?.countryCode)}${myProfile?.phone}`}
                     fullWidth
                 />
             </div>
@@ -58,4 +59,4 @@ const ChangePhone: FC = (): ReactElement => {
     );
 };
 
-export default ChangePhone;
+export default withDocumentTitle(ChangePhone);

@@ -22,9 +22,9 @@ INSERT INTO users (id, about, activation_code, active, birthday, email, full_nam
                    password, password_reset_code, profile_customized, profile_started, registration_date, role,
                    tweet_count, username, website, like_count, media_tweet_count, country, gender, language,
                    muted_direct_messages, phone, private_profile, country_code, background_color, color_scheme)
-VALUES (1, 'Hello2', null, true, null, 'merikbest2015@gmail.com', 'Vbhjckfd1', 'Kyiv', 0,
+VALUES (1, 'Hello2', null, true, null, 'merikbest2015@gmail.com', 'John Doe', 'Kyiv', 0,
         '$2a$08$1D3LToUL9ccJYqGDZNPH8uvTBwVFou5MobYvtgAakra6WdACQZWJK', null, true, true, '2021-08-01 23:34:32.000000',
-        'USER', 126, 'Vbhjckfd1', 'https://www.google.com', 40, 44, 'UA', 'Cat', 'Ukrainian - українська', true,
+        'USER', 126, 'John Doe', 'https://www.google.com', 40, 44, 'UA', 'Cat', 'Ukrainian - українська', true,
         666966623, false, 'UA', 'DEFAULT', 'BLUE');
 INSERT INTO users (id, about, activation_code, active, birthday, email, full_name, location, notifications_count,
                    password, password_reset_code, profile_customized, profile_started, registration_date, role,
@@ -269,9 +269,9 @@ VALUES (6, true, 10, 5);
 INSERT INTO chat_messages (id, date, text, user_id, chat_id, tweet_id)
 VALUES (5, '2021-10-03 20:39:55.000000', 'hello from MrCat', 2, 8, 40);
 INSERT INTO chat_messages (id, date, text, user_id, chat_id, tweet_id)
-VALUES (6, '2021-10-03 20:40:19.000000', 'hello from Vbhjckfd1', 1, 8, null);
+VALUES (6, '2021-10-03 20:40:19.000000', 'hello from John Doe', 1, 8, null);
 INSERT INTO chat_messages (id, date, text, user_id, chat_id, tweet_id)
-VALUES (7, '2021-10-03 20:41:03.000000', 'test message 2 from Vbhjckfd1', 1, 8, null);
+VALUES (7, '2021-10-03 20:41:03.000000', 'test message 2 from John Doe', 1, 8, null);
 
 -- unread_messages
 INSERT INTO unread_messages (user_id, chat_message_id)
@@ -298,6 +298,9 @@ VALUES (8, 'https://pbs.twimg.com/media/EXZ2rMvVAAAAfrN?format=png&name=small', 
 INSERT INTO lists (id, alt_wallpaper, description, private, name, user_id, wallpaper_id, pinned_date)
 VALUES (9, 'https://pbs.twimg.com/media/EXZ2rMvVAAAAfrN?format=png&name=small', 'test list description', false,
         'test list name', 1, null, '2021-10-03 20:42:53.000000');
+INSERT INTO lists (id, alt_wallpaper, description, private, name, user_id, wallpaper_id, pinned_date)
+VALUES (10, 'https://pbs.twimg.com/media/EXZ2rMvVAAAAfrN?format=png&name=small', 'test list description', false,
+        'test list name', 5, null, '2021-10-03 20:42:53.000000');
 
 -- lists_followers
 INSERT INTO lists_followers (lists_id, followers_id)
@@ -308,6 +311,12 @@ VALUES (7, 2);
 -- lists_members
 INSERT INTO lists_members (lists_id, members_id)
 VALUES (4, 1);
+INSERT INTO lists_members (lists_id, members_id)
+VALUES (5, 1);
+INSERT INTO lists_members (lists_id, members_id)
+VALUES (7, 2);
+INSERT INTO lists_members (lists_id, members_id)
+VALUES (9, 1);
 
 -- users_user_lists
 INSERT INTO users_user_lists (user_id, user_lists_id)
@@ -350,6 +359,8 @@ INSERT INTO user_follower_requests (user_id, follower_id)
 VALUES (3, 2);
 INSERT INTO user_follower_requests (user_id, follower_id)
 VALUES (5, 2);
+INSERT INTO user_follower_requests (user_id, follower_id)
+VALUES (2, 7);
 
 -- users_notifications
 INSERT INTO users_notifications (user_id, notifications_id)

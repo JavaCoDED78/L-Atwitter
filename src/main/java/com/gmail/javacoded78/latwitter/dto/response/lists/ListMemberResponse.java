@@ -16,5 +16,5 @@ public class ListMemberResponse {
     private ImageResponse avatar;
 
     @JsonProperty("isPrivateProfile")
-    private boolean privateProfile;
+    private boolean isPrivateProfile;
 }

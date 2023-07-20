@@ -8,6 +8,7 @@ import {selectIsTagsLoading, selectTagsItems} from "../../store/ducks/tags/selec
 import {fetchTrends} from "../../store/ducks/tags/actionCreators";
 import {EditIcon} from "../../icons";
 import Spinner from "../../components/Spinner/Spinner";
+import {withDocumentTitle} from "../../hoc/withDocumentTitle";
 
 const Trends: FC = (): ReactElement => {
     const classes = useTrendsStyles();
@@ -29,7 +30,7 @@ const Trends: FC = (): ReactElement => {
                 <List style={{paddingTop: 48,}}>
                     {trends.map(item => (
                         <div className={classes.item} key={item.id}>
-                            <Link to={{pathname: "/search", state: {tag: encodeURIComponent(item.tagName)}}}>
+                            <Link to={{pathname: "/search", state: {tag: item.tagName}}}>
                                 <ListItem>
                                     <ListItemText
                                         primary={item.tagName}
@@ -50,4 +51,4 @@ const Trends: FC = (): ReactElement => {
     );
 };
 
-export default Trends;
+export default withDocumentTitle(Trends);

@@ -3,8 +3,6 @@ package com.gmail.javacoded78.latwitter.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gmail.javacoded78.latwitter.dto.request.ChatMessageRequest;
 import com.gmail.javacoded78.latwitter.dto.request.MessageWithTweetRequest;
-import com.gmail.javacoded78.latwitter.model.Tweet;
-import com.gmail.javacoded78.latwitter.model.User;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +26,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
-@TestPropertySource("/application-test.properties")
+@TestPropertySource("/application-test.yml")
 @Sql(value = {"/sql/populate-table-before.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
 @Sql(value = {"/sql/populate-table-after.sql"}, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
 public class ChatControllerTest {
@@ -46,10 +44,11 @@ public class ChatControllerTest {
         mockMvc.perform(get(URL_CHAT_BASIC + "/users"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[*]", hasSize(2)))
-                .andExpect(jsonPath("$[*].id").isNotEmpty())
+                .andExpect(jsonPath("$[0].id").value(8L))
+                .andExpect(jsonPath("$[1].id").value(10L))
                 .andExpect(jsonPath("$[*].participants").isNotEmpty())
-                .andExpect(jsonPath("$[0].participants[0].user.id").value(1L))
-                .andExpect(jsonPath("$[0].participants[1].user.id").value(2L));
+                .andExpect(jsonPath("$[0].participants[0].user.id").value(2L))
+                .andExpect(jsonPath("$[0].participants[1].user.id").value(1L));
     }
 
     @Test
@@ -59,7 +58,7 @@ public class ChatControllerTest {
         mockMvc.perform(get(URL_CHAT_BASIC + "/create/3"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").isNotEmpty())
-                .andExpect(jsonPath("$.id").value(1L))
+                .andExpect(jsonPath("$.creationDate").isNotEmpty())
                 .andExpect(jsonPath("$.participants").isNotEmpty())
                 .andExpect(jsonPath("$.participants[*]", hasSize(2)))
                 .andExpect(jsonPath("$.participants[0].user.id").value(2L))
@@ -91,20 +90,11 @@ public class ChatControllerTest {
         mockMvc.perform(get(URL_CHAT_BASIC + "/8/messages"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[*]", hasSize(3)))
-                .andExpect(jsonPath("$[*].id").isNotEmpty())
-                .andExpect(jsonPath("$[*].text").isNotEmpty())
-                .andExpect(jsonPath("$[*].date").isNotEmpty())
-                .andExpect(jsonPath("$[*].author").isNotEmpty())
-                .andExpect(jsonPath("$[*].chat").isNotEmpty());
-    }
-
-    @Test
-    @WithUserDetails(USER_EMAIL)
-    @DisplayName("[404] GET /api/v1/chat/9/messages - Not found chat messages by chat id")
-    public void getChatMessages_NotFound() throws Exception {
-        mockMvc.perform(get(URL_CHAT_BASIC + "/9/messages"))
-                .andExpect(status().isNotFound())
-                .andExpect(jsonPath("$", is("Chat messages not found")));
+                .andExpect(jsonPath("$[0].id").value(5L))
+                .andExpect(jsonPath("$[0].text").value("hello from MrCat"))
+                .andExpect(jsonPath("$[0].date").value("2021-10-03T20:39:55"))
+                .andExpect(jsonPath("$[0].author.id").value(2L))
+                .andExpect(jsonPath("$[0].tweet.id").value(40L));
     }
 
     @Test
@@ -113,41 +103,7 @@ public class ChatControllerTest {
     public void readChatMessages() throws Exception {
         mockMvc.perform(get(URL_CHAT_BASIC + "/8/read/messages"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(USER_ID))
-                .andExpect(jsonPath("$.email").value(USER_EMAIL))
-                .andExpect(jsonPath("$.fullName").value(FULL_NAME))
-                .andExpect(jsonPath("$.username").value(USERNAME))
-                .andExpect(jsonPath("$.location").value(LOCATION))
-                .andExpect(jsonPath("$.about").value(ABOUT))
-                .andExpect(jsonPath("$.countryCode").value(COUNTRY_CODE))// +
-                .andExpect(jsonPath("$.phone").value(PHONE))// +
-                .andExpect(jsonPath("$.country").value(COUNTRY))// +
-                .andExpect(jsonPath("$.gender").value(GENDER))// +
-                .andExpect(jsonPath("$.language").value(LANGUAGE))// +
-                .andExpect(jsonPath("$.backgroundColor").value(BACKGROUND_COLOR))// +
-                .andExpect(jsonPath("$.colorScheme").value(COLOR_SCHEME))// +
-                .andExpect(jsonPath("$.mutedDirectMessages").value(MUTED_DIRECT_MESSAGES))// +
-                .andExpect(jsonPath("$.privateProfile").value(PRIVATE_PROFILE))// +
-                .andExpect(jsonPath("$.website").value(WEBSITE))
-                .andExpect(jsonPath("$.birthday").value(BIRTHDAY))
-                .andExpect(jsonPath("$.registrationDate").value(REGISTRATION_DATE))
-                .andExpect(jsonPath("$.tweetCount").value(TWEET_COUNT))
-                .andExpect(jsonPath("$.mediaTweetCount").value(MEDIA_TWEET_COUNT))// +
-                .andExpect(jsonPath("$.likeCount").value(LIKE_TWEET_COUNT))// +
-                .andExpect(jsonPath("$.notificationsCount").value(3))
-                .andExpect(jsonPath("$.pinnedTweet").isNotEmpty())
-                .andExpect(jsonPath("$.bookmarks").isNotEmpty())
-                .andExpect(jsonPath("$.avatar.id").value(AVATAR_ID))
-                .andExpect(jsonPath("$.wallpaper.id").value(WALLPAPER_ID))
-                .andExpect(jsonPath("$.profileCustomized").value(PROFILE_CUSTOMIZED))
-                .andExpect(jsonPath("$.profileStarted").value(PROFILE_STARTED))
-                .andExpect(jsonPath("$.unreadMessages").isEmpty())
-                .andExpect(jsonPath("$.userMutedList").isNotEmpty())// +
-                .andExpect(jsonPath("$.userBlockedList").isNotEmpty())// +
-                .andExpect(jsonPath("$.subscribers").isNotEmpty())// +
-                .andExpect(jsonPath("$.followerRequests").isEmpty())// +
-                .andExpect(jsonPath("$.followers").isNotEmpty())
-                .andExpect(jsonPath("$.following").isNotEmpty());
+                .andExpect(jsonPath("$").value(0));
     }
 
     @Test
@@ -156,16 +112,17 @@ public class ChatControllerTest {
     public void addMessage() throws Exception {
         ChatMessageRequest request = new ChatMessageRequest();
         request.setChatId(8L);
-        request.setText("test text");
+        request.setText(TEST_TWEET_TEXT);
 
         mockMvc.perform(post(URL_CHAT_BASIC + "/add/message")
                         .content(mapper.writeValueAsString(request))
                         .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(1))
-                .andExpect(jsonPath("$.text").value("test text"))
+                .andExpect(jsonPath("$.id").isNotEmpty())
+                .andExpect(jsonPath("$.text").value(TEST_TWEET_TEXT))
                 .andExpect(jsonPath("$.date").isNotEmpty())
                 .andExpect(jsonPath("$.author.id").value(2))
+                .andExpect(jsonPath("$.tweet").isEmpty())
                 .andExpect(jsonPath("$.chat.id").value(8));
     }
 
@@ -175,7 +132,7 @@ public class ChatControllerTest {
     public void addMessage_ChatNotFound() throws Exception {
         ChatMessageRequest request = new ChatMessageRequest();
         request.setChatId(9L);
-        request.setText("test text");
+        request.setText(TEST_TWEET_TEXT);
 
         mockMvc.perform(post(URL_CHAT_BASIC + "/add/message")
                         .content(mapper.writeValueAsString(request))
@@ -190,7 +147,7 @@ public class ChatControllerTest {
     public void addMessage_ChatParticipantNotFound() throws Exception {
         ChatMessageRequest request = new ChatMessageRequest();
         request.setChatId(8L);
-        request.setText("test text");
+        request.setText(TEST_TWEET_TEXT);
 
         mockMvc.perform(post(URL_CHAT_BASIC + "/add/message")
                         .content(mapper.writeValueAsString(request))
@@ -205,7 +162,7 @@ public class ChatControllerTest {
     public void addMessage_ChatParticipantIsBlocked() throws Exception {
         ChatMessageRequest request = new ChatMessageRequest();
         request.setChatId(10L);
-        request.setText("test text");
+        request.setText(TEST_TWEET_TEXT);
 
         mockMvc.perform(post(URL_CHAT_BASIC + "/add/message")
                         .content(mapper.writeValueAsString(request))
@@ -218,24 +175,20 @@ public class ChatControllerTest {
     @WithUserDetails(USER_EMAIL)
     @DisplayName("[200] POST /api/v1/chat/add/message/tweet - Add message with Tweet")
     public void addMessageWithTweet() throws Exception {
-        Tweet tweet = new Tweet();
-        tweet.setId(40L);
-        User user = new User();
-        user.setId(2L);
         MessageWithTweetRequest request = new MessageWithTweetRequest();
-        request.setText("test text");
-//        request.setTweet(tweet);
-//        request.setUsers(Collections.singletonList(user));
+        request.setText(TEST_TWEET_TEXT);
+        request.setTweetId(40L);
+        request.setUsersIds(Collections.singletonList(2L));
 
         mockMvc.perform(post(URL_CHAT_BASIC + "/add/message/tweet")
                         .content(mapper.writeValueAsString(request))
                         .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[*].id").isNotEmpty())
-                .andExpect(jsonPath("$[*].text").isNotEmpty())
-                .andExpect(jsonPath("$[*].date").isNotEmpty())
-                .andExpect(jsonPath("$[*].author.id").value(2))
-                .andExpect(jsonPath("$[*].chat.id").value(8));
+                .andExpect(jsonPath("$.id").isNotEmpty())
+                .andExpect(jsonPath("$.text").value(TEST_TWEET_TEXT))
+                .andExpect(jsonPath("$.author.id").value(2L))
+                .andExpect(jsonPath("$.tweet.id").value(40L))
+                .andExpect(jsonPath("$.chat.id").value(8));
     }
 
     @Test
@@ -245,40 +198,15 @@ public class ChatControllerTest {
         mockMvc.perform(get(URL_CHAT_BASIC + "/participant/4/8"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(1L))
-                .andExpect(jsonPath("$.email").value("merikbest2015@gmail.com"))
-                .andExpect(jsonPath("$.fullName").value("Vbhjckfd1"))
-                .andExpect(jsonPath("$.username").value("Vbhjckfd1"))
-                .andExpect(jsonPath("$.location").value("Kyiv"))
-                .andExpect(jsonPath("$.about").value("Hello2"))
-                .andExpect(jsonPath("$.countryCode").value(COUNTRY_CODE))
-                .andExpect(jsonPath("$.phone").value(PHONE))
-                .andExpect(jsonPath("$.country").value(COUNTRY))
-                .andExpect(jsonPath("$.gender").value(GENDER))
-                .andExpect(jsonPath("$.language").value(LANGUAGE))
-                .andExpect(jsonPath("$.backgroundColor").value(BACKGROUND_COLOR))
-                .andExpect(jsonPath("$.colorScheme").value(COLOR_SCHEME))
-                .andExpect(jsonPath("$.mutedDirectMessages").value(MUTED_DIRECT_MESSAGES))
-                .andExpect(jsonPath("$.privateProfile").value(PRIVATE_PROFILE))
-                .andExpect(jsonPath("$.website").value(WEBSITE))
-                .andExpect(jsonPath("$.birthday").isEmpty())
-                .andExpect(jsonPath("$.registrationDate").value(REGISTRATION_DATE))
-                .andExpect(jsonPath("$.tweetCount").value(TWEET_COUNT))
-                .andExpect(jsonPath("$.mediaTweetCount").value(MEDIA_TWEET_COUNT))
-                .andExpect(jsonPath("$.likeCount").value(LIKE_TWEET_COUNT))
-                .andExpect(jsonPath("$.notificationsCount").value(0))
-                .andExpect(jsonPath("$.pinnedTweet").isEmpty())
-                .andExpect(jsonPath("$.bookmarks").isEmpty())
-                .andExpect(jsonPath("$.avatar.id").value(11L))
-                .andExpect(jsonPath("$.wallpaper.id").value(22L))
-                .andExpect(jsonPath("$.profileCustomized").value(PROFILE_CUSTOMIZED))
-                .andExpect(jsonPath("$.profileStarted").value(PROFILE_STARTED))
-                .andExpect(jsonPath("$.unreadMessages").isNotEmpty())
-                .andExpect(jsonPath("$.userMutedList").isEmpty())
-                .andExpect(jsonPath("$.userBlockedList").isEmpty())
-                .andExpect(jsonPath("$.subscribers").isEmpty())
-                .andExpect(jsonPath("$.followerRequests").isEmpty())
-                .andExpect(jsonPath("$.followers").isNotEmpty())
-                .andExpect(jsonPath("$.following").isNotEmpty());
+                .andExpect(jsonPath("$.fullName").value(USERNAME2))
+                .andExpect(jsonPath("$.username").value(USERNAME2))
+                .andExpect(jsonPath("$.about").value(ABOUT2))
+                .andExpect(jsonPath("$.isPrivateProfile").value(false))
+                .andExpect(jsonPath("$.isMutedDirectMessages").value(true))
+                .andExpect(jsonPath("$.isUserBlocked").value(false))
+                .andExpect(jsonPath("$.isMyProfileBlocked").value(false))
+                .andExpect(jsonPath("$.isWaitingForApprove").value(false))
+                .andExpect(jsonPath("$.isFollower").value(true));
     }
 
     @Test

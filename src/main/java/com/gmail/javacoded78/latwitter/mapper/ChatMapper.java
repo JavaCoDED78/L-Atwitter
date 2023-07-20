@@ -13,7 +13,6 @@ import com.gmail.javacoded78.latwitter.service.ChatService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -23,6 +22,13 @@ public class ChatMapper {
 
     private final BasicMapper basicMapper;
     private final ChatService chatService;
+
+    private ChatMessageResponse getChatMessageResponse(Map<String, Object> messageMap) {
+        ChatMessageProjection chatMessageProjection = (ChatMessageProjection) messageMap.get("message");
+        ChatMessageResponse message = basicMapper.convertToResponse(chatMessageProjection, ChatMessageResponse.class);
+        message.setChatParticipantsIds((List<Long>) messageMap.get("chatParticipantsIds"));
+        return message;
+    }
 
     public List<ChatResponse> getUserChats() {
         List<ChatProjection> chats = chatService.getUserChats();
@@ -36,9 +42,7 @@ public class ChatMapper {
 
     public List<ChatMessageResponse> getChatMessages(Long chatId) {
         List<ChatMessageProjection> chatMessages = chatService.getChatMessages(chatId);
-        return chatMessages.contains(null)
-                ? new ArrayList<>()
-                : basicMapper.convertToResponseList(chatMessages, ChatMessageResponse.class);
+        return basicMapper.convertToResponseList(chatMessages, ChatMessageResponse.class);
     }
 
     public Integer readChatMessages(Long chatId) {
@@ -48,15 +52,12 @@ public class ChatMapper {
     public ChatMessageResponse addMessage(ChatMessageRequest chatMessageRequest) {
         Map<String, Object> messageMap = chatService.addMessage(
                 basicMapper.convertToEntity(chatMessageRequest, ChatMessage.class), chatMessageRequest.getChatId());
-        ChatMessageProjection chatMessageProjection = (ChatMessageProjection) messageMap.get("message");
-        ChatMessageResponse message = basicMapper.convertToResponse(chatMessageProjection, ChatMessageResponse.class);
-        message.setChatParticipantsIds((List<Long>) messageMap.get("chatParticipantsIds"));
-        return message;
+        return getChatMessageResponse(messageMap);
     }
 
-    public List<ChatMessageResponse> addMessageWithTweet(MessageWithTweetRequest request) {
-        List<ChatMessageProjection> message = chatService.addMessageWithTweet(request.getText(), request.getTweetId(), request.getUsersIds());
-        return basicMapper.convertToResponseList(message, ChatMessageResponse.class);
+    public ChatMessageResponse addMessageWithTweet(MessageWithTweetRequest request) {
+        Map<String, Object> messageMap = chatService.addMessageWithTweet(request.getText(), request.getTweetId(), request.getUsersIds());
+        return getChatMessageResponse(messageMap);
     }
 
     public String leaveFromConversation(Long participantId, Long chatId) {

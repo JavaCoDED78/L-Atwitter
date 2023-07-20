@@ -18,6 +18,7 @@ import com.gmail.javacoded78.latwitter.dto.response.notification.NotificationUse
 
 import com.gmail.javacoded78.latwitter.dto.response.notification.NotificationsResponse;
 import com.gmail.javacoded78.latwitter.dto.response.tweet.TweetHeaderResponse;
+import com.gmail.javacoded78.latwitter.dto.response.tweet.TweetImageResponse;
 import com.gmail.javacoded78.latwitter.dto.response.tweet.TweetResponse;
 import com.gmail.javacoded78.latwitter.dto.response.tweet.TweetUserResponse;
 import com.gmail.javacoded78.latwitter.model.BackgroundColorType;
@@ -29,6 +30,7 @@ import com.gmail.javacoded78.latwitter.repository.projection.BookmarkProjection;
 import com.gmail.javacoded78.latwitter.repository.projection.LikeTweetProjection;
 import com.gmail.javacoded78.latwitter.repository.projection.notification.NotificationInfoProjection;
 import com.gmail.javacoded78.latwitter.repository.projection.notification.NotificationProjection;
+import com.gmail.javacoded78.latwitter.repository.projection.tweet.TweetImageProjection;
 import com.gmail.javacoded78.latwitter.repository.projection.tweet.TweetProjection;
 import com.gmail.javacoded78.latwitter.repository.projection.tweet.TweetUserProjection;
 import com.gmail.javacoded78.latwitter.repository.projection.tweet.TweetsProjection;
@@ -77,6 +79,11 @@ public class UserMapper {
     public ImageResponse uploadImage(MultipartFile multipartFile) {
         Image image = userService.uploadImage(multipartFile);
         return basicMapper.convertToResponse(image, ImageResponse.class);
+    }
+
+    public List<TweetImageResponse> getUserTweetImages(Long userId) {
+        List<TweetImageProjection> tweets = userService.getUserTweetImages(userId);
+        return basicMapper.convertToResponseList(tweets, TweetImageResponse.class);
     }
 
     public AuthUserResponse updateUserProfile(UserRequest userRequest) {
@@ -228,7 +235,10 @@ public class UserMapper {
     }
 
     public AuthenticationResponse updateEmail(SettingsRequest request) {
-        return authenticationMapper.getAuthenticationResponse(userSettingsService.updateEmail(request.getEmail()));
+        Map<String, Object> stringObjectMap = userSettingsService.updateEmail(request.getEmail());
+        AuthenticationResponse authenticationResponse = authenticationMapper.getAuthenticationResponse(stringObjectMap);
+        authenticationResponse.getUser().setEmail(request.getEmail());
+        return authenticationResponse;
     }
 
     public UserPhoneResponse updatePhone(SettingsRequest request) {

@@ -3,16 +3,24 @@ import {call, put, takeLatest} from 'redux-saga/effects';
 import {LoadingStatus} from '../../types';
 import {
     FetchChatParticipantActionInterface,
+    FetchImagesActionInterface,
     FetchUserProfileActionInterface,
     ProcessSubscribeActionInterface,
     UserProfileActionsType,
 } from "./contracts/actionTypes";
 import {UserApi} from "../../../services/api/userApi";
-import {setSubscribeToUserProfile, setUserProfile, setUserProfileLoadingState} from "./actionCreators";
+import {
+    setImages,
+    setImagesLoadingStatus,
+    setSubscribeToUserProfile,
+    setUserProfile,
+    setUserProfileLoadingState
+} from "./actionCreators";
 import {ChatApi} from "../../../services/api/chatApi";
 import {UserProfileResponse} from "../../types/user";
+import {TweetImageResponse, TweetResponse} from "../../types/tweet";
 
-export function* fetchUserRequest({payload}: FetchUserProfileActionInterface) { // +
+export function* fetchUserRequest({payload}: FetchUserProfileActionInterface) {
     try {
         yield put(setUserProfileLoadingState(LoadingStatus.LOADING));
         const item: UserProfileResponse = yield call(UserApi.getUserInfo, payload);
@@ -22,7 +30,7 @@ export function* fetchUserRequest({payload}: FetchUserProfileActionInterface) { 
     }
 }
 
-export function* processSubscribeRequest({payload}: ProcessSubscribeActionInterface) { // +
+export function* processSubscribeRequest({payload}: ProcessSubscribeActionInterface) {
     try {
         const item: boolean = yield call(UserApi.processSubscribeToNotifications, payload);
         yield put(setSubscribeToUserProfile(item));
@@ -31,7 +39,7 @@ export function* processSubscribeRequest({payload}: ProcessSubscribeActionInterf
     }
 }
 
-export function* fetchChatParticipant({payload}: FetchChatParticipantActionInterface) { // +
+export function* fetchChatParticipantRequest({payload}: FetchChatParticipantActionInterface) {
     try {
         yield put(setUserProfileLoadingState(LoadingStatus.LOADING));
         const item: UserProfileResponse = yield call(ChatApi.getParticipant, payload);
@@ -41,8 +49,19 @@ export function* fetchChatParticipant({payload}: FetchChatParticipantActionInter
     }
 }
 
+export function* fetchImagesRequest({payload}: FetchImagesActionInterface) {
+    try {
+        yield put(setImagesLoadingStatus(LoadingStatus.LOADING));
+        const items: TweetImageResponse[] = yield call(UserApi.getUserTweetImages, payload);
+        yield put(setImages(items));
+    } catch (error) {
+        yield put(setImagesLoadingStatus(LoadingStatus.ERROR));
+    }
+}
+
 export function* userProfileSaga() {
-    yield takeLatest(UserProfileActionsType.FETCH_USER, fetchUserRequest); // +
-    yield takeLatest(UserProfileActionsType.PROCESS_SUBSCRIBE, processSubscribeRequest); // +
-    yield takeLatest(UserProfileActionsType.FETCH_CHAT_PARTICIPANT, fetchChatParticipant); // +
+    yield takeLatest(UserProfileActionsType.FETCH_USER, fetchUserRequest);
+    yield takeLatest(UserProfileActionsType.PROCESS_SUBSCRIBE, processSubscribeRequest);
+    yield takeLatest(UserProfileActionsType.FETCH_CHAT_PARTICIPANT, fetchChatParticipantRequest);
+    yield takeLatest(UserProfileActionsType.FETCH_IMAGES, fetchImagesRequest);
 }

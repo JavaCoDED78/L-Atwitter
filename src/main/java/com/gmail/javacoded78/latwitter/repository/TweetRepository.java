@@ -1,10 +1,7 @@
 package com.gmail.javacoded78.latwitter.repository;
 
 import com.gmail.javacoded78.latwitter.model.Tweet;
-import com.gmail.javacoded78.latwitter.repository.projection.tweet.TweetProjection;
-import com.gmail.javacoded78.latwitter.repository.projection.tweet.TweetUserProjection;
-import com.gmail.javacoded78.latwitter.repository.projection.tweet.TweetsProjection;
-import com.gmail.javacoded78.latwitter.repository.projection.tweet.TweetsUserProjection;
+import com.gmail.javacoded78.latwitter.repository.projection.tweet.*;
 import com.gmail.javacoded78.latwitter.repository.projection.user.UserProjection;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -74,6 +71,14 @@ public interface TweetRepository extends JpaRepository<Tweet, Long> {
             "OR (tweet.user.id = :userId AND tweet.text LIKE CONCAT('%','youtu','%')) " +
             "ORDER BY tweet.dateTime DESC")
     Page<TweetProjection> findAllUserMediaTweets(Long userId, Pageable pageable);
+
+    @Query("SELECT tweet.id AS tweetId, image.id AS imageId, image.src AS src FROM Tweet tweet " +
+            "LEFT JOIN tweet.images image " +
+            "WHERE tweet.scheduledDate IS NULL " +
+            "AND tweet.user.id = :userId " +
+            "AND image.id IS NOT NULL " +
+            "ORDER BY tweet.dateTime DESC")
+    List<TweetImageProjection> findUserTweetImages(Long userId, Pageable pageable);
 
     @Query("SELECT tweet FROM Tweet tweet WHERE tweet.quoteTweet.id = :quoteId")
     List<Tweet> findByQuoteTweetId(Long quoteId);

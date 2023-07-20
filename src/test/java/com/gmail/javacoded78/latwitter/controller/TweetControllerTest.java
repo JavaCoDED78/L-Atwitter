@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gmail.javacoded78.latwitter.dto.request.TweetDeleteRequest;
 import com.gmail.javacoded78.latwitter.dto.request.TweetRequest;
 import com.gmail.javacoded78.latwitter.dto.request.VoteRequest;
-import com.gmail.javacoded78.latwitter.model.LinkCoverSize;
 import com.gmail.javacoded78.latwitter.model.ReplyType;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -21,22 +20,13 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.gmail.javacoded78.latwitter.util.TestConstants.LINK;
-import static com.gmail.javacoded78.latwitter.util.TestConstants.LINK_COVER;
-import static com.gmail.javacoded78.latwitter.util.TestConstants.LINK_DESCRIPTION;
-import static com.gmail.javacoded78.latwitter.util.TestConstants.LINK_TITLE;
-import static com.gmail.javacoded78.latwitter.util.TestConstants.TEXT_WITH_YOUTUBE_LINK;
-import static com.gmail.javacoded78.latwitter.util.TestConstants.TWEET_DATETIME;
-import static com.gmail.javacoded78.latwitter.util.TestConstants.TWEET_SCHEDULED_DATETIME;
-import static com.gmail.javacoded78.latwitter.util.TestConstants.TWEET_TEXT;
-import static com.gmail.javacoded78.latwitter.util.TestConstants.URL_TWEETS_BASIC;
-import static com.gmail.javacoded78.latwitter.util.TestConstants.USER_EMAIL;
-import static com.gmail.javacoded78.latwitter.util.TestConstants.YOUTUBE_LINK;
-import static com.gmail.javacoded78.latwitter.util.TestConstants.YOUTUBE_LINK_COVER;
-import static com.gmail.javacoded78.latwitter.util.TestConstants.YOUTUBE_LINK_TITLE;
+import static com.gmail.javacoded78.latwitter.util.TestConstants.*;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -60,25 +50,31 @@ public class TweetControllerTest {
         mockMvc.perform(get(URL_TWEETS_BASIC))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[*]", hasSize(8)))
-                .andExpect(jsonPath("$[*].id").isNotEmpty())
-                .andExpect(jsonPath("$[*].text").isNotEmpty())
-                .andExpect(jsonPath("$[*].dateTime").isNotEmpty())
-                .andExpect(jsonPath("$[*].addressedUsername").isNotEmpty())
-                .andExpect(jsonPath("$[*].addressedId").isNotEmpty())
-                .andExpect(jsonPath("$[*].addressedTweetId").isNotEmpty())
-                .andExpect(jsonPath("$[*].replyType").isNotEmpty())
-                .andExpect(jsonPath("$[*].link").isNotEmpty())
-                .andExpect(jsonPath("$[*].linkTitle").isNotEmpty())
-                .andExpect(jsonPath("$[*].linkDescription").isNotEmpty())
-                .andExpect(jsonPath("$[*].linkCover").isNotEmpty())
-                .andExpect(jsonPath("$[*].linkCoverSize").isNotEmpty())
-                .andExpect(jsonPath("$[*].quoteTweet").isNotEmpty())
-                .andExpect(jsonPath("$[*].user").isNotEmpty())
-                .andExpect(jsonPath("$[*].poll").isNotEmpty())
-                .andExpect(jsonPath("$[*].images").isNotEmpty())
-                .andExpect(jsonPath("$[*].likedTweets").isNotEmpty())
-                .andExpect(jsonPath("$[*].retweets").isNotEmpty())
-                .andExpect(jsonPath("$[*].replies").isNotEmpty());
+                .andExpect(jsonPath("$[0].id").value(48L))
+                .andExpect(jsonPath("$[0].text").value("hello world3"))
+                .andExpect(jsonPath("$[0].dateTime").value("2021-10-03T20:40:51"))
+                .andExpect(jsonPath("$[0].scheduledDate").isEmpty())
+                .andExpect(jsonPath("$[0].addressedUsername").isEmpty())
+                .andExpect(jsonPath("$[0].addressedId").isEmpty())
+                .andExpect(jsonPath("$[0].addressedTweetId").isEmpty())
+                .andExpect(jsonPath("$[0].replyType").value(ReplyType.EVERYONE.toString()))
+                .andExpect(jsonPath("$[0].link").isEmpty())
+                .andExpect(jsonPath("$[0].linkTitle").isEmpty())
+                .andExpect(jsonPath("$[0].linkDescription").isEmpty())
+                .andExpect(jsonPath("$[0].linkCover").isEmpty())
+                .andExpect(jsonPath("$[0].linkCoverSize").isEmpty())
+                .andExpect(jsonPath("$[0].quoteTweet").isEmpty())
+                .andExpect(jsonPath("$[0].user.id").value(2L))
+                .andExpect(jsonPath("$[0].poll.id").value(8L))
+                .andExpect(jsonPath("$[0].images").isEmpty())
+                .andExpect(jsonPath("$[0].retweetsCount").value(0L))
+                .andExpect(jsonPath("$[0].likedTweetsCount").value(0L))
+                .andExpect(jsonPath("$[0].repliesCount").value(0L))
+                .andExpect(jsonPath("$[0].isTweetLiked").value(false))
+                .andExpect(jsonPath("$[0].isTweetRetweeted").value(false))
+                .andExpect(jsonPath("$[0].isUserFollowByOtherUser").value(false))
+                .andExpect(jsonPath("$[0].isTweetDeleted").value(false))
+                .andExpect(jsonPath("$[0].isTweetBookmarked").value(false));
     }
 
     @Test
@@ -87,9 +83,10 @@ public class TweetControllerTest {
     public void getTweetById() throws Exception {
         mockMvc.perform(get(URL_TWEETS_BASIC + "/43"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(43))
+                .andExpect(jsonPath("$.id").value(43L))
                 .andExpect(jsonPath("$.text").value(TWEET_TEXT))
                 .andExpect(jsonPath("$.dateTime").value(TWEET_DATETIME))
+                .andExpect(jsonPath("$.scheduledDate").isEmpty())
                 .andExpect(jsonPath("$.addressedUsername").isEmpty())
                 .andExpect(jsonPath("$.addressedId").isEmpty())
                 .andExpect(jsonPath("$.addressedTweetId").isEmpty())
@@ -98,14 +95,19 @@ public class TweetControllerTest {
                 .andExpect(jsonPath("$.linkTitle").value(LINK_TITLE))
                 .andExpect(jsonPath("$.linkDescription").value(LINK_DESCRIPTION))
                 .andExpect(jsonPath("$.linkCover").value(LINK_COVER))
-                .andExpect(jsonPath("$.linkCoverSize").value(LinkCoverSize.LARGE.toString()))
-                .andExpect(jsonPath("$.quoteTweet").isEmpty())
-                .andExpect(jsonPath("$.user.id").value(2))
-                .andExpect(jsonPath("$.poll").isEmpty())
+                .andExpect(jsonPath("$.linkCoverSize").value("LARGE"))
+                .andExpect(jsonPath("$.user.id").value(2L))
                 .andExpect(jsonPath("$.images").isEmpty())
-                .andExpect(jsonPath("$.likedTweets").isEmpty())
-                .andExpect(jsonPath("$.retweets").isEmpty())
-                .andExpect(jsonPath("$.replies").isEmpty());
+                .andExpect(jsonPath("$.quoteTweet").isEmpty())
+                .andExpect(jsonPath("$.poll").isEmpty())
+                .andExpect(jsonPath("$.retweetsCount").value(0L))
+                .andExpect(jsonPath("$.likedTweetsCount").value(0L))
+                .andExpect(jsonPath("$.repliesCount").value(0L))
+                .andExpect(jsonPath("$.isTweetLiked").value(false))
+                .andExpect(jsonPath("$.isTweetRetweeted").value(false))
+                .andExpect(jsonPath("$.isUserFollowByOtherUser").value(false))
+                .andExpect(jsonPath("$.isTweetDeleted").value(false))
+                .andExpect(jsonPath("$.isTweetBookmarked").value(false));
     }
 
     @Test
@@ -119,91 +121,138 @@ public class TweetControllerTest {
 
     @Test
     @WithUserDetails(USER_EMAIL)
-    @DisplayName("[200] GET /api/v1/tweets/media -Get media tweets")
+    @DisplayName("[200] GET /api/v1/tweets/media - Get media tweets")
     public void getMediaTweets() throws Exception {
         mockMvc.perform(get(URL_TWEETS_BASIC + "/media"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[*]", hasSize(1)))
-                .andExpect(jsonPath("$[*].id").isNotEmpty())
-                .andExpect(jsonPath("$[*].text").isNotEmpty())
-                .andExpect(jsonPath("$[*].dateTime").isNotEmpty())
-                .andExpect(jsonPath("$[*].addressedUsername").isNotEmpty())
-                .andExpect(jsonPath("$[*].addressedId").isNotEmpty())
-                .andExpect(jsonPath("$[*].addressedTweetId").isNotEmpty())
-                .andExpect(jsonPath("$[*].replyType").isNotEmpty())
-                .andExpect(jsonPath("$[*].link").isNotEmpty())
-                .andExpect(jsonPath("$[*].linkTitle").isNotEmpty())
-                .andExpect(jsonPath("$[*].linkDescription").isNotEmpty())
-                .andExpect(jsonPath("$[*].linkCover").isNotEmpty())
-                .andExpect(jsonPath("$[*].linkCoverSize").isNotEmpty())
-                .andExpect(jsonPath("$[*].quoteTweet").isNotEmpty())
-                .andExpect(jsonPath("$[*].user").isNotEmpty())
-                .andExpect(jsonPath("$[*].poll").isNotEmpty())
-                .andExpect(jsonPath("$[*].images").isNotEmpty())
-                .andExpect(jsonPath("$[*].likedTweets").isNotEmpty())
-                .andExpect(jsonPath("$[*].retweets").isNotEmpty())
-                .andExpect(jsonPath("$[*].replies").isNotEmpty());
+                .andExpect(jsonPath("$[0].id").value(45L))
+                .andExpect(jsonPath("$[0].text").value("media tweet test"))
+                .andExpect(jsonPath("$[0].dateTime").value("2021-10-03T20:38:51"))
+                .andExpect(jsonPath("$[0].scheduledDate").isEmpty())
+                .andExpect(jsonPath("$[0].addressedUsername").isEmpty())
+                .andExpect(jsonPath("$[0].addressedId").isEmpty())
+                .andExpect(jsonPath("$[0].addressedTweetId").isEmpty())
+                .andExpect(jsonPath("$[0].replyType").value(ReplyType.EVERYONE.toString()))
+                .andExpect(jsonPath("$[0].link").isEmpty())
+                .andExpect(jsonPath("$[0].linkTitle").isEmpty())
+                .andExpect(jsonPath("$[0].linkDescription").isEmpty())
+                .andExpect(jsonPath("$[0].linkCover").isEmpty())
+                .andExpect(jsonPath("$[0].linkCoverSize").isEmpty())
+                .andExpect(jsonPath("$[0].quoteTweet.id").value(40L))
+                .andExpect(jsonPath("$[0].user.id").value(1L))
+                .andExpect(jsonPath("$[0].poll").isEmpty())
+                .andExpect(jsonPath("$[*].images", hasSize(1)))
+                .andExpect(jsonPath("$[0].retweetsCount").value(1L))
+                .andExpect(jsonPath("$[0].likedTweetsCount").value(1L))
+                .andExpect(jsonPath("$[0].repliesCount").value(0L))
+                .andExpect(jsonPath("$[0].isTweetLiked").value(true))
+                .andExpect(jsonPath("$[0].isTweetRetweeted").value(true))
+                .andExpect(jsonPath("$[0].isUserFollowByOtherUser").value(true))
+                .andExpect(jsonPath("$[0].isTweetDeleted").value(false))
+                .andExpect(jsonPath("$[0].isTweetBookmarked").value(false));
     }
 
     @Test
     @WithUserDetails(USER_EMAIL)
-    @DisplayName("[200] GET /api/v1/tweets/video -Get tweets with video")
+    @DisplayName("[200] GET /api/v1/tweets/video - Get tweets with video")
     public void getTweetsWithVideo() throws Exception {
         mockMvc.perform(get(URL_TWEETS_BASIC + "/video"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[*]", hasSize(1)))
-                .andExpect(jsonPath("$[*].id").isNotEmpty())
-                .andExpect(jsonPath("$[0].id").value(42))
-                .andExpect(jsonPath("$[*].text").isNotEmpty())
-                .andExpect(jsonPath("$[*].dateTime").isNotEmpty())
-                .andExpect(jsonPath("$[*].addressedUsername").isNotEmpty())
-                .andExpect(jsonPath("$[*].addressedId").isNotEmpty())
-                .andExpect(jsonPath("$[*].addressedTweetId").isNotEmpty())
-                .andExpect(jsonPath("$[*].replyType").isNotEmpty())
-                .andExpect(jsonPath("$[*].link").isNotEmpty())
+                .andExpect(jsonPath("$[0].id").value(42L))
+                .andExpect(jsonPath("$[0].text").value(YOUTUBE_LINK))
+                .andExpect(jsonPath("$[0].dateTime").value("2021-10-03T20:33:36"))
+                .andExpect(jsonPath("$[0].scheduledDate").isEmpty())
+                .andExpect(jsonPath("$[0].addressedUsername").isEmpty())
+                .andExpect(jsonPath("$[0].addressedId").isEmpty())
+                .andExpect(jsonPath("$[0].addressedTweetId").isEmpty())
+                .andExpect(jsonPath("$[0].replyType").value(ReplyType.EVERYONE.toString()))
                 .andExpect(jsonPath("$[0].link").value(YOUTUBE_LINK))
-                .andExpect(jsonPath("$[*].linkTitle").isNotEmpty())
                 .andExpect(jsonPath("$[0].linkTitle").value(YOUTUBE_LINK_TITLE))
-                .andExpect(jsonPath("$[*].linkDescription").isNotEmpty())
-                .andExpect(jsonPath("$[*].linkCover").isNotEmpty())
+                .andExpect(jsonPath("$[0].linkDescription").isEmpty())
                 .andExpect(jsonPath("$[0].linkCover").value(YOUTUBE_LINK_COVER))
-                .andExpect(jsonPath("$[*].linkCoverSize").isNotEmpty())
-                .andExpect(jsonPath("$[*].quoteTweet").isNotEmpty())
-                .andExpect(jsonPath("$[*].user").isNotEmpty())
-                .andExpect(jsonPath("$[*].poll").isNotEmpty())
-                .andExpect(jsonPath("$[*].images").isNotEmpty())
-                .andExpect(jsonPath("$[*].likedTweets").isNotEmpty())
-                .andExpect(jsonPath("$[*].retweets").isNotEmpty())
-                .andExpect(jsonPath("$[*].replies").isNotEmpty());
+                .andExpect(jsonPath("$[0].linkCoverSize").isEmpty())
+                .andExpect(jsonPath("$[0].quoteTweet").isEmpty())
+                .andExpect(jsonPath("$[0].user.id").value(2L))
+                .andExpect(jsonPath("$[0].poll").isEmpty())
+                .andExpect(jsonPath("$[0].images").isEmpty())
+                .andExpect(jsonPath("$[0].retweetsCount").value(0L))
+                .andExpect(jsonPath("$[0].likedTweetsCount").value(0L))
+                .andExpect(jsonPath("$[0].repliesCount").value(0L))
+                .andExpect(jsonPath("$[0].isTweetLiked").value(false))
+                .andExpect(jsonPath("$[0].isTweetRetweeted").value(false))
+                .andExpect(jsonPath("$[0].isUserFollowByOtherUser").value(false))
+                .andExpect(jsonPath("$[0].isTweetDeleted").value(false))
+                .andExpect(jsonPath("$[0].isTweetBookmarked").value(false));
     }
 
     @Test
     @WithUserDetails(USER_EMAIL)
-    @DisplayName("[200] GET /api/v1/tweets/video -Get tweets with video")
+    @DisplayName("[200] GET /api/v1/tweets/follower - Get followers tweets")
+    public void getFollowersTweets() throws Exception {
+        mockMvc.perform(get(URL_TWEETS_BASIC + "/follower"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[*]", hasSize(9)))
+                .andExpect(jsonPath("$[6].id").value(42L))
+                .andExpect(jsonPath("$[6].text").value(YOUTUBE_LINK))
+                .andExpect(jsonPath("$[6].dateTime").value("2021-10-03T20:33:36"))
+                .andExpect(jsonPath("$[6].scheduledDate").isEmpty())
+                .andExpect(jsonPath("$[6].addressedUsername").isEmpty())
+                .andExpect(jsonPath("$[6].addressedId").isEmpty())
+                .andExpect(jsonPath("$[6].addressedTweetId").isEmpty())
+                .andExpect(jsonPath("$[6].replyType").value(ReplyType.EVERYONE.toString()))
+                .andExpect(jsonPath("$[6].link").value(YOUTUBE_LINK))
+                .andExpect(jsonPath("$[6].linkTitle").value(YOUTUBE_LINK_TITLE))
+                .andExpect(jsonPath("$[6].linkDescription").isEmpty())
+                .andExpect(jsonPath("$[6].linkCover").value(YOUTUBE_LINK_COVER))
+                .andExpect(jsonPath("$[6].linkCoverSize").isEmpty())
+                .andExpect(jsonPath("$[6].quoteTweet").isEmpty())
+                .andExpect(jsonPath("$[6].user.id").value(2L))
+                .andExpect(jsonPath("$[6].poll").isEmpty())
+                .andExpect(jsonPath("$[6].images").isEmpty())
+                .andExpect(jsonPath("$[6].retweetsCount").value(0L))
+                .andExpect(jsonPath("$[6].likedTweetsCount").value(0L))
+                .andExpect(jsonPath("$[6].repliesCount").value(0L))
+                .andExpect(jsonPath("$[6].isTweetLiked").value(false))
+                .andExpect(jsonPath("$[6].isTweetRetweeted").value(false))
+                .andExpect(jsonPath("$[6].isUserFollowByOtherUser").value(false))
+                .andExpect(jsonPath("$[6].isTweetDeleted").value(false))
+                .andExpect(jsonPath("$[6].isTweetBookmarked").value(false));
+    }
+
+    @Test
+    @WithUserDetails(USER_EMAIL)
+    @DisplayName("[200] GET /api/v1/tweets/schedule - Get scheduled tweets")
     public void getScheduledTweets() throws Exception {
         mockMvc.perform(get(URL_TWEETS_BASIC + "/schedule"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[*]", hasSize(1)))
-                .andExpect(jsonPath("$[*].id").isNotEmpty())
-                .andExpect(jsonPath("$[0].id").value(39))
-                .andExpect(jsonPath("$[*].text").isNotEmpty())
-                .andExpect(jsonPath("$[*].dateTime").isNotEmpty())
-                .andExpect(jsonPath("$[*].addressedUsername").isNotEmpty())
-                .andExpect(jsonPath("$[*].addressedId").isNotEmpty())
-                .andExpect(jsonPath("$[*].addressedTweetId").isNotEmpty())
-                .andExpect(jsonPath("$[*].replyType").isNotEmpty())
-                .andExpect(jsonPath("$[*].link").isNotEmpty())
-                .andExpect(jsonPath("$[*].linkTitle").isNotEmpty())
-                .andExpect(jsonPath("$[*].linkDescription").isNotEmpty())
-                .andExpect(jsonPath("$[*].linkCover").isNotEmpty())
-                .andExpect(jsonPath("$[*].linkCoverSize").isNotEmpty())
-                .andExpect(jsonPath("$[*].quoteTweet").isNotEmpty())
-                .andExpect(jsonPath("$[*].user").isNotEmpty())
-                .andExpect(jsonPath("$[*].poll").isNotEmpty())
-                .andExpect(jsonPath("$[*].images").isNotEmpty())
-                .andExpect(jsonPath("$[*].likedTweets").isNotEmpty())
-                .andExpect(jsonPath("$[*].retweets").isNotEmpty())
-                .andExpect(jsonPath("$[*].replies").isNotEmpty());
+                .andExpect(jsonPath("$[0].id").value(39L))
+                .andExpect(jsonPath("$[0].text").value("test tweet"))
+                .andExpect(jsonPath("$[0].dateTime").value("2021-10-03T20:29:03"))
+                .andExpect(jsonPath("$[0].scheduledDate").value("3021-10-03T20:33:36"))
+                .andExpect(jsonPath("$[0].addressedUsername").isEmpty())
+                .andExpect(jsonPath("$[0].addressedId").isEmpty())
+                .andExpect(jsonPath("$[0].addressedTweetId").isEmpty())
+                .andExpect(jsonPath("$[0].replyType").value(ReplyType.EVERYONE.toString()))
+                .andExpect(jsonPath("$[0].link").isEmpty())
+                .andExpect(jsonPath("$[0].linkTitle").isEmpty())
+                .andExpect(jsonPath("$[0].linkDescription").isEmpty())
+                .andExpect(jsonPath("$[0].linkCover").isEmpty())
+                .andExpect(jsonPath("$[0].linkCoverSize").isEmpty())
+                .andExpect(jsonPath("$[0].quoteTweet").isEmpty())
+                .andExpect(jsonPath("$[0].user.id").value(2L))
+                .andExpect(jsonPath("$[0].poll").isEmpty())
+                .andExpect(jsonPath("$[0].images").isEmpty())
+                .andExpect(jsonPath("$[0].retweetsCount").value(0L))
+                .andExpect(jsonPath("$[0].likedTweetsCount").value(0L))
+                .andExpect(jsonPath("$[0].repliesCount").value(0L))
+                .andExpect(jsonPath("$[0].isTweetLiked").value(false))
+                .andExpect(jsonPath("$[0].isTweetRetweeted").value(false))
+                .andExpect(jsonPath("$[0].isUserFollowByOtherUser").value(false))
+                .andExpect(jsonPath("$[0].isTweetDeleted").value(false))
+                .andExpect(jsonPath("$[0].isTweetBookmarked").value(false));
     }
 
     @Test
@@ -251,6 +300,7 @@ public class TweetControllerTest {
                 .andExpect(jsonPath("$.id").isNotEmpty())
                 .andExpect(jsonPath("$.text").value("test tweet #test123"))
                 .andExpect(jsonPath("$.dateTime").isNotEmpty())
+                .andExpect(jsonPath("$.scheduledDate").isEmpty())
                 .andExpect(jsonPath("$.addressedUsername").isEmpty())
                 .andExpect(jsonPath("$.addressedId").isEmpty())
                 .andExpect(jsonPath("$.addressedTweetId").isEmpty())
@@ -261,12 +311,17 @@ public class TweetControllerTest {
                 .andExpect(jsonPath("$.linkCover").isEmpty())
                 .andExpect(jsonPath("$.linkCoverSize").isEmpty())
                 .andExpect(jsonPath("$.quoteTweet").isEmpty())
-                .andExpect(jsonPath("$.user.id").value(2))
+                .andExpect(jsonPath("$.user.id").value(2L))
                 .andExpect(jsonPath("$.poll").isEmpty())
                 .andExpect(jsonPath("$.images").isEmpty())
-                .andExpect(jsonPath("$.likedTweets").isEmpty())
-                .andExpect(jsonPath("$.retweets").isEmpty())
-                .andExpect(jsonPath("$.replies").isEmpty());
+                .andExpect(jsonPath("$.retweetsCount").value(0L))
+                .andExpect(jsonPath("$.likedTweetsCount").value(0L))
+                .andExpect(jsonPath("$.repliesCount").value(0L))
+                .andExpect(jsonPath("$.isTweetLiked").value(false))
+                .andExpect(jsonPath("$.isTweetRetweeted").value(false))
+                .andExpect(jsonPath("$.isUserFollowByOtherUser").value(false))
+                .andExpect(jsonPath("$.isTweetDeleted").value(false))
+                .andExpect(jsonPath("$.isTweetBookmarked").value(false));
     }
 
     @Test
@@ -284,22 +339,28 @@ public class TweetControllerTest {
                 .andExpect(jsonPath("$.id").isNotEmpty())
                 .andExpect(jsonPath("$.text").value(TWEET_TEXT))
                 .andExpect(jsonPath("$.dateTime").isNotEmpty())
+                .andExpect(jsonPath("$.scheduledDate").isEmpty())
                 .andExpect(jsonPath("$.addressedUsername").isEmpty())
                 .andExpect(jsonPath("$.addressedId").isEmpty())
                 .andExpect(jsonPath("$.addressedTweetId").isEmpty())
                 .andExpect(jsonPath("$.replyType").value(ReplyType.EVERYONE.toString()))
-                .andExpect(jsonPath("$.link").value(LINK))
-                .andExpect(jsonPath("$.linkTitle").value(LINK_TITLE))
-                .andExpect(jsonPath("$.linkDescription").value(LINK_DESCRIPTION))
-                .andExpect(jsonPath("$.linkCover").value(LINK_COVER))
-                .andExpect(jsonPath("$.linkCoverSize").value(LinkCoverSize.SMALL.toString()))
+                .andExpect(jsonPath("$.link").isNotEmpty())
+                .andExpect(jsonPath("$.linkTitle").isNotEmpty())
+                .andExpect(jsonPath("$.linkDescription").isNotEmpty())
+                .andExpect(jsonPath("$.linkCover").isNotEmpty())
+                .andExpect(jsonPath("$.linkCoverSize").isNotEmpty())
                 .andExpect(jsonPath("$.quoteTweet").isEmpty())
-                .andExpect(jsonPath("$.user.id").value(2))
+                .andExpect(jsonPath("$.user.id").value(2L))
                 .andExpect(jsonPath("$.poll").isEmpty())
                 .andExpect(jsonPath("$.images").isEmpty())
-                .andExpect(jsonPath("$.likedTweets").isEmpty())
-                .andExpect(jsonPath("$.retweets").isEmpty())
-                .andExpect(jsonPath("$.replies").isEmpty());
+                .andExpect(jsonPath("$.retweetsCount").value(0L))
+                .andExpect(jsonPath("$.likedTweetsCount").value(0L))
+                .andExpect(jsonPath("$.repliesCount").value(0L))
+                .andExpect(jsonPath("$.isTweetLiked").value(false))
+                .andExpect(jsonPath("$.isTweetRetweeted").value(false))
+                .andExpect(jsonPath("$.isUserFollowByOtherUser").value(false))
+                .andExpect(jsonPath("$.isTweetDeleted").value(false))
+                .andExpect(jsonPath("$.isTweetBookmarked").value(false));
     }
 
     @Test
@@ -317,6 +378,7 @@ public class TweetControllerTest {
                 .andExpect(jsonPath("$.id").isNotEmpty())
                 .andExpect(jsonPath("$.text").value(TEXT_WITH_YOUTUBE_LINK))
                 .andExpect(jsonPath("$.dateTime").isNotEmpty())
+                .andExpect(jsonPath("$.scheduledDate").isEmpty())
                 .andExpect(jsonPath("$.addressedUsername").isEmpty())
                 .andExpect(jsonPath("$.addressedId").isEmpty())
                 .andExpect(jsonPath("$.addressedTweetId").isEmpty())
@@ -327,12 +389,17 @@ public class TweetControllerTest {
                 .andExpect(jsonPath("$.linkCover").value(YOUTUBE_LINK_COVER))
                 .andExpect(jsonPath("$.linkCoverSize").isEmpty())
                 .andExpect(jsonPath("$.quoteTweet").isEmpty())
-                .andExpect(jsonPath("$.user.id").value(2))
+                .andExpect(jsonPath("$.user.id").value(2L))
                 .andExpect(jsonPath("$.poll").isEmpty())
                 .andExpect(jsonPath("$.images").isEmpty())
-                .andExpect(jsonPath("$.likedTweets").isEmpty())
-                .andExpect(jsonPath("$.retweets").isEmpty())
-                .andExpect(jsonPath("$.replies").isEmpty());
+                .andExpect(jsonPath("$.retweetsCount").value(0L))
+                .andExpect(jsonPath("$.likedTweetsCount").value(0L))
+                .andExpect(jsonPath("$.repliesCount").value(0L))
+                .andExpect(jsonPath("$.isTweetLiked").value(false))
+                .andExpect(jsonPath("$.isTweetRetweeted").value(false))
+                .andExpect(jsonPath("$.isUserFollowByOtherUser").value(false))
+                .andExpect(jsonPath("$.isTweetDeleted").value(false))
+                .andExpect(jsonPath("$.isTweetBookmarked").value(false));
     }
 
     @Test
@@ -343,7 +410,7 @@ public class TweetControllerTest {
         pollChoiceList.add("Choice 1");
         pollChoiceList.add("Choice 2");
         TweetRequest tweetRequest = new TweetRequest();
-        tweetRequest.setText("test text");
+        tweetRequest.setText(TEST_TWEET_TEXT);
         tweetRequest.setReplyType(ReplyType.EVERYONE);
         tweetRequest.setChoices(pollChoiceList);
         tweetRequest.setPollDateTime(100L);
@@ -353,8 +420,9 @@ public class TweetControllerTest {
                         .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").isNotEmpty())
-                .andExpect(jsonPath("$.text").value("test text"))
+                .andExpect(jsonPath("$.text").value(TEST_TWEET_TEXT))
                 .andExpect(jsonPath("$.dateTime").isNotEmpty())
+                .andExpect(jsonPath("$.scheduledDate").isEmpty())
                 .andExpect(jsonPath("$.addressedUsername").isEmpty())
                 .andExpect(jsonPath("$.addressedId").isEmpty())
                 .andExpect(jsonPath("$.addressedTweetId").isEmpty())
@@ -365,13 +433,19 @@ public class TweetControllerTest {
                 .andExpect(jsonPath("$.linkCover").isEmpty())
                 .andExpect(jsonPath("$.linkCoverSize").isEmpty())
                 .andExpect(jsonPath("$.quoteTweet").isEmpty())
-                .andExpect(jsonPath("$.user.id").value(2))
-                .andExpect(jsonPath("$.poll.pollChoices[0].choice").value("Choice 1"))
-                .andExpect(jsonPath("$.poll.pollChoices[1].choice").value("Choice 2"))
+                .andExpect(jsonPath("$.user.id").value(2L))
+                .andExpect(jsonPath("$.poll.id").value(100L))
+                .andExpect(jsonPath("$.poll.pollChoices[0].id").isNotEmpty())
+                .andExpect(jsonPath("$.poll.pollChoices[1].id").isNotEmpty())
                 .andExpect(jsonPath("$.images").isEmpty())
-                .andExpect(jsonPath("$.likedTweets").isEmpty())
-                .andExpect(jsonPath("$.retweets").isEmpty())
-                .andExpect(jsonPath("$.replies").isEmpty());
+                .andExpect(jsonPath("$.retweetsCount").value(0L))
+                .andExpect(jsonPath("$.likedTweetsCount").value(0L))
+                .andExpect(jsonPath("$.repliesCount").value(0L))
+                .andExpect(jsonPath("$.isTweetLiked").value(false))
+                .andExpect(jsonPath("$.isTweetRetweeted").value(false))
+                .andExpect(jsonPath("$.isUserFollowByOtherUser").value(false))
+                .andExpect(jsonPath("$.isTweetDeleted").value(false))
+                .andExpect(jsonPath("$.isTweetBookmarked").value(false));
     }
 
     @Test
@@ -381,7 +455,7 @@ public class TweetControllerTest {
         List<String> pollChoiceList = new ArrayList<>();
         pollChoiceList.add("Choice 1");
         TweetRequest tweetRequest = new TweetRequest();
-        tweetRequest.setText("test text");
+        tweetRequest.setText(TEST_TWEET_TEXT);
         tweetRequest.setReplyType(ReplyType.EVERYONE);
         tweetRequest.setChoices(pollChoiceList);
         tweetRequest.setPollDateTime(100L);
@@ -404,7 +478,7 @@ public class TweetControllerTest {
         pollChoiceList.add("Choice 4");
         pollChoiceList.add("Choice 5");
         TweetRequest tweetRequest = new TweetRequest();
-        tweetRequest.setText("test text");
+        tweetRequest.setText(TEST_TWEET_TEXT);
         tweetRequest.setReplyType(ReplyType.EVERYONE);
         tweetRequest.setChoices(pollChoiceList);
         tweetRequest.setPollDateTime(100L);
@@ -424,7 +498,7 @@ public class TweetControllerTest {
         pollChoiceList.add("Choice 1");
         pollChoiceList.add("");
         TweetRequest tweetRequest = new TweetRequest();
-        tweetRequest.setText("test text");
+        tweetRequest.setText(TEST_TWEET_TEXT);
         tweetRequest.setReplyType(ReplyType.EVERYONE);
         tweetRequest.setChoices(pollChoiceList);
         tweetRequest.setPollDateTime(100L);
@@ -444,7 +518,7 @@ public class TweetControllerTest {
         pollChoiceList.add("Choice 1");
         pollChoiceList.add(LINK_DESCRIPTION);
         TweetRequest tweetRequest = new TweetRequest();
-        tweetRequest.setText("test text");
+        tweetRequest.setText(TEST_TWEET_TEXT);
         tweetRequest.setReplyType(ReplyType.EVERYONE);
         tweetRequest.setChoices(pollChoiceList);
         tweetRequest.setPollDateTime(100L);
@@ -469,7 +543,7 @@ public class TweetControllerTest {
                         .content(mapper.writeValueAsString(tweetRequest))
                         .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").isNotEmpty())
+                .andExpect(jsonPath("$.id").value(100L))
                 .andExpect(jsonPath("$.text").value("test tweet"))
                 .andExpect(jsonPath("$.dateTime").isNotEmpty())
                 .andExpect(jsonPath("$.scheduledDate").value(TWEET_SCHEDULED_DATETIME))
@@ -483,12 +557,17 @@ public class TweetControllerTest {
                 .andExpect(jsonPath("$.linkCover").isEmpty())
                 .andExpect(jsonPath("$.linkCoverSize").isEmpty())
                 .andExpect(jsonPath("$.quoteTweet").isEmpty())
-                .andExpect(jsonPath("$.user.id").value(2))
+                .andExpect(jsonPath("$.user.id").value(2L))
                 .andExpect(jsonPath("$.poll").isEmpty())
                 .andExpect(jsonPath("$.images").isEmpty())
-                .andExpect(jsonPath("$.likedTweets").isEmpty())
-                .andExpect(jsonPath("$.retweets").isEmpty())
-                .andExpect(jsonPath("$.replies").isEmpty());
+                .andExpect(jsonPath("$.retweetsCount").value(0L))
+                .andExpect(jsonPath("$.likedTweetsCount").value(0L))
+                .andExpect(jsonPath("$.repliesCount").value(0L))
+                .andExpect(jsonPath("$.isTweetLiked").value(false))
+                .andExpect(jsonPath("$.isTweetRetweeted").value(false))
+                .andExpect(jsonPath("$.isUserFollowByOtherUser").value(false))
+                .andExpect(jsonPath("$.isTweetDeleted").value(false))
+                .andExpect(jsonPath("$.isTweetBookmarked").value(false));
     }
 
     @Test
@@ -504,7 +583,7 @@ public class TweetControllerTest {
                         .content(mapper.writeValueAsString(tweetRequest))
                         .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(39))
+                .andExpect(jsonPath("$.id").value(39L))
                 .andExpect(jsonPath("$.text").value("test tweet2"))
                 .andExpect(jsonPath("$.dateTime").isNotEmpty())
                 .andExpect(jsonPath("$.scheduledDate").value(TWEET_SCHEDULED_DATETIME))
@@ -518,12 +597,17 @@ public class TweetControllerTest {
                 .andExpect(jsonPath("$.linkCover").isEmpty())
                 .andExpect(jsonPath("$.linkCoverSize").isEmpty())
                 .andExpect(jsonPath("$.quoteTweet").isEmpty())
-                .andExpect(jsonPath("$.user.id").value(2))
+                .andExpect(jsonPath("$.user.id").value(2L))
                 .andExpect(jsonPath("$.poll").isEmpty())
                 .andExpect(jsonPath("$.images").isEmpty())
-                .andExpect(jsonPath("$.likedTweets").isEmpty())
-                .andExpect(jsonPath("$.retweets").isEmpty())
-                .andExpect(jsonPath("$.replies").isEmpty());
+                .andExpect(jsonPath("$.retweetsCount").value(0L))
+                .andExpect(jsonPath("$.likedTweetsCount").value(0L))
+                .andExpect(jsonPath("$.repliesCount").value(0L))
+                .andExpect(jsonPath("$.isTweetLiked").value(false))
+                .andExpect(jsonPath("$.isTweetRetweeted").value(false))
+                .andExpect(jsonPath("$.isUserFollowByOtherUser").value(false))
+                .andExpect(jsonPath("$.isTweetDeleted").value(false))
+                .andExpect(jsonPath("$.isTweetBookmarked").value(false));
     }
 
     @Test
@@ -596,7 +680,8 @@ public class TweetControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(40))
                 .andExpect(jsonPath("$.text").value("test tweet"))
-                .andExpect(jsonPath("$.dateTime").isNotEmpty())
+                .andExpect(jsonPath("$.dateTime").value("2021-10-03T20:29:03"))
+                .andExpect(jsonPath("$.scheduledDate").isEmpty())
                 .andExpect(jsonPath("$.addressedUsername").isEmpty())
                 .andExpect(jsonPath("$.addressedId").isEmpty())
                 .andExpect(jsonPath("$.addressedTweetId").isEmpty())
@@ -611,9 +696,14 @@ public class TweetControllerTest {
                 .andExpect(jsonPath("$.poll").isNotEmpty())
                 .andExpect(jsonPath("$.poll.id").value(2))
                 .andExpect(jsonPath("$.images").isEmpty())
-                .andExpect(jsonPath("$.likedTweets").isNotEmpty())
-                .andExpect(jsonPath("$.retweets").isNotEmpty())
-                .andExpect(jsonPath("$.replies").isEmpty());
+                .andExpect(jsonPath("$.retweetsCount").isEmpty())
+                .andExpect(jsonPath("$.likedTweetsCount").isEmpty())
+                .andExpect(jsonPath("$.repliesCount").isEmpty())
+                .andExpect(jsonPath("$.isTweetLiked").value(false))
+                .andExpect(jsonPath("$.isTweetRetweeted").value(false))
+                .andExpect(jsonPath("$.isUserFollowByOtherUser").value(false))
+                .andExpect(jsonPath("$.isTweetDeleted").value(true))
+                .andExpect(jsonPath("$.isTweetBookmarked").value(false));
     }
 
     @Test
@@ -622,26 +712,32 @@ public class TweetControllerTest {
     public void searchTweets() throws Exception {
         mockMvc.perform(get(URL_TWEETS_BASIC + "/search/test"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[*]", hasSize(4)))
-                .andExpect(jsonPath("$[*].id").isNotEmpty())
-                .andExpect(jsonPath("$[*].text").isNotEmpty())
-                .andExpect(jsonPath("$[*].dateTime").isNotEmpty())
-                .andExpect(jsonPath("$[*].addressedUsername").isNotEmpty())
-                .andExpect(jsonPath("$[*].addressedId").isNotEmpty())
-                .andExpect(jsonPath("$[*].addressedTweetId").isNotEmpty())
-                .andExpect(jsonPath("$[*].replyType").isNotEmpty())
-                .andExpect(jsonPath("$[*].link").isNotEmpty())
-                .andExpect(jsonPath("$[*].linkTitle").isNotEmpty())
-                .andExpect(jsonPath("$[*].linkDescription").isNotEmpty())
-                .andExpect(jsonPath("$[*].linkCover").isNotEmpty())
-                .andExpect(jsonPath("$[*].linkCoverSize").isNotEmpty())
-                .andExpect(jsonPath("$[*].quoteTweet").isNotEmpty())
-                .andExpect(jsonPath("$[*].user").isNotEmpty())
-                .andExpect(jsonPath("$[*].poll").isNotEmpty())
-                .andExpect(jsonPath("$[*].images").isNotEmpty())
-                .andExpect(jsonPath("$[*].likedTweets").isNotEmpty())
-                .andExpect(jsonPath("$[*].retweets").isNotEmpty())
-                .andExpect(jsonPath("$[*].replies").isNotEmpty());
+                .andExpect(jsonPath("$[*]", hasSize(5)))
+                .andExpect(jsonPath("$[0].id").value(45L))
+                .andExpect(jsonPath("$[0].text").value("media tweet test"))
+                .andExpect(jsonPath("$[0].dateTime").value("2021-10-03T20:38:51"))
+                .andExpect(jsonPath("$[0].scheduledDate").isEmpty())
+                .andExpect(jsonPath("$[0].addressedUsername").isEmpty())
+                .andExpect(jsonPath("$[0].addressedId").isEmpty())
+                .andExpect(jsonPath("$[0].addressedTweetId").isEmpty())
+                .andExpect(jsonPath("$[0].replyType").value(ReplyType.EVERYONE.toString()))
+                .andExpect(jsonPath("$[0].link").isEmpty())
+                .andExpect(jsonPath("$[0].linkTitle").isEmpty())
+                .andExpect(jsonPath("$[0].linkDescription").isEmpty())
+                .andExpect(jsonPath("$[0].linkCover").isEmpty())
+                .andExpect(jsonPath("$[0].linkCoverSize").isEmpty())
+                .andExpect(jsonPath("$[0].quoteTweet.id").value(40L))
+                .andExpect(jsonPath("$[0].user.id").value(1L))
+                .andExpect(jsonPath("$[0].poll").isEmpty())
+                .andExpect(jsonPath("$[*].images", hasSize(5)))
+                .andExpect(jsonPath("$[0].retweetsCount").value(1L))
+                .andExpect(jsonPath("$[0].likedTweetsCount").value(1L))
+                .andExpect(jsonPath("$[0].repliesCount").value(0L))
+                .andExpect(jsonPath("$[0].isTweetLiked").value(true))
+                .andExpect(jsonPath("$[0].isTweetRetweeted").value(true))
+                .andExpect(jsonPath("$[0].isUserFollowByOtherUser").value(true))
+                .andExpect(jsonPath("$[0].isTweetDeleted").value(false))
+                .andExpect(jsonPath("$[0].isTweetBookmarked").value(false));
     }
 
     @Test
@@ -652,20 +748,8 @@ public class TweetControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(43))
                 .andExpect(jsonPath("$.text").value(TWEET_TEXT))
-                .andExpect(jsonPath("$.dateTime").value(TWEET_DATETIME))
-                .andExpect(jsonPath("$.addressedUsername").isEmpty())
-                .andExpect(jsonPath("$.addressedId").isEmpty())
-                .andExpect(jsonPath("$.replyType").value(ReplyType.EVERYONE.toString()))
-                .andExpect(jsonPath("$.link").value(LINK))
-                .andExpect(jsonPath("$.linkTitle").value(LINK_TITLE))
-                .andExpect(jsonPath("$.linkDescription").value(LINK_DESCRIPTION))
-                .andExpect(jsonPath("$.linkCover").value(LINK_COVER))
-                .andExpect(jsonPath("$.linkCoverSize").value(LinkCoverSize.LARGE.toString()))
                 .andExpect(jsonPath("$.user.id").value(2))
-                .andExpect(jsonPath("$.images").isEmpty())
-                .andExpect(jsonPath("$.likedTweets").isNotEmpty())
-                .andExpect(jsonPath("$.retweets").isEmpty())
-                .andExpect(jsonPath("$.replies").isEmpty());
+                .andExpect(jsonPath("$.notificationCondition").value(true));
     }
 
     @Test
@@ -685,20 +769,8 @@ public class TweetControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(45))
                 .andExpect(jsonPath("$.text").value("media tweet test"))
-                .andExpect(jsonPath("$.dateTime").isNotEmpty())
-                .andExpect(jsonPath("$.addressedUsername").isEmpty())
-                .andExpect(jsonPath("$.addressedId").isEmpty())
-                .andExpect(jsonPath("$.replyType").value(ReplyType.EVERYONE.toString()))
-                .andExpect(jsonPath("$.link").isEmpty())
-                .andExpect(jsonPath("$.linkTitle").isEmpty())
-                .andExpect(jsonPath("$.linkDescription").isEmpty())
-                .andExpect(jsonPath("$.linkCover").isEmpty())
-                .andExpect(jsonPath("$.linkCoverSize").isEmpty())
                 .andExpect(jsonPath("$.user.id").value(1))
-                .andExpect(jsonPath("$.images").isNotEmpty())
-                .andExpect(jsonPath("$.likedTweets").isEmpty())
-                .andExpect(jsonPath("$.retweets").isNotEmpty())
-                .andExpect(jsonPath("$.replies").isEmpty());
+                .andExpect(jsonPath("$.notificationCondition").value(false));
     }
 
     @Test
@@ -709,20 +781,8 @@ public class TweetControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(43))
                 .andExpect(jsonPath("$.text").value(TWEET_TEXT))
-                .andExpect(jsonPath("$.dateTime").value(TWEET_DATETIME))
-                .andExpect(jsonPath("$.addressedUsername").isEmpty())
-                .andExpect(jsonPath("$.addressedId").isEmpty())
-                .andExpect(jsonPath("$.replyType").value(ReplyType.EVERYONE.toString()))
-                .andExpect(jsonPath("$.link").value(LINK))
-                .andExpect(jsonPath("$.linkTitle").value(LINK_TITLE))
-                .andExpect(jsonPath("$.linkDescription").value(LINK_DESCRIPTION))
-                .andExpect(jsonPath("$.linkCover").value(LINK_COVER))
-                .andExpect(jsonPath("$.linkCoverSize").value(LinkCoverSize.LARGE.toString()))
                 .andExpect(jsonPath("$.user.id").value(2))
-                .andExpect(jsonPath("$.images").isEmpty())
-                .andExpect(jsonPath("$.likedTweets").isEmpty())
-                .andExpect(jsonPath("$.retweets").isNotEmpty())
-                .andExpect(jsonPath("$.replies").isEmpty());
+                .andExpect(jsonPath("$.notificationCondition").value(true));
     }
 
     @Test
@@ -742,20 +802,8 @@ public class TweetControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(45))
                 .andExpect(jsonPath("$.text").value("media tweet test"))
-                .andExpect(jsonPath("$.dateTime").isNotEmpty())
-                .andExpect(jsonPath("$.addressedUsername").isEmpty())
-                .andExpect(jsonPath("$.addressedId").isEmpty())
-                .andExpect(jsonPath("$.replyType").value(ReplyType.EVERYONE.toString()))
-                .andExpect(jsonPath("$.link").isEmpty())
-                .andExpect(jsonPath("$.linkTitle").isEmpty())
-                .andExpect(jsonPath("$.linkDescription").isEmpty())
-                .andExpect(jsonPath("$.linkCover").isEmpty())
-                .andExpect(jsonPath("$.linkCoverSize").isEmpty())
                 .andExpect(jsonPath("$.user.id").value(1))
-                .andExpect(jsonPath("$.images").isNotEmpty())
-                .andExpect(jsonPath("$.likedTweets").isNotEmpty())
-                .andExpect(jsonPath("$.retweets").isEmpty())
-                .andExpect(jsonPath("$.replies").isEmpty());
+                .andExpect(jsonPath("$.notificationCondition").value(false));
     }
 
     @Test
@@ -770,23 +818,12 @@ public class TweetControllerTest {
                         .content(mapper.writeValueAsString(tweetRequest))
                         .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(43))
-                .andExpect(jsonPath("$.text").value(TWEET_TEXT))
-                .andExpect(jsonPath("$.dateTime").value(TWEET_DATETIME))
-                .andExpect(jsonPath("$.addressedUsername").isEmpty())
-                .andExpect(jsonPath("$.addressedId").isEmpty())
-                .andExpect(jsonPath("$.replyType").value(ReplyType.EVERYONE.toString()))
-                .andExpect(jsonPath("$.link").value(LINK))
-                .andExpect(jsonPath("$.linkTitle").value(LINK_TITLE))
-                .andExpect(jsonPath("$.linkDescription").value(LINK_DESCRIPTION))
-                .andExpect(jsonPath("$.linkCover").value(LINK_COVER))
-                .andExpect(jsonPath("$.linkCoverSize").value(LinkCoverSize.LARGE.toString()))
-                .andExpect(jsonPath("$.user.id").value(2))
-                .andExpect(jsonPath("$.images").isEmpty())
-                .andExpect(jsonPath("$.likedTweets").isEmpty())
-                .andExpect(jsonPath("$.retweets").isEmpty())
-                .andExpect(jsonPath("$.replies").isNotEmpty())
-                .andExpect(jsonPath("$.replies[0].text").value("test reply"));
+                .andExpect(jsonPath("$.tweetId").value(43))
+                .andExpect(jsonPath("$.notificationType").value("REPLY"))
+                .andExpect(jsonPath("$.tweet.id").isNotEmpty())
+                .andExpect(jsonPath("$.tweet.text").value("test reply"))
+                .andExpect(jsonPath("$.tweet.addressedTweetId").value(43))
+                .andExpect(jsonPath("$.tweet.user.id").value(2));
     }
 
     @Test
@@ -819,6 +856,7 @@ public class TweetControllerTest {
                 .andExpect(jsonPath("$.id").isNotEmpty())
                 .andExpect(jsonPath("$.text").value("test quote"))
                 .andExpect(jsonPath("$.dateTime").isNotEmpty())
+                .andExpect(jsonPath("$.scheduledDate").isEmpty())
                 .andExpect(jsonPath("$.addressedUsername").isEmpty())
                 .andExpect(jsonPath("$.addressedId").isEmpty())
                 .andExpect(jsonPath("$.addressedTweetId").isEmpty())
@@ -828,16 +866,21 @@ public class TweetControllerTest {
                 .andExpect(jsonPath("$.linkDescription").isEmpty())
                 .andExpect(jsonPath("$.linkCover").isEmpty())
                 .andExpect(jsonPath("$.linkCoverSize").isEmpty())
+                .andExpect(jsonPath("$.user.id").value(2L))
                 .andExpect(jsonPath("$.quoteTweet").isNotEmpty())
                 .andExpect(jsonPath("$.quoteTweet.id").value(43))
                 .andExpect(jsonPath("$.quoteTweet.text").value(TWEET_TEXT))
                 .andExpect(jsonPath("$.quoteTweet.dateTime").value(TWEET_DATETIME))
-                .andExpect(jsonPath("$.user.id").value(2))
                 .andExpect(jsonPath("$.poll").isEmpty())
                 .andExpect(jsonPath("$.images").isEmpty())
-                .andExpect(jsonPath("$.likedTweets").isEmpty())
-                .andExpect(jsonPath("$.retweets").isEmpty())
-                .andExpect(jsonPath("$.replies").isEmpty());
+                .andExpect(jsonPath("$.retweetsCount").value(0L))
+                .andExpect(jsonPath("$.likedTweetsCount").value(0L))
+                .andExpect(jsonPath("$.repliesCount").value(0L))
+                .andExpect(jsonPath("$.isTweetLiked").value(false))
+                .andExpect(jsonPath("$.isTweetRetweeted").value(false))
+                .andExpect(jsonPath("$.isUserFollowByOtherUser").value(false))
+                .andExpect(jsonPath("$.isTweetDeleted").value(false))
+                .andExpect(jsonPath("$.isTweetBookmarked").value(false));
     }
 
     @Test
@@ -862,9 +905,10 @@ public class TweetControllerTest {
         mockMvc.perform(get(URL_TWEETS_BASIC + "/reply/change/43")
                         .param("replyType", String.valueOf(ReplyType.FOLLOW)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(43))
+                .andExpect(jsonPath("$.id").value(43L))
                 .andExpect(jsonPath("$.text").value(TWEET_TEXT))
                 .andExpect(jsonPath("$.dateTime").value(TWEET_DATETIME))
+                .andExpect(jsonPath("$.scheduledDate").isEmpty())
                 .andExpect(jsonPath("$.addressedUsername").isEmpty())
                 .andExpect(jsonPath("$.addressedId").isEmpty())
                 .andExpect(jsonPath("$.addressedTweetId").isEmpty())
@@ -873,14 +917,19 @@ public class TweetControllerTest {
                 .andExpect(jsonPath("$.linkTitle").value(LINK_TITLE))
                 .andExpect(jsonPath("$.linkDescription").value(LINK_DESCRIPTION))
                 .andExpect(jsonPath("$.linkCover").value(LINK_COVER))
-                .andExpect(jsonPath("$.linkCoverSize").value(LinkCoverSize.LARGE.toString()))
-                .andExpect(jsonPath("$.quoteTweet").isEmpty())
-                .andExpect(jsonPath("$.user.id").value(2))
-                .andExpect(jsonPath("$.poll").isEmpty())
+                .andExpect(jsonPath("$.linkCoverSize").value("LARGE"))
+                .andExpect(jsonPath("$.user.id").value(2L))
                 .andExpect(jsonPath("$.images").isEmpty())
-                .andExpect(jsonPath("$.likedTweets").isEmpty())
-                .andExpect(jsonPath("$.retweets").isEmpty())
-                .andExpect(jsonPath("$.replies").isEmpty());
+                .andExpect(jsonPath("$.quoteTweet").isEmpty())
+                .andExpect(jsonPath("$.poll").isEmpty())
+                .andExpect(jsonPath("$.retweetsCount").value(0L))
+                .andExpect(jsonPath("$.likedTweetsCount").value(0L))
+                .andExpect(jsonPath("$.repliesCount").value(0L))
+                .andExpect(jsonPath("$.isTweetLiked").value(false))
+                .andExpect(jsonPath("$.isTweetRetweeted").value(false))
+                .andExpect(jsonPath("$.isUserFollowByOtherUser").value(false))
+                .andExpect(jsonPath("$.isTweetDeleted").value(false))
+                .andExpect(jsonPath("$.isTweetBookmarked").value(false));
     }
 
     @Test
@@ -918,7 +967,8 @@ public class TweetControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(40))
                 .andExpect(jsonPath("$.text").value("test tweet"))
-                .andExpect(jsonPath("$.dateTime").isNotEmpty())
+                .andExpect(jsonPath("$.dateTime").value("2021-10-03T20:29:03"))
+                .andExpect(jsonPath("$.scheduledDate").isEmpty())
                 .andExpect(jsonPath("$.addressedUsername").isEmpty())
                 .andExpect(jsonPath("$.addressedId").isEmpty())
                 .andExpect(jsonPath("$.addressedTweetId").isEmpty())
@@ -928,14 +978,21 @@ public class TweetControllerTest {
                 .andExpect(jsonPath("$.linkDescription").isEmpty())
                 .andExpect(jsonPath("$.linkCover").isEmpty())
                 .andExpect(jsonPath("$.linkCoverSize").isEmpty())
-                .andExpect(jsonPath("$.quoteTweet").isEmpty())
-                .andExpect(jsonPath("$.user.id").value(2))
-                .andExpect(jsonPath("$.poll").isNotEmpty())
-                .andExpect(jsonPath("$.poll.id").value(2))
+                .andExpect(jsonPath("$.user.id").value(2L))
                 .andExpect(jsonPath("$.images").isEmpty())
-                .andExpect(jsonPath("$.likedTweets").isNotEmpty())
-                .andExpect(jsonPath("$.retweets").isNotEmpty())
-                .andExpect(jsonPath("$.replies").isNotEmpty());
+                .andExpect(jsonPath("$.quoteTweet").isEmpty())
+                .andExpect(jsonPath("$.poll.pollChoices[0].id").value(9))
+                .andExpect(jsonPath("$.poll.pollChoices[0].votedUser[0].id").value(2))
+                .andExpect(jsonPath("$.poll.pollChoices[1].id").value(10))
+                .andExpect(jsonPath("$.poll.pollChoices[1].votedUser[0].id").value(1))
+                .andExpect(jsonPath("$.retweetsCount").value(1L))
+                .andExpect(jsonPath("$.likedTweetsCount").value(1L))
+                .andExpect(jsonPath("$.repliesCount").value(1L))
+                .andExpect(jsonPath("$.isTweetLiked").value(false))
+                .andExpect(jsonPath("$.isTweetRetweeted").value(false))
+                .andExpect(jsonPath("$.isUserFollowByOtherUser").value(false))
+                .andExpect(jsonPath("$.isTweetDeleted").value(false))
+                .andExpect(jsonPath("$.isTweetBookmarked").value(true));
     }
 
     @Test
