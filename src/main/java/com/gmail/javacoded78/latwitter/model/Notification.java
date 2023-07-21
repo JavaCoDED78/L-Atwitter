@@ -36,6 +36,9 @@ public class Notification {
     @OneToOne
     private Tweet tweet;
 
+    @OneToOne
+    private Lists list;
+
     public Notification() {
         this.date = LocalDateTime.now().withNano(0);
     }

@@ -151,6 +151,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public Page<TweetProjection> getUserMentions(Pageable pageable) {
+        Long userId = authenticationService.getAuthenticatedUserId();
+        return tweetRepository.getUserMentions(pageable, userId);
+    }
+
+    @Override
     public Page<TweetsProjection> getNotificationsFromTweetAuthors(Pageable pageable) {
         Long userId = authenticationService.getAuthenticatedUserId();
         List<TweetsProjection> tweets = tweetRepository.getNotificationsFromTweetAuthors(userId);

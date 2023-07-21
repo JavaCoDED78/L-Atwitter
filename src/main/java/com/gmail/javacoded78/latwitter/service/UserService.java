@@ -44,6 +44,8 @@ public interface UserService {
 
     Page<TweetUserProjection> getUserRetweetsAndReplies(Long userId, Pageable pageable);
 
+    Page<TweetProjection> getUserMentions(Pageable pageable);
+
     Map<String, Object> getUserNotifications();
 
     NotificationInfoProjection getUserNotificationById(Long notificationId);

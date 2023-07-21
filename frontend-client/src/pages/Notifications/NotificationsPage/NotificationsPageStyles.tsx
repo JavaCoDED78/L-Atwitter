@@ -1,6 +1,6 @@
 import {makeStyles, Theme} from "@material-ui/core";
 
-export const useNotificationItemStyles = makeStyles((theme: Theme) => ({
+export const useNotificationsPageStyles = makeStyles((theme: Theme) => ({
     notificationWrapper: {
         display: 'flex',
         cursor: 'pointer',
@@ -37,19 +37,9 @@ export const useNotificationItemStyles = makeStyles((theme: Theme) => ({
             height: "2.30em",
         },
     },
-    notificationAvatar: {
-        display: "inline-block",
-        marginRight: 8,
-        width: theme.spacing(4),
-        height: theme.spacing(4),
-        marginBottom: 11,
-    },
-    notificationInfo: {
-        marginBottom: 11,
-    },
-    notificationText: {
-        '& #hashtag': {
-            color: theme.palette.primary.main,
+    notificationInfoText: {
+        "& .MuiTypography-h5": {
+            fontWeight: 700
         },
     },
 }));

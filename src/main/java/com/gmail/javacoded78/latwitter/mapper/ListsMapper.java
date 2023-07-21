@@ -9,9 +9,11 @@ import com.gmail.javacoded78.latwitter.dto.response.lists.ListUserResponse;
 import com.gmail.javacoded78.latwitter.dto.response.lists.ListsOwnerMemberResponse;
 import com.gmail.javacoded78.latwitter.dto.response.lists.PinnedListResponse;
 import com.gmail.javacoded78.latwitter.dto.response.lists.SimpleListResponse;
+import com.gmail.javacoded78.latwitter.dto.response.notification.NotificationResponse;
 import com.gmail.javacoded78.latwitter.dto.response.tweet.TweetHeaderResponse;
 import com.gmail.javacoded78.latwitter.dto.response.tweet.TweetResponse;
 import com.gmail.javacoded78.latwitter.model.Lists;
+import com.gmail.javacoded78.latwitter.model.Notification;
 import com.gmail.javacoded78.latwitter.repository.projection.lists.BaseListProjection;
 import com.gmail.javacoded78.latwitter.repository.projection.lists.ListMemberProjection;
 import com.gmail.javacoded78.latwitter.repository.projection.lists.ListProjection;
@@ -107,8 +109,12 @@ public class ListsMapper {
         return listsService.addUserToLists(userToListsRequest);
     }
 
-    public Boolean addUserToList(Long userId, Long listId) {
-        return listsService.addUserToList(userId, listId);
+    public NotificationResponse addUserToList(Long userId, Long listId) {
+        Map<String, Object> notificationDetails = listsService.addUserToList(userId, listId);
+        Notification notification = (Notification) notificationDetails.get("notification");
+        NotificationResponse notificationResponse = basicMapper.convertToResponse(notification, NotificationResponse.class);
+        notificationResponse.setAddedToList((Boolean) notificationDetails.get("isAddedToList"));
+        return notificationResponse;
     }
 
     public TweetHeaderResponse<TweetResponse> getTweetsByListId(Long listId, Pageable pageable) {

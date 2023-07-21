@@ -63,9 +63,9 @@ FROM retweets;
 DELETE
 FROM chats;
 DELETE
-FROM lists;
-DELETE
 FROM notifications;
+DELETE
+FROM lists;
 DELETE
 FROM tweets;
 DELETE

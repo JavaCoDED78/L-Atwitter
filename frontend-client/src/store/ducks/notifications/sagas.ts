@@ -1,6 +1,7 @@
 import {call, put, takeLatest} from 'redux-saga/effects';
 
 import {
+    FetchMentionsActionInterface,
     FetchNotificationInfoActionInterface,
     FetchNotificationsFromTweetAuthorsActionInterface,
     NotificationsActionsType
@@ -8,7 +9,7 @@ import {
 import {setNotificationInfo, setNotifications, setNotificationsLoadingState} from "./actionCreators";
 import {LoadingStatus} from "../../types";
 import {UserApi} from "../../../services/api/userApi";
-import {setPageableTweets} from "../tweets/actionCreators";
+import {setPageableTweets, setTweetsLoadingState} from "../tweets/actionCreators";
 import {AxiosResponse} from "axios";
 import {NotificationInfoResponse, NotificationsResponse} from "../../types/notification";
 import {TweetResponse} from "../../types/tweet";
@@ -26,13 +27,26 @@ export function* fetchNotificationsRequest() {
 export function* fetchNotificationsFromTweetAuthorsRequest({payload}: FetchNotificationsFromTweetAuthorsActionInterface) {
     try {
         yield put(setNotificationsLoadingState(LoadingStatus.LOADING));
-        const response: AxiosResponse<TweetResponse[]>  = yield call(UserApi.getNotificationsFromTweetAuthors, payload);
+        const response: AxiosResponse<TweetResponse[]> = yield call(UserApi.getNotificationsFromTweetAuthors, payload);
         yield put(setPageableTweets({
             items: response.data,
             pagesCount: parseInt(response.headers["page-total-count"])
         }));
     } catch (error) {
         yield put(setNotificationsLoadingState(LoadingStatus.ERROR));
+    }
+}
+
+export function* fetchMentionsRequest({payload}: FetchMentionsActionInterface) {
+    try {
+        yield put(setTweetsLoadingState(LoadingStatus.LOADING));
+        const response: AxiosResponse<TweetResponse[]> = yield call(UserApi.getUserMentions, payload);
+        yield put(setPageableTweets({
+            items: response.data,
+            pagesCount: parseInt(response.headers["page-total-count"])
+        }));
+    } catch (error) {
+        yield put(setTweetsLoadingState(LoadingStatus.ERROR));
     }
 }
 
@@ -48,5 +62,6 @@ export function* fetchNotificationInfoRequest({payload}: FetchNotificationInfoAc
 export function* notificationsSaga() {
     yield takeLatest(NotificationsActionsType.FETCH_NOTIFICATIONS, fetchNotificationsRequest);
     yield takeLatest(NotificationsActionsType.FETCH_NOTIFICATIONS_FROM_TWEET_AUTHORS, fetchNotificationsFromTweetAuthorsRequest);
+    yield takeLatest(NotificationsActionsType.FETCH_MENTIONS, fetchMentionsRequest);
     yield takeLatest(NotificationsActionsType.FETCH_NOTIFICATION_INFO, fetchNotificationInfoRequest);
 }

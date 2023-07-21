@@ -16,4 +16,6 @@ public class NotificationResponse {
     private NotificationUserResponse user;
     private NotificationUserResponse userToFollow;
     private NotificationTweetResponse tweet;
+    private NotificationListResponse list;
+    private boolean isAddedToList;
 }

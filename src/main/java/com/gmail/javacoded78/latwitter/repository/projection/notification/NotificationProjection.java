@@ -22,6 +22,8 @@ public interface NotificationProjection {
         NotificationUserProjection getUserToFollow();
 
         NotificationTweetProjection getTweet();
+
+        NotificationListProjection getList();
     }
 
     interface NotificationUserProjection {
@@ -40,5 +42,12 @@ public interface NotificationProjection {
         String getText();
 
         NotificationUserProjection getUser();
+    }
+
+    interface NotificationListProjection {
+
+        Long getId();
+
+        String getName();
     }
 }
