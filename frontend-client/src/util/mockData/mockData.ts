@@ -1,4 +1,4 @@
-import {TweetImageResponse, TweetResponse} from "../../store/types/tweet";
+import {QuoteTweetResponse, TweetImageResponse, TweetResponse} from "../../store/types/tweet";
 import {
     AuthUserResponse,
     BlockedUserResponse,
@@ -9,12 +9,14 @@ import {
 import {
     BaseListResponse,
     ListResponse,
-    ListsOwnerMemberResponse, ListUserResponse,
+    ListsOwnerMemberResponse,
+    ListUserResponse,
     PinnedListResponse,
     SimpleListResponse
 } from "../../store/types/lists";
 import {ChatMessageResponse, ChatResponse} from "../../store/types/chat";
 import {NotificationInfoResponse, NotificationResponse, NotificationUserResponse} from "../../store/types/notification";
+import {TagResponse} from "../../store/types/tag";
 
 export const mockTweets = [
     {
@@ -138,7 +140,7 @@ export const mockUser = {
     "country": "UA",
     "gender": "Cat",
     "language": "Ukrainian - українська",
-    "birthday": null,
+    "birthday": "Jan 15, 2005",
     "registrationDate": "2021-08-01T23:34:32",
     "tweetCount": 4,
     "mediaTweetCount": 25,
@@ -210,7 +212,7 @@ export const createMockMyProfile = (followersSize: number = 1, followingSize: nu
         "about": "Hello twitter!",
         "website": "https://www.google.com",
         "country": "UA",
-        "birthday": null,
+        "birthday": "Jan 15, 2005",
         "registrationDate": "2021-08-01T23:34:32",
         "tweetCount": 4,
         "mediaTweetCount": 25,
@@ -917,6 +919,32 @@ export const mockMyFullTweet = {
     "isTweetBookmarked": false
 } as unknown as TweetResponse;
 
+export const mockQuoteTweet = {
+    "id": 13,
+    "text": "#JavaScript",
+    "dateTime": "2021-10-15T21:57:21",
+    "link": null,
+    "linkCover": null,
+    "linkCoverSize": null,
+    "linkDescription": null,
+    "linkTitle": null,
+    "user": {
+        "id": 4,
+        "email": "user2019@gmail.com",
+        "fullName": "JavaCat",
+        "isFollower": true,
+        "isMyProfileBlocked": false,
+        "isPrivateProfile": false,
+        "isUserBlocked": false,
+        "isUserMuted": false,
+        "username": "JavaCat",
+        "avatar": {
+            "id": 5,
+            "src": "https://twitterclonestorage.s3.eu-central-1.amazonaws.com/b999d944-c9ec-4a9c-b356-db937211df5c_Ec1OBK3XsAEjVZR.png"
+        }
+    }
+} as unknown as QuoteTweetResponse;
+
 // chat
 export const mockChats = [
     {
@@ -1169,3 +1197,22 @@ export const mockNotificationInfo = {
         "isTweetBookmarked": false
     }
 } as unknown as NotificationInfoResponse;
+
+// tag
+export const mockTags = [
+    {
+        "id": 1,
+        "tagName": "#FirstTweet",
+        "tweetsQuantity": 5
+    },
+    {
+        "id": 2,
+        "tagName": "#myCat",
+        "tweetsQuantity": 4
+    },
+    {
+        "id": 3,
+        "tagName": "#JavaScript",
+        "tweetsQuantity": 1
+    }
+] as unknown as TagResponse[];

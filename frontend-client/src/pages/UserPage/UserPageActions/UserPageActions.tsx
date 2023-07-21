@@ -111,7 +111,7 @@ const UserPageActions: FC<UserPageActionsProps & SnackbarProps> = (
                                             View Topics
                                         </Typography>
                                     </ListItem>
-                                    <ListItem onClick={onOpenListsModal}>
+                                    <ListItem id={"openListsModal"} onClick={onOpenListsModal}>
                                         <>{AddListsIcon}</>
                                         <Typography component={"span"}>
                                             Add/remove @{user.username} from Lists
@@ -140,7 +140,7 @@ const UserPageActions: FC<UserPageActionsProps & SnackbarProps> = (
                                                 </Typography>
                                             </ListItem>
                                             <CopyToClipboard text={CLIENT_URL + location.pathname}>
-                                                <ListItem onClick={onCopyLinkToProfile}>
+                                                <ListItem id={"copyLinkToProfile"} onClick={onCopyLinkToProfile}>
                                                     <>{LinkIcon}</>
                                                     <Typography component={"span"}>
                                                         Copy link to profile
@@ -152,14 +152,14 @@ const UserPageActions: FC<UserPageActionsProps & SnackbarProps> = (
                                 </>
                             )}
                             {!isUserBlocked && (
-                                <ListItem onClick={handleMuteUser}>
+                                <ListItem id={"handleMuteUser"} onClick={handleMuteUser}>
                                     <>{isUserMuted ? UnmuteIcon : MuteIcon}</>
                                     <Typography component={"span"}>
                                         {isUserMuted ? "Unmute" : "Mute"} @{user.username}
                                     </Typography>
                                 </ListItem>
                             )}
-                            <ListItem onClick={onOpenBlockUserModal}>
+                            <ListItem id={"openBlockUserModal"} onClick={onOpenBlockUserModal}>
                                 <>{isUserBlocked ? UnblockIcon : BlockIcon}</>
                                 <Typography component={"span"}>
                                     {isUserBlocked ? "Unblock" : "Block"} @{user.username}

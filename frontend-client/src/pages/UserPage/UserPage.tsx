@@ -19,7 +19,6 @@ import Skeleton from '@material-ui/lab/Skeleton';
 import format from 'date-fns/format';
 import {CompatClient, Stomp} from "@stomp/stompjs";
 import SockJS from "sockjs-client";
-import classNames from "classnames";
 import classnames from "classnames";
 import {compose} from "recompose";
 
@@ -139,7 +138,7 @@ const UserPage: FC<SnackbarProps & HoverActionProps> = (
         }
         document.body.style.overflow = 'unset';
 
-        stompClient = Stomp.over(new SockJS(WS_URL));
+        stompClient = Stomp.over(() => new SockJS(WS_URL));
         stompClient.connect({}, () => {
             stompClient?.subscribe("/topic/user/add/tweet/" + params.id, (response) => {
                 dispatch(setAddedUserTweet(JSON.parse(response.body)));
@@ -358,14 +357,15 @@ const UserPage: FC<SnackbarProps & HoverActionProps> = (
                         </div>
                         <div className={classes.info}>
                             <Link to={{
-                                pathname: `${PROFILE_PHOTO}/${userProfile?.id}`, 
+                                pathname: `${PROFILE_PHOTO}/${userProfile?.id}`,
                                 state: {
-                                    background: location, 
+                                    background: location,
                                     imageSrc: userProfile?.avatar?.src ? userProfile?.avatar.src : DEFAULT_PROFILE_IMG
                                 },
                             }}>
                                 <div style={{display: "inline-block"}}>
-                                    <Avatar src={userProfile !== undefined ? userProfile?.avatar?.src ? userProfile?.avatar.src : DEFAULT_PROFILE_IMG : undefined}>
+                                    <Avatar
+                                        src={userProfile !== undefined ? userProfile?.avatar?.src ? userProfile?.avatar.src : DEFAULT_PROFILE_IMG : undefined}>
                                         <div></div>
                                     </Avatar>
                                 </div>
@@ -413,7 +413,7 @@ const UserPage: FC<SnackbarProps & HoverActionProps> = (
                                             )}
                                             {userProfile?.isUserBlocked ? (
                                                 <Button
-                                                    className={classNames(classes.primaryButton, classes.blockButton)}
+                                                    className={classnames(classes.primaryButton, classes.blockButton)}
                                                     onClick={onOpenBlockUserModal}
                                                     onMouseOver={() => setBtnText("Unblock")}
                                                     onMouseLeave={() => setBtnText("Blocked")}
@@ -529,6 +529,7 @@ const UserPage: FC<SnackbarProps & HoverActionProps> = (
                                         {userProfile?.website && (
                                             <ListItem>
                                                 <>{LinkIcon}</>
+                                                {/* TODO link to website */}
                                                 <MuiLink
                                                     href={userProfile?.website}
                                                     variant="subtitle1"
@@ -600,6 +601,7 @@ const UserPage: FC<SnackbarProps & HoverActionProps> = (
                                     <Typography variant={"subtitle1"} component={"div"} className={classes.description}>
                                         {"You have muted Tweets from this account. "}
                                         <Typography
+                                            id={"unmuteUser"}
                                             className={classes.unfollowLink}
                                             onClick={onMuteUser}
                                             variant={"subtitle1"}
