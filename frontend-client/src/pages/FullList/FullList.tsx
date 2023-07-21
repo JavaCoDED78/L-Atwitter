@@ -6,7 +6,6 @@ import {Avatar, Button, Paper, Typography} from "@material-ui/core";
 import {useFullListStyles} from "./FullListStyles";
 import {selectIsListLoaded, selectIsListLoading, selectListItem,} from "../../store/ducks/list/selectors";
 import {fetchListById} from "../../store/ducks/list/actionCreators";
-import BackButton from "../../components/BackButton/BackButton";
 import {DEFAULT_PROFILE_IMG} from "../../util/url";
 import {selectUserData} from "../../store/ducks/user/selectors";
 import TweetComponent from "../../components/TweetComponent/TweetComponent";
@@ -18,7 +17,6 @@ import TopTweetsActionsModal from "./TopTweetsActionsModal/TopTweetsActionsModal
 import Spinner from "../../components/Spinner/Spinner";
 import {LockIcon} from "../../icons";
 import {useGlobalStyles} from "../../util/globalClasses";
-import InfiniteScroll from "react-infinite-scroll-component";
 import {fetchTweetsByListId, resetTweets} from "../../store/ducks/tweets/actionCreators";
 import {
     selectIsTweetsLoaded,
@@ -28,6 +26,9 @@ import {
 } from "../../store/ducks/tweets/selectors";
 import {PROFILE} from "../../util/pathConstants";
 import {withDocumentTitle} from "../../hoc/withDocumentTitle";
+import InfiniteScrollWrapper from "../../components/InfiniteScrollWrapper/InfiniteScrollWrapper";
+import PageHeaderWrapper from "../../components/PageHeaderWrapper/PageHeaderWrapper";
+import EmptyPageDescription from "../../components/EmptyPageDescription/EmptyPageDescription";
 
 const FullList: FC = (): ReactElement => {
     const globalClasses = useGlobalStyles();
@@ -47,13 +48,12 @@ const FullList: FC = (): ReactElement => {
     const [visibleEditListModal, setVisibleEditListModal] = useState<boolean>(false);
     const [visibleMembersAndFollowersModal, setVisibleMembersAndFollowersModal] = useState<boolean>(false);
     const [modalWindowTitle, setModalWindowTitle] = useState<string>("");
-    const [page, setPage] = useState<number>(0);
 
     useEffect(() => {
         window.scrollTo(0, 0);
         
         dispatch(fetchListById(parseInt(params.listId)));
-        loadTweets();
+        loadTweets(0);
 
         return () => {
             dispatch(resetTweets());
@@ -74,9 +74,8 @@ const FullList: FC = (): ReactElement => {
         }
     };
 
-    const loadTweets = () => {
+    const loadTweets = (page: number): void => {
         dispatch(fetchTweetsByListId({listId: parseInt(params.listId), pageNumber: page}));
-        setPage(prevState => prevState + 1);
     };
 
     const onOpenEditListModal = (): void => {
@@ -103,16 +102,9 @@ const FullList: FC = (): ReactElement => {
     };
 
     return (
-        <InfiniteScroll
-            style={{overflow: "unset"}}
-            dataLength={tweets.length}
-            next={loadTweets}
-            hasMore={page < pagesCount}
-            loader={null}
-        >
+        <InfiniteScrollWrapper dataLength={tweets.length} pagesCount={pagesCount} loadItems={loadTweets}>
             <Paper className={globalClasses.pageContainer} variant="outlined">
-                <Paper className={globalClasses.pageHeader} variant="outlined">
-                    <BackButton/>
+                <PageHeaderWrapper backButton>
                     {!isListLoading && (
                         <div>
                             <div>
@@ -134,7 +126,7 @@ const FullList: FC = (): ReactElement => {
                         <ShareActionsModal/>
                         <TopTweetsActionsModal/>
                     </div>
-                </Paper>
+                </PageHeaderWrapper>
                 <div className={globalClasses.contentWrapper}>
                     {isListLoading ? (
                         <Spinner paddingTop={250}/>
@@ -232,14 +224,10 @@ const FullList: FC = (): ReactElement => {
                         </>
                     )}
                     {(tweets.length === 0 && isTweetsLoaded) ? (
-                        <div className={globalClasses.infoText}>
-                            <Typography variant={"h4"} component={"div"}>
-                                There aren’t any Tweets in this List
-                            </Typography>
-                            <Typography variant={"subtitle1"} component={"div"}>
-                                When anyone in this List Tweets, they’ll show up here.
-                            </Typography>
-                        </div>
+                        <EmptyPageDescription
+                            title={"There aren’t any Tweets in this List"}
+                            subtitle={"When anyone in this List Tweets, they’ll show up here."}
+                        />
                     ) : (
                         <>
                             {tweets.map((tweet) => <TweetComponent key={tweet.id} item={tweet}/>)}
@@ -255,7 +243,7 @@ const FullList: FC = (): ReactElement => {
                     onClose={onCloseModalWindow}
                 />
             </Paper>
-        </InfiniteScroll>
+        </InfiniteScrollWrapper>
     );
 };
 

@@ -22,7 +22,7 @@ import {
 } from "../../../../store/ducks/listMembers/actionCreators";
 import Spinner from "../../../../components/Spinner/Spinner";
 import {ManageMembersInput} from "./ManageMembersInput/ManageMembersInput";
-import {useGlobalStyles} from "../../../../util/globalClasses";
+import EmptyPageDescription from "../../../../components/EmptyPageDescription/EmptyPageDescription";
 
 interface ManageMembersModalProps {
     visible?: boolean;
@@ -30,7 +30,6 @@ interface ManageMembersModalProps {
 }
 
 const ManageMembersModal: FC<ManageMembersModalProps> = ({visible, onClose}): ReactElement | null => {
-    const globalClasses = useGlobalStyles();
     const classes = useManageMembersModalStyles();
     const dispatch = useDispatch();
     const list = useSelector(selectListItem);
@@ -80,8 +79,8 @@ const ManageMembersModal: FC<ManageMembersModalProps> = ({visible, onClose}): Re
             className={classes.dialog}
             open={visible}
             onClose={onClose}
-            hideBackdrop={true}
             aria-labelledby="form-dialog-title"
+            hideBackdrop
         >
             <DialogTitle id="form-dialog-title">
                 <IconButton onClick={onClose} color="primary" size="small">
@@ -103,14 +102,10 @@ const ManageMembersModal: FC<ManageMembersModalProps> = ({visible, onClose}): Re
                                 <ManageMembersItem key={member.id} item={list} member={member}/>
                             ))
                         ) : (
-                            <div className={globalClasses.infoText}>
-                                <Typography variant={"h4"} component={"div"}>
-                                    There isn’t anyone in this List
-                                </Typography>
-                                <Typography variant={"subtitle1"} component={"div"}>
-                                    When people get added, they’ll show up here.
-                                </Typography>
-                            </div>
+                            <EmptyPageDescription
+                                title={"There isn’t anyone in this List"}
+                                subtitle={"When people get added, they’ll show up here."}
+                            />
                         )
                     )
                 ) : (
@@ -134,14 +129,10 @@ const ManageMembersModal: FC<ManageMembersModalProps> = ({visible, onClose}): Re
                                 <ManageMembersItem key={member.id} item={list} member={member}/>
                             ))
                         ) : (
-                            <div className={globalClasses.infoText}>
-                                <Typography variant={"h4"} component={"div"}>
-                                    There aren’t any suggested members
-                                </Typography>
-                                <Typography variant={"subtitle1"} component={"div"}>
-                                    To see suggestions to add to this List, try searching for accounts.
-                                </Typography>
-                            </div>
+                            <EmptyPageDescription
+                                title={"There aren’t any suggested members"}
+                                subtitle={"To see suggestions to add to this List, try searching for accounts."}
+                            />
                         )}
                     </div>
                 )}
