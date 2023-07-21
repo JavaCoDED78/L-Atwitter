@@ -29,7 +29,7 @@ INSERT INTO users (id, about, activation_code, active, background_color, birthda
                    notifications_count, password, password_reset_code, phone, private_profile, profile_customized,
                    profile_started, registration_date, role, tweet_count, username, website)
 VALUES (1, null, null, true, 'DEFAULT', null, 'BLUE', null, null, 'user2015@gmail.com', 'Random', null, null, 1, null,
-        0, true, 0, '$2a$08$T1SpeJPoOfEDpMdhPKMp.elE6XBXIGN2wNMuDNh0vNnsOice4K4cu', null, null, false, true, true,
+        0, true, 0, '$2a$08$TZekzxmq.KO2f.juYNUa4eU/ePYPx3r2MWONVjPDKOBJB4qUlhkxW', null, null, false, true, true,
         '2021-11-15 14:05:08.000000', 'USER', 0, 'Random', null);
 INSERT INTO users (id, about, activation_code, active, background_color, birthday, color_scheme, country, country_code,
                    email, full_name, gender, language, like_count, location, media_tweet_count, muted_direct_messages,
@@ -37,28 +37,28 @@ INSERT INTO users (id, about, activation_code, active, background_color, birthda
                    profile_started, registration_date, role, tweet_count, username, website)
 VALUES (2, 'Hello twitter!', null, true, 'DIM', null, 'BLUE', 'UA', 'UA', 'user2016@gmail.com', 'MrCat', 'Cat',
         'Ukrainian - українська', 30, 'New York', 22, false, 0,
-        '$2a$08$T1SpeJPoOfEDpMdhPKMp.elE6XBXIGN2wNMuDNh0vNnsOice4K4cu', null, 666966623, true, false, true,
+        '$2a$08$TZekzxmq.KO2f.juYNUa4eU/ePYPx3r2MWONVjPDKOBJB4qUlhkxW', null, 666966623, true, false, true,
         '2021-08-01 23:34:32.000000', 'USER', 4, 'Cat', 'https://www.google.com');
 INSERT INTO users (id, about, activation_code, active, background_color, birthday, color_scheme, country, country_code,
                    email, full_name, gender, language, like_count, location, media_tweet_count, muted_direct_messages,
                    notifications_count, password, password_reset_code, phone, private_profile, profile_customized,
                    profile_started, registration_date, role, tweet_count, username, website)
 VALUES (3, 'Hello twitter!', null, true, 'DEFAULT', null, 'BLUE', null, null, 'user2017@gmail.com', 'Kitty', null, null,
-        0, 'New York', 0, true, 2, '$2a$08$T1SpeJPoOfEDpMdhPKMp.elE6XBXIGN2wNMuDNh0vNnsOice4K4cu', null, null, false,
+        0, 'New York', 0, true, 2, '$2a$08$TZekzxmq.KO2f.juYNUa4eU/ePYPx3r2MWONVjPDKOBJB4qUlhkxW', null, null, false,
         true, true, '2021-08-01 23:34:32.000000', 'USER', 0, 'Kitty', 'https://www.google.com');
 INSERT INTO users (id, about, activation_code, active, background_color, birthday, color_scheme, country, country_code,
                    email, full_name, gender, language, like_count, location, media_tweet_count, muted_direct_messages,
                    notifications_count, password, password_reset_code, phone, private_profile, profile_customized,
                    profile_started, registration_date, role, tweet_count, username, website)
 VALUES (4, 'Hello twitter!', null, true, 'DEFAULT', null, 'BLUE', null, null, 'user2019@gmail.com', 'JavaCat', null,
-        null, 0, 'Java', 0, false, 1, '$2a$08$T1SpeJPoOfEDpMdhPKMp.elE6XBXIGN2wNMuDNh0vNnsOice4K4cu', null, null, false,
+        null, 0, 'Java', 0, false, 1, '$2a$08$TZekzxmq.KO2f.juYNUa4eU/ePYPx3r2MWONVjPDKOBJB4qUlhkxW', null, null, false,
         true, true, '2021-08-01 23:34:32.000000', 'USER', 0, 'JavaCat', 'https://www.java.com');
 INSERT INTO users (id, about, activation_code, active, background_color, birthday, color_scheme, country, country_code,
                    email, full_name, gender, language, like_count, location, media_tweet_count, muted_direct_messages,
                    notifications_count, password, password_reset_code, phone, private_profile, profile_customized,
                    profile_started, registration_date, role, tweet_count, username, website)
 VALUES (5, 'Hello twitter!', null, true, 'DEFAULT', null, 'BLUE', null, null, 'user2018@gmail.com', 'КотБегемот', null,
-        null, 0, 'London', 0, false, 2, '$2a$08$T1SpeJPoOfEDpMdhPKMp.elE6XBXIGN2wNMuDNh0vNnsOice4K4cu', null, null,
+        null, 0, 'London', 0, false, 2, '$2a$08$TZekzxmq.KO2f.juYNUa4eU/ePYPx3r2MWONVjPDKOBJB4qUlhkxW', null, null,
         false, true, true, '2021-08-01 23:34:32.000000', null, 0, 'Кот Бегемот', 'https://www.google.com');
 -- tweets
 INSERT INTO tweets (id, addressed_id, addressed_tweet_id, addressed_username, date_time, link, link_cover,
