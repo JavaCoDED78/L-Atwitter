@@ -162,4 +162,17 @@ public interface TweetRepository extends JpaRepository<Tweet, Long> {
             "WHERE tweet.id = :tweetId " +
             "ORDER BY retweet.retweetDate DESC")
     List<UserProjection> getRetweetedUsersByTweetId(Long tweetId);
+
+    @Query("SELECT tweet FROM Tweet tweet " +
+            "LEFT JOIN tweet.quoteTweet quoteTweet " +
+            "WHERE quoteTweet.id = :tweetId ")
+    Page<TweetProjection> getQuotesByTweetId(Pageable pageable, Long tweetId);
+
+    @Query("SELECT user FROM User user " +
+            "LEFT JOIN user.tweets tweet " +
+            "LEFT JOIN tweet.quoteTweet quoteTweet " +
+            "LEFT JOIN quoteTweet.user quoteTweetUser " +
+            "WHERE quoteTweet.id = :tweetId " +
+            "AND quoteTweetUser.id = :userId ")
+    List<UserProjection> getQuotedUsersByTweetId(Long userId, Long tweetId);
 }

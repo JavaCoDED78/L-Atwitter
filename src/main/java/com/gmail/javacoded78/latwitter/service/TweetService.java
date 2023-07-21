@@ -1,6 +1,6 @@
 package com.gmail.javacoded78.latwitter.service;
 
-import com.gmail.javacoded78.latwitter.model.ReplyType;
+import com.gmail.javacoded78.latwitter.enums.ReplyType;
 import com.gmail.javacoded78.latwitter.model.Tweet;
 import com.gmail.javacoded78.latwitter.repository.projection.tweet.TweetProjection;
 import com.gmail.javacoded78.latwitter.repository.projection.user.UserProjection;
@@ -17,6 +17,8 @@ public interface TweetService {
     TweetProjection getTweetById(Long tweetId);
 
     List<TweetProjection> getRepliesByTweetId(Long tweetId);
+
+    Page<TweetProjection> getQuotesByTweetId(Pageable pageable, Long tweetId);
 
     List<UserProjection> getLikedUsersByTweetId(Long tweetId);
 

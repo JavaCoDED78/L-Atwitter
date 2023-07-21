@@ -1,8 +1,8 @@
 package com.gmail.javacoded78.latwitter.repository;
 
 
-import com.gmail.javacoded78.latwitter.model.BackgroundColorType;
-import com.gmail.javacoded78.latwitter.model.ColorSchemeType;
+import com.gmail.javacoded78.latwitter.enums.BackgroundColorType;
+import com.gmail.javacoded78.latwitter.enums.ColorSchemeType;
 import com.gmail.javacoded78.latwitter.model.Tweet;
 import com.gmail.javacoded78.latwitter.model.User;
 import com.gmail.javacoded78.latwitter.repository.projection.UserPrincipalProjection;
@@ -18,7 +18,6 @@ import com.gmail.javacoded78.latwitter.repository.projection.user.UserProjection
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -28,6 +27,10 @@ import java.util.Optional;
 public interface UserRepository extends JpaRepository<User, Long> {
 
     List<UserProjection> findByActiveTrueAndIdNot(Long id);
+
+
+    @Query("SELECT new com.gmail.javacoded78.latwitter.repository.projection.UserPrincipalProjection(user.id, user.email, user.password, user.activationCode) FROM User user WHERE user.email = :email")
+    Optional<UserPrincipalProjection> findUserPrincipalByEmail(String email);
 
     @Query("SELECT user FROM User user WHERE user.id = :userId")
     AuthUserProjection findAuthUserById(Long userId);

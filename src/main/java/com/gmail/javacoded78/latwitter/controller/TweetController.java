@@ -9,8 +9,8 @@ import com.gmail.javacoded78.latwitter.dto.response.notification.NotificationRes
 import com.gmail.javacoded78.latwitter.dto.response.notification.NotificationTweetResponse;
 import com.gmail.javacoded78.latwitter.dto.response.tweet.TweetHeaderResponse;
 import com.gmail.javacoded78.latwitter.dto.response.tweet.TweetResponse;
+import com.gmail.javacoded78.latwitter.enums.ReplyType;
 import com.gmail.javacoded78.latwitter.mapper.TweetMapper;
-import com.gmail.javacoded78.latwitter.model.ReplyType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -47,9 +47,15 @@ public class TweetController {
         return ResponseEntity.ok(tweetMapper.getTweetById(tweetId));
     }
 
-    @GetMapping("/{tweetId}/replies")
+    @GetMapping("/{tweetId}/replies") // TODO add pagination
     public ResponseEntity<List<TweetResponse>> getRepliesByTweetId(@PathVariable Long tweetId) {
         return ResponseEntity.ok(tweetMapper.getRepliesByTweetId(tweetId));
+    }
+
+    @GetMapping("/{tweetId}/quotes")
+    public ResponseEntity<List<TweetResponse>> getQuotesByTweetId(@PageableDefault(size = 10) Pageable pageable, @PathVariable Long tweetId) {
+        TweetHeaderResponse<TweetResponse> response = tweetMapper.getQuotesByTweetId(pageable, tweetId);
+        return ResponseEntity.ok().headers(response.getHeaders()).body(response.getTweets());
     }
 
     @GetMapping("/{tweetId}/liked-users")

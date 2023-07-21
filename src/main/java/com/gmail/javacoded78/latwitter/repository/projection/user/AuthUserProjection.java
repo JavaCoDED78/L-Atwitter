@@ -1,7 +1,7 @@
 package com.gmail.javacoded78.latwitter.repository.projection.user;
 
-import com.gmail.javacoded78.latwitter.model.BackgroundColorType;
-import com.gmail.javacoded78.latwitter.model.ColorSchemeType;
+import com.gmail.javacoded78.latwitter.enums.BackgroundColorType;
+import com.gmail.javacoded78.latwitter.enums.ColorSchemeType;
 import com.gmail.javacoded78.latwitter.repository.projection.ImageProjection;
 import org.springframework.beans.factory.annotation.Value;
 

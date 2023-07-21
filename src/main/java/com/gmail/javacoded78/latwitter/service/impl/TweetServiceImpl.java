@@ -1,15 +1,15 @@
 package com.gmail.javacoded78.latwitter.service.impl;
 
+import com.gmail.javacoded78.latwitter.enums.LinkCoverSize;
+import com.gmail.javacoded78.latwitter.enums.ReplyType;
 import com.gmail.javacoded78.latwitter.exception.ApiRequestException;
 import com.gmail.javacoded78.latwitter.model.Bookmark;
 import com.gmail.javacoded78.latwitter.model.ChatMessage;
 import com.gmail.javacoded78.latwitter.model.LikeTweet;
-import com.gmail.javacoded78.latwitter.model.LinkCoverSize;
 import com.gmail.javacoded78.latwitter.model.Notification;
-import com.gmail.javacoded78.latwitter.model.NotificationType;
+import com.gmail.javacoded78.latwitter.enums.NotificationType;
 import com.gmail.javacoded78.latwitter.model.Poll;
 import com.gmail.javacoded78.latwitter.model.PollChoice;
-import com.gmail.javacoded78.latwitter.model.ReplyType;
 import com.gmail.javacoded78.latwitter.model.Retweet;
 import com.gmail.javacoded78.latwitter.model.Tag;
 import com.gmail.javacoded78.latwitter.model.Tweet;
@@ -96,6 +96,11 @@ public class TweetServiceImpl implements TweetService {
         return repliesByTweetId.contains(null) ? new ArrayList<>() : repliesByTweetId.stream()
                 .map(TweetsProjection::getTweet)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public Page<TweetProjection> getQuotesByTweetId(Pageable pageable, Long tweetId) {
+        return tweetRepository.getQuotesByTweetId(pageable, tweetId);
     }
 
     @Override
@@ -346,6 +351,7 @@ public class TweetServiceImpl implements TweetService {
         user.setTweetCount(user.getTweetCount() + 1);
         quote.setQuoteTweet(tweet);
         Tweet createdTweet = createTweet(quote);
+        tweet.getQuotes().add(createdTweet);
         return getTweetById(createdTweet.getId());
     }
 

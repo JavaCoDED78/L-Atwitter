@@ -12,6 +12,7 @@ import com.gmail.javacoded78.latwitter.repository.projection.chat.ChatProjection
 import com.gmail.javacoded78.latwitter.repository.projection.user.UserChatProjection;
 import com.gmail.javacoded78.latwitter.repository.projection.user.UserProjection;
 import com.gmail.javacoded78.latwitter.service.ChatService;
+import com.gmail.javacoded78.latwitter.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 

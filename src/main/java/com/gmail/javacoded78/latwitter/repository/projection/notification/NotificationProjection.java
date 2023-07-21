@@ -1,6 +1,6 @@
 package com.gmail.javacoded78.latwitter.repository.projection.notification;
 
-import com.gmail.javacoded78.latwitter.model.NotificationType;
+import com.gmail.javacoded78.latwitter.enums.NotificationType;
 import com.gmail.javacoded78.latwitter.repository.projection.ImageProjection;
 
 import java.time.LocalDateTime;

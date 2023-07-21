@@ -205,6 +205,12 @@ VALUES (9, '2021-10-03 20:31:47.000000', 45, 2);
 INSERT INTO replies (tweets_id, reply_id)
 VALUES (40, 41);
 
+-- quotes
+INSERT INTO quotes (tweets_id, quote_id)
+VALUES (44, 43);
+INSERT INTO quotes (tweets_id, quote_id)
+VALUES (45, 40);
+
 -- user_pinned_tweet
 INSERT INTO user_pinned_tweet (user_id, tweet_id)
 VALUES (2, 40);

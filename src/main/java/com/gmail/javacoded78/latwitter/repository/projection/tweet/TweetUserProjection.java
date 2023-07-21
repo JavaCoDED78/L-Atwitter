@@ -1,7 +1,7 @@
 package com.gmail.javacoded78.latwitter.repository.projection.tweet;
 
-import com.gmail.javacoded78.latwitter.model.LinkCoverSize;
-import com.gmail.javacoded78.latwitter.model.ReplyType;
+import com.gmail.javacoded78.latwitter.enums.LinkCoverSize;
+import com.gmail.javacoded78.latwitter.enums.ReplyType;
 import com.gmail.javacoded78.latwitter.repository.projection.ImageProjection;
 import org.springframework.beans.factory.annotation.Value;
 

@@ -1,6 +1,8 @@
 DELETE
 FROM replies;
 DELETE
+FROM quotes;
+DELETE
 FROM tweets_images;
 DELETE
 FROM tweets_tags;

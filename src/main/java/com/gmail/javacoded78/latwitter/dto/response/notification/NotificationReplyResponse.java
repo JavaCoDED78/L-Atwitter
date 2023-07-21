@@ -1,7 +1,7 @@
 package com.gmail.javacoded78.latwitter.dto.response.notification;
 
 import com.gmail.javacoded78.latwitter.dto.response.tweet.TweetResponse;
-import com.gmail.javacoded78.latwitter.model.NotificationType;
+import com.gmail.javacoded78.latwitter.enums.NotificationType;
 import lombok.Getter;
 import lombok.Setter;
 

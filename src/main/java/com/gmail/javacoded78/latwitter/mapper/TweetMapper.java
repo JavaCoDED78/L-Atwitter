@@ -8,8 +8,8 @@ import com.gmail.javacoded78.latwitter.dto.response.notification.NotificationRep
 import com.gmail.javacoded78.latwitter.dto.response.notification.NotificationResponse;
 import com.gmail.javacoded78.latwitter.dto.response.tweet.TweetHeaderResponse;
 import com.gmail.javacoded78.latwitter.dto.response.tweet.TweetResponse;
-import com.gmail.javacoded78.latwitter.model.NotificationType;
-import com.gmail.javacoded78.latwitter.model.ReplyType;
+import com.gmail.javacoded78.latwitter.enums.NotificationType;
+import com.gmail.javacoded78.latwitter.enums.ReplyType;
 import com.gmail.javacoded78.latwitter.model.Tweet;
 import com.gmail.javacoded78.latwitter.repository.projection.tweet.TweetProjection;
 import com.gmail.javacoded78.latwitter.repository.projection.user.UserProjection;
@@ -79,6 +79,11 @@ public class TweetMapper {
     public List<TweetResponse> getRepliesByTweetId(Long tweetId) {
         List<TweetProjection> tweets = tweetService.getRepliesByTweetId(tweetId);
         return basicMapper.convertToResponseList(tweets, TweetResponse.class);
+    }
+
+    public TweetHeaderResponse<TweetResponse> getQuotesByTweetId(Pageable pageable, Long tweetId) {
+        Page<TweetProjection> tweets = tweetService.getQuotesByTweetId(pageable, tweetId);
+        return getTweetHeaderResponse(tweets, TweetResponse.class);
     }
 
     public List<UserResponse> getLikedUsersByTweetId(Long tweetId) {

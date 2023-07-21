@@ -1,8 +1,8 @@
 package com.gmail.javacoded78.latwitter.dto.request;
 
+import com.gmail.javacoded78.latwitter.enums.LinkCoverSize;
+import com.gmail.javacoded78.latwitter.enums.ReplyType;
 import com.gmail.javacoded78.latwitter.model.Image;
-import com.gmail.javacoded78.latwitter.model.LinkCoverSize;
-import com.gmail.javacoded78.latwitter.model.ReplyType;
 import lombok.Data;
 
 import java.time.LocalDateTime;

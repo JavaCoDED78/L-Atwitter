@@ -1,6 +1,6 @@
 package com.gmail.javacoded78.latwitter.controller;
 
-import com.gmail.javacoded78.latwitter.model.ReplyType;
+import com.gmail.javacoded78.latwitter.enums.ReplyType;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

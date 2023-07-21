@@ -1,5 +1,7 @@
 package com.gmail.javacoded78.latwitter.model;
 
+import com.gmail.javacoded78.latwitter.enums.LinkCoverSize;
+import com.gmail.javacoded78.latwitter.enums.ReplyType;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
@@ -104,11 +106,18 @@ public class Tweet {
             inverseJoinColumns = @JoinColumn(name = "reply_id"))
     private List<Tweet> replies;
 
+    @OneToMany
+    @JoinTable(name = "quotes",
+            joinColumns = @JoinColumn(name = "tweets_id"),
+            inverseJoinColumns = @JoinColumn(name = "quote_id"))
+    private List<Tweet> quotes;
+
     public Tweet() {
         this.dateTime = LocalDateTime.now().withNano(0);
         this.images = new ArrayList<>();
         this.likedTweets = new ArrayList<>();
         this.retweets = new ArrayList<>();
         this.replies = new ArrayList<>();
+        this.quotes = new ArrayList<>();
     }
 }

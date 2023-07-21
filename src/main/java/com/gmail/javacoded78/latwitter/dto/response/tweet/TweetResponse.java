@@ -2,8 +2,8 @@ package com.gmail.javacoded78.latwitter.dto.response.tweet;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gmail.javacoded78.latwitter.dto.response.ImageResponse;
-import com.gmail.javacoded78.latwitter.model.LinkCoverSize;
-import com.gmail.javacoded78.latwitter.model.ReplyType;
+import com.gmail.javacoded78.latwitter.enums.LinkCoverSize;
+import com.gmail.javacoded78.latwitter.enums.ReplyType;
 import lombok.Getter;
 import lombok.Setter;
 

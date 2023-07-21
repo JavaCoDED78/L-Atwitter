@@ -7,7 +7,7 @@ import com.gmail.javacoded78.latwitter.exception.ApiRequestException;
 import com.gmail.javacoded78.latwitter.model.Bookmark;
 import com.gmail.javacoded78.latwitter.model.Image;
 import com.gmail.javacoded78.latwitter.model.Notification;
-import com.gmail.javacoded78.latwitter.model.NotificationType;
+import com.gmail.javacoded78.latwitter.enums.NotificationType;
 import com.gmail.javacoded78.latwitter.model.Tweet;
 import com.gmail.javacoded78.latwitter.model.User;
 import com.gmail.javacoded78.latwitter.repository.BookmarkRepository;
