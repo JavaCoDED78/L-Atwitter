@@ -1,7 +1,7 @@
 import React, {FC, ReactElement, useEffect} from 'react';
 import {useDispatch, useSelector} from "react-redux";
 import {Divider, Link as MuiLink, List, ListItem, Typography} from "@material-ui/core";
-import {NavLink} from 'react-router-dom';
+import {Link} from 'react-router-dom';
 
 import {ArrowRightIcon} from "../../../../icons";
 import {selectUserData} from "../../../../store/ducks/user/selectors";
@@ -11,11 +11,14 @@ import {fetchUserData} from "../../../../store/ducks/user/actionCreators";
 import {useGlobalStyles} from "../../../../util/globalClasses";
 import {withDocumentTitle} from "../../../../hoc/withDocumentTitle";
 import {
+    SETTINGS_ACCESSIBILITY_DISPLAY_AND_LANGUAGES_LANGUAGES,
+    SETTINGS_INFO_AGE,
     SETTINGS_INFO_COUNTRY,
     SETTINGS_INFO_EMAIL,
     SETTINGS_INFO_GENDER,
     SETTINGS_INFO_PHONE,
-    SETTINGS_INFO_USERNAME
+    SETTINGS_INFO_USERNAME,
+    SETTINGS_PRIVACY_AND_SAFETY_AUDIENCE
 } from "../../../../util/pathConstants";
 
 const AccountInformation: FC = (): ReactElement => {
@@ -30,7 +33,7 @@ const AccountInformation: FC = (): ReactElement => {
     return (
         <div className={globalClasses.listItemWrapper}>
             <List>
-                <NavLink to={SETTINGS_INFO_USERNAME}>
+                <Link to={SETTINGS_INFO_USERNAME}>
                     <ListItem>
                         <div>
                             <Typography variant={"body1"} component={"div"}>
@@ -44,8 +47,8 @@ const AccountInformation: FC = (): ReactElement => {
                             {ArrowRightIcon}
                         </div>
                     </ListItem>
-                </NavLink>
-                <NavLink to={SETTINGS_INFO_PHONE}>
+                </Link>
+                <Link to={SETTINGS_INFO_PHONE}>
                     <ListItem>
                         <div>
                             <Typography variant={"body1"} component={"div"}>
@@ -59,8 +62,8 @@ const AccountInformation: FC = (): ReactElement => {
                             {ArrowRightIcon}
                         </div>
                     </ListItem>
-                </NavLink>
-                <NavLink to={SETTINGS_INFO_EMAIL}>
+                </Link>
+                <Link to={SETTINGS_INFO_EMAIL}>
                     <ListItem>
                         <div>
                             <Typography variant={"body1"} component={"div"}>
@@ -74,7 +77,7 @@ const AccountInformation: FC = (): ReactElement => {
                             {ArrowRightIcon}
                         </div>
                     </ListItem>
-                </NavLink>
+                </Link>
                 <div className={globalClasses.itemInfoWrapper}>
                     <Typography variant={"body1"} component={"div"}>
                         Verified
@@ -87,7 +90,7 @@ const AccountInformation: FC = (): ReactElement => {
                     </Typography>
                 </div>
                 <Divider/>
-                <NavLink to={"/settings/privacy_and_safety/audience"}>
+                <Link to={SETTINGS_PRIVACY_AND_SAFETY_AUDIENCE}>
                     <ListItem>
                         <div>
                             <Typography variant={"body1"} component={"div"}>
@@ -101,7 +104,7 @@ const AccountInformation: FC = (): ReactElement => {
                             {ArrowRightIcon}
                         </div>
                     </ListItem>
-                </NavLink>
+                </Link>
                 <div className={globalClasses.itemInfoWrapper}>
                     <Typography variant={"body1"} component={"div"}>
                         Account creation
@@ -111,7 +114,7 @@ const AccountInformation: FC = (): ReactElement => {
                     </Typography>
                 </div>
                 <Divider/>
-                <NavLink to={SETTINGS_INFO_COUNTRY}>
+                <Link to={SETTINGS_INFO_COUNTRY}>
                     <ListItem>
                         <div>
                             <Typography variant={"body1"} component={"div"}>
@@ -125,8 +128,8 @@ const AccountInformation: FC = (): ReactElement => {
                             {ArrowRightIcon}
                         </div>
                     </ListItem>
-                </NavLink>
-                <NavLink to={"/settings/accessibility_display_and_languages/languages"}>
+                </Link>
+                <Link to={SETTINGS_ACCESSIBILITY_DISPLAY_AND_LANGUAGES_LANGUAGES}>
                     <ListItem>
                         <div>
                             <Typography variant={"body1"} component={"div"}>
@@ -140,8 +143,8 @@ const AccountInformation: FC = (): ReactElement => {
                             {ArrowRightIcon}
                         </div>
                     </ListItem>
-                </NavLink>
-                <NavLink to={SETTINGS_INFO_GENDER}>
+                </Link>
+                <Link to={SETTINGS_INFO_GENDER}>
                     <ListItem>
                         <div>
                             <Typography variant={"body1"} component={"div"}>
@@ -155,7 +158,7 @@ const AccountInformation: FC = (): ReactElement => {
                             {ArrowRightIcon}
                         </div>
                     </ListItem>
-                </NavLink>
+                </Link>
                 <div className={globalClasses.itemInfoWrapper}>
                     <Typography variant={"body1"} component={"div"}>
                         Birth date
@@ -168,7 +171,7 @@ const AccountInformation: FC = (): ReactElement => {
                     </Typography>
                 </div>
                 <Divider/>
-                <NavLink to={"/settings/info/age"}>
+                <Link to={SETTINGS_INFO_AGE}>
                     <ListItem>
                         <div>
                             <Typography variant={"body1"} component={"div"}>
@@ -182,7 +185,7 @@ const AccountInformation: FC = (): ReactElement => {
                             {ArrowRightIcon}
                         </div>
                     </ListItem>
-                </NavLink>
+                </Link>
             </List>
         </div>
     );

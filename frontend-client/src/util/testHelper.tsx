@@ -27,7 +27,7 @@ import {NotificationInfoResponse, NotificationResponse, NotificationUserResponse
 import {TagResponse} from "../store/types/tag";
 import configureStore from "redux-mock-store";
 import {mount} from "enzyme";
-import {Router} from "react-router-dom";
+import {Link, Router} from "react-router-dom";
 import {Provider} from "react-redux";
 import {createMemoryHistory} from "history";
 import {
@@ -160,6 +160,18 @@ export const mockLocation = (mockLocationState: { tag: string } | { text: string
     });
 };
 
+export const testClickOnLink = (component: any, path: string, linkIndex: number): void => {
+    const mockStore = createMockRootState();
+    const history = createMemoryHistory();
+    const pushSpy = jest.spyOn(history, "push");
+    const wrapper = mountWithStore(component, mockStore, history);
+
+    wrapper.find(Link).at(linkIndex).simulate("click", { button: 0 });
+
+    expect(pushSpy).toHaveBeenCalled();
+    expect(pushSpy).toHaveBeenCalledWith(path);
+};
+
 export const mockListsOwnerMemberResponse = [{id: 1}, {id: 2}] as ListsOwnerMemberResponse[];
 export const mockMutedUserResponse = [{id: 1}, {id: 2}] as MutedUserResponse[];
 export const mockBlockedUserResponse = [{id: 1}, {id: 2}] as BlockedUserResponse[];
@@ -182,6 +194,10 @@ export const mockUserDetailResponse = {id: 1} as UserDetailResponse;
 
 export const createMockRootState = (loadingStatus = LoadingStatus.LOADING): RootState => {
     return {
+        user: {
+            data: mockUser,
+            status: loadingStatus,
+        },
         blockedAndMutedUsers: {
             mutedUsers: mockMutedUserResponse,
             blockedUsers: mockBlockedUserResponse,
@@ -250,10 +266,6 @@ export const createMockRootState = (loadingStatus = LoadingStatus.LOADING): Root
             items: mockTweets,
             pagesCount: 1,
             loadingState: loadingStatus
-        },
-        user: {
-            data: mockUser,
-            status: loadingStatus,
         },
         userDetail: {
             item: mockUserDetailResponse,

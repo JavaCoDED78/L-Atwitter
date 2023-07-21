@@ -11,6 +11,7 @@ import {UserActionsType} from "../../../store/ducks/user/contracts/actionTypes";
 import {mockNotifications, mockTweetAuthors} from "../../../util/mockData/mockData";
 import NotificationAuthorItem from "../NotificationAuthorItem/NotificationAuthorItem";
 import NotificationItem from "../NotificationItem/NotificationItem";
+import { PROFILE } from "../../../util/pathConstants";
 
 window.scrollTo = jest.fn();
 
@@ -110,7 +111,7 @@ describe("Notifications", () => {
         wrapper.find(NotificationItem).at(0).find("#clickUser").simulate("click");
 
         expect(pushSpy).toHaveBeenCalled();
-        expect(pushSpy).toHaveBeenCalledWith(`/profile/${mockNotifications[0].user.id}`);
+        expect(pushSpy).toHaveBeenCalledWith(`${PROFILE}/${mockNotifications[0].user.id}`);
     });
 
     it("should reset Notifications State", () => {

@@ -9,6 +9,11 @@ import {ArrowRightIcon} from "../../../../icons";
 import ExploreModal from "./ExploreModal/ExploreModal";
 import RecommendationsModal from "./RecommendationsModal/RecommendationsModal";
 import {withDocumentTitle} from "../../../../hoc/withDocumentTitle";
+import {
+    SETTINGS_PERSONALIZATION,
+    SETTINGS_PRIVACY_AND_SAFETY_BLOCKED,
+    SETTINGS_PRIVACY_AND_SAFETY_MUTED
+} from "../../../../util/pathConstants";
 
 const ContentPreferences = (): ReactElement => {
     const globalClasses = useGlobalStyles();
@@ -17,7 +22,7 @@ const ContentPreferences = (): ReactElement => {
     const [visibleRecommendationsModal, setVisibleRecommendationsModal] = useState<boolean>(false);
     const [isSearchModal, setIsSearchModal] = useState<boolean>(true);
 
-    const onOpenBlockUserModal = (condition: boolean): void => {
+    const onOpenSettingsModal = (condition: boolean): void => {
         setVisibleExploreModal(true);
         setIsSearchModal(condition);
     };
@@ -39,13 +44,21 @@ const ContentPreferences = (): ReactElement => {
                     Explore
                 </Typography>
             </div>
-            <div className={globalClasses.contentLink} onClick={() => onOpenBlockUserModal(true)}>
+            <div 
+                id={"searchSettings"}
+                className={globalClasses.contentLink} 
+                onClick={() => onOpenSettingsModal(true)}
+            >
                 <Typography variant={"body1"} component={"span"}>
                     Search settings
                 </Typography>
                 {ArrowRightIcon}
             </div>
-            <div className={globalClasses.contentLink} onClick={() => onOpenBlockUserModal(false)}>
+            <div
+                id={"exploreSettings"}
+                className={globalClasses.contentLink} 
+                onClick={() => onOpenSettingsModal(false)}
+            >
                 <Typography variant={"body1"} component={"span"}>
                     Explore settings
                 </Typography>
@@ -57,7 +70,11 @@ const ContentPreferences = (): ReactElement => {
                     Languages
                 </Typography>
             </div>
-            <div className={globalClasses.contentLink} onClick={onOpenVisibleRecommendationsModal}>
+            <div
+                id={"openVisibleRecommendationsModal"}
+                className={globalClasses.contentLink} 
+                onClick={onOpenVisibleRecommendationsModal}
+            >
                 <Typography variant={"body1"} component={"span"}>
                     Recommendations
                 </Typography>
@@ -74,7 +91,7 @@ const ContentPreferences = (): ReactElement => {
                     Safety
                 </Typography>
             </div>
-            <Link to={"/settings/privacy_and_safety/muted"} className={globalClasses.linkWrapper}>
+            <Link to={SETTINGS_PRIVACY_AND_SAFETY_MUTED} className={globalClasses.linkWrapper}>
                 <div className={globalClasses.contentLink}>
                     <Typography variant={"body1"} component={"span"}>
                         Muted
@@ -82,7 +99,7 @@ const ContentPreferences = (): ReactElement => {
                     {ArrowRightIcon}
                 </div>
             </Link>
-            <Link to={"/settings/privacy_and_safety/blocked"} className={globalClasses.linkWrapper}>
+            <Link to={SETTINGS_PRIVACY_AND_SAFETY_BLOCKED} className={globalClasses.linkWrapper}>
                 <div className={globalClasses.contentLink}>
                     <Typography variant={"body1"} component={"span"}>
                         Blocked accounts
@@ -96,7 +113,7 @@ const ContentPreferences = (): ReactElement => {
                     Personalization and data
                 </Typography>
             </div>
-            <Link to={"/settings/personalization"} className={globalClasses.linkWrapper}>
+            <Link to={SETTINGS_PERSONALIZATION} className={globalClasses.linkWrapper}>
                 <div className={classnames(classes.personalizationLink, globalClasses.contentLink)}>
                     <div className={classes.personalizationInfo}>
                         <Typography variant={"body1"} component={"div"}>
