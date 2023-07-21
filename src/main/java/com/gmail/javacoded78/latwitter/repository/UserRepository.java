@@ -29,9 +29,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     List<UserProjection> findByActiveTrueAndIdNot(Long id);
 
-    @Query("SELECT new com.gmail.javacoded78.latwitter.repository.projection.UserPrincipalProjection(user.id, user.email, user.password, user.activationCode) FROM User user WHERE user.email = :email")
-    Optional<UserPrincipalProjection> findUserPrincipalByEmail(String email);
-
     @Query("SELECT user FROM User user WHERE user.id = :userId")
     AuthUserProjection findAuthUserById(Long userId);
 
@@ -53,11 +50,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
             "FROM User u " +
             "WHERE UPPER(u.fullName) LIKE UPPER(CONCAT('%',:name,'%')) AND u.active = true " +
             "OR UPPER(u.username) LIKE UPPER(CONCAT('%',:name,'%')) AND u.active = true")
-    List<UserProjection> findByFullNameOrUsername(String name);
-
-    List<User> findByFullNameOrUsernameContainingIgnoreCase(
-            @Param("fullName") String fullName,
-            @Param("username") String username);
+    <T> List<T> findByFullNameOrUsername(String name, Class<T> type);
 
     @Query("SELECT user FROM User user WHERE user.email = :email")
     Optional<UserCommonProjection> findCommonUserByEmail(String email);
@@ -158,6 +151,15 @@ public interface UserRepository extends JpaRepository<User, Long> {
             "WHERE user.id = :userId " +
             "AND subscriber.id = :subscriberUserId")
     boolean isMyProfileSubscribed(Long userId, Long subscriberUserId);
+
+    @Query("SELECT CASE WHEN count(participantUser) > 0 THEN true ELSE false END FROM User user " +
+            "LEFT JOIN user.chats chats " +
+            "LEFT JOIN chats.chat chat " +
+            "LEFT JOIN chat.participants participant " +
+            "LEFT JOIN participant.user participantUser " +
+            "WHERE user.id = :authUserId " +
+            "AND participantUser.id = :userId")
+    boolean isUserChatParticipant(Long userId, Long authUserId);
 
     @Query("SELECT user FROM User user WHERE user.id = :userId")
     Optional<UserDetailProjection> getUserDetails(Long userId);

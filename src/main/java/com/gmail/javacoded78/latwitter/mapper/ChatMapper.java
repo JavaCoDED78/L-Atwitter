@@ -2,12 +2,14 @@ package com.gmail.javacoded78.latwitter.mapper;
 
 import com.gmail.javacoded78.latwitter.dto.request.ChatMessageRequest;
 import com.gmail.javacoded78.latwitter.dto.request.MessageWithTweetRequest;
+import com.gmail.javacoded78.latwitter.dto.response.UserChatResponse;
 import com.gmail.javacoded78.latwitter.dto.response.UserResponse;
 import com.gmail.javacoded78.latwitter.dto.response.chats.ChatMessageResponse;
 import com.gmail.javacoded78.latwitter.dto.response.chats.ChatResponse;
 import com.gmail.javacoded78.latwitter.model.ChatMessage;
 import com.gmail.javacoded78.latwitter.repository.projection.chat.ChatMessageProjection;
 import com.gmail.javacoded78.latwitter.repository.projection.chat.ChatProjection;
+import com.gmail.javacoded78.latwitter.repository.projection.user.UserChatProjection;
 import com.gmail.javacoded78.latwitter.repository.projection.user.UserProjection;
 import com.gmail.javacoded78.latwitter.service.ChatService;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +24,7 @@ public class ChatMapper {
 
     private final BasicMapper basicMapper;
     private final ChatService chatService;
+    private final UserService userService;
 
     private ChatMessageResponse getChatMessageResponse(Map<String, Object> messageMap) {
         ChatMessageProjection chatMessageProjection = (ChatMessageProjection) messageMap.get("message");
@@ -67,5 +70,10 @@ public class ChatMapper {
     public UserResponse getParticipant(Long participantId, Long chatId) {
         UserProjection participant = chatService.getParticipant(participantId, chatId);
         return basicMapper.convertToResponse(participant, UserResponse.class);
+    }
+
+    public List<UserChatResponse> searchParticipantsByUsername(String username) {
+        List<UserChatProjection> participants = userService.searchUsersByUsername(username, UserChatProjection.class);
+        return basicMapper.convertToResponseList(participants, UserChatResponse.class);
     }
 }

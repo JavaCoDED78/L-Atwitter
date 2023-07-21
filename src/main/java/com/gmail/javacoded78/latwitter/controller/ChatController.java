@@ -2,6 +2,7 @@ package com.gmail.javacoded78.latwitter.controller;
 
 import com.gmail.javacoded78.latwitter.dto.request.ChatMessageRequest;
 import com.gmail.javacoded78.latwitter.dto.request.MessageWithTweetRequest;
+import com.gmail.javacoded78.latwitter.dto.response.UserChatResponse;
 import com.gmail.javacoded78.latwitter.dto.response.UserResponse;
 import com.gmail.javacoded78.latwitter.dto.response.chats.ChatMessageResponse;
 import com.gmail.javacoded78.latwitter.dto.response.chats.ChatResponse;
@@ -60,6 +61,11 @@ public class ChatController {
         message.getChatParticipantsIds()
                 .forEach(userId -> messagingTemplate.convertAndSend("/topic/chat/" + userId, message));
         return ResponseEntity.ok(message);
+    }
+
+    @GetMapping("/search/{username}") // TODO add test
+    public ResponseEntity<List<UserChatResponse>> searchParticipantsByUsername(@PathVariable String username) {
+        return ResponseEntity.ok(chatMapper.searchParticipantsByUsername(username));
     }
 
     @GetMapping("/participant/{participantId}/{chatId}")
