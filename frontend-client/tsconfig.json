@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "target": "es5",
+    "target": "es6",
     "lib": [
       "dom",
       "dom.iterable",
@@ -18,10 +18,14 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
-    "jsx": "react-jsx"
+    "jsx": "react-jsx",
+    "useUnknownInCatchVariables": false
   },
   "include": [
-    "src"
+    "src/**/*"
   ],
-  "typeRoots": ["./src/types.d.ts", "./node_modules/@types"]
+  "typeRoots": [
+    "./src/types.d.ts",
+    "./node_modules/@types"
+  ]
 }

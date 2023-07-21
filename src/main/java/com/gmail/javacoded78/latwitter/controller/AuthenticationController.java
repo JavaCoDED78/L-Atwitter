@@ -1,9 +1,6 @@
 package com.gmail.javacoded78.latwitter.controller;
 
-import com.gmail.javacoded78.latwitter.dto.request.AuthenticationRequest;
-import com.gmail.javacoded78.latwitter.dto.request.CurrentPasswordResetRequest;
-import com.gmail.javacoded78.latwitter.dto.request.PasswordResetRequest;
-import com.gmail.javacoded78.latwitter.dto.request.RegistrationRequest;
+import com.gmail.javacoded78.latwitter.dto.request.*;
 import com.gmail.javacoded78.latwitter.dto.response.AuthUserResponse;
 import com.gmail.javacoded78.latwitter.dto.response.AuthenticationResponse;
 import com.gmail.javacoded78.latwitter.mapper.AuthenticationMapper;
