@@ -2,6 +2,7 @@ import React, {FC, ReactElement, useEffect, useState} from 'react';
 import {useDispatch, useSelector} from "react-redux";
 import {Link} from "react-router-dom";
 import {Checkbox, Link as MuiLink, Typography} from "@material-ui/core";
+import classnames from "classnames";
 
 import {useAudienceAndTaggingStyles} from "./AudienceAndTaggingStyles";
 import {ArrowRightIcon} from "../../../../icons";
@@ -9,9 +10,9 @@ import {selectUserData} from "../../../../store/ducks/user/selectors";
 import {setUserLoadingStatus, updatePrivateProfile} from "../../../../store/ducks/user/actionCreators";
 import {LoadingStatus} from "../../../../store/types";
 import {useGlobalStyles} from "../../../../util/globalClasses";
-import classnames from "classnames";
 import {withDocumentTitle} from "../../../../hoc/withDocumentTitle";
 import {SETTINGS_PRIVACY_AND_SAFETY_TAGGING} from "../../../../util/pathConstants";
+import {PUBLIC_AND_PROTECTED_TWEETS} from "../../../../util/url";
 
 const AudienceAndTagging: FC = (): ReactElement => {
     const globalClasses = useGlobalStyles();
@@ -51,12 +52,7 @@ const AudienceAndTagging: FC = (): ReactElement => {
                 </div>
                 <Typography variant={"subtitle2"} component={"div"}>
                     {`When selected, your Tweets and other account information are only visible to people who follow you. `}
-                    <MuiLink
-                        href="https://help.twitter.com/safety-and-security/public-and-protected-tweets"
-                        variant="subtitle2"
-                        target="_blank"
-                        rel="noopener"
-                    >
+                    <MuiLink href={PUBLIC_AND_PROTECTED_TWEETS} variant="subtitle2" target="_blank" rel="noopener">
                         Learn more
                     </MuiLink>
                 </Typography>
