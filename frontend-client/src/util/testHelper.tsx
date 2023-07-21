@@ -91,13 +91,19 @@ export const testCall = (worker, apiCall, payload?, data = {}) => {
 };
 
 // @ts-ignore
-export const testSetResponse = (
+export const testSetResponse = ({
   worker,
   mockData = {},
   action,
-  payload: {},
-  responseType
-) => {
+  payload,
+  responseType,
+}: {
+  worker: any;
+  mockData: {};
+  action: any;
+  payload: {};
+  responseType: any;
+}) => {
   it(`should yield put ${action.name} with ${responseType} type`, () => {
     const actualYield = worker.next(mockData).value;
     const expectedYield = put(action(payload));

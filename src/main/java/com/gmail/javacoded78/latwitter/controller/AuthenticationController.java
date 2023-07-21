@@ -1,6 +1,7 @@
 package com.gmail.javacoded78.latwitter.controller;
 
 import com.gmail.javacoded78.latwitter.dto.request.AuthenticationRequest;
+import com.gmail.javacoded78.latwitter.dto.request.CurrentPasswordResetRequest;
 import com.gmail.javacoded78.latwitter.dto.request.PasswordResetRequest;
 import com.gmail.javacoded78.latwitter.dto.request.RegistrationRequest;
 import com.gmail.javacoded78.latwitter.dto.response.AuthUserResponse;
@@ -9,12 +10,15 @@ import com.gmail.javacoded78.latwitter.mapper.AuthenticationMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import javax.validation.Valid;
 
 @RestController
 @RequiredArgsConstructor
@@ -24,18 +28,18 @@ public class AuthenticationController {
     private final AuthenticationMapper authenticationMapper;
 
     @PostMapping("/login")
-    public ResponseEntity<AuthenticationResponse> login(@RequestBody AuthenticationRequest authenticationRequest) {
-        return ResponseEntity.ok(authenticationMapper.login(authenticationRequest));
+    public ResponseEntity<AuthenticationResponse> login(@Valid @RequestBody AuthenticationRequest request, BindingResult bindingResult) {
+        return ResponseEntity.ok(authenticationMapper.login(request, bindingResult));
     }
 
     @PostMapping("/registration/check")
-    public ResponseEntity<String> checkEmail(@RequestBody RegistrationRequest registrationRequest) {
-        return ResponseEntity.ok(authenticationMapper.registration(registrationRequest));
+    public ResponseEntity<String> checkEmail(@Valid @RequestBody RegistrationRequest request, BindingResult bindingResult) {
+        return ResponseEntity.ok(authenticationMapper.registration(request, bindingResult));
     }
 
     @PostMapping("/registration/code")
-    public ResponseEntity<String> sendRegistrationCode(@RequestBody RegistrationRequest registrationRequest) {
-        return ResponseEntity.ok(authenticationMapper.sendRegistrationCode(registrationRequest.getEmail()));
+    public ResponseEntity<String> sendRegistrationCode(@Valid @RequestBody ProcessEmailRequest request, BindingResult bindingResult) {
+        return ResponseEntity.ok(authenticationMapper.sendRegistrationCode(request.getEmail(), bindingResult));
     }
 
     @GetMapping("/registration/activate/{code}")
@@ -44,8 +48,8 @@ public class AuthenticationController {
     }
 
     @PostMapping("/registration/confirm")
-    public ResponseEntity<AuthenticationResponse> endRegistration(@RequestBody RegistrationRequest registrationRequest) {
-        return ResponseEntity.ok(authenticationMapper.endRegistration(registrationRequest));
+    public ResponseEntity<AuthenticationResponse> endRegistration(@Valid @RequestBody EndRegistrationRequest request, BindingResult bindingResult) {
+        return ResponseEntity.ok(authenticationMapper.endRegistration(request, bindingResult));
     }
 
     @GetMapping("/user")
@@ -54,13 +58,13 @@ public class AuthenticationController {
     }
 
     @PostMapping("/forgot/email")
-    public ResponseEntity<String> findExistingEmail(@RequestBody PasswordResetRequest passwordReset) {
-        return ResponseEntity.ok(authenticationMapper.findEmail(passwordReset.getEmail()));
+    public ResponseEntity<String> findExistingEmail(@Valid @RequestBody ProcessEmailRequest request, BindingResult bindingResult) {
+        return ResponseEntity.ok(authenticationMapper.findEmail(request.getEmail(), bindingResult));
     }
 
     @PostMapping("/forgot")
-    public ResponseEntity<String> sendPasswordResetCode(@RequestBody PasswordResetRequest passwordReset) {
-        return ResponseEntity.ok(authenticationMapper.sendPasswordResetCode(passwordReset.getEmail()));
+    public ResponseEntity<String> sendPasswordResetCode(@Valid @RequestBody ProcessEmailRequest request, BindingResult bindingResult) {
+        return ResponseEntity.ok(authenticationMapper.sendPasswordResetCode(request.getEmail(), bindingResult));
     }
 
     @GetMapping("/reset/{code}")
@@ -69,7 +73,12 @@ public class AuthenticationController {
     }
 
     @PostMapping("/reset")
-    public ResponseEntity<String> passwordReset(@RequestBody PasswordResetRequest passwordReset) {
-        return ResponseEntity.ok(authenticationMapper.passwordReset(passwordReset));
+    public ResponseEntity<String> passwordReset(@Valid @RequestBody PasswordResetRequest request, BindingResult bindingResult) {
+        return ResponseEntity.ok(authenticationMapper.passwordReset(request, bindingResult));
+    }
+
+    @PostMapping("/reset/current")
+    public ResponseEntity<String> currentPasswordReset(@Valid @RequestBody CurrentPasswordResetRequest request, BindingResult bindingResult) {
+        return ResponseEntity.ok(authenticationMapper.currentPasswordReset(request, bindingResult));
     }
 }

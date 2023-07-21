@@ -1,6 +1,9 @@
 package com.gmail.javacoded78.latwitter.service.impl;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gmail.javacoded78.latwitter.exception.ApiRequestException;
+import com.gmail.javacoded78.latwitter.exception.InputFieldException;
 import com.gmail.javacoded78.latwitter.model.User;
 import com.gmail.javacoded78.latwitter.repository.UserRepository;
 import com.gmail.javacoded78.latwitter.repository.projection.user.AuthUserProjection;
@@ -18,7 +21,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StringUtils;
 
 import java.security.Principal;
 import java.time.LocalDateTime;
@@ -178,16 +180,35 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     @Override
     @Transactional
     public String passwordReset(String email, String password, String password2) {
-        if (StringUtils.isEmpty(password2)) {
-            throw new ApiRequestException("Password confirmation cannot be empty.", HttpStatus.BAD_REQUEST);
-        }
-        if (password != null && !password.equals(password2)) {
-            throw new ApiRequestException("Passwords do not match.", HttpStatus.BAD_REQUEST);
-        }
+        checkMatchPasswords(password, password2);
         UserCommonProjection user = userRepository.findCommonUserByEmail(email)
-                .orElseThrow(() -> new ApiRequestException("Email not found", HttpStatus.NOT_FOUND));
+                .orElseThrow(() -> new InputFieldException(HttpStatus.NOT_FOUND, Map.of("email", "Email not found")));
         userRepository.updatePassword(passwordEncoder.encode(password), user.getId());
         userRepository.updatePasswordResetCode(null, user.getId());
         return "Password successfully changed!";
+    }
+
+    @Override
+    @Transactional
+    public String currentPasswordReset(String currentPassword, String password, String password2) {
+        Long userId = getAuthenticatedUserId();
+        String userPassword = userRepository.getUserPasswordById(userId);
+
+        if (!passwordEncoder.matches(currentPassword, userPassword)) {
+            processPasswordException("currentPassword", "The password you entered was incorrect.", HttpStatus.NOT_FOUND);
+        }
+        checkMatchPasswords(password, password2);
+        userRepository.updatePassword(passwordEncoder.encode(password), userId);
+        return "Your password has been successfully updated.";
+    }
+
+    private void checkMatchPasswords(String password, String password2) {
+        if (password != null && !password.equals(password2)) {
+            processPasswordException("password", "Passwords do not match.", HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    private void processPasswordException(String paramName, String exceptionMessage, HttpStatus status) {
+        throw new InputFieldException(status, Map.of(paramName, exceptionMessage));
     }
 }
