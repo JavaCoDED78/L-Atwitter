@@ -60,7 +60,7 @@ public interface UserService {
 
     List<UserProjection> getFollowers(Long userId);
 
-    List<UserProjection> getFollowing(Long userId);
+    Page<UserProjection> getFollowers(Long userId, Pageable pageable);
 
     Map<String, Object> processFollow(Long userId);
 

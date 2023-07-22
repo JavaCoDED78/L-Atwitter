@@ -257,11 +257,12 @@ public class UserServiceImpl implements UserService {
         return userRepository.findAuthUserById(user.getId());
     }
 
+
     @Override
-    public List<UserProjection> getFollowers(Long userId) {
+    public Page<UserProjection> getFollowers(Long userId, Pageable pageable) {
         checkIsUserExist(userId);
         checkIsUserBlocked(userId);
-        return userRepository.getFollowersById(userId);
+        return userRepository.getFollowersById(userId, pageable);
     }
 
     @Override
