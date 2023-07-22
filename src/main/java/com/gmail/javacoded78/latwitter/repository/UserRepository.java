@@ -15,6 +15,8 @@ import com.gmail.javacoded78.latwitter.repository.projection.user.UserCommonProj
 import com.gmail.javacoded78.latwitter.repository.projection.user.UserDetailProjection;
 import com.gmail.javacoded78.latwitter.repository.projection.user.UserProfileProjection;
 import com.gmail.javacoded78.latwitter.repository.projection.user.UserProjection;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -26,7 +28,7 @@ import java.util.Optional;
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
 
-    List<UserProjection> findByActiveTrueAndIdNot(Long id);
+    Page<UserProjection> findByActiveTrueAndIdNot(Long id, Pageable pageable);
 
 
     @Query("SELECT new com.gmail.javacoded78.latwitter.repository.projection.UserPrincipalProjection(user.id, user.email, user.password, user.activationCode) FROM User user WHERE user.email = :email")
@@ -53,7 +55,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
             "FROM User u " +
             "WHERE UPPER(u.fullName) LIKE UPPER(CONCAT('%',:name,'%')) AND u.active = true " +
             "OR UPPER(u.username) LIKE UPPER(CONCAT('%',:name,'%')) AND u.active = true")
-    <T> List<T> findByFullNameOrUsername(String name, Class<T> type);
+    <T> Page<T> findByFullNameOrUsername(String name, Pageable pageable, Class<T> type);
 
     @Query("SELECT user FROM User user WHERE user.email = :email")
     Optional<UserCommonProjection> findCommonUserByEmail(String email);

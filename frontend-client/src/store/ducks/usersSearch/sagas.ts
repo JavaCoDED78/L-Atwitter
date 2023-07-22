@@ -1,42 +1,53 @@
 import {call, put, takeLatest} from 'redux-saga/effects';
+import {AxiosResponse} from "axios";
 
 import {LoadingStatus} from '../../types';
 import {
     FetchFollowersActionInterface,
     FetchFollowingsActionInterface,
+    FetchUsersSearchActionInterface,
     FetchUsersSearchByNameActionInterface,
     UsersSearchActionsType
 } from "./contracts/actionTypes";
 import {UserApi} from "../../../services/api/userApi";
-import {setFollowers, setUsersSearch, setUsersSearchLoadingState} from "./actionCreators";
+import {setFollowers, setPageableUsersSearch, setUsersSearchLoadingState} from "./actionCreators";
 import {UserResponse} from "../../types/user";
 import {ChatApi} from "../../../services/api/chatApi";
 
-export function* fetchUsersSearchRequest() {
+export function* fetchUsersSearchRequest({payload}: FetchUsersSearchActionInterface) { // TODO ADD PAGINATION / ADD TESTS
     try {
         yield put(setUsersSearchLoadingState(LoadingStatus.LOADING));
-        const item: UserResponse[] = yield call(UserApi.getUsers);
-        yield put(setUsersSearch(item));
+        const response: AxiosResponse<UserResponse[]> = yield call(UserApi.getUsers, payload);
+        yield put(setPageableUsersSearch({
+            items: response.data,
+            pagesCount: parseInt(response.headers["page-total-count"])
+        }));
     } catch (error) {
         yield put(setUsersSearchLoadingState(LoadingStatus.ERROR));
     }
 }
 
-export function* fetchUsersSearchByUsernameRequest({payload}: FetchUsersSearchByNameActionInterface) {
+export function* fetchUsersSearchByUsernameRequest({payload}: FetchUsersSearchByNameActionInterface) { // TODO CHECK TESTS
     try {
         yield put(setUsersSearchLoadingState(LoadingStatus.LOADING));
-        const item: UserResponse[] = yield call(UserApi.searchUsersByUsername, payload);
-        yield put(setUsersSearch(item));
+        const response: AxiosResponse<UserResponse[]> = yield call(UserApi.searchUsersByUsername, payload);
+        yield put(setPageableUsersSearch({
+            items: response.data,
+            pagesCount: parseInt(response.headers["page-total-count"])
+        }));
     } catch (error) {
         yield put(setUsersSearchLoadingState(LoadingStatus.ERROR));
     }
 }
 
-export function* fetchParticipantsByUsernameRequest({payload}: FetchUsersSearchByNameActionInterface) {
+export function* fetchParticipantsByUsernameRequest({payload}: FetchUsersSearchByNameActionInterface) { // TODO CHECK TESTS
     try {
         yield put(setUsersSearchLoadingState(LoadingStatus.LOADING));
-        const item: UserResponse[] = yield call(ChatApi.searchParticipantsByUsername, payload);
-        yield put(setUsersSearch(item));
+        const response: AxiosResponse<UserResponse[]> = yield call(ChatApi.searchParticipantsByUsername, payload);
+        yield put(setPageableUsersSearch({
+            items: response.data,
+            pagesCount: parseInt(response.headers["page-total-count"])
+        }));
     } catch (error) {
         yield put(setUsersSearchLoadingState(LoadingStatus.ERROR));
     }

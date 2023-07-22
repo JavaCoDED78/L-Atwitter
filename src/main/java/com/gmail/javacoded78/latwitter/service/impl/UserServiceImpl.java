@@ -72,9 +72,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<UserProjection> getUsers() {
+    public Page<UserProjection> getUsers(Pageable pageable) {
         Long userId = authenticationService.getAuthenticatedUserId();
-        return userRepository.findByActiveTrueAndIdNot(userId);
+        return userRepository.findByActiveTrueAndIdNot(userId, pageable);
     }
 
     @Override
@@ -83,9 +83,10 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public <T> List<T> searchUsersByUsername(String text, Class<T> type) {
-        return userRepository.findByFullNameOrUsername(text, type);
+    public <T> Page<T> searchUsersByUsername(String text, Pageable pageable, Class<T> type) {
+        return userRepository.findByFullNameOrUsername(text, pageable, type);
     }
+
 
     @Override
     @Transactional

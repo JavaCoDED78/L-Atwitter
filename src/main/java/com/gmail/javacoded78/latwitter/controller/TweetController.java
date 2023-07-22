@@ -3,11 +3,11 @@ package com.gmail.javacoded78.latwitter.controller;
 import com.gmail.javacoded78.latwitter.dto.request.TweetDeleteRequest;
 import com.gmail.javacoded78.latwitter.dto.request.TweetRequest;
 import com.gmail.javacoded78.latwitter.dto.request.VoteRequest;
+import com.gmail.javacoded78.latwitter.dto.response.HeaderResponse;
 import com.gmail.javacoded78.latwitter.dto.response.UserResponse;
 import com.gmail.javacoded78.latwitter.dto.response.notification.NotificationReplyResponse;
 import com.gmail.javacoded78.latwitter.dto.response.notification.NotificationResponse;
 import com.gmail.javacoded78.latwitter.dto.response.notification.NotificationTweetResponse;
-import com.gmail.javacoded78.latwitter.dto.response.tweet.TweetHeaderResponse;
 import com.gmail.javacoded78.latwitter.dto.response.tweet.TweetResponse;
 import com.gmail.javacoded78.latwitter.enums.ReplyType;
 import com.gmail.javacoded78.latwitter.mapper.TweetMapper;
@@ -38,8 +38,8 @@ public class TweetController {
 
     @GetMapping
     public ResponseEntity<List<TweetResponse>> getTweets(@PageableDefault(size = 10) Pageable pageable) {
-        TweetHeaderResponse<TweetResponse> response = tweetMapper.getTweets(pageable);
-        return ResponseEntity.ok().headers(response.getHeaders()).body(response.getTweets());
+        HeaderResponse<TweetResponse> response = tweetMapper.getTweets(pageable);
+        return ResponseEntity.ok().headers(response.getHeaders()).body(response.getItems());
     }
 
     @GetMapping("/{tweetId}")
@@ -54,8 +54,8 @@ public class TweetController {
 
     @GetMapping("/{tweetId}/quotes")
     public ResponseEntity<List<TweetResponse>> getQuotesByTweetId(@PageableDefault(size = 10) Pageable pageable, @PathVariable Long tweetId) {
-        TweetHeaderResponse<TweetResponse> response = tweetMapper.getQuotesByTweetId(pageable, tweetId);
-        return ResponseEntity.ok().headers(response.getHeaders()).body(response.getTweets());
+        HeaderResponse<TweetResponse> response = tweetMapper.getQuotesByTweetId(pageable, tweetId);
+        return ResponseEntity.ok().headers(response.getHeaders()).body(response.getItems());
     }
 
     @GetMapping("/{tweetId}/liked-users")
@@ -70,20 +70,20 @@ public class TweetController {
 
     @GetMapping("/media")
     public ResponseEntity<List<TweetResponse>> getMediaTweets(@PageableDefault(size = 10) Pageable pageable) {
-        TweetHeaderResponse<TweetResponse> response = tweetMapper.getMediaTweets(pageable);
-        return ResponseEntity.ok().headers(response.getHeaders()).body(response.getTweets());
+        HeaderResponse<TweetResponse> response = tweetMapper.getMediaTweets(pageable);
+        return ResponseEntity.ok().headers(response.getHeaders()).body(response.getItems());
     }
 
     @GetMapping("/video")
     public ResponseEntity<List<TweetResponse>> getTweetsWithVideo(@PageableDefault(size = 10) Pageable pageable) {
-        TweetHeaderResponse<TweetResponse> response = tweetMapper.getTweetsWithVideo(pageable);
-        return ResponseEntity.ok().headers(response.getHeaders()).body(response.getTweets());
+        HeaderResponse<TweetResponse> response = tweetMapper.getTweetsWithVideo(pageable);
+        return ResponseEntity.ok().headers(response.getHeaders()).body(response.getItems());
     }
 
     @GetMapping("/follower")
     public ResponseEntity<List<TweetResponse>> getFollowersTweets(@PageableDefault(size = 10) Pageable pageable) {
-        TweetHeaderResponse<TweetResponse> response = tweetMapper.getFollowersTweets(pageable);
-        return ResponseEntity.ok().headers(response.getHeaders()).body(response.getTweets());
+        HeaderResponse<TweetResponse> response = tweetMapper.getFollowersTweets(pageable);
+        return ResponseEntity.ok().headers(response.getHeaders()).body(response.getItems());
     }
 
     @GetMapping("/schedule")

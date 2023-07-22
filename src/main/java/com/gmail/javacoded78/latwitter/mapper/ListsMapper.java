@@ -10,7 +10,7 @@ import com.gmail.javacoded78.latwitter.dto.response.lists.ListsOwnerMemberRespon
 import com.gmail.javacoded78.latwitter.dto.response.lists.PinnedListResponse;
 import com.gmail.javacoded78.latwitter.dto.response.lists.SimpleListResponse;
 import com.gmail.javacoded78.latwitter.dto.response.notification.NotificationResponse;
-import com.gmail.javacoded78.latwitter.dto.response.tweet.TweetHeaderResponse;
+import com.gmail.javacoded78.latwitter.dto.response.HeaderResponse;
 import com.gmail.javacoded78.latwitter.dto.response.tweet.TweetResponse;
 import com.gmail.javacoded78.latwitter.model.Lists;
 import com.gmail.javacoded78.latwitter.model.Notification;
@@ -37,7 +37,6 @@ import java.util.stream.Collectors;
 public class ListsMapper {
 
     private final BasicMapper basicMapper;
-    private final TweetMapper tweetMapper;
     private final ListsService listsService;
 
     public List<ListResponse> getAllTweetLists() {
@@ -117,9 +116,9 @@ public class ListsMapper {
         return notificationResponse;
     }
 
-    public TweetHeaderResponse<TweetResponse> getTweetsByListId(Long listId, Pageable pageable) {
+    public HeaderResponse<TweetResponse> getTweetsByListId(Long listId, Pageable pageable) {
         Page<TweetProjection> tweets = listsService.getTweetsByListId(listId, pageable);
-        return tweetMapper.getTweetHeaderResponse(tweets, TweetResponse.class);
+        return basicMapper.getHeaderResponse(tweets, TweetResponse.class);
     }
 
     public BaseListResponse getListDetails(Long listId) {

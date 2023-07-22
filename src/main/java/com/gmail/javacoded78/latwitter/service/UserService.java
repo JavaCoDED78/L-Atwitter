@@ -28,11 +28,11 @@ public interface UserService {
 
     UserProfileProjection getUserById(Long userId);
 
-    List<UserProjection> getUsers();
+    Page<UserProjection> getUsers(Pageable pageable);
 
     List<UserProjection> getRelevantUsers();
 
-    <T> List<T> searchUsersByUsername(String username, Class<T> type);
+    <T> Page<T> searchUsersByUsername(String username, Pageable pageable, Class<T> type);
 
     Boolean startUseTwitter();
 

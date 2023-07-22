@@ -2,12 +2,15 @@ package com.gmail.javacoded78.latwitter.controller;
 
 import com.gmail.javacoded78.latwitter.dto.request.ChatMessageRequest;
 import com.gmail.javacoded78.latwitter.dto.request.MessageWithTweetRequest;
+import com.gmail.javacoded78.latwitter.dto.response.HeaderResponse;
 import com.gmail.javacoded78.latwitter.dto.response.UserChatResponse;
 import com.gmail.javacoded78.latwitter.dto.response.UserResponse;
 import com.gmail.javacoded78.latwitter.dto.response.chats.ChatMessageResponse;
 import com.gmail.javacoded78.latwitter.dto.response.chats.ChatResponse;
 import com.gmail.javacoded78.latwitter.mapper.ChatMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -64,8 +67,9 @@ public class ChatController {
     }
 
     @GetMapping("/search/{username}")
-    public ResponseEntity<List<UserChatResponse>> searchParticipantsByUsername(@PathVariable String username) {
-        return ResponseEntity.ok(chatMapper.searchParticipantsByUsername(username));
+    public ResponseEntity<List<UserChatResponse>> searchParticipantsByUsername(@PathVariable String username, @PageableDefault(size = 15) Pageable pageable) {
+        HeaderResponse<UserChatResponse> response = chatMapper.searchParticipantsByUsername(username, pageable);
+        return ResponseEntity.ok().headers(response.getHeaders()).body(response.getItems());
     }
 
     @GetMapping("/participant/{participantId}/{chatId}")

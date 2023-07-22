@@ -1,13 +1,12 @@
 package com.gmail.javacoded78.latwitter.service.impl;
 
 import com.gmail.javacoded78.latwitter.dto.request.UserToListsRequest;
+import com.gmail.javacoded78.latwitter.enums.NotificationType;
 import com.gmail.javacoded78.latwitter.exception.ApiRequestException;
 import com.gmail.javacoded78.latwitter.model.Lists;
+import com.gmail.javacoded78.latwitter.model.Notification;
 import com.gmail.javacoded78.latwitter.model.User;
-import com.gmail.javacoded78.latwitter.repository.ImageRepository;
-import com.gmail.javacoded78.latwitter.repository.ListsRepository;
-import com.gmail.javacoded78.latwitter.repository.TweetRepository;
-import com.gmail.javacoded78.latwitter.repository.UserRepository;
+import com.gmail.javacoded78.latwitter.repository.*;
 import com.gmail.javacoded78.latwitter.repository.projection.lists.BaseListProjection;
 import com.gmail.javacoded78.latwitter.repository.projection.lists.ListMemberProjection;
 import com.gmail.javacoded78.latwitter.repository.projection.lists.ListProjection;

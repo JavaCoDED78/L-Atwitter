@@ -2,6 +2,7 @@ package com.gmail.javacoded78.latwitter.controller;
 
 import com.gmail.javacoded78.latwitter.dto.request.ListsRequest;
 import com.gmail.javacoded78.latwitter.dto.request.UserToListsRequest;
+import com.gmail.javacoded78.latwitter.dto.response.HeaderResponse;
 import com.gmail.javacoded78.latwitter.dto.response.lists.BaseListResponse;
 import com.gmail.javacoded78.latwitter.dto.response.lists.ListMemberResponse;
 import com.gmail.javacoded78.latwitter.dto.response.lists.ListResponse;
@@ -9,7 +10,7 @@ import com.gmail.javacoded78.latwitter.dto.response.lists.ListUserResponse;
 import com.gmail.javacoded78.latwitter.dto.response.lists.ListsOwnerMemberResponse;
 import com.gmail.javacoded78.latwitter.dto.response.lists.PinnedListResponse;
 import com.gmail.javacoded78.latwitter.dto.response.lists.SimpleListResponse;
-import com.gmail.javacoded78.latwitter.dto.response.tweet.TweetHeaderResponse;
+import com.gmail.javacoded78.latwitter.dto.response.notification.NotificationResponse;
 import com.gmail.javacoded78.latwitter.dto.response.tweet.TweetResponse;
 import com.gmail.javacoded78.latwitter.mapper.ListsMapper;
 import lombok.RequiredArgsConstructor;
@@ -106,8 +107,8 @@ public class ListsController {
 
     @GetMapping("/{listId}/tweets")
     public ResponseEntity<List<TweetResponse>> getTweetsByListId(@PathVariable Long listId, @PageableDefault(size = 10) Pageable pageable) {
-        TweetHeaderResponse<TweetResponse> response = listsMapper.getTweetsByListId(listId, pageable);
-        return ResponseEntity.ok().headers(response.getHeaders()).body(response.getTweets());
+        HeaderResponse<TweetResponse> response = listsMapper.getTweetsByListId(listId, pageable);
+        return ResponseEntity.ok().headers(response.getHeaders()).body(response.getItems());
     }
 
     @GetMapping("/{listId}/details")

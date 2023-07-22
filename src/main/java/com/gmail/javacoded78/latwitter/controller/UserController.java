@@ -1,19 +1,11 @@
 package com.gmail.javacoded78.latwitter.controller;
 
 import com.gmail.javacoded78.latwitter.dto.request.UserRequest;
-import com.gmail.javacoded78.latwitter.dto.response.AuthUserResponse;
-import com.gmail.javacoded78.latwitter.dto.response.BlockedUserResponse;
-import com.gmail.javacoded78.latwitter.dto.response.FollowerUserResponse;
-import com.gmail.javacoded78.latwitter.dto.response.ImageResponse;
-import com.gmail.javacoded78.latwitter.dto.response.MutedUserResponse;
-import com.gmail.javacoded78.latwitter.dto.response.UserDetailResponse;
-import com.gmail.javacoded78.latwitter.dto.response.UserProfileResponse;
-import com.gmail.javacoded78.latwitter.dto.response.UserResponse;
+import com.gmail.javacoded78.latwitter.dto.response.*;
 import com.gmail.javacoded78.latwitter.dto.response.notification.NotificationInfoResponse;
 import com.gmail.javacoded78.latwitter.dto.response.notification.NotificationResponse;
 import com.gmail.javacoded78.latwitter.dto.response.notification.NotificationUserResponse;
 import com.gmail.javacoded78.latwitter.dto.response.notification.NotificationsResponse;
-import com.gmail.javacoded78.latwitter.dto.response.tweet.TweetHeaderResponse;
 import com.gmail.javacoded78.latwitter.dto.response.tweet.TweetImageResponse;
 import com.gmail.javacoded78.latwitter.dto.response.tweet.TweetResponse;
 import com.gmail.javacoded78.latwitter.dto.response.tweet.TweetUserResponse;
@@ -49,8 +41,9 @@ public class UserController {
     }
 
     @GetMapping("/all")
-    public ResponseEntity<List<UserResponse>> getUsers() {
-        return ResponseEntity.ok(userMapper.getUsers());
+    public ResponseEntity<List<UserResponse>> getUsers(@PageableDefault(size = 15) Pageable pageable) {
+        HeaderResponse<UserResponse> response = userMapper.getUsers(pageable);
+        return ResponseEntity.ok().headers(response.getHeaders()).body(response.getItems());
     }
 
     @GetMapping("/relevant")
@@ -59,8 +52,9 @@ public class UserController {
     }
 
     @GetMapping("/search/{username}")
-    public ResponseEntity<List<UserResponse>> searchUsersByUsername(@PathVariable String username) {
-        return ResponseEntity.ok(userMapper.searchUsersByUsername(username));
+    public ResponseEntity<List<UserResponse>> searchUsersByUsername(@PathVariable String username, @PageableDefault(size = 15) Pageable pageable) {
+        HeaderResponse<UserResponse> response = userMapper.searchUsersByUsername(username, pageable);
+        return ResponseEntity.ok().headers(response.getHeaders()).body(response.getItems());
     }
 
     @GetMapping("/start")
@@ -70,26 +64,26 @@ public class UserController {
 
     @GetMapping("/{userId}/tweets")
     public ResponseEntity<List<TweetUserResponse>> getUserTweets(@PathVariable Long userId, @PageableDefault(size = 10) Pageable pageable) {
-        TweetHeaderResponse<TweetUserResponse> response = userMapper.getUserTweets(userId, pageable);
-        return ResponseEntity.ok().headers(response.getHeaders()).body(response.getTweets());
+        HeaderResponse<TweetUserResponse> response = userMapper.getUserTweets(userId, pageable);
+        return ResponseEntity.ok().headers(response.getHeaders()).body(response.getItems());
     }
 
     @GetMapping("/{userId}/liked")
     public ResponseEntity<List<TweetResponse>> getUserLikedTweets(@PathVariable Long userId, @PageableDefault(size = 10) Pageable pageable) {
-        TweetHeaderResponse<TweetResponse> response = userMapper.getUserLikedTweets(userId, pageable);
-        return ResponseEntity.ok().headers(response.getHeaders()).body(response.getTweets());
+        HeaderResponse<TweetResponse> response = userMapper.getUserLikedTweets(userId, pageable);
+        return ResponseEntity.ok().headers(response.getHeaders()).body(response.getItems());
     }
 
     @GetMapping("/{userId}/media")
     public ResponseEntity<List<TweetResponse>> getUserMediaTweets(@PathVariable Long userId, @PageableDefault(size = 10) Pageable pageable) {
-        TweetHeaderResponse<TweetResponse> response = userMapper.getUserMediaTweets(userId, pageable);
-        return ResponseEntity.ok().headers(response.getHeaders()).body(response.getTweets());
+        HeaderResponse<TweetResponse> response = userMapper.getUserMediaTweets(userId, pageable);
+        return ResponseEntity.ok().headers(response.getHeaders()).body(response.getItems());
     }
 
     @GetMapping("/{userId}/replies")
     public ResponseEntity<List<TweetUserResponse>> getUserRetweetsAndReplies(@PathVariable Long userId, @PageableDefault(size = 10) Pageable pageable) {
-        TweetHeaderResponse<TweetUserResponse> response = userMapper.getUserRetweetsAndReplies(userId, pageable);
-        return ResponseEntity.ok().headers(response.getHeaders()).body(response.getTweets());
+        HeaderResponse<TweetUserResponse> response = userMapper.getUserRetweetsAndReplies(userId, pageable);
+        return ResponseEntity.ok().headers(response.getHeaders()).body(response.getItems());
     }
 
     @GetMapping("/notifications")
@@ -102,22 +96,22 @@ public class UserController {
         return ResponseEntity.ok(userMapper.getUserNotificationById(notificationId));
     }
 
-    @GetMapping("/mentions")
-    public ResponseEntity<List<TweetResponse>> getUserMentions(@PageableDefault(size = 10) Pageable pageable) {
-        TweetHeaderResponse<TweetResponse> response = userMapper.getUserMentions(pageable);
-        return ResponseEntity.ok().headers(response.getHeaders()).body(response.getTweets());
-    }
-
     @GetMapping("/notifications/timeline")
     public ResponseEntity<List<TweetResponse>> getNotificationsFromTweetAuthors(@PageableDefault(size = 10) Pageable pageable) {
-        TweetHeaderResponse<TweetResponse> response = userMapper.getNotificationsFromTweetAuthors(pageable);
-        return ResponseEntity.ok().headers(response.getHeaders()).body(response.getTweets());
+        HeaderResponse<TweetResponse> response = userMapper.getNotificationsFromTweetAuthors(pageable);
+        return ResponseEntity.ok().headers(response.getHeaders()).body(response.getItems());
+    }
+
+    @GetMapping("/mentions")
+    public ResponseEntity<List<TweetResponse>> getUserMentions(@PageableDefault(size = 10) Pageable pageable) {
+        HeaderResponse<TweetResponse> response = userMapper.getUserMentions(pageable);
+        return ResponseEntity.ok().headers(response.getHeaders()).body(response.getItems());
     }
 
     @GetMapping("/bookmarks")
     public ResponseEntity<List<TweetResponse>> getUserBookmarks(@PageableDefault(size = 10) Pageable pageable) {
-        TweetHeaderResponse<TweetResponse> response = userMapper.getUserBookmarks(pageable);
-        return ResponseEntity.ok().headers(response.getHeaders()).body(response.getTweets());
+        HeaderResponse<TweetResponse> response = userMapper.getUserBookmarks(pageable);
+        return ResponseEntity.ok().headers(response.getHeaders()).body(response.getItems());
     }
 
     @GetMapping("/bookmarks/{tweetId}")

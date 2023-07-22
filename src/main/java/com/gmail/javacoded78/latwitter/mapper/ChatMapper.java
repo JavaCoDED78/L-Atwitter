@@ -2,6 +2,7 @@ package com.gmail.javacoded78.latwitter.mapper;
 
 import com.gmail.javacoded78.latwitter.dto.request.ChatMessageRequest;
 import com.gmail.javacoded78.latwitter.dto.request.MessageWithTweetRequest;
+import com.gmail.javacoded78.latwitter.dto.response.HeaderResponse;
 import com.gmail.javacoded78.latwitter.dto.response.UserChatResponse;
 import com.gmail.javacoded78.latwitter.dto.response.UserResponse;
 import com.gmail.javacoded78.latwitter.dto.response.chats.ChatMessageResponse;
@@ -14,6 +15,8 @@ import com.gmail.javacoded78.latwitter.repository.projection.user.UserProjection
 import com.gmail.javacoded78.latwitter.service.ChatService;
 import com.gmail.javacoded78.latwitter.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -73,8 +76,8 @@ public class ChatMapper {
         return basicMapper.convertToResponse(participant, UserResponse.class);
     }
 
-    public List<UserChatResponse> searchParticipantsByUsername(String username) {
-        List<UserChatProjection> participants = userService.searchUsersByUsername(username, UserChatProjection.class);
-        return basicMapper.convertToResponseList(participants, UserChatResponse.class);
+    public HeaderResponse<UserChatResponse> searchParticipantsByUsername(String username, Pageable pageable) {
+        Page<UserChatProjection> participants = userService.searchUsersByUsername(username, pageable, UserChatProjection.class);
+        return basicMapper.getHeaderResponse(participants, UserChatResponse.class);
     }
 }

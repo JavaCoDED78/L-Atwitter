@@ -24,17 +24,15 @@ export interface Response<T> {
 }
 
 export const UserApi = {
-    async getUsers(): Promise<UserResponse[]> {
-        const {data} = await axios.get<UserResponse[]>(`${API_URL}/user/all`);
-        return data;
+    async getUsers(payload: number): Promise<AxiosResponse<UserResponse[]>> {
+        return await axios.get<UserResponse[]>(`${API_URL}/user/all`, {params: {page: payload}});
     },
     async getRelevantUsers(): Promise<UserResponse[]> {
         const {data} = await axios.get<UserResponse[]>(`${API_URL}/user/relevant`);
         return data;
     },
-    async searchUsersByUsername(name: string): Promise<UserResponse[]> {
-        const {data} = await axios.get<UserResponse[]>(`${API_URL}/user/search/${name}`);
-        return data;
+    async searchUsersByUsername(payload: { username: string, page: number }): Promise<AxiosResponse<UserResponse[]>> {
+        return await axios.get<UserResponse[]>(`${API_URL}/user/search/${payload.username}`, {params: {page: payload.page}});
     },
     async getUserInfo(userId: number): Promise<UserProfileResponse> {
         const {data} = await axios.get<UserProfileResponse>(`${API_URL}/user/${userId}`);

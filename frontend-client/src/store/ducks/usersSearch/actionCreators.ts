@@ -9,6 +9,7 @@ import {
     SetFollowersActionInterface,
     SetFollowRequestToUsersSearchStateActionInterface,
     SetFollowToUsersSearchStateActionInterface,
+    SetPageableUsersSearchActionInterface,
     SetUsersSearchActionInterface,
     SetUsersSearchLoadingStatusActionInterface,
     UsersSearchActionsType
@@ -17,6 +18,11 @@ import {UsersSearchState} from "./contracts/state";
 
 export const setUsersSearch = (payload: UsersSearchState["users"]): SetUsersSearchActionInterface => ({
     type: UsersSearchActionsType.SET_USERS,
+    payload
+});
+
+export const setPageableUsersSearch = (payload: { items: UsersSearchState["users"], pagesCount: UsersSearchState["pagesCount"] }): SetPageableUsersSearchActionInterface => ({
+    type: UsersSearchActionsType.SET_PAGEABLE_USERS,
     payload
 });
 
@@ -40,8 +46,9 @@ export const setBlockUsersSearchState = (payload: { userId: number; isUserBlocke
     payload
 });
 
-export const fetchUsersSearch = (): FetchUsersSearchActionInterface => ({
-    type: UsersSearchActionsType.FETCH_USERS
+export const fetchUsersSearch = (payload: number): FetchUsersSearchActionInterface => ({
+    type: UsersSearchActionsType.FETCH_USERS,
+    payload
 });
 
 export const fetchFollowers = (payload: string): FetchFollowersActionInterface => ({
@@ -54,12 +61,12 @@ export const fetchFollowings = (payload: string): FetchFollowingsActionInterface
     payload
 });
 
-export const fetchUsersSearchByUsername = (payload: string): FetchUsersSearchByNameActionInterface => ({
+export const fetchUsersSearchByUsername = (payload: { username: string, page: number }): FetchUsersSearchByNameActionInterface => ({
     type: UsersSearchActionsType.FETCH_USERS_BY_NAME,
     payload
 });
 
-export const fetchParticipantsByUsername = (payload: string): FetchParticipantsSearchByNameActionInterface => ({
+export const fetchParticipantsByUsername = (payload: { username: string, page: number }): FetchParticipantsSearchByNameActionInterface => ({
     type: UsersSearchActionsType.FETCH_PARTICIPANTS_BY_NAME,
     payload
 });
