@@ -7,27 +7,21 @@ import java.time.LocalDateTime;
 
 public interface NotificationProjection {
 
-    Notification getNotification();
+    Long getId();
 
-    interface Notification {
+    LocalDateTime getDate();
 
-        Long getId();
+    NotificationType getNotificationType();
 
-        LocalDateTime getDate();
+    NotificationUserProjection getUser();
 
-        NotificationType getNotificationType();
+    NotificationUserProjection getUserToFollow();
 
-        NotificationUserProjection getUser();
+    NotificationTweetProjection getTweet();
 
-        NotificationUserProjection getUserToFollow();
-
-        NotificationTweetProjection getTweet();
-
-        NotificationListProjection getList();
-    }
+    NotificationListProjection getList();
 
     interface NotificationUserProjection {
-
         Long getId();
 
         String getUsername();
@@ -36,7 +30,6 @@ public interface NotificationProjection {
     }
 
     interface NotificationTweetProjection {
-
         Long getId();
 
         String getText();
@@ -45,7 +38,6 @@ public interface NotificationProjection {
     }
 
     interface NotificationListProjection {
-
         Long getId();
 
         String getName();

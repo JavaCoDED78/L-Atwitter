@@ -1,9 +1,13 @@
 package com.gmail.javacoded78.latwitter.mapper;
 
+import com.gmail.javacoded78.latwitter.dto.response.HeaderResponse;
 import com.gmail.javacoded78.latwitter.dto.response.TagResponse;
 import com.gmail.javacoded78.latwitter.dto.response.tweet.TweetResponse;
+import com.gmail.javacoded78.latwitter.repository.projection.tag.TagProjection;
 import com.gmail.javacoded78.latwitter.service.TagService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -19,8 +23,9 @@ public class TagMapper {
         return basicMapper.convertToResponseList(tagService.getTags(), TagResponse.class);
     }
 
-    public List<TagResponse> getTrends() {
-        return basicMapper.convertToResponseList(tagService.getTrends(), TagResponse.class);
+    public HeaderResponse<TagResponse> getTrends(Pageable pageable) {
+        Page<TagProjection> trends = tagService.getTrends(pageable);
+        return basicMapper.getHeaderResponse(trends, TagResponse.class);
     }
 
     public List<TweetResponse> getTweetsByTag(String tagName) {

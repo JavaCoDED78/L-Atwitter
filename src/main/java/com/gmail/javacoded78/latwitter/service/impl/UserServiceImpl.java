@@ -87,7 +87,6 @@ public class UserServiceImpl implements UserService {
         return userRepository.findByFullNameOrUsername(text, pageable, type);
     }
 
-
     @Override
     @Transactional
     public Boolean startUseTwitter() {
@@ -133,15 +132,18 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public Map<String, Object> getUserNotifications() {
+    public Page<NotificationProjection> getUserNotifications(Pageable pageable) {
         User user = authenticationService.getAuthenticatedUser();
         user.setNotificationsCount(0L);
-        List<NotificationProjection> notifications = notificationRepository.getNotificationsByUserId(user.getId());
-        List<TweetAuthorProjection> tweetAuthors = userRepository.getNotificationsTweetAuthors(user.getId());
-        Map<String, Object> response = new HashMap<>();
-        response.put("notifications", notifications);
-        response.put("tweetAuthors", tweetAuthors);
-        return response;
+        return notificationRepository.getNotificationsByUserId(user.getId(), pageable);
+    }
+
+    @Override
+    @Transactional
+    public List<TweetAuthorProjection> getTweetAuthorsNotifications() {
+        User user = authenticationService.getAuthenticatedUser();
+        user.setNotificationsCount(0L);
+        return userRepository.getNotificationsTweetAuthors(user.getId());
     }
 
     @Override
@@ -298,6 +300,7 @@ public class UserServiceImpl implements UserService {
         notification.setNotificationType(NotificationType.FOLLOW);
         notification.setUser(user);
         notification.setUserToFollow(currentUser);
+        notification.setNotifiedUser(currentUser);
 
         if (!currentUser.getId().equals(user.getId())) {
             Optional<Notification> userNotification = currentUser.getNotifications().stream()

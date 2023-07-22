@@ -5,18 +5,12 @@ import com.gmail.javacoded78.latwitter.model.User;
 import com.gmail.javacoded78.latwitter.repository.projection.BookmarkProjection;
 import com.gmail.javacoded78.latwitter.repository.projection.LikeTweetProjection;
 import com.gmail.javacoded78.latwitter.repository.projection.notification.NotificationInfoProjection;
+import com.gmail.javacoded78.latwitter.repository.projection.notification.NotificationProjection;
 import com.gmail.javacoded78.latwitter.repository.projection.tweet.TweetImageProjection;
 import com.gmail.javacoded78.latwitter.repository.projection.tweet.TweetProjection;
 import com.gmail.javacoded78.latwitter.repository.projection.tweet.TweetUserProjection;
 import com.gmail.javacoded78.latwitter.repository.projection.tweet.TweetsProjection;
-import com.gmail.javacoded78.latwitter.repository.projection.user.AuthUserProjection;
-import com.gmail.javacoded78.latwitter.repository.projection.user.BaseUserProjection;
-import com.gmail.javacoded78.latwitter.repository.projection.user.BlockedUserProjection;
-import com.gmail.javacoded78.latwitter.repository.projection.user.FollowerUserProjection;
-import com.gmail.javacoded78.latwitter.repository.projection.user.MutedUserProjection;
-import com.gmail.javacoded78.latwitter.repository.projection.user.UserDetailProjection;
-import com.gmail.javacoded78.latwitter.repository.projection.user.UserProfileProjection;
-import com.gmail.javacoded78.latwitter.repository.projection.user.UserProjection;
+import com.gmail.javacoded78.latwitter.repository.projection.user.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
@@ -44,11 +38,13 @@ public interface UserService {
 
     Page<TweetUserProjection> getUserRetweetsAndReplies(Long userId, Pageable pageable);
 
-    Page<TweetProjection> getUserMentions(Pageable pageable);
+    Page<NotificationProjection> getUserNotifications(Pageable pageable);
 
-    Map<String, Object> getUserNotifications();
+    List<TweetAuthorProjection> getTweetAuthorsNotifications();
 
     NotificationInfoProjection getUserNotificationById(Long notificationId);
+
+    Page<TweetProjection> getUserMentions(Pageable pageable);
 
     Page<TweetsProjection> getNotificationsFromTweetAuthors(Pageable pageable);
 

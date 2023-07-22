@@ -195,7 +195,7 @@ public class ListsServiceImpl implements ListsService {
 
     @Override
     @Transactional(rollbackFor = ApiRequestException.class)
-    public String addUserToLists(UserToListsRequest listsRequest) {
+    public String addUserToLists(UserToListsRequest listsRequest) { // TODO add notification
         Long authUserId = authenticationService.getAuthenticatedUserId();
         checkUserIsBlocked(authUserId, listsRequest.getUserId());
         User user = userRepository.getValidUser(listsRequest.getUserId(), authUserId)
@@ -245,10 +245,11 @@ public class ListsServiceImpl implements ListsService {
 
         Notification notification = new Notification();
         notification.setNotificationType(NotificationType.LISTS);
+        notification.setNotifiedUser(user);
         notification.setUser(user);
         notification.setList(list);
 
-        if (!user.getId().equals(authUserId)) {
+        if (!user.getId().equals(authUserId)) {  // TODO check is private list
             Optional<Notification> userNotification = user.getNotifications().stream()
                     .filter(n -> n.getNotificationType().equals(NotificationType.LISTS)
                             && n.getUser().getId().equals(authUserId))

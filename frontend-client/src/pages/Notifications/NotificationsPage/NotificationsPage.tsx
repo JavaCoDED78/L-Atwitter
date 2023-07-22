@@ -4,12 +4,17 @@ import {Link, useHistory} from "react-router-dom";
 import Paper from "@material-ui/core/Paper";
 import {Typography} from "@material-ui/core";
 
-import {fetchNotifications, resetNotificationState} from "../../../store/ducks/notifications/actionCreators";
+import {
+    fetchFetchTweetAuthorsNotifications,
+    fetchNotifications,
+    resetNotificationState
+} from "../../../store/ducks/notifications/actionCreators";
 import {fetchUserData} from "../../../store/ducks/user/actionCreators";
 import {
     selectIsNotificationsLoading,
     selectNotificationsList,
-    selectNotificationsTweetAuthors
+    selectNotificationsTweetAuthors,
+    selectPagesCount
 } from "../../../store/ducks/notifications/selectors";
 import Spinner from "../../../components/Spinner/Spinner";
 import {NOTIFICATIONS_TIMELINE, PROFILE} from "../../../util/pathConstants";
@@ -18,24 +23,31 @@ import NotificationAuthorItem from "./NotificationAuthorItem/NotificationAuthorI
 import NotificationItem from "./NotificationItem/NotificationItem";
 import {useNotificationsPageStyles} from "./NotificationsPageStyles";
 import EmptyNotifications from "../EmptyNotifications/EmptyNotifications";
+import InfiniteScrollWrapper from "../../../components/InfiniteScrollWrapper/InfiniteScrollWrapper";
 
 const NotificationsPage: FC = (): ReactElement => {
     const classes = useNotificationsPageStyles();
     const dispatch = useDispatch();
     const history = useHistory();
     const notifications = useSelector(selectNotificationsList);
+    const pagesCount = useSelector(selectPagesCount);
     const tweetAuthors = useSelector(selectNotificationsTweetAuthors);
     const isNotificationLoading = useSelector(selectIsNotificationsLoading);
 
     useEffect(() => {
         window.scrollTo(0, 0);
-        dispatch(fetchNotifications());
+        loadNotifications(0);
+        dispatch(fetchFetchTweetAuthorsNotifications());
         dispatch(fetchUserData());
 
         return () => {
             dispatch(resetNotificationState());
         };
     }, []);
+
+    const loadNotifications = (page: number): void => {
+        dispatch(fetchNotifications(page));
+    };
 
     const handleClickUser = (userId: number, event: React.MouseEvent<HTMLAnchorElement>): void => {
         event.preventDefault();
@@ -45,10 +57,10 @@ const NotificationsPage: FC = (): ReactElement => {
 
     return (
         <>
-            {isNotificationLoading ? (
+            {(isNotificationLoading && !notifications.length) ? (
                 <Spinner/>
             ) : (
-                (!notifications.length) ? (
+                (!isNotificationLoading && !notifications.length) ? (
                     <EmptyNotifications isNotification={true}/>
                 ) : (
                     <>
@@ -96,13 +108,20 @@ const NotificationsPage: FC = (): ReactElement => {
                                 </Paper>
                             </Link>
                         )}
-                        {notifications.map((notification, index) => (
-                            <NotificationItem
-                                key={index}
-                                notification={notification}
-                                handleClickUser={handleClickUser}
-                            />
-                        ))}
+                        <InfiniteScrollWrapper
+                            dataLength={notifications.length}
+                            pagesCount={pagesCount}
+                            loadItems={loadNotifications}
+                        >
+                            {notifications.map((notification) => (
+                                <NotificationItem
+                                    key={notification.id}
+                                    notification={notification}
+                                    handleClickUser={handleClickUser}
+                                />
+                            ))}
+                            {isNotificationLoading && <Spinner/>}
+                        </InfiniteScrollWrapper>
                     </>
                 )
             )}
