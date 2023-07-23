@@ -1,3 +1,4 @@
+import {AxiosResponse} from "axios";
 import {call, put, takeEvery} from 'redux-saga/effects';
 
 import {TweetApi} from "../../../services/api/tweetApi";
@@ -32,8 +33,8 @@ import {setUpdatedBookmarkedTweetUserTweetState} from "../userTweets/actionCreat
 export function* fetchTweetDataRequest({payload: tweetId}: FetchTweetDataActionInterface) {
     try {
         yield put(setTweetLoadingState(LoadingStatus.LOADING));
-        const data: TweetResponse = yield call(TweetApi.fetchTweetData, tweetId);
-        yield put(setTweetData(data));
+        const response: AxiosResponse<TweetResponse> = yield call(TweetApi.fetchTweetData, tweetId);
+        yield put(setTweetData(response.data));
     } catch (error) {
         yield put(setTweetLoadingState(LoadingStatus.ERROR));
     }
@@ -41,10 +42,10 @@ export function* fetchTweetDataRequest({payload: tweetId}: FetchTweetDataActionI
 
 export function* addTweetToBookmarksRequest({payload}: AddTweetToBookmarksActionInterface) {
     try {
-        const item: boolean = yield call(UserApi.addTweetToBookmarks, payload);
-        yield put(setBookmarkedTweet(item));
-        yield put(setUpdatedBookmarkedTweetTweetsState({tweetId: payload, isTweetBookmarked: item}));
-        yield put(setUpdatedBookmarkedTweetUserTweetState({tweetId: payload, isTweetBookmarked: item}));
+        const {data}: AxiosResponse<boolean> = yield call(UserApi.addTweetToBookmarks, payload);
+        yield put(setBookmarkedTweet(data));
+        yield put(setUpdatedBookmarkedTweetTweetsState({tweetId: payload, isTweetBookmarked: data}));
+        yield put(setUpdatedBookmarkedTweetUserTweetState({tweetId: payload, isTweetBookmarked: data}));
     } catch (error) {
         yield put(setTweetLoadingState(LoadingStatus.ERROR));
     }
@@ -70,8 +71,8 @@ export function* deleteTweetReplyRequest({payload}: DeleteTweetReplyActionInterf
 export function* fetchLikedUsersRequest({payload}: FetchLikedUsersActionInterface) {
     try {
         yield put(setLikedUsersLoadingState(LoadingStatus.LOADING));
-        const data: UserResponse[] = yield call(TweetApi.getLikedUsersByTweetId, payload);
-        yield put(setLikedUsers(data));
+        const response: AxiosResponse<UserResponse[]> = yield call(TweetApi.getLikedUsersByTweetId, payload);
+        yield put(setLikedUsers(response.data));
     } catch (error) {
         yield put(setLikedUsersLoadingState(LoadingStatus.ERROR));
     }
@@ -80,8 +81,8 @@ export function* fetchLikedUsersRequest({payload}: FetchLikedUsersActionInterfac
 export function* fetchRetweetedUsersRequest({payload}: FetchRetweetedUsersActionInterface) {
     try {
         yield put(setRetweetedUsersLoadingState(LoadingStatus.LOADING));
-        const data: UserResponse[] = yield call(TweetApi.getRetweetedUsersByTweetId, payload);
-        yield put(setRetweetedUsers(data));
+        const response: AxiosResponse<UserResponse[]> = yield call(TweetApi.getRetweetedUsersByTweetId, payload);
+        yield put(setRetweetedUsers(response.data));
     } catch (error) {
         yield put(setRetweetedUsersLoadingState(LoadingStatus.ERROR));
     }
@@ -91,8 +92,8 @@ export function* fetchRetweetedUsersRequest({payload}: FetchRetweetedUsersAction
 export function* fetchRepliesRequest({payload}: FetchRepliesActionInterface) {
     try {
         yield put(setRepliesLoadingState(LoadingStatus.LOADING));
-        const data: TweetResponse[] = yield call(TweetApi.getRepliesByTweetId, payload);
-        yield put(setReplies(data));
+        const response: AxiosResponse<TweetResponse[]> = yield call(TweetApi.getRepliesByTweetId, payload);
+        yield put(setReplies(response.data));
     } catch (error) {
         yield put(setRepliesLoadingState(LoadingStatus.ERROR));
     }

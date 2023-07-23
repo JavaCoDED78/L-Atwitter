@@ -32,7 +32,7 @@ const FollowersYouKnow: FC = (): ReactElement => {
         setIsLoading(true);
         UserApi.overallFollowers(params.id)
             .then(response => {
-                setOverallFollowers(response);
+                setOverallFollowers(response.data);
                 setIsLoading(false);
             });
     }, []);
@@ -54,7 +54,7 @@ const FollowersYouKnow: FC = (): ReactElement => {
             <PageHeaderWrapper backButton>
                 {!isLoading && (
                     <PageHeaderTitle
-                        title={userProfile!.fullName}
+                        title={userProfile?.fullName!}
                         subtitle={`@${userProfile?.username}`}
                     />
                 )}

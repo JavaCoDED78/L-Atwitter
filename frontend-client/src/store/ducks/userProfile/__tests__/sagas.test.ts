@@ -1,3 +1,5 @@
+import {AxiosResponse} from "axios";
+
 import {
     fetchChatParticipantRequest,
     fetchImagesRequest,
@@ -23,24 +25,26 @@ import {UserApi} from "../../../../services/api/userApi";
 import {ChatApi} from "../../../../services/api/chatApi";
 import {TweetImageResponse} from "../../../types/tweet";
 import {UserProfileActionsType} from "../contracts/actionTypes";
+import {boolean} from "yup";
 
 describe("userProfileSaga:", () => {
-    const mockUserProfileResponse = {id: 1} as UserProfileResponse;
+    const mockUserProfileResponse = {data: {id: 1}} as AxiosResponse<UserProfileResponse>;
 
     describe("fetchUserRequest:", () => {
         const worker = fetchUserRequest(fetchUserProfile(1));
 
         testLoadingStatus(worker, setUserProfileLoadingState, LoadingStatus.LOADING);
         testCall(worker, UserApi.getUserInfo, 1);
-        testSetResponse(worker, mockUserProfileResponse, setUserProfile, mockUserProfileResponse, "UserProfileResponse");
+        testSetResponse(worker, mockUserProfileResponse, setUserProfile, mockUserProfileResponse.data, "UserProfileResponse");
         testLoadingStatus(worker, setUserProfileLoadingState, LoadingStatus.ERROR)
     });
 
     describe("processSubscribeRequest:", () => {
+        const mockResponse = {data: true} as AxiosResponse<boolean>;
         const worker = processSubscribeRequest(processSubscribe(1));
 
         testCall(worker, UserApi.processSubscribeToNotifications, 1);
-        testSetResponse(worker, true, setSubscribeToUserProfile, true, "boolean");
+        testSetResponse(worker, mockResponse, setSubscribeToUserProfile, mockResponse.data, "boolean");
         testLoadingStatus(worker, setUserProfileLoadingState, LoadingStatus.ERROR)
     });
 
@@ -49,17 +53,17 @@ describe("userProfileSaga:", () => {
 
         testLoadingStatus(worker, setUserProfileLoadingState, LoadingStatus.LOADING);
         testCall(worker, ChatApi.getParticipant, {participantId: 1, chatId: 1});
-        testSetResponse(worker, mockUserProfileResponse, setUserProfile, mockUserProfileResponse, "UserProfileResponse");
+        testSetResponse(worker, mockUserProfileResponse, setUserProfile, mockUserProfileResponse.data, "UserProfileResponse");
         testLoadingStatus(worker, setUserProfileLoadingState, LoadingStatus.ERROR)
     });
 
     describe("fetchImagesRequest:", () => {
-        const mockTweetImageResponse = [{tweetId: 1, imageId: 1}] as TweetImageResponse[];
+        const mockTweetImageResponse = {data: [{tweetId: 1, imageId: 1}]} as AxiosResponse<TweetImageResponse[]>;
         const worker = fetchImagesRequest(fetchImages(1));
 
         testLoadingStatus(worker, setImagesLoadingStatus, LoadingStatus.LOADING);
         testCall(worker, UserApi.getUserTweetImages, 1);
-        testSetResponse(worker, mockTweetImageResponse, setImages, mockTweetImageResponse, "TweetImageResponse");
+        testSetResponse(worker, mockTweetImageResponse, setImages, mockTweetImageResponse.data, "TweetImageResponse");
         testLoadingStatus(worker, setImagesLoadingStatus, LoadingStatus.ERROR)
     });
 

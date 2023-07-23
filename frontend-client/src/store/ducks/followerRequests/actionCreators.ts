@@ -8,16 +8,18 @@ import {
     SetFollowerRequestsActionInterface,
     SetFollowerRequestsLoadingStateActionInterface
 } from "./contracts/actionTypes";
-import {FollowerUserResponse} from "../../types/user";
 import {LoadingStatus} from "../../types";
+import {FollowerRequestsState} from "./contracts/state";
+import {PageableResponse} from "../../types/common";
 
-export const setFollowerRequests = (payload: FollowerUserResponse[]): SetFollowerRequestsActionInterface => ({
+export const setFollowerRequests = (payload: PageableResponse<FollowerRequestsState["items"]>): SetFollowerRequestsActionInterface => ({
     type: FollowerRequestsActionsType.SET_FOLLOWER_REQUESTS,
     payload,
 });
 
-export const fetchFollowerRequests = (): FetchFollowerRequestsActionInterface => ({
+export const fetchFollowerRequests = (payload: number): FetchFollowerRequestsActionInterface => ({
     type: FollowerRequestsActionsType.FETCH_FOLLOWER_REQUESTS,
+    payload,
 });
 
 export const acceptFollowRequest = (payload: number): AcceptFollowerRequestActionInterface => ({
@@ -43,4 +45,3 @@ export const setFollowerRequestsLoadingState = (payload: LoadingStatus): SetFoll
 export const resetFollowerRequestsState = (): ResetFollowerRequestsStateActionInterface => ({
     type: FollowerRequestsActionsType.RESET_FOLLOWER_REQUESTS_STATE,
 });
-

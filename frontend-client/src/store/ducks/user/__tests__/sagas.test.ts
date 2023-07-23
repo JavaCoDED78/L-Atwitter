@@ -1,3 +1,5 @@
+import {AxiosResponse} from "axios";
+
 import {
     fetchPinTweetRequest,
     fetchReadMessagesRequest,
@@ -110,6 +112,7 @@ import {BackgroundTheme, ColorScheme} from "../../../types/common";
 describe("userSaga:", () => {
     const mockAuthUser = {id: 1, email: "test@test.test"} as AuthUserResponse;
     const mockAuthentication = {user: mockAuthUser, token: "test"} as AuthenticationResponse;
+    const mockAxiosAuthentication = {data: {user: mockAuthUser, token: "test"}} as AxiosResponse<AuthenticationResponse>;
 
     describe("updateUserDataRequest:", () => {
         const mockUserRequest = {username: "test", location: "test"} as UserRequest;
@@ -117,7 +120,7 @@ describe("userSaga:", () => {
 
         testLoadingStatus(worker, setUserLoadingStatus, LoadingStatus.LOADING);
         testCall(worker, UserApi.updateUserProfile, mockUserRequest);
-        testSetResponse(worker, mockAuthUser, setUserData, mockAuthUser, "AuthUserResponse");
+        testSetResponse(worker, mockAxiosAuthentication, setUserData, mockAuthentication, "AuthUserResponse");
         testLoadingStatus(worker, setUserLoadingStatus, LoadingStatus.ERROR);
     });
 
@@ -127,7 +130,7 @@ describe("userSaga:", () => {
 
         testLoadingStatus(worker, setUserLoadingStatus, LoadingStatus.LOADING);
         testCall(worker, AuthApi.signIn, mockLoginProps);
-        testSetResponse(worker, mockAuthentication, setUserData, mockAuthUser, "AuthenticationResponse");
+        testSetResponse(worker, mockAxiosAuthentication, setUserData, mockAuthUser, "AuthenticationResponse");
         testLoadingStatus(worker, setUserLoadingStatus, LoadingStatus.ERROR);
     });
 
@@ -137,7 +140,7 @@ describe("userSaga:", () => {
 
         testLoadingStatus(worker, setUserLoadingStatus, LoadingStatus.LOADING);
         testCall(worker, AuthApi.endRegistration, mockRegistrationProps);
-        testSetResponse(worker, mockAuthentication, setUserData, mockAuthUser, "AuthenticationResponse");
+        testSetResponse(worker, mockAxiosAuthentication, setUserData, mockAuthUser, "AuthenticationResponse");
         testLoadingStatus(worker, setUserLoadingStatus, LoadingStatus.ERROR);
     });
 
@@ -146,12 +149,12 @@ describe("userSaga:", () => {
 
         testLoadingStatus(worker, setUserLoadingStatus, LoadingStatus.LOADING);
         testCall(worker, AuthApi.getMe);
-        testSetResponse(worker, mockAuthentication, setUserData, mockAuthUser, "AuthenticationResponse");
+        testSetResponse(worker, mockAxiosAuthentication, setUserData, mockAuthUser, "AuthenticationResponse");
         testLoadingStatus(worker, setUserLoadingStatus, LoadingStatus.ERROR);
     });
 
     describe("processFollowUserRequest:", () => {
-        const mockNotificationUserResponse = {id: 1, isFollower: true} as NotificationUserResponse;
+        const mockNotificationUserResponse = {data: {id: 1, isFollower: true}} as AxiosResponse<NotificationUserResponse>;
         const mockPayload = {userId: 1, tweetId: 1, isFollower: true};
         const worker = processFollowUserRequest(followUser({userId: 1, tweetId: 1}));
 
@@ -178,8 +181,8 @@ describe("userSaga:", () => {
         const worker = startUseTwitterRequest(startUseTwitter(1));
 
         testLoadingStatus(worker, setUserLoadingStatus, LoadingStatus.LOADING);
-        testCall(worker, UserApi.startUseTwitter, 1, true);
-        testSetResponse(worker, 1, setProfileStarted, 1, "boolean");
+        testCall(worker, UserApi.startUseTwitter, 1);
+        testSetResponse(worker, {data: true}, setProfileStarted, true, "boolean");
         testLoadingStatus(worker, setUserLoadingStatus, LoadingStatus.ERROR);
     });
 
@@ -188,7 +191,7 @@ describe("userSaga:", () => {
 
         testLoadingStatus(worker, setUserLoadingStatus, LoadingStatus.LOADING);
         testCall(worker, UserApi.pinTweet, 1, 1);
-        testSetResponse(worker, 1, setPinTweetId, 1, "number");
+        testSetResponse(worker, {data: 1}, setPinTweetId, 1, "number");
         testLoadingStatus(worker, setUserLoadingStatus, LoadingStatus.ERROR);
     });
 
@@ -203,10 +206,9 @@ describe("userSaga:", () => {
 
     describe("updateUsernameRequest:", () => {
         const worker = updateUsernameRequest(updateUsername({username: "test"}));
-
         testLoadingStatus(worker, setUserLoadingStatus, LoadingStatus.LOADING);
         testCall(worker, UserSettingsApi.updateUsername, {username: "test"}, "test");
-        testSetResponse(worker, "test", setUsername, "test", "string");
+        testSetResponse(worker, {data: "test"}, setUsername, "test", "string");
         testLoadingStatus(worker, setUserLoadingStatus, LoadingStatus.ERROR);
     });
 
@@ -221,74 +223,67 @@ describe("userSaga:", () => {
 
     describe("updatePhoneRequest:", () => {
         const mockPhoneSettings = {countryCode: "US", phone: 12345};
+        const mockResponse = {data: mockPhoneSettings} as AxiosResponse<any>;
         const worker = updatePhoneRequest(updatePhone(mockPhoneSettings));
-
         testLoadingStatus(worker, setUserLoadingStatus, LoadingStatus.LOADING);
         testCall(worker, UserSettingsApi.updatePhone, mockPhoneSettings, mockPhoneSettings);
-        testSetResponse(worker, mockPhoneSettings, setPhone, mockPhoneSettings, "string");
+        testSetResponse(worker, mockResponse, setPhone, mockPhoneSettings, "string");
         testLoadingStatus(worker, setUserLoadingStatus, LoadingStatus.ERROR);
     });
 
     describe("updateCountryRequest:", () => {
         const worker = updateCountryRequest(updateCountry({country: "test"}));
-
         testLoadingStatus(worker, setUserLoadingStatus, LoadingStatus.LOADING);
         testCall(worker, UserSettingsApi.updateCountry, {country: "test"}, "test");
-        testSetResponse(worker, "test", setCountry, "test", "string");
+        testSetResponse(worker, {data: "test"}, setCountry, "test", "string");
         testLoadingStatus(worker, setUserLoadingStatus, LoadingStatus.ERROR);
     });
 
     describe("updateGenderRequest:", () => {
         const worker = updateGenderRequest(updateGender({updateGender: "testGender"} as Settings));
-
         testLoadingStatus(worker, setUserLoadingStatus, LoadingStatus.LOADING);
         testCall(worker, UserSettingsApi.updateGender, {updateGender: "testGender"}, "testGender");
-        testSetResponse(worker, "testGender", setGender, "testGender", "string");
+        testSetResponse(worker, {data: "testGender"}, setGender, "testGender", "string");
         testLoadingStatus(worker, setUserLoadingStatus, LoadingStatus.ERROR);
     });
 
     describe("updateLanguageRequest:", () => {
         const worker = updateLanguageRequest(updateLanguage({language: "english"}));
-
         testLoadingStatus(worker, setUserLoadingStatus, LoadingStatus.LOADING);
         testCall(worker, UserSettingsApi.updateLanguage, {language: "english"}, "english");
-        testSetResponse(worker, "english", setLanguage, "english", "string");
+        testSetResponse(worker, {data: "english"}, setLanguage, "english", "string");
         testLoadingStatus(worker, setUserLoadingStatus, LoadingStatus.ERROR);
     });
 
     describe("updateDirectRequest:", () => {
         const worker = updateDirectRequest(updateDirect({mutedDirectMessages: true}));
-
         testLoadingStatus(worker, setUserLoadingStatus, LoadingStatus.LOADING);
         testCall(worker, UserSettingsApi.updateDirectMessageRequests, {mutedDirectMessages: true}, true);
-        testSetResponse(worker, true, setDirect, true, "boolean");
+        testSetResponse(worker, {data: true}, setDirect, true, "boolean");
         testLoadingStatus(worker, setUserLoadingStatus, LoadingStatus.ERROR);
     });
 
     describe("updatePrivateProfileRequest:", () => {
         const worker = updatePrivateProfileRequest(updatePrivateProfile({privateProfile: true}));
-
         testLoadingStatus(worker, setUserLoadingStatus, LoadingStatus.LOADING);
         testCall(worker, UserSettingsApi.updatePrivateProfile, {privateProfile: true}, true);
-        testSetResponse(worker, true, setPrivateProfile, true, "boolean");
+        testSetResponse(worker, {data: true}, setPrivateProfile, true, "boolean");
         testLoadingStatus(worker, setUserLoadingStatus, LoadingStatus.ERROR);
     });
 
     describe("updateColorSchemeRequest:", () => {
         const worker = updateColorSchemeRequest(updateColorScheme({colorScheme: ColorScheme.BLUE}));
-
         testLoadingStatus(worker, setUserLoadingStatus, LoadingStatus.LOADING);
         testCall(worker, UserSettingsApi.updateColorScheme, {colorScheme: ColorScheme.BLUE}, "BLUE");
-        testSetResponse(worker, "BLUE", setColorScheme, "BLUE", "string");
+        testSetResponse(worker, {data: "BLUE"}, setColorScheme, "BLUE", "string");
         testLoadingStatus(worker, setUserLoadingStatus, LoadingStatus.ERROR);
     });
 
     describe("updateBackgroundColorRequest:", () => {
         const worker = updateBackgroundColorRequest(updateBackgroundColor({backgroundColor: BackgroundTheme.DIM}));
-
         testLoadingStatus(worker, setUserLoadingStatus, LoadingStatus.LOADING);
         testCall(worker, UserSettingsApi.updateBackgroundColor, {backgroundColor: BackgroundTheme.DIM}, "DIM");
-        testSetResponse(worker, "DIM", setBackgroundColor, "DIM", "string");
+        testSetResponse(worker, {data: "DIM"}, setBackgroundColor, "DIM", "string");
         testLoadingStatus(worker, setUserLoadingStatus, LoadingStatus.ERROR);
     });
 
@@ -297,7 +292,7 @@ describe("userSaga:", () => {
         const worker = processUserToBlocklistRequest(processUserToBlocklist({userId: 1, tweetId: 1}));
 
         testCall(worker, UserApi.processBlockList, 1, true);
-        testSetResponse(worker, true, setBlockedToTweetsState, mockPayload, "boolean");
+        testSetResponse(worker, {data: true}, setBlockedToTweetsState, mockPayload, "boolean");
         testSetResponse(worker, true, setBlockedUsersTweetState, mockPayload, "boolean");
         testSetResponse(worker, true, setBlocked, true, "boolean");
         testSetResponse(worker, true, setBlockUserDetail, true, "boolean");
@@ -314,7 +309,7 @@ describe("userSaga:", () => {
         const worker = processUserToMuteListRequest(processUserToMuteList({userId: 1, tweetId: 1}));
 
         testCall(worker, UserApi.processMutedList, 1, true);
-        testSetResponse(worker, true, setMutedToTweetsState, mockPayload, "boolean");
+        testSetResponse(worker, {data: true}, setMutedToTweetsState, mockPayload, "boolean");
         testSetResponse(worker, true, setMutedUsersTweetState, mockPayload, "boolean");
         testSetResponse(worker, true, setMuted, true, "boolean");
         testSetResponse(worker, true, setMutedUser, {userId: 1, isUserMuted: true}, "boolean");
@@ -324,7 +319,7 @@ describe("userSaga:", () => {
     });
 
     describe("processFollowRequests:", () => {
-        const mockUserProfileResponse = {id: 1, isWaitingForApprove: true} as UserProfileResponse;
+        const mockUserProfileResponse = {data: {id: 1, isWaitingForApprove: true}} as AxiosResponse<UserProfileResponse>;
         const mockPayload = {userId: 1, isWaitingForApprove: true};
         const worker = processFollowRequests(processFollowRequest(1));
 

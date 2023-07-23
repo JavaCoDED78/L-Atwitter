@@ -58,9 +58,9 @@ public interface UserService {
 
     AuthUserProjection updateUserProfile(User userInfo);
 
-    List<UserProjection> getFollowers(Long userId);
-
     Page<UserProjection> getFollowers(Long userId, Pageable pageable);
+
+    Page<UserProjection> getFollowing(Long userId, Pageable pageable);
 
     Map<String, Object> processFollow(Long userId);
 
@@ -86,5 +86,5 @@ public interface UserService {
 
     UserDetailProjection getUserDetails(Long userId);
 
-    List<FollowerUserProjection> getFollowerRequests();
+    Page<FollowerUserProjection> getFollowerRequests(Pageable pageable);
 }

@@ -257,7 +257,6 @@ public class UserServiceImpl implements UserService {
         return userRepository.findAuthUserById(user.getId());
     }
 
-
     @Override
     public Page<UserProjection> getFollowers(Long userId, Pageable pageable) {
         checkIsUserExist(userId);
@@ -266,10 +265,10 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<UserProjection> getFollowing(Long userId) {
+    public Page<UserProjection> getFollowing(Long userId, Pageable pageable) {
         checkIsUserExist(userId);
         checkIsUserBlocked(userId);
-        return userRepository.getFollowingById(userId);
+        return userRepository.getFollowingById(userId, pageable);
     }
 
     @Override
@@ -444,9 +443,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<FollowerUserProjection> getFollowerRequests() {
+    public Page<FollowerUserProjection> getFollowerRequests(Pageable pageable) {
         Long authUserId = authenticationService.getAuthenticatedUserId();
-        return userRepository.getFollowerRequests(authUserId);
+        return userRepository.getFollowerRequests(authUserId, pageable);
     }
 
     private void checkIsUserExist(Long userId) {
