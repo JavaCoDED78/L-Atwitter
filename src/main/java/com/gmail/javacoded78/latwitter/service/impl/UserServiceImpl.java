@@ -392,9 +392,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<BlockedUserProjection> getBlockList() {
+    public Page<BlockedUserProjection> getBlockList(Pageable pageable) {
         Long authUserId = authenticationService.getAuthenticatedUserId();
-        return userRepository.getUserBlockListById(authUserId);
+        return userRepository.getUserBlockListById(authUserId, pageable);
     }
 
     @Override
@@ -422,9 +422,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<MutedUserProjection> getMutedList() {
+    public Page<MutedUserProjection> getMutedList(Pageable pageable) {
         Long authUserId = authenticationService.getAuthenticatedUserId();
-        return userRepository.getUserMuteListById(authUserId);
+        return userRepository.getUserMuteListById(authUserId, pageable);
     }
 
     @Override

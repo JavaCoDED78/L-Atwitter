@@ -152,7 +152,7 @@ public class UserController {
     }
 
     @GetMapping("/follower-requests")
-    public ResponseEntity<List<FollowerUserResponse>> getFollowerRequests(@PageableDefault(size = 15) Pageable pageable) {
+    public ResponseEntity<List<FollowerUserResponse>> getFollowerRequests(@PageableDefault(size = 10) Pageable pageable) {
         HeaderResponse<FollowerUserResponse> response = userMapper.getFollowerRequests(pageable);
         return ResponseEntity.ok().headers(response.getHeaders()).body(response.getItems());
     }
@@ -167,7 +167,7 @@ public class UserController {
         return ResponseEntity.ok(notification.getUserToFollow());
     }
 
-    @GetMapping("/follow/overall/{userId}")
+    @GetMapping("/follow/overall/{userId}") // TODO add pagination
     public ResponseEntity<List<UserResponse>> overallFollowers(@PathVariable Long userId) {
         return ResponseEntity.ok(userMapper.overallFollowers(userId));
     }
@@ -198,8 +198,9 @@ public class UserController {
     }
 
     @GetMapping("/blocked")
-    public ResponseEntity<List<BlockedUserResponse>> getBlockList() {
-        return ResponseEntity.ok(userMapper.getBlockList());
+    public ResponseEntity<List<BlockedUserResponse>> getBlockList(@PageableDefault(size = 15) Pageable pageable) {
+        HeaderResponse<BlockedUserResponse> response = userMapper.getBlockList(pageable);
+        return ResponseEntity.ok().headers(response.getHeaders()).body(response.getItems());
     }
 
     @GetMapping("/blocked/{userId}")
@@ -208,8 +209,9 @@ public class UserController {
     }
 
     @GetMapping("/muted")
-    public ResponseEntity<List<MutedUserResponse>> getMutedList() {
-        return ResponseEntity.ok(userMapper.getMutedList());
+    public ResponseEntity<List<MutedUserResponse>> getMutedList(@PageableDefault(size = 15) Pageable pageable) {
+        HeaderResponse<MutedUserResponse> response = userMapper.getMutedList(pageable);
+        return ResponseEntity.ok().headers(response.getHeaders()).body(response.getItems());
     }
 
     @GetMapping("/muted/{userId}")
