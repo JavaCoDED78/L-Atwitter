@@ -50,9 +50,9 @@ public class TweetMapper {
         return basicMapper.getHeaderResponse(tweets, TweetResponse.class);
     }
 
-    public List<TweetResponse> getScheduledTweets() {
-        List<TweetProjection> tweets = tweetService.getScheduledTweets();
-        return basicMapper.convertToResponseList(tweets, TweetResponse.class);
+    public HeaderResponse<TweetResponse> getScheduledTweets(Pageable pageable) {
+        Page<TweetProjection> tweets = tweetService.getScheduledTweets(pageable);
+        return basicMapper.getHeaderResponse(tweets, TweetResponse.class);
     }
 
     public TweetResponse getTweetById(Long tweetId) {
@@ -70,14 +70,14 @@ public class TweetMapper {
         return basicMapper.getHeaderResponse(tweets, TweetResponse.class);
     }
 
-    public List<UserResponse> getLikedUsersByTweetId(Long tweetId) {
-        List<UserProjection> users = tweetService.getLikedUsersByTweetId(tweetId);
-        return basicMapper.convertToResponseList(users, UserResponse.class);
+    public HeaderResponse<UserResponse> getLikedUsersByTweetId(Long tweetId, Pageable pageable) {
+        Page<UserProjection> users = tweetService.getLikedUsersByTweetId(tweetId, pageable);
+        return basicMapper.getHeaderResponse(users, UserResponse.class);
     }
 
-    public List<UserResponse> getRetweetedUsersByTweetId(Long tweetId) {
-        List<UserProjection> users = tweetService.getRetweetedUsersByTweetId(tweetId);
-        return basicMapper.convertToResponseList(users, UserResponse.class);
+    public HeaderResponse<UserResponse> getRetweetedUsersByTweetId(Long tweetId, Pageable pageable) {
+        Page<UserProjection> users = tweetService.getRetweetedUsersByTweetId(tweetId, pageable);
+        return basicMapper.getHeaderResponse(users, UserResponse.class);
     }
 
     public TweetResponse createTweet(TweetRequest tweetRequest) {
@@ -120,9 +120,9 @@ public class TweetMapper {
         return notification;
     }
 
-    public List<TweetResponse> searchTweets(String text) {
-        List<TweetProjection> tweets = tweetService.searchTweets(text);
-        return basicMapper.convertToResponseList(tweets, TweetResponse.class);
+    public HeaderResponse<TweetResponse> searchTweets(String text, Pageable pageable) {
+        Page<TweetProjection> tweets = tweetService.searchTweets(text, pageable);
+        return basicMapper.getHeaderResponse(tweets, TweetResponse.class);
     }
 
     public NotificationReplyResponse replyTweet(Long tweetId, TweetRequest tweetRequest) {

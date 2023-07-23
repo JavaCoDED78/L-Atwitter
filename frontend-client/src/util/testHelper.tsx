@@ -232,7 +232,7 @@ export const createMockRootState = (loadingStatus = LoadingStatus.LOADING): Root
             tweet: mockFullTweet,
             likedUsers: mockUsers,
             retweetedUsers: mockUsers,
-            quotedUsers: mockUsers,
+            usersPagesCount: 0,
             replies: mockTweets,
             loadingState: loadingStatus,
             likedUsersLoadingState: loadingStatus,
@@ -271,5 +271,10 @@ export const createMockRootState = (loadingStatus = LoadingStatus.LOADING): Root
             pagesCount: 1,
             loadingState: loadingStatus
         },
+        unsentTweets: {
+            items: [],
+            pagesCount: 0,
+            loadingState: loadingStatus
+        }
     } as RootState;
 };

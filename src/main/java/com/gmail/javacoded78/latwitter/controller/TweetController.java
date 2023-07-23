@@ -59,13 +59,15 @@ public class TweetController {
     }
 
     @GetMapping("/{tweetId}/liked-users")
-    public ResponseEntity<List<UserResponse>> getLikedUsersByTweetId(@PathVariable Long tweetId) {
-        return ResponseEntity.ok(tweetMapper.getLikedUsersByTweetId(tweetId));
+    public ResponseEntity<List<UserResponse>> getLikedUsersByTweetId(@PathVariable Long tweetId, @PageableDefault(size = 15) Pageable pageable) {
+        HeaderResponse<UserResponse> response = tweetMapper.getLikedUsersByTweetId(tweetId, pageable);
+        return ResponseEntity.ok().headers(response.getHeaders()).body(response.getItems());
     }
 
     @GetMapping("/{tweetId}/retweeted-users")
-    public ResponseEntity<List<UserResponse>> getRetweetedUsersByTweetId(@PathVariable Long tweetId) {
-        return ResponseEntity.ok(tweetMapper.getRetweetedUsersByTweetId(tweetId));
+    public ResponseEntity<List<UserResponse>> getRetweetedUsersByTweetId(@PathVariable Long tweetId, @PageableDefault(size = 15) Pageable pageable) {
+        HeaderResponse<UserResponse> response = tweetMapper.getRetweetedUsersByTweetId(tweetId, pageable);
+        return ResponseEntity.ok().headers(response.getHeaders()).body(response.getItems());
     }
 
     @GetMapping("/media")
@@ -87,8 +89,9 @@ public class TweetController {
     }
 
     @GetMapping("/schedule")
-    public ResponseEntity<List<TweetResponse>> getScheduledTweets() {
-        return ResponseEntity.ok(tweetMapper.getScheduledTweets());
+    public ResponseEntity<List<TweetResponse>> getScheduledTweets(@PageableDefault(size = 15) Pageable pageable) {
+        HeaderResponse<TweetResponse> response = tweetMapper.getScheduledTweets(pageable);
+        return ResponseEntity.ok().headers(response.getHeaders()).body(response.getItems());
     }
 
     @PostMapping
@@ -132,8 +135,9 @@ public class TweetController {
     }
 
     @GetMapping("/search/{text}")
-    public ResponseEntity<List<TweetResponse>> searchTweets(@PathVariable String text) {
-        return ResponseEntity.ok(tweetMapper.searchTweets(text));
+    public ResponseEntity<List<TweetResponse>> searchTweets(@PathVariable String text, @PageableDefault Pageable pageable) {
+        HeaderResponse<TweetResponse> response = tweetMapper.searchTweets(text, pageable);
+        return ResponseEntity.ok().headers(response.getHeaders()).body(response.getItems());
     }
 
     @GetMapping("/like/{tweetId}")

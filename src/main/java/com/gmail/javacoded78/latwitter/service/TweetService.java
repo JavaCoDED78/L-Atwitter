@@ -20,9 +20,9 @@ public interface TweetService {
 
     Page<TweetProjection> getQuotesByTweetId(Pageable pageable, Long tweetId);
 
-    List<UserProjection> getLikedUsersByTweetId(Long tweetId);
+    Page<UserProjection> getLikedUsersByTweetId(Long tweetId, Pageable pageable);
 
-    List<UserProjection> getRetweetedUsersByTweetId(Long tweetId);
+    Page<UserProjection> getRetweetedUsersByTweetId(Long tweetId, Pageable pageable);
 
     Page<TweetProjection> getMediaTweets(Pageable pageable);
 
@@ -30,7 +30,7 @@ public interface TweetService {
 
     Page<TweetProjection> getFollowersTweets(Pageable pageable);
 
-    List<TweetProjection> getScheduledTweets();
+    Page<TweetProjection> getScheduledTweets(Pageable pageable);
 
     TweetProjection createNewTweet(Tweet tweet);
 
@@ -42,7 +42,7 @@ public interface TweetService {
 
     Tweet deleteTweet(Long tweetId);
 
-    List<TweetProjection> searchTweets(String text);
+    Page<TweetProjection> searchTweets(String text, Pageable pageable);
 
     Map<String, Object> likeTweet(Long tweetId);
 

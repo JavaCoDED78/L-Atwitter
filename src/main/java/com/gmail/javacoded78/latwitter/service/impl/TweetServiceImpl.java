@@ -104,13 +104,13 @@ public class TweetServiceImpl implements TweetService {
     }
 
     @Override
-    public List<UserProjection> getLikedUsersByTweetId(Long tweetId) {
-        return tweetRepository.getLikedUsersByTweetId(tweetId);
+    public Page<UserProjection> getLikedUsersByTweetId(Long tweetId, Pageable pageable) {
+        return tweetRepository.getLikedUsersByTweetId(tweetId, pageable);
     }
 
     @Override
-    public List<UserProjection> getRetweetedUsersByTweetId(Long tweetId) {
-        return tweetRepository.getRetweetedUsersByTweetId(tweetId);
+    public Page<UserProjection> getRetweetedUsersByTweetId(Long tweetId, Pageable pageable) {
+        return tweetRepository.getRetweetedUsersByTweetId(tweetId, pageable);
     }
 
     @Override
@@ -132,9 +132,9 @@ public class TweetServiceImpl implements TweetService {
     }
 
     @Override
-    public List<TweetProjection> getScheduledTweets() {
+    public Page<TweetProjection> getScheduledTweets(Pageable pageable) {
         Long userId = authenticationService.getAuthenticatedUserId();
-        return tweetRepository.findAllScheduledTweetsByUserId(userId);
+        return tweetRepository.findAllScheduledTweetsByUserId(userId, pageable);
     }
 
     @Override
@@ -265,10 +265,8 @@ public class TweetServiceImpl implements TweetService {
     }
 
     @Override
-    public List<TweetProjection> searchTweets(String text) {
-        return tweetRepository.findAllByText(text).stream()
-                .map(TweetsProjection::getTweet)
-                .collect(Collectors.toList());
+    public Page<TweetProjection> searchTweets(String text, Pageable pageable) {
+        return tweetRepository.findAllByText(text, pageable);
     }
 
     @Override

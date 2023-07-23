@@ -21,8 +21,8 @@ export const TweetApi = {
     async fetchFollowersTweets(pageNumber: number): Promise<AxiosResponse<TweetResponse[]>> {
         return await axios.get<TweetResponse[]>(`${API_URL}/tweets/follower`, {params: {page: pageNumber}});
     },
-    async fetchScheduledTweets(): Promise<AxiosResponse<TweetResponse[]>> {
-        return await axios.get<TweetResponse[]>(`${API_URL}/tweets/schedule`);
+    async fetchScheduledTweets(pageNumber: number): Promise<AxiosResponse<TweetResponse[]>> {
+        return await axios.get<TweetResponse[]>(`${API_URL}/tweets/schedule`, {params: {page: pageNumber}});
     },
     async fetchTweetData(tweetId: number): Promise<AxiosResponse<TweetResponse>> {
         return await axios.get<TweetResponse>(`${API_URL}/tweets/${tweetId}`);
@@ -33,11 +33,11 @@ export const TweetApi = {
     async getQuotesByTweetId(tweetId: number, pageNumber: number): Promise<AxiosResponse<TweetResponse[]>> {
         return await axios.get<TweetResponse[]>(`${API_URL}/tweets/${tweetId}/quotes`, {params: {page: pageNumber}});
     },
-    async getLikedUsersByTweetId(tweetId: number): Promise<AxiosResponse<UserResponse[]>> {
-        return await axios.get<UserResponse[]>(`${API_URL}/tweets/${tweetId}/liked-users`);
+    async getLikedUsersByTweetId(tweetId: number, pageNumber: number): Promise<AxiosResponse<UserResponse[]>> {
+        return await axios.get<UserResponse[]>(`${API_URL}/tweets/${tweetId}/liked-users`, {params: {page: pageNumber}});
     },
-    async getRetweetedUsersByTweetId(tweetId: number): Promise<AxiosResponse<UserResponse[]>> {
-        return await axios.get<UserResponse[]>(`${API_URL}/tweets/${tweetId}/retweeted-users`);
+    async getRetweetedUsersByTweetId(tweetId: number, pageNumber: number): Promise<AxiosResponse<UserResponse[]>> {
+        return await axios.get<UserResponse[]>(`${API_URL}/tweets/${tweetId}/retweeted-users`, {params: {page: pageNumber}});
     },
     async createTweet(request: AddTweet): Promise<AxiosResponse<TweetResponse>> {
         return await axios.post<TweetResponse>(`${API_URL}/tweets`, request);
