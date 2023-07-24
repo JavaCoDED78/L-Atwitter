@@ -29,7 +29,13 @@ FROM chats_participants;
 DELETE
 FROM users_notifications;
 DELETE
+FROM users_not_interested_topics;
+DELETE
 FROM users_lists;
+DELETE
+FROM users_topics;
+DELETE
+FROM topic_followers;
 DELETE
 FROM lists_followers;
 DELETE
@@ -70,6 +76,8 @@ DELETE
 FROM pools;
 DELETE
 FROM tags;
+DELETE
+FROM topics;
 DELETE
 FROM users;
 DELETE

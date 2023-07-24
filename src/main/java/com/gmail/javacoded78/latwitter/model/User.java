@@ -156,8 +156,14 @@ public class User {
     @OneToMany
     private List<Notification> notifications;
 
+    @OneToMany
+    private List<Topic> notInterestedTopics;
+
     @ManyToMany
     private List<Lists> lists;
+
+    @ManyToMany
+    private List<Topic> topics;
 
     @OneToMany(mappedBy = "user")
     private List<ChatParticipant> chats;

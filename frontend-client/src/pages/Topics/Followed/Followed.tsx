@@ -1,14 +1,13 @@
 import React, {ReactElement} from "react";
 import {Divider, Link as MuiLink, Typography} from "@material-ui/core";
-import Carousel from "react-material-ui-carousel";
 import classnames from "classnames";
 
-import {ArrowIcon, ArrowNextIcon} from "../../../icons";
-import TopicItem from "../TopicItem/TopicItem";
+import FollowedTopicItem from "./FollowedTopicItem/FollowedTopicItem";
 import {ACCESSING_YOUR_TWITTER_DATA} from "../../../util/url";
 import {FOLLOW_AND_UNFOLLOW_TOPICS} from "../../../util/pathConstants";
 import {useGlobalStyles} from "../../../util/globalClasses";
 import {useTopicsStyles} from "../TopicsStyles";
+import TopicsCarousel from "../TopicsCarousel/TopicsCarousel";
 
 const Followed = (): ReactElement => {
     const globalClasses = useGlobalStyles();
@@ -30,63 +29,57 @@ const Followed = (): ReactElement => {
                 </Typography>
             </div>
             <div className={topicClasses.topicsItems}>
-                <Carousel
-                    NextIcon={ArrowNextIcon}
-                    PrevIcon={ArrowIcon}
-                    indicators={false}
-                    autoPlay={false}
-                    duration={0}
-                >
+                <TopicsCarousel>
                     <div className={classnames(globalClasses.itemInfoWrapper, topicClasses.topicsInfo)}>
                         <div className={topicClasses.topicsBlock}>
                             <div className={topicClasses.topicsContainer}>
-                                <TopicItem topicName={"Elon Musk"}/>
-                                <TopicItem topicName={"Technology"}/>
-                                <TopicItem topicName={"Web development"}/>
-                                <TopicItem topicName={"Entertainment"}/>
-                                <TopicItem topicName={"Digital creators"}/>
+                                <FollowedTopicItem topicName={"Elon Musk"}/>
+                                <FollowedTopicItem topicName={"Technology"}/>
+                                <FollowedTopicItem topicName={"Web development"}/>
+                                <FollowedTopicItem topicName={"Entertainment"}/>
+                                <FollowedTopicItem topicName={"Digital creators"}/>
                             </div>
                         </div>
                         <div className={topicClasses.topicsBlock}>
                             <div className={topicClasses.topicsContainer}>
-                                <TopicItem topicName={"Funny Tweets"}/>
-                                <TopicItem topicName={"Animal Crossing"}/>
-                                <TopicItem topicName={"Minecraft"}/>
-                                <TopicItem topicName={"MrBeast"}/>
-                                <TopicItem topicName={"PewDiePie"}/>
+                                <FollowedTopicItem topicName={"Funny Tweets"}/>
+                                <FollowedTopicItem topicName={"Animal Crossing"}/>
+                                <FollowedTopicItem topicName={"Minecraft"}/>
+                                <FollowedTopicItem topicName={"MrBeast"}/>
+                                <FollowedTopicItem topicName={"PewDiePie"}/>
                             </div>
                         </div>
                         <div className={topicClasses.topicsBlock}>
                             <div className={topicClasses.topicsContainer}>
-                                <TopicItem topicName={"Science"}/>
-                                <TopicItem topicName={"Cats"}/>
-                                <TopicItem topicName={"Dogs"}/>
-                                <TopicItem topicName={"Bitcoin"}/>
-                                <TopicItem topicName={"Science"}/>
+                                <FollowedTopicItem topicName={"Science"}/>
+                                <FollowedTopicItem topicName={"Cats"}/>
+                                <FollowedTopicItem topicName={"Dogs"}/>
+                                <FollowedTopicItem topicName={"Bitcoin"}/>
+                                <FollowedTopicItem topicName={"Science"}/>
                             </div>
                         </div>
                     </div>
                     <div className={classnames(globalClasses.itemInfoWrapper, topicClasses.topicsInfo)}>
                         <div className={topicClasses.topicsBlock}>
                             <div className={topicClasses.topicsContainer}>
-                                <TopicItem topicName={"Science"}/>
-                                <TopicItem topicName={"Cats"}/>
-                                <TopicItem topicName={"Dogs"}/>
-                                <TopicItem topicName={"Bitcoin"}/>
-                                <TopicItem topicName={"Science"}/>
+                                <FollowedTopicItem topicName={"Science"}/>
+                                <FollowedTopicItem topicName={"Cats"}/>
+                                <FollowedTopicItem topicName={"Dogs"}/>
+                                <FollowedTopicItem topicName={"Bitcoin"}/>
+                                <FollowedTopicItem topicName={"Science"}/>
                             </div>
                         </div>
                         <div className={topicClasses.topicsBlock}>
                             <div className={topicClasses.topicsContainer}>
-                                <TopicItem topicName={"Xbox"}/>
-                                <TopicItem topicName={"Game"}/>
-                                <TopicItem topicName={"Cyberpunk 2077"}/>
-                                <TopicItem topicName={"Funny Tweets"}/>
-                                <TopicItem topicName={"Viral Tweets"}/>
+                                <FollowedTopicItem topicName={"Xbox"}/>
+                                <FollowedTopicItem topicName={"Game"}/>
+                                <FollowedTopicItem topicName={"Cyberpunk 2077"}/>
+                                <FollowedTopicItem topicName={"Funny Tweets"}/>
+                                <FollowedTopicItem topicName={"Viral Tweets"}/>
                             </div>
                         </div>
                     </div>
-                </Carousel>
+                </TopicsCarousel>
             </div>
             <Typography variant={"body1"} component={"div"} className={topicClasses.moreTopics}>
                 More Topics
