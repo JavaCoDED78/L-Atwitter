@@ -20,6 +20,11 @@ export const NOTIFICATION = "/notification";
 export const MESSAGES = "/messages";
 export const MESSAGES_SETTINGS = MESSAGES + "/settings";
 
+export const TOPICS = "/topics";
+export const TOPICS_FOLLOWED = TOPICS + "/followed";
+export const TOPICS_SUGGESTED = TOPICS + "/suggested";
+export const TOPICS_NOT_INTERESTED = TOPICS + "/not_interested";
+
 export const BOOKMARKS = "/bookmarks";
 export const SUGGESTED = "/suggested";
 export const LISTS = "/lists";
@@ -91,3 +96,4 @@ export const SETTINGS_ACCESSIBILITY_DISPLAY_AND_LANGUAGES_DATA = SETTINGS_ACCESS
 export const SETTINGS_ACCESSIBILITY_DISPLAY_AND_LANGUAGES_AUTOPLAY = SETTINGS_ACCESSIBILITY_DISPLAY_AND_LANGUAGES + "/autoplay";
 export const SETTINGS_PERSONALIZATION = SETTINGS + "/personalization";
 export const SETTINGS_CONTENT_PREFERENCES = SETTINGS + "/content_preferences";
+export const FOLLOW_AND_UNFOLLOW_TOPICS = "https://help.twitter.com/using-twitter/follow-and-unfollow-topics";
