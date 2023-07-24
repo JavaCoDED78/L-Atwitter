@@ -1,6 +1,7 @@
 package com.gmail.javacoded78.latwitter.repository.projection.chat;
 
 import com.gmail.javacoded78.latwitter.repository.projection.ImageProjection;
+import org.springframework.beans.factory.annotation.Value;
 
 import java.time.LocalDateTime;
 
@@ -25,13 +26,19 @@ public interface ChatMessageProjection {
 
     interface ChatTweetProjection {
 
+        @Value("#{target.isDeleted ? null : target.id}")
         Long getId();
 
+        @Value("#{target.isDeleted ? null : target.text}")
         String getText();
 
+        @Value("#{target.isDeleted ? null : target.dateTime}")
         LocalDateTime getDateTime();
 
+        @Value("#{target.isDeleted ? null : target.user}")
         TweetUserProjection getUser();
+
+        boolean isDeleted();
 
         interface TweetUserProjection {
 

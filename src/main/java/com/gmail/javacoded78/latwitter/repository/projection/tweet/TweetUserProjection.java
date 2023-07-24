@@ -98,28 +98,37 @@ public interface TweetUserProjection {
     }
 
     interface QuoteTweetProjection {
-
+        @Value("#{target.isDeleted ? null : target.id}")
         Long getId();
 
+        @Value("#{target.isDeleted ? null : target.text}")
         String getText();
 
+        @Value("#{target.isDeleted ? null : target.dateTime}")
         LocalDateTime getDateTime();
 
+        @Value("#{target.isDeleted ? null : target.link}")
         String getLink();
 
+        @Value("#{target.isDeleted ? null : target.linkTitle}")
         String getLinkTitle();
 
+        @Value("#{target.isDeleted ? null : target.linkDescription}")
         String getLinkDescription();
 
+        @Value("#{target.isDeleted ? null : target.linkCover}")
         String getLinkCover();
 
+        @Value("#{target.isDeleted ? null : target.linkCoverSize}")
         LinkCoverSize getLinkCoverSize();
 
-        UserProjection getUser();
+        @Value("#{target.isDeleted ? null : target.user}")
+        TweetProjection.UserProjection getUser();
+
+        boolean isDeleted();
     }
 
     interface PollProjection {
-
         Long getId();
 
         LocalDateTime getDateTime();
@@ -128,7 +137,6 @@ public interface TweetUserProjection {
     }
 
     interface PollChoiceProjection {
-
         Long getId();
 
         String getChoice();
@@ -137,7 +145,6 @@ public interface TweetUserProjection {
     }
 
     interface VotedUser {
-
         Long getId();
     }
 }
