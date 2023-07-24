@@ -2,6 +2,8 @@ import {
     AddQuoteTweet,
     AddTweet,
     ChangeReplyTypeRequest,
+    FetchTweetsByTagRequest,
+    FetchTweetsByTextRequest,
     TweetsByListIdRequest,
     TweetsState,
     TweetsWithQuotesByIdRequest,
@@ -143,12 +145,12 @@ export const deleteTweet = (payload: TweetResponse): DeleteTweetActionInterface 
     payload
 });
 
-export const fetchTweetsByTag = (payload: string): FetchTweetsByTagActionInterface => ({
+export const fetchTweetsByTag = (payload: FetchTweetsByTagRequest): FetchTweetsByTagActionInterface => ({
     type: TweetsActionType.FETCH_TWEETS_BY_TAG,
     payload
 });
 
-export const fetchTweetsByText = (payload: string): FetchTweetsByTextActionInterface => ({
+export const fetchTweetsByText = (payload: FetchTweetsByTextRequest): FetchTweetsByTextActionInterface => ({
     type: TweetsActionType.FETCH_TWEETS_BY_TEXT,
     payload
 });

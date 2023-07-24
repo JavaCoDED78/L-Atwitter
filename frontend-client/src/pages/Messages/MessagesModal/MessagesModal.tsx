@@ -37,14 +37,14 @@ const MessagesModal: FC<MessagesModalProps> = ({visible, onClose}): ReactElement
 
     const handleSubmitSearch = (event: FormEvent<HTMLFormElement>): void => {
         event.preventDefault();
-        dispatch(fetchUsersSearchByUsername({ username: encodeURIComponent(text), page: 0 })); // TODO add <InfiniteScroll/>
+        dispatch(fetchUsersSearchByUsername({ username: encodeURIComponent(text), pageNumber: 0 })); // TODO add <InfiniteScroll/>
     };
 
     const onSearch = (text: string): void => {
         if (text) {
             setText(text);
             dispatch(resetUsersState());
-            loadParticipants(0);
+            dispatch(fetchUsersSearchByUsername({ username: encodeURIComponent(text), pageNumber: 0 }));
         } else {
             setText("");
             dispatch(setUsersSearch([]));
@@ -52,7 +52,7 @@ const MessagesModal: FC<MessagesModalProps> = ({visible, onClose}): ReactElement
     };
 
     const loadParticipants = (page: number): void => {
-        dispatch(fetchUsersSearchByUsername({ username: encodeURIComponent(text), page }));
+        dispatch(fetchUsersSearchByUsername({ username: encodeURIComponent(text), pageNumber: page }));
     };
 
     const handleClickAddUserToChat = (): void => {

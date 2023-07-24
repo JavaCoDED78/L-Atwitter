@@ -76,7 +76,7 @@ const SendDirectTweetModal: FC<SendDirectTweetModalProps> = (
         if (text) {
             setSearchText(text);
             dispatch(resetUsersState());
-            loadParticipants(0);
+            dispatch(fetchParticipantsByUsername({username: encodeURIComponent(text), pageNumber: 0}));
         } else {
             setSearchText("");
             dispatch(fetchChats());
@@ -85,7 +85,7 @@ const SendDirectTweetModal: FC<SendDirectTweetModalProps> = (
     };
 
     const loadParticipants = (page: number): void => {
-        dispatch(fetchParticipantsByUsername({username: encodeURIComponent(searchText), page}));
+        dispatch(fetchParticipantsByUsername({username: encodeURIComponent(searchText), pageNumber: page}));
     };
 
     const handleDelete = (selectedUser: UserResponse) => (): void => {
