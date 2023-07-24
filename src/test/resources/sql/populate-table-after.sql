@@ -27,11 +27,9 @@ FROM unread_messages;
 DELETE
 FROM chats_participants;
 DELETE
-FROM chat_to_user;
-DELETE
 FROM users_notifications;
 DELETE
-FROM users_user_lists;
+FROM users_lists;
 DELETE
 FROM lists_followers;
 DELETE

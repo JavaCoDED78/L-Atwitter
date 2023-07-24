@@ -276,10 +276,10 @@ create table users_tweets
     user_id   int8 not null,
     tweets_id int8 not null
 );
-create table users_user_lists
+create table users_lists
 (
-    user_id       int8 not null,
-    user_lists_id int8 not null
+    user_id  int8 not null,
+    lists_id int8 not null
 );
 alter table if exists pools_poll_choices
     add constraint UK_l2rmjmwo83tkbv42fipfqh30y unique (poll_choices_id);
@@ -405,7 +405,7 @@ alter table if exists users_tweets
     add constraint FKerekrgspn5at6l8sb5jg2m9ol foreign key (tweets_id) references tweets;
 alter table if exists users_tweets
     add constraint FK7v5uijppxedcnbbknqyl7unqq foreign key (user_id) references users;
-alter table if exists users_user_lists
-    add constraint FKhwgg5nh7f35rbflc4il23b6vg foreign key (user_lists_id) references lists;
-alter table if exists users_user_lists
-    add constraint FKqx4gug6l00hfjayjlgod014cb foreign key (user_id) references users;
+alter table if exists users_lists
+    add constraint FKcswqmdei3nib5x5gq25weuftw foreign key (lists_id) references lists;
+alter table if exists users_lists
+    add constraint FKjgo95u0dtudqcry0l04rkjmfp foreign key (user_id) references users;

@@ -329,12 +329,12 @@ VALUES (7, 2);
 INSERT INTO lists_members (lists_id, members_id)
 VALUES (9, 1);
 
--- users_user_lists
-INSERT INTO users_user_lists (user_id, user_lists_id)
+-- users_lists
+INSERT INTO users_lists (user_id, lists_id)
 VALUES (2, 4);
-INSERT INTO users_user_lists (user_id, user_lists_id)
+INSERT INTO users_lists (user_id, lists_id)
 VALUES (2, 6);
-INSERT INTO users_user_lists (user_id, user_lists_id)
+INSERT INTO users_lists (user_id, lists_id)
 VALUES (1, 4);
 
 -- notifications
