@@ -1,55 +1,33 @@
-import React, {FC, ReactElement, useState} from 'react';
-import {Link, useLocation} from 'react-router-dom';
-import {ClickAwayListener, List, ListItem, Typography} from "@material-ui/core";
-import {useDispatch} from "react-redux";
-import CopyToClipboard from 'react-copy-to-clipboard';
+import React, {memo, ReactElement, useState} from "react";
+import {Link} from "react-router-dom";
+import {ClickAwayListener, List} from "@material-ui/core";
+import {useSelector} from "react-redux";
 
 import {useUserPageActionsStyles} from "./UserPageActionsStyles";
-import {
-    AddListsIcon,
-    BlockIcon,
-    EditIcon,
-    LinkIcon,
-    ListsIcon,
-    MomentsIcon,
-    MuteIcon,
-    ReportIcon,
-    ShareIcon,
-    TopicIcon,
-    UnblockIcon,
-    UnmuteIcon
-} from "../../../icons";
-import ListsModal from "../../../components/ListsModal/ListsModal";
-import {CLIENT_URL} from "../../../util/url";
+import {EditIcon, ListsIcon, MomentsIcon, ReportIcon, ShareIcon, TopicIcon} from "../../../icons";
 import {useGlobalStyles} from "../../../util/globalClasses";
-import {UserProfileResponse} from "../../../store/types/user";
 import {LISTS_MEMBERSHIPS} from "../../../util/pathConstants";
-import {setOpenSnackBar} from "../../../store/ducks/actionSnackbar/actionCreators";
 import ActionIconButton from "../../../components/ActionIconButton/ActionIconButton";
+import {
+    selectUserProfileId,
+    selectUserProfileIsPrivateProfile,
+    selectUserProfileIsUserBlocked,
+    selectUserProfileUsername
+} from "../../../store/ducks/userProfile/selectors";
+import AddUserToListsButton from "./AddUserToListsButton/AddUserToListsButton";
+import CopyProfileLinkButton from "./CopyProfileLinkButton/CopyProfileLinkButton";
+import MuteUserButton from "./MuteUserButton/MuteUserButton";
+import BlockUserButton from "./BlockUserButton/BlockUserButton";
+import UserItemAction from "./UserItemAction/UserItemAction";
 
-interface UserPageActionsProps {
-    user: UserProfileResponse;
-    isUserMuted: boolean;
-    isUserBlocked: boolean;
-    onMuteUser: () => void;
-    onOpenBlockUserModal: () => void;
-}
-
-const UserPageActions: FC<UserPageActionsProps> = (
-    {
-        user,
-        isUserMuted,
-        isUserBlocked,
-        onMuteUser,
-        onOpenBlockUserModal
-    }
-): ReactElement => {
+const UserPageActions = memo((): ReactElement => {
     const globalClasses = useGlobalStyles();
     const classes = useUserPageActionsStyles();
-    const dispatch = useDispatch();
-    const location = useLocation();
+    const userProfileId = useSelector(selectUserProfileId);
+    const username = useSelector(selectUserProfileUsername);
+    const isUserBlocked = useSelector(selectUserProfileIsUserBlocked);
+    const isPrivateProfile = useSelector(selectUserProfileIsPrivateProfile);
     const [open, setOpen] = useState<boolean>(false);
-    const [visibleListsModal, setVisibleListsModal] = useState<boolean>(false);
 
     const handleClick = (): void => {
         setOpen((prev) => !prev);
@@ -59,108 +37,42 @@ const UserPageActions: FC<UserPageActionsProps> = (
         setOpen(false);
     };
 
-    const onOpenListsModal = (): void => {
-        setVisibleListsModal(true);
-    };
-
-    const onCloseListsModal = (): void => {
-        setVisibleListsModal(false);
-    };
-
-    const onCopyLinkToProfile = (): void => {
-        dispatch(setOpenSnackBar("Copied to clipboard"));
-        setOpen(false);
-    };
-
-    const handleMuteUser = (): void => {
-        onMuteUser();
-        setOpen(false);
-    };
-
     return (
         <ClickAwayListener onClickAway={handleClickAway}>
             <div className={classes.container}>
                 <span className={globalClasses.userPageIconButton}>
                     <ActionIconButton actionText={"More"} onClick={handleClick} icon={EditIcon}/>
                 </span>
-                {open ? (
+                {open && (
                     <div className={classes.dropdown}>
                         <List>
-                            {!user.isPrivateProfile && (
+                            {!isPrivateProfile && (
                                 <>
-                                    <ListItem>
-                                        <>{TopicIcon}</>
-                                        <Typography component={"span"}>
-                                            View Topics
-                                        </Typography>
-                                    </ListItem>
-                                    <ListItem id={"openListsModal"} onClick={onOpenListsModal}>
-                                        <>{AddListsIcon}</>
-                                        <Typography component={"span"}>
-                                            Add/remove @{user.username} from Lists
-                                        </Typography>
-                                    </ListItem>
-                                    <Link to={`${LISTS_MEMBERSHIPS}/${user?.id}`} className={classes.routeLink}>
-                                        <ListItem>
-                                            <>{ListsIcon}</>
-                                            <Typography component={"span"}>
-                                                View Lists
-                                            </Typography>
-                                        </ListItem>
+                                    <UserItemAction title={"View Topics"} icon={TopicIcon}/>
+                                    <AddUserToListsButton/>
+                                    <Link to={`${LISTS_MEMBERSHIPS}/${userProfileId}`} className={classes.routeLink}>
+                                        <UserItemAction title={"View Lists"} icon={ListsIcon}/>
                                     </Link>
-                                    <ListItem>
-                                        <>{MomentsIcon}</>
-                                        <Typography component={"span"}>
-                                            View Moments
-                                        </Typography>
-                                    </ListItem>
+                                    <UserItemAction title={"View Moments"} icon={MomentsIcon}/>
                                     {!isUserBlocked && (
                                         <>
-                                            <ListItem>
-                                                <>{ShareIcon}</>
-                                                <Typography component={"span"}>
-                                                    Share profile via...
-                                                </Typography>
-                                            </ListItem>
-                                            <CopyToClipboard text={CLIENT_URL + location.pathname}>
-                                                <ListItem id={"copyLinkToProfile"} onClick={onCopyLinkToProfile}>
-                                                    <>{LinkIcon}</>
-                                                    <Typography component={"span"}>
-                                                        Copy link to profile
-                                                    </Typography>
-                                                </ListItem>
-                                            </CopyToClipboard>
+                                            <UserItemAction title={"Share profile via..."} icon={ShareIcon}/>
+                                            <CopyProfileLinkButton onCloseUserPageActions={handleClickAway}/>
                                         </>
                                     )}
                                 </>
                             )}
                             {!isUserBlocked && (
-                                <ListItem id={"handleMuteUser"} onClick={handleMuteUser}>
-                                    <>{isUserMuted ? UnmuteIcon : MuteIcon}</>
-                                    <Typography component={"span"}>
-                                        {isUserMuted ? "Unmute" : "Mute"} @{user.username}
-                                    </Typography>
-                                </ListItem>
+                                <MuteUserButton onCloseUserPageActions={handleClickAway}/>
                             )}
-                            <ListItem id={"openBlockUserModal"} onClick={onOpenBlockUserModal}>
-                                <>{isUserBlocked ? UnblockIcon : BlockIcon}</>
-                                <Typography component={"span"}>
-                                    {isUserBlocked ? "Unblock" : "Block"} @{user.username}
-                                </Typography>
-                            </ListItem>
-                            <ListItem>
-                                <>{ReportIcon}</>
-                                <Typography component={"span"}>
-                                    Report @{user.username}
-                                </Typography>
-                            </ListItem>
+                            <BlockUserButton/>
+                            <UserItemAction title={`Report @${username}`} icon={ReportIcon}/>
                         </List>
                     </div>
-                ) : null}
-                <ListsModal userId={user.id} visible={visibleListsModal} onClose={onCloseListsModal}/>
+                )}
             </div>
         </ClickAwayListener>
     );
-};
+});
 
 export default UserPageActions;

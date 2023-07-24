@@ -345,6 +345,15 @@ public class UserControllerTest {
 
     @Test
     @WithUserDetails(USER_EMAIL)
+    @DisplayName("[200] GET /api/v1/user/notifications/subscribes - Get user subscribes")
+    public void getTweetAuthorsNotifications() throws Exception {
+        mockMvc.perform(get(URL_USER_BASIC + "/notifications/subscribes"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[*]", hasSize(0)));
+    }
+
+    @Test
+    @WithUserDetails(USER_EMAIL)
     @DisplayName("[200] GET /api/v1/user/notifications/37 - Get user notification by id")
     public void getUserNotificationById() throws Exception {
         mockMvc.perform(get(URL_USER_BASIC + "/notifications/37"))
