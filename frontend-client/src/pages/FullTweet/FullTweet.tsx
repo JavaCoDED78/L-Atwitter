@@ -28,7 +28,7 @@ import TweetComponent from "../../components/TweetComponent/TweetComponent";
 import {useFullTweetStyles} from "./FullTweetStyles";
 import {WS_URL} from "../../util/endpoints";
 import {textFormatter} from "../../util/textFormatter";
-import ShareTweet from "../../components/ShareTweet/ShareTweet";
+import ShareTweetIconButton from "../../components/ShareTweetIconButton/ShareTweetIconButton";
 import TweetComponentActions from "../../components/TweetComponentActions/TweetComponentActions";
 import Spinner from "../../components/Spinner/Spinner";
 import {useGlobalStyles} from "../../util/globalClasses";
@@ -37,7 +37,7 @@ import RetweetIconButton from "./RetweetIconButton/RetweetIconButton";
 import ReplyIconButton from "./ReplyIconButton/ReplyIconButton";
 import TweetDateTime from "./TweetDateTime/TweetDateTime";
 import TweetHeader from "./TweetHeader/TweetHeader";
-import TweetLink from "./TweetLink/TweetLink";
+import TweetMedia from "./TweetMedia/TweetMedia";
 import TweetInteractionCount from "./TweetInteractionCount/TweetInteractionCount";
 import TweetActions from "./TweetActions/TweetActions";
 import TweetReplyInfo from "./TweetReplyInfo/TweetReplyInfo";
@@ -45,9 +45,8 @@ import AddReplyToTweet from "./AddReplyToTweet/AddReplyToTweet";
 import TweetImage from "./TweetImage/TweetImage";
 import TweetPoll from "./TweetPoll/TweetPoll";
 import TweetQuote from "./TweetQuote/TweetQuote";
-import classnames from "classnames";
-import BackButton from "../../components/BackButton/BackButton";
 import TweetErrorPage from "./TweetErrorPage/TweetErrorPage";
+import PageWrapper from "../../components/PageWrapper/PageWrapper";
 
 let stompClient: CompatClient | null = null;
 
@@ -98,15 +97,7 @@ const FullTweet = (): ReactElement | null => {
         return <Spinner paddingTop={200}/>;
     } else if (tweetId && isTweetLoadedSuccess) {
         return (
-            <Paper className={globalClasses.pageContainer} variant="outlined">
-                <Paper className={classnames(globalClasses.pageHeader, classes.header)} variant="outlined">
-                    <div>
-                        <BackButton/>
-                        <Typography variant="h5">
-                            Tweet
-                        </Typography>
-                    </div>
-                </Paper>
+            <PageWrapper title={"Tweet"}>
                 <div className={globalClasses.contentWrapper}>
                     <Paper className={classes.container}>
                         <TweetActions/>
@@ -116,7 +107,7 @@ const FullTweet = (): ReactElement | null => {
                         </div>
                         <Typography variant={"h3"} className={classes.textWrapper}>
                             {textFormatter(tweetText!)}
-                            <TweetLink/>
+                            <TweetMedia/>
                             <TweetImage/>
                             <TweetPoll/>
                             <TweetQuote/>
@@ -127,7 +118,7 @@ const FullTweet = (): ReactElement | null => {
                             <ReplyIconButton/>
                             <RetweetIconButton/>
                             <LikeIconButton/>
-                            <ShareTweet tweetId={tweetId!} isFullTweet/>
+                            <ShareTweetIconButton tweetId={tweetId!} isFullTweet/>
                         </div>
                         <Divider/>
                         <TweetReplyInfo/>
@@ -137,10 +128,10 @@ const FullTweet = (): ReactElement | null => {
                     {isRepliesLoading ? (
                         <Spinner/>
                     ) : (
-                        replies.map((tweet) => <TweetComponent key={tweet.id} item={tweet}/>)
+                        replies.map((tweet) => <TweetComponent key={tweet.id} tweet={tweet}/>)
                     )}
                 </div>
-            </Paper>
+            </PageWrapper>
         );
     } else if (!tweetId && isError) {
         return <TweetErrorPage/>;

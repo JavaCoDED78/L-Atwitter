@@ -7,8 +7,7 @@ import {useBlockButtonStyles} from "./BlockButtonStyles";
 import BlockUserModal from "../../BlockUserModal/BlockUserModal";
 import {processUserToBlocklist} from "../../../store/ducks/user/actionCreators";
 import {UserResponse} from "../../../store/types/user";
-import ActionSnackbar from "../../ActionSnackbar/ActionSnackbar";
-import {useSnackbar} from "../../../hook/useSnackbar";
+import {setOpenSnackBar} from "../../../store/ducks/actionSnackbar/actionCreators";
 
 interface BlockButtonProps {
     user?: UserResponse
@@ -17,7 +16,6 @@ interface BlockButtonProps {
 const BlockButton: FC<BlockButtonProps> = ({user}): ReactElement => {
     const classes = useBlockButtonStyles();
     const dispatch = useDispatch();
-    const {snackBarMessage, openSnackBar, setSnackBarMessage, setOpenSnackBar, onCloseSnackBar} = useSnackbar();
     const [visibleBlockUserModal, setVisibleBlockUserModal] = useState<boolean>(false);
     const [btnText, setBtnText] = useState<string>("Blocked");
 
@@ -33,8 +31,7 @@ const BlockButton: FC<BlockButtonProps> = ({user}): ReactElement => {
     const onBlockUser = (): void => {
         dispatch(processUserToBlocklist({userId: user?.id!}));
         setVisibleBlockUserModal(false);
-        setSnackBarMessage(`@${user?.username} has been ${user?.isUserBlocked ? "unblocked" : "blocked"}.`);
-        setOpenSnackBar(true);
+        dispatch(setOpenSnackBar(`@${user?.username} has been ${user?.isUserBlocked ? "unblocked" : "blocked"}.`));
     };
 
     return (
@@ -56,11 +53,6 @@ const BlockButton: FC<BlockButtonProps> = ({user}): ReactElement => {
                 visible={visibleBlockUserModal}
                 onClose={onCloseBlockUserModal}
                 onBlockUser={onBlockUser}
-            />
-            <ActionSnackbar
-                snackBarMessage={snackBarMessage}
-                openSnackBar={openSnackBar}
-                onCloseSnackBar={onCloseSnackBar}
             />
         </>
     );

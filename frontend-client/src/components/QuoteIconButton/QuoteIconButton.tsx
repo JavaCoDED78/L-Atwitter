@@ -1,40 +1,26 @@
-import React, {FC, ReactElement, useState} from 'react';
-import {ClickAwayListener, IconButton, List, ListItem, Typography} from "@material-ui/core";
+import React, {FC, memo, ReactElement, useState} from 'react';
+import {ClickAwayListener, List, ListItem, Typography} from "@material-ui/core";
 import classnames from "classnames";
 
-import {useQuoteTweetStyles} from "./QuoteTweetSyles";
+import {useIconButtonStyles} from "./QuoteIconButtonSyles";
 import {QuoteTweetIcon, RetweetIcon, RetweetOutlinedIcon} from "../../icons";
 import QuoteTweetModal from "./QuoteTweetModal/QuoteTweetModal";
-import HoverAction from "../HoverAction/HoverAction";
-import {HoverActions} from "../../hoc/withHoverAction";
 import {useGlobalStyles} from "../../util/globalClasses";
-import {QuoteTweetResponse} from "../../store/types/tweet";
+import {QuoteTweetResponse, TweetResponse} from "../../store/types/tweet";
+import ActionIconButton from "../ActionIconButton/ActionIconButton";
+import {retweet} from "../../store/ducks/tweets/actionCreators";
+import {useDispatch, useSelector} from "react-redux";
+import {selectUserDataId} from "../../store/ducks/user/selectors";
 
 export interface QuoteTweetProps {
-    quoteTweet: QuoteTweetResponse;
-    retweetsCount: number;
-    isTweetRetweetedByMe: boolean;
-    handleRetweet: () => void;
-    visibleActionWindow?: boolean;
-    visibleRetweetAction?: boolean;
-    handleHoverAction?: (action: HoverActions) => void;
-    handleLeaveAction?: () => void;
+    tweet?: TweetResponse;
 }
 
-const QuoteTweet: FC<QuoteTweetProps> = (
-    {
-        quoteTweet,
-        retweetsCount,
-        isTweetRetweetedByMe,
-        handleRetweet,
-        visibleRetweetAction,
-        handleHoverAction,
-        handleLeaveAction
-    }
-): ReactElement => {
+const QuoteIconButton: FC<QuoteTweetProps> = memo(({tweet}): ReactElement => {
     const globalClasses = useGlobalStyles();
-    const classes = useQuoteTweetStyles({isTweetRetweetedByMe});
-
+    const classes = useIconButtonStyles({isTweetRetweetedByMe: tweet?.isTweetRetweeted});
+    const dispatch = useDispatch();
+    const myProfileId = useSelector(selectUserDataId);
     const [open, setOpen] = useState<boolean>(false);
     const [visibleAddTweet, setVisibleAddTweet] = useState<boolean>(false);
 
@@ -47,7 +33,9 @@ const QuoteTweet: FC<QuoteTweetProps> = (
     };
 
     const onClickRetweet = (): void => {
-        handleRetweet();
+        if (tweet?.user.id !== myProfileId) {
+            dispatch(retweet(tweet!.id));
+        }
         setOpen(false);
     };
 
@@ -63,30 +51,19 @@ const QuoteTweet: FC<QuoteTweetProps> = (
     return (
         <ClickAwayListener onClickAway={handleClickAway}>
             <div className={classes.footerIcon}>
-                <IconButton
+                <ActionIconButton
+                    actionText={tweet?.isTweetRetweeted ? "Undo Retweet" : "Retweet"}
+                    icon={tweet?.isTweetRetweeted ? RetweetIcon : RetweetOutlinedIcon}
                     onClick={handleClick}
-                    onMouseEnter={() => handleHoverAction?.(HoverActions.RETWEET)}
-                    onMouseLeave={handleLeaveAction}
-                    size="small"
-                >
-                    {isTweetRetweetedByMe ? (
-                        <>{RetweetIcon}</>
-                    ) : (
-                        <>{RetweetOutlinedIcon}</>)
-                    }
-                    <HoverAction
-                        visible={visibleRetweetAction}
-                        actionText={isTweetRetweetedByMe ? "Undo Retweet" : "Retweet"}
-                    />
-                </IconButton>
-                {(retweetsCount !== 0) && (<span id={"retweets"}>{retweetsCount}</span>)}
+                />
+                {(tweet?.retweetsCount !== 0) && (<span id={"retweets"}>{tweet?.retweetsCount}</span>)}
                 {open && (
                     <div className={classnames(classes.dropdown, globalClasses.svg)}>
                         <List>
                             <ListItem id={"clickRetweet"} onClick={onClickRetweet}>
                                 <>{RetweetOutlinedIcon}</>
                                 <Typography variant={"body1"} component={"span"}>
-                                    {isTweetRetweetedByMe ? ("Undo Retweet") : ("Retweet")}
+                                    {tweet?.isTweetRetweeted ? ("Undo Retweet") : ("Retweet")}
                                 </Typography>
                             </ListItem>
                             <ListItem id={"clickOpenAddTweet"} onClick={handleClickOpenAddTweet}>
@@ -99,13 +76,13 @@ const QuoteTweet: FC<QuoteTweetProps> = (
                     </div>
                 )}
                 <QuoteTweetModal
-                    quoteTweet={quoteTweet}
+                    quoteTweet={tweet as QuoteTweetResponse}
                     onClose={onCloseAddTweet}
                     visible={visibleAddTweet}
                 />
             </div>
         </ClickAwayListener>
     );
-};
+});
 
-export default QuoteTweet;
+export default QuoteIconButton;

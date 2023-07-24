@@ -1,21 +1,19 @@
 import React, {FC, memo, ReactElement, useEffect} from "react";
 import {useDispatch, useSelector} from "react-redux";
-import {Link} from "react-router-dom";
 import {Avatar, Button, Paper, Typography} from "@material-ui/core";
 
 import {useManageMembersItemStyles} from "./ManageMembersItemStyles";
 import {DEFAULT_PROFILE_IMG} from "../../../../../../util/url";
 import {selectUserData} from "../../../../../../store/ducks/user/selectors";
-import {useGlobalStyles} from "../../../../../../util/globalClasses";
 import {ListsOwnerMemberResponse} from "../../../../../../store/types/lists";
 import {processUserToListMembers} from "../../../../../../store/ducks/listMembers/actionCreators";
 import PopperUserWindow from "../../../../../../components/PopperUserWindow/PopperUserWindow";
-import ActionSnackbar from "../../../../../../components/ActionSnackbar/ActionSnackbar";
 import {selectIsListSuggestedError} from "../../../../../../store/ducks/listMembers/selectors";
-import {PROFILE} from "../../../../../../util/pathConstants";
 import {useHoverUser} from "../../../../../../hook/useHoverUser";
-import {useSnackbar} from "../../../../../../hook/useSnackbar";
 import LockIcon from "../../../../../../components/LockIcon/LockIcon";
+import {setOpenSnackBar} from "../../../../../../store/ducks/actionSnackbar/actionCreators";
+import LinkWrapper from "../../../../../../components/LinkWrapper/LinkWrapper";
+import {PROFILE} from "../../../../../../util/pathConstants";
 
 interface ManageMembersItemProps {
     listId?: number
@@ -32,17 +30,15 @@ const ManageMembersItem: FC<ManageMembersItemProps> = memo((
         isSuggested,
     }
 ): ReactElement => {
-    const globalClasses = useGlobalStyles();
     const classes = useManageMembersItemStyles();
     const dispatch = useDispatch();
     const myProfile = useSelector(selectUserData);
     const isSuggestedError = useSelector(selectIsListSuggestedError);
     const {visiblePopperWindow, handleHoverPopper, handleLeavePopper} = useHoverUser();
-    const {openSnackBar, setOpenSnackBar, onCloseSnackBar} = useSnackbar();
 
     useEffect(() => {
         if (isSuggestedError) {
-            setOpenSnackBar(true);
+            dispatch(setOpenSnackBar("You aren’t allowed to add this member to this List."));
         }
     }, [isSuggestedError]);
 
@@ -52,7 +48,7 @@ const ManageMembersItem: FC<ManageMembersItemProps> = memo((
     }
 
     return (
-        <Link to={`${PROFILE}/${user?.id}`} className={globalClasses.link}>
+        <LinkWrapper path={`${PROFILE}/${user?.id}`} visiblePopperWindow={visiblePopperWindow}>
             <Paper className={classes.container} variant="outlined">
                 <Avatar
                     className={classes.listAvatar}
@@ -95,13 +91,8 @@ const ManageMembersItem: FC<ManageMembersItemProps> = memo((
                         </div>
                     </div>
                 </div>
-                <ActionSnackbar
-                    snackBarMessage={"You aren’t allowed to add this member to this List."}
-                    openSnackBar={openSnackBar}
-                    onCloseSnackBar={onCloseSnackBar}
-                />
             </Paper>
-        </Link>
+        </LinkWrapper>
     );
 });
 
