@@ -22,6 +22,7 @@ export interface TweetResponse {
     likedTweetsCount: number;
     repliesCount: number;
     quotesCount: number;
+    isDeleted: boolean;
     isTweetLiked: boolean;
     isTweetRetweeted: boolean;
     isUserFollowByOtherUser: boolean;
@@ -52,6 +53,7 @@ export interface QuoteTweetResponse {
     linkDescription: string;
     linkCover: string;
     linkCoverSize: string;
+    isDeleted: boolean;
     user: UserTweetResponse;
 }
 

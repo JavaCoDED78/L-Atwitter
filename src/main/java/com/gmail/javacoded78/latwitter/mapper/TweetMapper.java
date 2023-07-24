@@ -17,7 +17,6 @@ import com.gmail.javacoded78.latwitter.service.TweetService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -99,11 +98,8 @@ public class TweetMapper {
         return tweetService.deleteScheduledTweets(tweetRequest.getTweetsIds());
     }
 
-    public TweetResponse deleteTweet(Long tweetId) {
-        Tweet tweet = tweetService.deleteTweet(tweetId);
-        TweetResponse tweetResponse = basicMapper.convertToResponse(tweet, TweetResponse.class);
-        tweetResponse.setTweetDeleted(true);
-        return tweetResponse;
+    public String deleteTweet(Long tweetId) {
+        return tweetService.deleteTweet(tweetId);
     }
 
     public NotificationResponse likeTweet(Long tweetId) {

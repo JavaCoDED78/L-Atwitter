@@ -1,7 +1,4 @@
 export const CLIENT_URL = "http://localhost:3000";
-export const URL = "http://localhost:8080";
-export const API_URL = URL + "/api/v1";
-export const WS_URL = URL + "/websocket";
 export const DEFAULT_PROFILE_IMG = "https://abs.twimg.com/sticky/default_profile_images/default_profile_reasonably_small.png";
 
 export const FIND_USER_LOCATION = "https://ipapi.co/json/";
@@ -52,6 +49,7 @@ export const DIRECT_MESSAGES_RECEIPTS = DIRECT_MESSAGES + "#receipts";
 export const RULES_AND_POLICIES = HELP_TWITTER + "/rules-and-policies";
 export const MEDIA_POLICY = RULES_AND_POLICIES + "/media-policy";
 export const TWITTER_COOKIES = RULES_AND_POLICIES + "/twitter-cookies";
+export const TWITTER_NOTICES = RULES_AND_POLICIES + "/notices-on-twitter";
 
 export const DEVELOPER_TWITTER = "https://developer.twitter.com" ;
 export const DEVELOPER_ACCOUNT = "https://developer.twitter.com/support/twitter-api/developer-account";

@@ -34,6 +34,10 @@ public class TweetResponse {
     private Integer retweetsCount;
     private Integer likedTweetsCount;
     private Integer repliesCount;
+    private Integer quotesCount;
+
+    @JsonProperty("isDeleted")
+    private boolean isDeleted;
 
     @JsonProperty("isTweetLiked")
     private boolean isTweetLiked;
@@ -52,22 +56,7 @@ public class TweetResponse {
 
     @Getter
     @Setter
-    static class QuoteTweetResponse {
-        private Long id;
-        private String text;
-        private LocalDateTime dateTime;
-        private String link;
-        private String linkTitle;
-        private String linkDescription;
-        private String linkCover;
-        private LinkCoverSize linkCoverSize;
-        private UserTweetResponse user;
-    }
-
-    @Getter
-    @Setter
     static class PollResponse {
-
         private Long id;
         private LocalDateTime dateTime;
         private List<PollChoiceResponse> pollChoices;
@@ -76,7 +65,6 @@ public class TweetResponse {
     @Getter
     @Setter
     static class PollChoiceResponse {
-
         private Long id;
         private String choice;
         private List<VotedUserResponse> votedUser;
@@ -85,7 +73,6 @@ public class TweetResponse {
     @Getter
     @Setter
     static class VotedUserResponse {
-
         private Long id;
     }
 }

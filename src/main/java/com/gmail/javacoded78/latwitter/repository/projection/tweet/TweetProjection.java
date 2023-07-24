@@ -44,6 +44,8 @@ public interface TweetProjection {
 
     PollProjection getPoll();
 
+    boolean isDeleted();
+
     @Value("#{@tweetServiceImpl.isUserLikedTweet(target.id)}")
     boolean getIsTweetLiked();
 
@@ -96,23 +98,34 @@ public interface TweetProjection {
     }
 
     interface QuoteTweetProjection {
+        @Value("#{target.isDeleted ? null : target.id}")
         Long getId();
 
+        @Value("#{target.isDeleted ? null : target.text}")
         String getText();
 
+        @Value("#{target.isDeleted ? null : target.dateTime}")
         LocalDateTime getDateTime();
 
+        @Value("#{target.isDeleted ? null : target.link}")
         String getLink();
 
+        @Value("#{target.isDeleted ? null : target.linkTitle}")
         String getLinkTitle();
 
+        @Value("#{target.isDeleted ? null : target.linkDescription}")
         String getLinkDescription();
 
+        @Value("#{target.isDeleted ? null : target.linkCover}")
         String getLinkCover();
 
+        @Value("#{target.isDeleted ? null : target.linkCoverSize}")
         LinkCoverSize getLinkCoverSize();
 
+        @Value("#{target.isDeleted ? null : target.user}")
         UserProjection getUser();
+
+        boolean isDeleted();
     }
 
     interface PollProjection {

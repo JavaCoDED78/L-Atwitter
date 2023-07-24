@@ -6,12 +6,15 @@ import com.gmail.javacoded78.latwitter.exception.ApiRequestException;
 import com.gmail.javacoded78.latwitter.model.Lists;
 import com.gmail.javacoded78.latwitter.model.Notification;
 import com.gmail.javacoded78.latwitter.model.User;
-import com.gmail.javacoded78.latwitter.repository.*;
+import com.gmail.javacoded78.latwitter.repository.ImageRepository;
+import com.gmail.javacoded78.latwitter.repository.ListsRepository;
+import com.gmail.javacoded78.latwitter.repository.NotificationRepository;
+import com.gmail.javacoded78.latwitter.repository.TweetRepository;
+import com.gmail.javacoded78.latwitter.repository.UserRepository;
 import com.gmail.javacoded78.latwitter.repository.projection.lists.BaseListProjection;
 import com.gmail.javacoded78.latwitter.repository.projection.lists.ListMemberProjection;
 import com.gmail.javacoded78.latwitter.repository.projection.lists.ListProjection;
 import com.gmail.javacoded78.latwitter.repository.projection.lists.ListUserProjection;
-import com.gmail.javacoded78.latwitter.repository.projection.lists.ListsMemberProjection;
 import com.gmail.javacoded78.latwitter.repository.projection.lists.ListsOwnerMemberProjection;
 import com.gmail.javacoded78.latwitter.repository.projection.lists.PinnedListProjection;
 import com.gmail.javacoded78.latwitter.repository.projection.tweet.TweetProjection;
@@ -30,7 +33,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -269,7 +271,7 @@ public class ListsServiceImpl implements ListsService {
     @Override
     public Page<TweetProjection> getTweetsByListId(Long listId, Pageable pageable) {
         Long authUserId = authenticationService.getAuthenticatedUserId();
-        List<Long> listMembersIds = listsRepository.getListMembersIds(listId, authUserId);
+        List<Long> listMembersIds = listsRepository.getListMembersIds(listId, authUserId); // TODO check if list exist
         return tweetRepository.findTweetsByUserIds(listMembersIds, pageable);
     }
 

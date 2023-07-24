@@ -44,6 +44,8 @@ public interface TweetUserProjection {
 
     PollProjection getPoll();
 
+    boolean isDeleted();
+
     @Value("#{@tweetServiceImpl.getRetweetsUserIds(target.id)}")
     List<Long> getRetweetsUserIds();
 

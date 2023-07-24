@@ -261,25 +261,6 @@ public class TweetControllerTest {
 
     @Test
     @WithUserDetails(USER_EMAIL)
-    @DisplayName("[200] GET /api/v1/chat/search/MrCat - Search users by username")
-    public void searchParticipantsByUsername() throws Exception {
-        mockMvc.perform(get(URL_CHAT_BASIC + "/search/" + USERNAME))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$[*]", hasSize(6)))
-                .andExpect(jsonPath("$[*].id").isNotEmpty())
-                .andExpect(jsonPath("$[*].fullName").isNotEmpty())
-                .andExpect(jsonPath("$[*].username").isNotEmpty())
-                .andExpect(jsonPath("$[*].about").isNotEmpty())
-                .andExpect(jsonPath("$[*].isPrivateProfile").isNotEmpty())
-                .andExpect(jsonPath("$[*].isMutedDirectMessages").isNotEmpty())
-                .andExpect(jsonPath("$[*].isUserBlocked").isNotEmpty())
-                .andExpect(jsonPath("$[*].isMyProfileBlocked").isNotEmpty())
-                .andExpect(jsonPath("$[*].isWaitingForApprove").isNotEmpty())
-                .andExpect(jsonPath("$[*].isFollower").isNotEmpty());
-    }
-
-    @Test
-    @WithUserDetails(USER_EMAIL)
     @DisplayName("[200] GET /api/v1/tweets/video - Get tweets with video")
     public void getTweetsWithVideo() throws Exception {
         mockMvc.perform(get(URL_TWEETS_BASIC + "/video"))
@@ -803,32 +784,16 @@ public class TweetControllerTest {
     public void deleteTweet() throws Exception {
         mockMvc.perform(delete(URL_TWEETS_BASIC + "/40"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(40))
-                .andExpect(jsonPath("$.text").value("test tweet"))
-                .andExpect(jsonPath("$.dateTime").value("2021-10-03T20:29:03"))
-                .andExpect(jsonPath("$.scheduledDate").isEmpty())
-                .andExpect(jsonPath("$.addressedUsername").isEmpty())
-                .andExpect(jsonPath("$.addressedId").isEmpty())
-                .andExpect(jsonPath("$.addressedTweetId").isEmpty())
-                .andExpect(jsonPath("$.replyType").value(ReplyType.EVERYONE.toString()))
-                .andExpect(jsonPath("$.link").isEmpty())
-                .andExpect(jsonPath("$.linkTitle").isEmpty())
-                .andExpect(jsonPath("$.linkDescription").isEmpty())
-                .andExpect(jsonPath("$.linkCover").isEmpty())
-                .andExpect(jsonPath("$.linkCoverSize").isEmpty())
-                .andExpect(jsonPath("$.quoteTweet").isEmpty())
-                .andExpect(jsonPath("$.user.id").value(2))
-                .andExpect(jsonPath("$.poll").isNotEmpty())
-                .andExpect(jsonPath("$.poll.id").value(2))
-                .andExpect(jsonPath("$.images").isEmpty())
-                .andExpect(jsonPath("$.retweetsCount").isEmpty())
-                .andExpect(jsonPath("$.likedTweetsCount").isEmpty())
-                .andExpect(jsonPath("$.repliesCount").isEmpty())
-                .andExpect(jsonPath("$.isTweetLiked").value(false))
-                .andExpect(jsonPath("$.isTweetRetweeted").value(false))
-                .andExpect(jsonPath("$.isUserFollowByOtherUser").value(false))
-                .andExpect(jsonPath("$.isTweetDeleted").value(true))
-                .andExpect(jsonPath("$.isTweetBookmarked").value(false));
+                .andExpect(jsonPath("$", is("Your Tweet was deleted")));
+    }
+
+    @Test
+    @WithUserDetails(USER_EMAIL)
+    @DisplayName("[200] DELETE /api/v1/tweets/40 - Should Tweet Not Found by id")
+    public void deleteTweet_ShouldTweetNotFoundById() throws Exception {
+        mockMvc.perform(delete(URL_TWEETS_BASIC + "/99"))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$", is("Tweet not found")));
     }
 
     @Test

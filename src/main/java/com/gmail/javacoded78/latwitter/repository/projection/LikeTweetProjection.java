@@ -8,7 +8,7 @@ public interface LikeTweetProjection {
 
     Long getId();
 
-    LocalDateTime getBookmarkDate();
+    LocalDateTime getLikeTweetDate();
 
     TweetProjection getTweet();
 }

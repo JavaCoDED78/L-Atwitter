@@ -65,12 +65,9 @@ public class TweetServiceImpl implements TweetService {
     private final RetweetRepository retweetRepository;
     private final LikeTweetRepository likeTweetRepository;
     private final NotificationRepository notificationRepository;
-    private final ImageRepository imageRepository;
     private final TagRepository tagRepository;
     private final PollRepository pollRepository;
     private final PollChoiceRepository pollChoiceRepository;
-    private final BookmarkRepository bookmarkRepository;
-    private final ChatMessageRepository chatMessageRepository;
     private final RestTemplate restTemplate;
 
     @Value("${google.api.url}")
@@ -86,8 +83,13 @@ public class TweetServiceImpl implements TweetService {
 
     @Override
     public TweetProjection getTweetById(Long tweetId) {
-        return tweetRepository.findTweetById(tweetId)
+        TweetProjection tweet = tweetRepository.findTweetById(tweetId)
                 .orElseThrow(() -> new ApiRequestException("Tweet not found", HttpStatus.NOT_FOUND));
+
+        if (tweet.isDeleted()) { // TODO add test
+            throw new ApiRequestException("Sorry, that Tweet has been deleted.", HttpStatus.BAD_REQUEST);
+        }
+        return tweet;
     }
 
     @Override
@@ -194,49 +196,17 @@ public class TweetServiceImpl implements TweetService {
 
     @Override
     @Transactional
-    public Tweet deleteTweet(Long tweetId) { // TODO rewrite
+    public String deleteTweet(Long tweetId) {
         User user = authenticationService.getAuthenticatedUser();
         Tweet tweet = user.getTweets().stream()
                 .filter(t -> t.getId().equals(tweetId))
-                .findFirst().get();
-        imageRepository.deleteAll(tweet.getImages());
-        likeTweetRepository.deleteAll(tweet.getLikedTweets());
-        retweetRepository.deleteAll(tweet.getRetweets());
-        tweet.getReplies().forEach(reply -> reply.getUser().getTweets()
-                .removeIf(replyingTweet -> replyingTweet.equals(reply)));
-        List<Tweet> replies = new ArrayList<>(tweet.getReplies());
-        tweet.getReplies().removeAll(tweet.getReplies());
-        tweetRepository.deleteAll(replies);
-        List<Notification> notifications = user.getNotifications().stream()
-                .filter(notification -> !notification.getNotificationType().equals(NotificationType.FOLLOW)
-                        && notification.getTweet().getId().equals(tweet.getId()))
-                .collect(Collectors.toList());
-        notifications.forEach(notification -> {
-            user.getNotifications().remove(notification);
-            notificationRepository.delete(notification);
-        });
-        List<Bookmark> bookmarks = user.getBookmarks();
-        Optional<Bookmark> bookmark = bookmarks.stream()
-                .filter(b -> b.getTweet().equals(tweet))
-                .findFirst();
-        if (bookmark.isPresent()) {
-            bookmarks.remove(bookmark.get());
-            bookmarkRepository.delete(bookmark.get());
-        }
-        if (tweet.getAddressedTweetId() != null) {
-            Tweet addressedTweet = tweetRepository.getOne(tweet.getAddressedTweetId());
-            List<Tweet> addressedTweetReplies = addressedTweet.getReplies();
-            Tweet reply = addressedTweetReplies.stream()
-                    .filter(r -> r.equals(tweet))
-                    .findFirst().get();
-            addressedTweetReplies.remove(reply);
-            user.getTweets().remove(tweet);
-            tweetRepository.delete(tweet);
-            return addressedTweet;
+                .findFirst()
+                .orElseThrow(() -> new ApiRequestException("Tweet not found", HttpStatus.NOT_FOUND));
+        if (user.getPinnedTweet() != null && user.getPinnedTweet().getId().equals(tweetId)) {
+            user.setPinnedTweet(null);
         }
         List<Tag> tags = tagRepository.findByTweets_Id(tweetId);
         tags.forEach(tag -> {
-            tag.getTweets().remove(tweet);
             long tweetsQuantity = tag.getTweetsQuantity() - 1;
 
             if (tweetsQuantity == 0) {
@@ -245,23 +215,8 @@ public class TweetServiceImpl implements TweetService {
                 tag.setTweetsQuantity(tweetsQuantity);
             }
         });
-        List<User> unreadMessagesWithTweet = userRepository.findByUnreadMessages_Tweet(tweet);
-        unreadMessagesWithTweet
-                .forEach(user1 -> user1.getUnreadMessages()
-                        .removeIf(chatMessage -> chatMessage.getTweet() != null
-                                && chatMessage.getTweet().getId().equals(tweet.getId())));
-        List<ChatMessage> messagesWithTweet = chatMessageRepository.findByTweet(tweet);
-        chatMessageRepository.deleteAll(messagesWithTweet);
-
-        List<Tweet> tweetsWithQuote = tweetRepository.findByQuoteTweetId(tweetId);
-        tweetsWithQuote.forEach(quote -> quote.setQuoteTweet(null));
-
-        if (user.getPinnedTweet() != null) {
-            user.setPinnedTweet(null);
-        }
-        user.getTweets().remove(tweet);
-        tweetRepository.delete(tweet);
-        return tweet;
+        tweet.setDeleted(true);
+        return "Your Tweet was deleted";
     }
 
     @Override

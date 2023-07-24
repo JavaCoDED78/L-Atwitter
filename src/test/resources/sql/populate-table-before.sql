@@ -77,49 +77,49 @@ VALUES (7, 'Hello twitter!', null, true, 'Mar 10, 1991', 'test2020@test.test', '
 
 -- tweets
 INSERT INTO tweets (id, addressed_id, addressed_tweet_id, addressed_username, date_time, reply_type, text, users_id,
-                    link, link_cover, link_description, link_title, link_cover_size, scheduled_date)
+                    link, link_cover, link_description, link_title, link_cover_size, scheduled_date, deleted)
 VALUES (39, null, null, null, '2021-10-03 20:29:03.00vo0000', 'EVERYONE', 'test tweet', 2, null, null, null, null, null,
-        '3021-10-03 20:33:36.000000');
+        '3021-10-03 20:33:36.000000', false);
 INSERT INTO tweets (id, addressed_id, addressed_tweet_id, addressed_username, date_time, reply_type, text, users_id,
-                    link, link_cover, link_description, link_title, link_cover_size, scheduled_date)
+                    link, link_cover, link_description, link_title, link_cover_size, scheduled_date, deleted)
 VALUES (40, null, null, null, '2021-10-03 20:29:03.00vo0000', 'EVERYONE', 'test tweet', 2, null, null, null, null, null,
-        null);
+        null, false);
 INSERT INTO tweets (id, addressed_id, addressed_tweet_id, addressed_username, date_time, reply_type, text, users_id,
-                    link, link_cover, link_description, link_title, link_cover_size, scheduled_date)
+                    link, link_cover, link_description, link_title, link_cover_size, scheduled_date, deleted)
 VALUES (41, 2, 40, 'MrCat', '2021-10-03 20:31:55.000000', 'EVERYONE', 'test reply', 1, null, null, null, null, null,
-        null);
+        null, false);
 INSERT INTO tweets (id, addressed_id, addressed_tweet_id, addressed_username, date_time, reply_type, text, users_id,
-                    link, link_cover, link_description, link_title, link_cover_size, scheduled_date)
+                    link, link_cover, link_description, link_title, link_cover_size, scheduled_date, deleted)
 VALUES (42, null, null, null, '2021-10-03 20:33:36.000000', 'EVERYONE',
         'https://www.youtube.com/watch?v=ewZZNeYDiLo&ab_channel=TeamSESH', 2,
         'https://www.youtube.com/watch?v=ewZZNeYDiLo&ab_channel=TeamSESH',
-        'https://i.ytimg.com/vi/ewZZNeYDiLo/mqdefault.jpg', null, 'Bones - RestInPeace', null, null);
+        'https://i.ytimg.com/vi/ewZZNeYDiLo/mqdefault.jpg', null, 'Bones - RestInPeace', null, null, false);
 INSERT INTO tweets (id, addressed_id, addressed_tweet_id, addressed_username, date_time, reply_type, text, users_id,
-                    link, link_cover, link_description, link_title, link_cover_size, scheduled_date)
+                    link, link_cover, link_description, link_title, link_cover_size, scheduled_date, deleted)
 VALUES (43, null, null, null, '2021-10-03 20:34:15.000000', 'EVERYONE', '#JetBrains https://www.jetbrains.com/ ', 2,
         'https://www.jetbrains.com/', 'https://resources.jetbrains.com/storage/products/jetbrains/img/meta/preview.png',
         'JetBrains is a cutting-edge software vendor specializing in the creation of intelligent development tools, including IntelliJ IDEA – the leading Java IDE, and the Kotlin programming language.',
-        'JetBrains', 'LARGE', null);
+        'JetBrains', 'LARGE', null, false);
 INSERT INTO tweets (id, addressed_id, addressed_tweet_id, addressed_username, date_time, reply_type, text, users_id,
-                    link, link_cover, link_description, link_title, link_cover_size, scheduled_date)
+                    link, link_cover, link_description, link_title, link_cover_size, scheduled_date, deleted)
 VALUES (44, null, null, null, '2021-10-03 20:36:25.000000', 'EVERYONE', 'test quote', 2, null, null, null, null, null,
-        null);
+        null, false);
 INSERT INTO tweets (id, addressed_id, addressed_tweet_id, addressed_username, date_time, reply_type, text, users_id,
-                    link, link_cover, link_description, link_title, link_cover_size, scheduled_date)
+                    link, link_cover, link_description, link_title, link_cover_size, scheduled_date, deleted)
 VALUES (45, null, null, null, '2021-10-03 20:38:51.000000', 'EVERYONE', 'media tweet test', 1, null, null, null, null,
-        null, null);
+        null, null, false);
 INSERT INTO tweets (id, addressed_id, addressed_tweet_id, addressed_username, date_time, reply_type, text, users_id,
-                    link, link_cover, link_description, link_title, link_cover_size, scheduled_date)
+                    link, link_cover, link_description, link_title, link_cover_size, scheduled_date, deleted)
 VALUES (46, null, null, null, '2021-10-03 20:38:51.000000', 'EVERYONE', 'hello world1', 2, null, null, null, null, null,
-        null);
+        null, false);
 INSERT INTO tweets (id, addressed_id, addressed_tweet_id, addressed_username, date_time, reply_type, text, users_id,
-                    link, link_cover, link_description, link_title, link_cover_size, scheduled_date)
+                    link, link_cover, link_description, link_title, link_cover_size, scheduled_date, deleted)
 VALUES (47, null, null, null, '2021-10-03 20:39:51.000000', 'EVERYONE', 'hello world2', 2, null, null, null, null, null,
-        null);
+        null, false);
 INSERT INTO tweets (id, addressed_id, addressed_tweet_id, addressed_username, date_time, reply_type, text, users_id,
-                    link, link_cover, link_description, link_title, link_cover_size, scheduled_date)
+                    link, link_cover, link_description, link_title, link_cover_size, scheduled_date, deleted)
 VALUES (48, null, null, null, '2021-10-03 20:40:51.000000', 'EVERYONE', 'hello world3', 2, null, null, null, null, null,
-        null);
+        null, false);
 
 -- users_tweets
 INSERT INTO users_tweets (user_id, tweets_id)

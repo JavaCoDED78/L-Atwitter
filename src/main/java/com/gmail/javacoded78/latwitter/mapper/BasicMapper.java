@@ -1,6 +1,9 @@
 package com.gmail.javacoded78.latwitter.mapper;
 
 import com.gmail.javacoded78.latwitter.dto.response.HeaderResponse;
+import com.gmail.javacoded78.latwitter.dto.response.tweet.QuoteTweetResponse;
+import com.gmail.javacoded78.latwitter.dto.response.tweet.TweetResponse;
+import com.gmail.javacoded78.latwitter.repository.projection.tweet.TweetProjection;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;

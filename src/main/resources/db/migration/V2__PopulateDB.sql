@@ -62,77 +62,77 @@ VALUES (5, 'Hello twitter!', null, true, 'DEFAULT', null, 'BLUE', null, null, 'u
         false, true, true, '2021-08-01 23:34:32.000000', null, 0, 'Кот Бегемот', 'https://www.google.com');
 -- tweets
 INSERT INTO tweets (id, addressed_id, addressed_tweet_id, addressed_username, date_time, link, link_cover,
-                    link_cover_size, link_description, link_title, reply_type, scheduled_date, text, users_id)
+                    link_cover_size, link_description, link_title, reply_type, scheduled_date, text, users_id, deleted)
 VALUES (1, null, null, null, '2021-10-15 21:20:15.000000', null, null, null, null, null, 'EVERYONE', null,
-        'My #FirstTweet :slightly_smiling_face:', 1);
+        'My #FirstTweet :slightly_smiling_face:', 1, false);
 INSERT INTO tweets (id, addressed_id, addressed_tweet_id, addressed_username, date_time, link, link_cover,
-                    link_cover_size, link_description, link_title, reply_type, scheduled_date, text, users_id)
+                    link_cover_size, link_description, link_title, reply_type, scheduled_date, text, users_id, deleted)
 VALUES (7, null, null, null, '2021-10-15 21:20:27.000000', null, null, null, null, null, 'EVERYONE', null,
-        'Hello #FirstTweet  :sunglasses:', 3);
+        'Hello #FirstTweet  :sunglasses:', 3, false);
 INSERT INTO tweets (id, addressed_id, addressed_tweet_id, addressed_username, date_time, link, link_cover,
-                    link_cover_size, link_description, link_title, reply_type, scheduled_date, text, users_id)
+                    link_cover_size, link_description, link_title, reply_type, scheduled_date, text, users_id, deleted)
 VALUES (13, null, null, null, '2021-10-15 21:57:21.000000', null, null, null, null, null, 'EVERYONE', null,
-        '#JavaScript', 4);
+        '#JavaScript', 4, false);
 INSERT INTO tweets (id, addressed_id, addressed_tweet_id, addressed_username, date_time, link, link_cover,
-                    link_cover_size, link_description, link_title, reply_type, scheduled_date, text, users_id)
+                    link_cover_size, link_description, link_title, reply_type, scheduled_date, text, users_id, deleted)
 VALUES (10, null, null, null, '2021-10-15 21:21:48.000000', null, null, null, null, null, 'EVERYONE', null,
-        '#myCat  :kissing_cat:', 4);
+        '#myCat  :kissing_cat:', 4, false);
 INSERT INTO tweets (id, addressed_id, addressed_tweet_id, addressed_username, date_time, link, link_cover,
-                    link_cover_size, link_description, link_title, reply_type, scheduled_date, text, users_id)
+                    link_cover_size, link_description, link_title, reply_type, scheduled_date, text, users_id, deleted)
 VALUES (12, null, null, null, '2021-10-15 21:23:41.000000', null, null, null, null, null, 'MENTION', null,
-        '#myCat  :smiley_cat:', 5);
+        '#myCat  :smiley_cat:', 5, false);
 INSERT INTO tweets (id, addressed_id, addressed_tweet_id, addressed_username, date_time, link, link_cover,
-                    link_cover_size, link_description, link_title, reply_type, scheduled_date, text, users_id)
+                    link_cover_size, link_description, link_title, reply_type, scheduled_date, text, users_id, deleted)
 VALUES (11, null, null, null, '2021-10-15 21:22:23.000000', null, null, null, null, null, 'EVERYONE', null,
-        'My #FirstTweet', 5);
+        'My #FirstTweet', 5, false);
 INSERT INTO tweets (id, addressed_id, addressed_tweet_id, addressed_username, date_time, link, link_cover,
-                    link_cover_size, link_description, link_title, reply_type, scheduled_date, text, users_id)
+                    link_cover_size, link_description, link_title, reply_type, scheduled_date, text, users_id, deleted)
 VALUES (16, null, 10, 'JavaCat', '2021-10-15 22:21:30.000000', null, null, null, null, null, 'EVERYONE', null,
-        'Feels good man  :sunglasses:', 2);
+        'Feels good man  :sunglasses:', 2, false);
 INSERT INTO tweets (id, addressed_id, addressed_tweet_id, addressed_username, date_time, link, link_cover,
-                    link_cover_size, link_description, link_title, reply_type, scheduled_date, text, users_id)
+                    link_cover_size, link_description, link_title, reply_type, scheduled_date, text, users_id, deleted)
 VALUES (8, null, null, null, '2021-10-15 21:20:30.000000', null, null, null, null, null, 'FOLLOW', null,
-        '#myCat  :smiley_cat:', 3);
+        '#myCat  :smiley_cat:', 3, false);
 INSERT INTO tweets (id, addressed_id, addressed_tweet_id, addressed_username, date_time, link, link_cover,
-                    link_cover_size, link_description, link_title, reply_type, scheduled_date, text, users_id)
+                    link_cover_size, link_description, link_title, reply_type, scheduled_date, text, users_id, deleted)
 VALUES (9, null, null, null, '2021-10-15 21:20:33.000000', null, null, null, null, null, 'EVERYONE', null,
-        '#FirstTweet', 4);
+        '#FirstTweet', 4, false);
 INSERT INTO tweets (id, addressed_id, addressed_tweet_id, addressed_username, date_time, link, link_cover,
-                    link_cover_size, link_description, link_title, reply_type, scheduled_date, text, users_id)
+                    link_cover_size, link_description, link_title, reply_type, scheduled_date, text, users_id, deleted)
 VALUES (6, null, null, null, '2021-10-15 21:20:26.000000', null, null, null, null, null, 'EVERYONE', null,
-        '#myCat  :smile_cat:', 2);
+        '#myCat  :smile_cat:', 2, false);
 INSERT INTO tweets (id, addressed_id, addressed_tweet_id, addressed_username, date_time, link, link_cover,
-                    link_cover_size, link_description, link_title, reply_type, scheduled_date, text, users_id)
+                    link_cover_size, link_description, link_title, reply_type, scheduled_date, text, users_id, deleted)
 VALUES (5, null, null, null, '2021-10-15 21:20:24.000000', null, null, null, null, null, 'EVERYONE', null,
-        'Another #FirstTweet', 2);
+        'Another #FirstTweet', 2, false);
 INSERT INTO tweets (id, addressed_id, addressed_tweet_id, addressed_username, date_time, link, link_cover,
-                    link_cover_size, link_description, link_title, reply_type, scheduled_date, text, users_id)
+                    link_cover_size, link_description, link_title, reply_type, scheduled_date, text, users_id, deleted)
 VALUES (15, null, null, null, '2021-10-15 22:11:59.000000', null, null, null, null, null, 'EVERYONE', null,
-        'Hello :wave:', 1);
+        'Hello :wave:', 1, false);
 INSERT INTO tweets (id, addressed_id, addressed_tweet_id, addressed_username, date_time, link, link_cover,
-                    link_cover_size, link_description, link_title, reply_type, scheduled_date, text, users_id)
+                    link_cover_size, link_description, link_title, reply_type, scheduled_date, text, users_id, deleted)
 VALUES (14, null, null, null, '2021-10-15 22:10:14.000000', null, null, null, null, null, 'MENTION', null,
-        'Feels Good Man  :sunglasses:', 1);
+        'Feels Good Man  :sunglasses:', 1, false);
 INSERT INTO tweets (id, addressed_id, addressed_tweet_id, addressed_username, date_time, link, link_cover,
-                    link_cover_size, link_description, link_title, reply_type, scheduled_date, text, users_id)
+                    link_cover_size, link_description, link_title, reply_type, scheduled_date, text, users_id, deleted)
 VALUES (4, null, null, null, '2021-10-15 21:20:22.000000',
         'https://www.youtube.com/watch?v=hTWKbfoikeg&ab_channel=NirvanaVEVO',
         'https://i.ytimg.com/vi/hTWKbfoikeg/mqdefault.jpg', null, null,
         'Nirvana - Smells Like Teen Spirit (Official Music Video)', 'EVERYONE', null,
-        'https://www.youtube.com/watch?v=hTWKbfoikeg&ab_channel=NirvanaVEVO', 1);
+        'https://www.youtube.com/watch?v=hTWKbfoikeg&ab_channel=NirvanaVEVO', 1, false);
 INSERT INTO tweets (id, addressed_id, addressed_tweet_id, addressed_username, date_time, link, link_cover,
-                    link_cover_size, link_description, link_title, reply_type, scheduled_date, text, users_id)
+                    link_cover_size, link_description, link_title, reply_type, scheduled_date, text, users_id, deleted)
 VALUES (3, null, null, null, '2021-10-15 21:20:21.000000',
         'https://www.youtube.com/watch?v=-k9qDxyxS3s&ab_channel=BMTHOfficialVEVO',
         'https://i.ytimg.com/vi/-k9qDxyxS3s/mqdefault.jpg', null, null,
         'Bring Me The Horizon - Shadow Moses (Official Video)', 'EVERYONE', null,
-        'https://www.youtube.com/watch?v=-k9qDxyxS3s&ab_channel=BMTHOfficialVEVO', 1);
+        'https://www.youtube.com/watch?v=-k9qDxyxS3s&ab_channel=BMTHOfficialVEVO', 1, false);
 INSERT INTO tweets (id, addressed_id, addressed_tweet_id, addressed_username, date_time, link, link_cover,
-                    link_cover_size, link_description, link_title, reply_type, scheduled_date, text, users_id)
+                    link_cover_size, link_description, link_title, reply_type, scheduled_date, text, users_id, deleted)
 VALUES (2, null, null, null, '2021-10-15 21:20:18.000000',
         'https://www.youtube.com/watch?v=ewZZNeYDiLo&ab_channel=TeamSESH',
         'https://i.ytimg.com/vi/ewZZNeYDiLo/mqdefault.jpg', null, null, 'Bones - RestInPeace', 'EVERYONE', null,
-        'https://www.youtube.com/watch?v=ewZZNeYDiLo&ab_channel=TeamSESH', 1);
+        'https://www.youtube.com/watch?v=ewZZNeYDiLo&ab_channel=TeamSESH', 1, false);
 -- users_tweets
 INSERT INTO users_tweets (user_id, tweets_id)
 VALUES (5, 12);
