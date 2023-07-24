@@ -1,18 +1,20 @@
-import {makeStyles, Theme} from "@material-ui/core";
+import {makeStyles} from "@material-ui/core";
 
-interface FullTweetStyles {
-    isTweetLiked: boolean;
-    isTweetRetweeted: boolean;
-}
-
-export const useFullTweetStyles = makeStyles<Theme, FullTweetStyles>((theme) => ({
+export const useFullTweetStyles = makeStyles((theme) => ({
+    header: {
+        justifyContent: "space-between",
+        '& .MuiTypography-h5': {
+            display: "inline-block",
+            verticalAlign: "middle",
+        },
+    },
     container: {
         borderTop: '0',
         borderLeft: '0',
         borderRight: '0',
         padding: "10px 22px 0px 22px",
     },
-    header: {
+    tweetHeader: {
         display: 'flex',
         justifyContent: "space-between",
         alignItems: 'center',
@@ -81,45 +83,6 @@ export const useFullTweetStyles = makeStyles<Theme, FullTweetStyles>((theme) => 
         padding: '2px 0',
         "& .MuiDivider-root": {
             color: "rgb(249, 243, 244)",
-        },
-    },
-    infoIcon: {
-        "& .MuiIconButton-root": {
-            "& svg": {
-                color: theme.palette.text.secondary,
-                width: "1.406rem",
-                height: "1.406rem",
-            },
-        },
-    },
-    retweetIcon: {
-        "& .MuiIconButton-root": {
-            "& svg": {
-                color: props => props.isTweetRetweeted ? "rgb(23, 191, 99)" : theme.palette.text.secondary,
-                width: "1.406rem",
-                height: "1.406rem",
-            },
-            "&:hover": {
-                backgroundColor: "rgba(0, 186, 124, 0.1) !important",
-                "& svg": {
-                    color: "rgb(23, 191, 99) !important",
-                },
-            },
-        },
-    },
-    likeIcon: {
-        "& .MuiIconButton-root": {
-            "& svg": {
-                color: props => props.isTweetLiked ? "rgb(224, 36, 94)" : theme.palette.text.secondary,
-                width: "1.406rem",
-                height: "1.406rem",
-            },
-            "&:hover": {
-                backgroundColor: "rgba(249, 24, 128, 0.1) !important",
-                "& svg": {
-                    color: "rgb(224, 36, 94) !important",
-                },
-            },
         },
     },
     replyInfoWrapper: {
