@@ -7,10 +7,12 @@ import com.gmail.javacoded78.latwitter.dto.response.UserResponse;
 import com.gmail.javacoded78.latwitter.dto.response.notification.NotificationReplyResponse;
 import com.gmail.javacoded78.latwitter.dto.response.notification.NotificationResponse;
 import com.gmail.javacoded78.latwitter.dto.response.HeaderResponse;
+import com.gmail.javacoded78.latwitter.dto.response.tweet.TweetAdditionalInfoResponse;
 import com.gmail.javacoded78.latwitter.dto.response.tweet.TweetResponse;
 import com.gmail.javacoded78.latwitter.enums.NotificationType;
 import com.gmail.javacoded78.latwitter.enums.ReplyType;
 import com.gmail.javacoded78.latwitter.model.Tweet;
+import com.gmail.javacoded78.latwitter.repository.projection.tweet.TweetAdditionalInfoProjection;
 import com.gmail.javacoded78.latwitter.repository.projection.tweet.TweetProjection;
 import com.gmail.javacoded78.latwitter.repository.projection.user.UserProjection;
 import com.gmail.javacoded78.latwitter.service.TweetService;
@@ -57,6 +59,11 @@ public class TweetMapper {
     public TweetResponse getTweetById(Long tweetId) {
         TweetProjection tweet = tweetService.getTweetById(tweetId);
         return basicMapper.convertToResponse(tweet, TweetResponse.class);
+    }
+
+    public TweetAdditionalInfoResponse getTweetAdditionalInfoById(Long tweetId) {
+        TweetAdditionalInfoProjection additionalInfo = tweetService.getTweetAdditionalInfoById(tweetId);
+        return basicMapper.convertToResponse(additionalInfo, TweetAdditionalInfoResponse.class);
     }
 
     public List<TweetResponse> getRepliesByTweetId(Long tweetId) {
@@ -144,5 +151,9 @@ public class TweetMapper {
     public TweetResponse voteInPoll(VoteRequest voteRequest) {
         TweetProjection tweet = tweetService.voteInPoll(voteRequest.getTweetId(), voteRequest.getPollId(), voteRequest.getPollChoiceId());
         return basicMapper.convertToResponse(tweet, TweetResponse.class);
+    }
+
+    public Boolean getIsTweetBookmarked(Long tweetId) {
+        return tweetService.getIsTweetBookmarked(tweetId);
     }
 }

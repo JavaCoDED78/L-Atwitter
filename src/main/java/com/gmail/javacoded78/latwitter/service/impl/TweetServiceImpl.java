@@ -25,8 +25,7 @@ import com.gmail.javacoded78.latwitter.repository.RetweetRepository;
 import com.gmail.javacoded78.latwitter.repository.TagRepository;
 import com.gmail.javacoded78.latwitter.repository.TweetRepository;
 import com.gmail.javacoded78.latwitter.repository.UserRepository;
-import com.gmail.javacoded78.latwitter.repository.projection.tweet.TweetProjection;
-import com.gmail.javacoded78.latwitter.repository.projection.tweet.TweetsProjection;
+import com.gmail.javacoded78.latwitter.repository.projection.tweet.*;
 import com.gmail.javacoded78.latwitter.repository.projection.user.UserProjection;
 import com.gmail.javacoded78.latwitter.service.AuthenticationService;
 import com.gmail.javacoded78.latwitter.service.TweetService;
@@ -86,10 +85,21 @@ public class TweetServiceImpl implements TweetService {
         TweetProjection tweet = tweetRepository.findTweetById(tweetId)
                 .orElseThrow(() -> new ApiRequestException("Tweet not found", HttpStatus.NOT_FOUND));
 
-        if (tweet.isDeleted()) { // TODO add test
+        if (tweet.isDeleted()) {
             throw new ApiRequestException("Sorry, that Tweet has been deleted.", HttpStatus.BAD_REQUEST);
         }
         return tweet;
+    }
+
+    @Override
+    public TweetAdditionalInfoProjection getTweetAdditionalInfoById(Long tweetId) {
+        TweetAdditionalInfoProjection additionalInfo = tweetRepository.getTweetAdditionalInfoById(tweetId)
+                .orElseThrow(() -> new ApiRequestException("Tweet not found", HttpStatus.NOT_FOUND));
+
+        if (additionalInfo.isDeleted()) {
+            throw new ApiRequestException("Sorry, that Tweet has been deleted.", HttpStatus.BAD_REQUEST);
+        }
+        return additionalInfo;
     }
 
     @Override
@@ -345,6 +355,11 @@ public class TweetServiceImpl implements TweetService {
                 .collect(Collectors.toList());
         tweet.getPoll().setPollChoices(pollChoices);
         return getTweetById(tweet.getId());
+    }
+
+    @Override
+    public Boolean getIsTweetBookmarked(Long tweetId) {
+        return isUserBookmarkedTweet(tweetId);
     }
 
     public List<Long> getRetweetsUserIds(Long tweetId) {

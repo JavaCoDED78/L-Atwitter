@@ -2,7 +2,7 @@ package com.gmail.javacoded78.latwitter.service;
 
 import com.gmail.javacoded78.latwitter.enums.ReplyType;
 import com.gmail.javacoded78.latwitter.model.Tweet;
-import com.gmail.javacoded78.latwitter.repository.projection.tweet.TweetProjection;
+import com.gmail.javacoded78.latwitter.repository.projection.tweet.*;
 import com.gmail.javacoded78.latwitter.repository.projection.user.UserProjection;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -15,6 +15,8 @@ public interface TweetService {
     Page<TweetProjection> getTweets(Pageable pageable);
 
     TweetProjection getTweetById(Long tweetId);
+
+    TweetAdditionalInfoProjection getTweetAdditionalInfoById(Long tweetId);
 
     List<TweetProjection> getRepliesByTweetId(Long tweetId);
 
@@ -55,4 +57,6 @@ public interface TweetService {
     TweetProjection changeTweetReplyType(Long tweetId, ReplyType replyType);
 
     TweetProjection voteInPoll(Long tweetId, Long pollId, Long pollChoiceId);
+
+    Boolean getIsTweetBookmarked(Long tweetId);
 }

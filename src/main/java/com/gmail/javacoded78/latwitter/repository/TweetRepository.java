@@ -1,6 +1,7 @@
 package com.gmail.javacoded78.latwitter.repository;
 
 import com.gmail.javacoded78.latwitter.model.Tweet;
+import com.gmail.javacoded78.latwitter.repository.projection.tweet.TweetAdditionalInfoProjection;
 import com.gmail.javacoded78.latwitter.repository.projection.tweet.TweetImageProjection;
 import com.gmail.javacoded78.latwitter.repository.projection.tweet.TweetProjection;
 import com.gmail.javacoded78.latwitter.repository.projection.tweet.TweetsProjection;
@@ -21,6 +22,9 @@ public interface TweetRepository extends JpaRepository<Tweet, Long> {
 
     @Query("SELECT tweet FROM Tweet tweet WHERE tweet.id = :tweetId")
     Optional<TweetProjection> findTweetById(Long tweetId);
+
+    @Query("SELECT tweet FROM Tweet tweet WHERE tweet.id = :tweetId")
+    Optional<TweetAdditionalInfoProjection> getTweetAdditionalInfoById(Long tweetId);
 
     @Query("SELECT tweet FROM Tweet tweet " +
             "LEFT JOIN tweet.user user " +

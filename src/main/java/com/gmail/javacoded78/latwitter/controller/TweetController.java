@@ -8,6 +8,7 @@ import com.gmail.javacoded78.latwitter.dto.response.UserResponse;
 import com.gmail.javacoded78.latwitter.dto.response.notification.NotificationReplyResponse;
 import com.gmail.javacoded78.latwitter.dto.response.notification.NotificationResponse;
 import com.gmail.javacoded78.latwitter.dto.response.notification.NotificationTweetResponse;
+import com.gmail.javacoded78.latwitter.dto.response.tweet.TweetAdditionalInfoResponse;
 import com.gmail.javacoded78.latwitter.dto.response.tweet.TweetResponse;
 import com.gmail.javacoded78.latwitter.enums.ReplyType;
 import com.gmail.javacoded78.latwitter.mapper.TweetMapper;
@@ -45,6 +46,11 @@ public class TweetController {
     @GetMapping("/{tweetId}")
     public ResponseEntity<TweetResponse> getTweetById(@PathVariable Long tweetId) {
         return ResponseEntity.ok(tweetMapper.getTweetById(tweetId));
+    }
+
+    @GetMapping("/{tweetId}/info")
+    public ResponseEntity<TweetAdditionalInfoResponse> getTweetAdditionalInfoById(@PathVariable Long tweetId) {
+        return ResponseEntity.ok(tweetMapper.getTweetAdditionalInfoById(tweetId));
     }
 
     @GetMapping("/{tweetId}/replies") // TODO add pagination
@@ -196,5 +202,10 @@ public class TweetController {
         messagingTemplate.convertAndSend("/topic/tweet/" + tweet.getId(), tweet);
         messagingTemplate.convertAndSend("/topic/user/update/tweet/" + tweet.getUser().getId(), tweet);
         return ResponseEntity.ok(tweet);
+    }
+
+    @GetMapping("/{tweetId}/bookmarked")
+    public ResponseEntity<Boolean> getIsTweetBookmarked(@PathVariable Long tweetId) {
+        return ResponseEntity.ok(tweetMapper.getIsTweetBookmarked(tweetId));
     }
 }
