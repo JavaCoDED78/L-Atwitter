@@ -10,6 +10,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -27,8 +28,8 @@ public class BasicMapper {
         return modelMapper.map(data, type);
     }
 
-    <T, S> List<S> convertToResponseList(List<T> lists, Class<S> type) {
-        return lists.stream()
+    public <T, S> List<S> convertToResponseList(List<T> lists, Class<S> type) {
+        return lists.contains(null) ? new ArrayList<>() : lists.stream()
                 .map(list -> convertToResponse(list, type))
                 .collect(Collectors.toList());
     }

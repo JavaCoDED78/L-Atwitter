@@ -3,8 +3,9 @@ package com.gmail.javacoded78.latwitter.mapper;
 import com.gmail.javacoded78.latwitter.dto.response.TopicResponse;
 import com.gmail.javacoded78.latwitter.dto.response.TopicsByCategoriesResponse;
 import com.gmail.javacoded78.latwitter.enums.TopicCategory;
-import com.gmail.javacoded78.latwitter.model.Topic;
-import com.gmail.javacoded78.latwitter.repository.projection.TopicByCategoryProjection;
+import com.gmail.javacoded78.latwitter.repository.projection.topic.FollowedTopicProjection;
+import com.gmail.javacoded78.latwitter.repository.projection.topic.NotInterestedTopicProjection;
+import com.gmail.javacoded78.latwitter.repository.projection.topic.TopicProjection;
 import com.gmail.javacoded78.latwitter.service.TopicService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -19,7 +20,7 @@ public class TopicMapper {
     private final TopicService topicService;
 
     public List<TopicResponse> getTopicsByIds(List<Long> topicsIds) {
-        List<TopicByCategoryProjection> topics = topicService.getTopicsByIds(topicsIds);
+        List<TopicProjection> topics = topicService.getTopicsByIds(topicsIds);
         return basicMapper.convertToResponseList(topics, TopicResponse.class);
     }
 
@@ -27,8 +28,18 @@ public class TopicMapper {
         return topicService.getTopicsByCategories(categories);
     }
 
+    public List<TopicResponse> getFollowedTopics() {
+        List<FollowedTopicProjection> topics = topicService.getFollowedTopics();
+        return basicMapper.convertToResponseList(topics, TopicResponse.class);
+    }
+
+    public List<TopicResponse> getFollowedTopicsByUserId(Long userId) {
+        List<TopicProjection> topics = topicService.getFollowedTopicsByUserId(userId);
+        return basicMapper.convertToResponseList(topics, TopicResponse.class);
+    }
+
     public List<TopicResponse> getNotInterestedTopics() {
-        List<Topic> topics = topicService.getNotInterestedTopics();
+        List<NotInterestedTopicProjection> topics = topicService.getNotInterestedTopics();
         return basicMapper.convertToResponseList(topics, TopicResponse.class);
     }
 

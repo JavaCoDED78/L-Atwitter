@@ -1,9 +1,9 @@
-package com.gmail.javacoded78.latwitter.repository.projection;
+package com.gmail.javacoded78.latwitter.repository.projection.topic;
 
 import com.gmail.javacoded78.latwitter.enums.TopicCategory;
 import org.springframework.beans.factory.annotation.Value;
 
-public interface TopicByCategoryProjection {
+public interface TopicProjection {
 
     Long getId();
 

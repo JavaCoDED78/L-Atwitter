@@ -1,6 +1,6 @@
 import {makeStyles, Theme} from "@material-ui/core";
 
-export const useNotInterestedTopicStyles = makeStyles((theme: Theme) => ({
+export const useTopicItemStyles = makeStyles((theme: Theme) => ({
     container: {
         display: "flex",
         alignItems: "center",
@@ -37,12 +37,5 @@ export const useNotInterestedTopicStyles = makeStyles((theme: Theme) => ({
     },
     buttonWrapper: {
         flex: 1,
-    },
-    outlinedButton: {
-        float: "right",
-        width: 79,
-        "&:hover": {
-            backgroundColor: theme.palette.secondary.light,
-        },
     },
 }));

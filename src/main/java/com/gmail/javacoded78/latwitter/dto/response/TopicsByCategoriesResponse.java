@@ -1,6 +1,6 @@
 package com.gmail.javacoded78.latwitter.dto.response;
 
-import com.gmail.javacoded78.latwitter.repository.projection.TopicByCategoryProjection;
+import com.gmail.javacoded78.latwitter.repository.projection.topic.TopicProjection;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -11,5 +11,5 @@ import java.util.List;
 public class TopicsByCategoriesResponse {
 
     private String topicCategory;
-    private List<TopicByCategoryProjection> topicsByCategories;
+    private List<TopicProjection> topicsByCategories;
 }

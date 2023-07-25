@@ -156,12 +156,6 @@ public class User {
     @OneToMany
     private List<Notification> notifications;
 
-    @OneToMany
-    private List<Topic> notInterestedTopics;
-
-    @OneToMany
-    private List<Topic> followedTopics;
-
     @ManyToMany
     private List<Lists> lists;
 
