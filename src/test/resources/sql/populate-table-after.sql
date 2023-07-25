@@ -33,7 +33,7 @@ FROM users_not_interested_topics;
 DELETE
 FROM users_lists;
 DELETE
-FROM users_topics;
+FROM topic_not_interested;
 DELETE
 FROM topic_followers;
 DELETE
