@@ -2,7 +2,13 @@ import axios from "axios";
 import MockAdapter from "axios-mock-adapter";
 
 import {testApiCall} from "../../../util/apiTestHelper";
-import {API_TOPICS, API_TOPICS_FOLLOW, API_TOPICS_NOT_INTERESTED} from "../../../util/endpoints";
+import {
+    API_TOPICS,
+    API_TOPICS_CATEGORY,
+    API_TOPICS_FOLLOW,
+    API_TOPICS_NOT_INTERESTED,
+    API_TOPICS_SUGGESTED
+} from "../../../util/endpoints";
 import {mockTopics} from "../../../util/mockData/mockData";
 import {TopicApi} from "../topicApi";
 
@@ -11,15 +17,15 @@ describe("TopicApi", () => {
 
     beforeEach(() => mockAdapter.reset());
 
-    describe("should fetch TopicApi.getTopics", () => {
-        it("[200] should get topics Success", () => {
-            testApiCall(mockAdapter, "onGet", API_TOPICS, 200, mockTopics, TopicApi.getTopics);
+    describe("should fetch TopicApi.getTopicsByIds", () => {
+        it("[200] should get topics by ids Success", () => {
+            testApiCall(mockAdapter, "onPost", API_TOPICS_SUGGESTED, 200, mockTopics, TopicApi.getTopicsByIds, {topicIds: [1, 2, 3]});
         });
     });
 
-    describe("should fetch TopicApi.getTopicsByCategory", () => {
-        it("[200] should get topics by category Success", () => {
-            testApiCall(mockAdapter, "onGet", `${API_TOPICS}/entertainment`, 200, mockTopics, TopicApi.getTopicsByCategory, "entertainment");
+    describe("should fetch TopicApi.getTopicsByCategories", () => {
+        it("[200] should get topics by categories Success", () => {
+            testApiCall(mockAdapter, "onPost", API_TOPICS_CATEGORY, 200, mockTopics, TopicApi.getTopicsByCategories, {categories: ["GAMING"]});
         });
     });
 
@@ -29,13 +35,13 @@ describe("TopicApi", () => {
         });
     });
 
-    describe("should fetch TopicApi.addNotInterestedTopic", () => {
-        it("[200] should add not interested topic Success", () => {
-            testApiCall(mockAdapter, "onGet", `${API_TOPICS_NOT_INTERESTED}/1`, 200, true, TopicApi.addNotInterestedTopic, 1);
+    describe("should fetch TopicApi.processNotInterestedTopic", () => {
+        it("[200] should process not interested topic Success", () => {
+            testApiCall(mockAdapter, "onGet", `${API_TOPICS_NOT_INTERESTED}/1`, 200, true, TopicApi.processNotInterestedTopic, 1);
         });
 
         it("[404] should topic not found", () => {
-            testApiCall(mockAdapter, "onGet", `${API_TOPICS_NOT_INTERESTED}/1`, 404, "Topic not found", TopicApi.addNotInterestedTopic, 1);
+            testApiCall(mockAdapter, "onGet", `${API_TOPICS_NOT_INTERESTED}/1`, 404, "Topic not found", TopicApi.processNotInterestedTopic, 1);
         });
     });
 

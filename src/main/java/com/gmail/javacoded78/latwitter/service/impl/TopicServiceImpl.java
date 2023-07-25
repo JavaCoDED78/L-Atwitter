@@ -1,9 +1,12 @@
 package com.gmail.javacoded78.latwitter.service.impl;
 
+import com.gmail.javacoded78.latwitter.dto.response.TopicsByCategoriesResponse;
+import com.gmail.javacoded78.latwitter.enums.TopicCategory;
 import com.gmail.javacoded78.latwitter.exception.ApiRequestException;
 import com.gmail.javacoded78.latwitter.model.Topic;
 import com.gmail.javacoded78.latwitter.model.User;
 import com.gmail.javacoded78.latwitter.repository.TopicRepository;
+import com.gmail.javacoded78.latwitter.repository.projection.TopicByCategoryProjection;
 import com.gmail.javacoded78.latwitter.service.AuthenticationService;
 import com.gmail.javacoded78.latwitter.service.TopicService;
 import lombok.RequiredArgsConstructor;
@@ -11,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -22,13 +26,20 @@ public class TopicServiceImpl implements TopicService {
     private final TopicRepository topicRepository;
 
     @Override
-    public List<Topic> getTopics() {
-        return topicRepository.findAll();
+    public List<TopicByCategoryProjection> getTopicsByIds(List<Long> topicsIds) {
+        return topicRepository.getTopicsByIds(topicsIds);
     }
 
     @Override
-    public List<Topic> getTopicsByCategory(String topicCategory) {
-        return topicRepository.getTopicsByCategory(topicCategory);
+    public List<TopicsByCategoriesResponse> getTopicsByCategories(List<TopicCategory> categories) {
+        List<TopicsByCategoriesResponse> topicsByCategories = new ArrayList<>();
+        categories.forEach(topicCategory -> {
+            TopicsByCategoriesResponse response = new TopicsByCategoriesResponse();
+            response.setTopicCategory(topicCategory.toString());
+            response.setTopicsByCategories(topicRepository.getTopicsByCategory(topicCategory));
+            topicsByCategories.add(response);
+        });
+        return topicsByCategories;
     }
 
     @Override
@@ -39,32 +50,51 @@ public class TopicServiceImpl implements TopicService {
 
     @Override
     @Transactional
-    public Boolean addNotInterestedTopic(Long topicId) {
-        User user = authenticationService.getAuthenticatedUser();
-        Topic topic = topicRepository.findById(topicId)
-                .orElseThrow(() -> new ApiRequestException("Topic not found", HttpStatus.NOT_FOUND));
-        List<Topic> notInterestedTopics = user.getNotInterestedTopics();
-        notInterestedTopics.add(topic);
-        return true;
+    public Boolean processNotInterestedTopic(Long topicId) {
+        checkIsTopicExist(topicId);
+        Long userId = authenticationService.getAuthenticatedUserId();
+        boolean isTopicNotInterested = topicRepository.isTopicNotInterested(userId, topicId);
+
+        if (isTopicNotInterested) {
+            topicRepository.removeNotInterestedTopic(userId, topicId);
+            return false;
+        } else {
+            topicRepository.addNotInterestedTopic(userId, topicId);
+            return true;
+        }
     }
 
     @Override
     @Transactional
     public Boolean processFollowTopic(Long topicId) {
-        User user = authenticationService.getAuthenticatedUser();
-        Topic topic = topicRepository.findById(topicId)
-                .orElseThrow(() -> new ApiRequestException("Topic not found", HttpStatus.NOT_FOUND));
-        List<Topic> notInterestedTopics = user.getNotInterestedTopics();
-        Optional<Topic> topicFromList = notInterestedTopics.stream()
-                .filter(notInterestedTopic -> notInterestedTopic.getId().equals(topic.getId()))
-                .findFirst();
+        checkIsTopicExist(topicId);
+        Long userId = authenticationService.getAuthenticatedUserId();
+        boolean isTopicFollowed = topicRepository.isTopicFollowed(userId, topicId);
 
-        if (topicFromList.isPresent()) {
-            notInterestedTopics.remove(topicFromList.get());
+        if (isTopicFollowed) {
+            topicRepository.removeFollowedTopic(userId, topicId);
             return false;
         } else {
-            notInterestedTopics.add(topic);
+            topicRepository.addFollowedTopic(userId, topicId);
             return true;
         }
+    }
+
+    private void checkIsTopicExist(Long topicId) {
+        boolean isTopicExist = topicRepository.isTopicExist(topicId);
+
+        if (!isTopicExist) {
+            throw new ApiRequestException("Topic not found", HttpStatus.NOT_FOUND);
+        }
+    }
+
+    public boolean isTopicFollowed(Long topicId) {
+        Long authUserId = authenticationService.getAuthenticatedUserId();
+        return topicRepository.isTopicFollowed(authUserId, topicId);
+    }
+
+    public boolean isTopicNotInterested(Long topicId) {
+        Long authUserId = authenticationService.getAuthenticatedUserId();
+        return topicRepository.isTopicNotInterested(authUserId, topicId);
     }
 }
