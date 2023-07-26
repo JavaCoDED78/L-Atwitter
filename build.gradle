@@ -1,22 +1,11 @@
 plugins {
     id 'java'
-    id 'org.springframework.boot' version '2.7.12-SNAPSHOT'
-    id 'io.spring.dependency-management' version '1.0.15.RELEASE'
+    id 'org.springframework.boot' version '2.7.15-SNAPSHOT'
+    id 'io.spring.dependency-management' version '1.1.2'
     id 'jacoco'
 }
 
 apply from: 'versions-script.gradle'
-
-group = 'com.gmail.javacoded78'
-version = '0.0.1-SNAPSHOT'
-description = 'Clone Twitter'
-sourceCompatibility = '17'
-
-configurations {
-    compileOnly {
-        extendsFrom annotationProcessor
-    }
-}
 
 repositories {
     mavenCentral()
@@ -24,57 +13,79 @@ repositories {
     maven { url 'https://repo.spring.io/snapshot' }
 }
 
-dependencies {
-    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-    implementation 'org.springframework.boot:spring-boot-starter-security'
-//    implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
-//    implementation 'org.springframework.security:spring-security-oauth2-jose'
-    implementation 'org.springframework.boot:spring-boot-starter-validation'
-    implementation 'org.springframework.boot:spring-boot-starter-web'
-    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
-    implementation 'org.springframework.boot:spring-boot-starter-mail'
-    implementation 'org.springframework.boot:spring-boot-starter-websocket'
-    implementation 'org.springframework.boot:spring-boot-starter-cache'
+subprojects {
+    group = 'com.gmail.javacoded78'
+    version = '0.0.1-SNAPSHOT'
 
-    implementation "com.amazonaws:aws-java-sdk:${versions.aws}"
-    implementation "io.jsonwebtoken:jjwt-api:${versions.jjwt}"
-    implementation 'net.sf.ehcache:ehcache:2.10.9.2'
-    implementation 'org.flywaydb:flyway-core:9.18.0'
+    repositories {
+        mavenCentral()
+        maven { url 'https://repo.spring.io/milestone' }
+        maven { url 'https://repo.spring.io/snapshot' }
+    }
 
-    testImplementation 'org.projectlombok:lombok:1.18.26'
-
-//    testImplementation 'junit:junit:4.13.1'
-    runtimeOnly "io.jsonwebtoken:jjwt-impl:${versions.jjwt}",
-            "io.jsonwebtoken:jjwt-jackson:${versions.jjwt}"
-    implementation "org.modelmapper:modelmapper:${versions.modelMapper}"
-
-    implementation 'org.jsoup:jsoup:1.16.1'
-    implementation 'org.json:json:20230618'
-
-
-    compileOnly 'org.projectlombok:lombok'
-
-    developmentOnly 'org.springframework.boot:spring-boot-devtools'
-    runtimeOnly 'org.postgresql:postgresql'
-    annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
-    annotationProcessor 'org.projectlombok:lombok'
-
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    testImplementation 'org.springframework.security:spring-security-test'
 }
 
-tasks.named('test') {
-    useJUnitPlatform()
-}
+sourceCompatibility = '17'
+description = 'Clone Twitter'
 
-test {
-    finalizedBy jacocoTestReport
-}
-jacocoTestReport {
-    dependsOn test
-    reports {
-        xml.required = false
-        csv.required = false
-        html.outputLocation = layout.buildDirectory.dir('jacocoHtml')
+
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
     }
 }
+
+dependencies {
+//    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+//    implementation 'org.springframework.boot:spring-boot-starter-security'
+////    implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+////    implementation 'org.springframework.security:spring-security-oauth2-jose'
+//    implementation 'org.springframework.boot:spring-boot-starter-validation'
+//    implementation 'org.springframework.boot:spring-boot-starter-web'
+//    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+//    implementation 'org.springframework.boot:spring-boot-starter-mail'
+//    implementation 'org.springframework.boot:spring-boot-starter-websocket'
+//    implementation 'org.springframework.boot:spring-boot-starter-cache'
+//
+//    implementation "com.amazonaws:aws-java-sdk:${versions.aws}"
+//    implementation "io.jsonwebtoken:jjwt-api:${versions.jjwt}"
+//    implementation 'net.sf.ehcache:ehcache:2.10.9.2'
+//    implementation 'org.flywaydb:flyway-core:9.18.0'
+//
+//    testImplementation 'org.projectlombok:lombok:1.18.26'
+//
+////    testImplementation 'junit:junit:4.13.1'
+//    runtimeOnly "io.jsonwebtoken:jjwt-impl:${versions.jjwt}",
+//            "io.jsonwebtoken:jjwt-jackson:${versions.jjwt}"
+//    implementation "org.modelmapper:modelmapper:${versions.modelMapper}"
+//
+//    implementation 'org.jsoup:jsoup:1.16.1'
+//    implementation 'org.json:json:20230618'
+//
+//
+//    compileOnly 'org.projectlombok:lombok'
+//
+//    developmentOnly 'org.springframework.boot:spring-boot-devtools'
+//    runtimeOnly 'org.postgresql:postgresql'
+//    annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+//    annotationProcessor 'org.projectlombok:lombok'
+//
+//    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+//    testImplementation 'org.springframework.security:spring-security-test'
+}
+
+//tasks.named('test') {
+//    useJUnitPlatform()
+//}
+//
+//test {
+//    finalizedBy jacocoTestReport
+//}
+//jacocoTestReport {
+//    dependsOn test
+//    reports {
+//        xml.required = false
+//        csv.required = false
+//        html.outputLocation = layout.buildDirectory.dir('jacocoHtml')
+//    }
+//}

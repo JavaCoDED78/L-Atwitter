@@ -6,3 +6,8 @@ pluginManagement {
     }
 }
 rootProject.name = 'L-Atwitter'
+include 'common'
+include 'eureka'
+include 'topic'
+include 'twitter'
+
