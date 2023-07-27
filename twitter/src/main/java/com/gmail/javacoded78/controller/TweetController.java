@@ -10,6 +10,7 @@ import com.gmail.javacoded78.dto.response.notification.NotificationResponse;
 import com.gmail.javacoded78.dto.response.notification.NotificationTweetResponse;
 import com.gmail.javacoded78.dto.response.tweet.TweetAdditionalInfoResponse;
 import com.gmail.javacoded78.dto.response.tweet.TweetResponse;
+import com.gmail.javacoded78.enums.ReplyType;
 import com.gmail.javacoded78.mapper.TweetMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;

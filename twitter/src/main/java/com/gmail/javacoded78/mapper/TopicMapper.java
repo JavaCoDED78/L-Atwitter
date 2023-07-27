@@ -2,6 +2,7 @@ package com.gmail.javacoded78.mapper;
 
 import com.gmail.javacoded78.dto.response.TopicResponse;
 import com.gmail.javacoded78.dto.response.TopicsByCategoriesResponse;
+import com.gmail.javacoded78.enums.TopicCategory;
 import com.gmail.javacoded78.repository.projection.FollowedTopicProjection;
 import com.gmail.javacoded78.repository.projection.NotInterestedTopicProjection;
 import com.gmail.javacoded78.repository.projection.TopicProjection;

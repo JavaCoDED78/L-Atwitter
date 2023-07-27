@@ -8,6 +8,7 @@ import com.gmail.javacoded78.repository.projection.user.AuthUserProjection;
 import com.gmail.javacoded78.repository.projection.user.UserCommonProjection;
 import com.gmail.javacoded78.security.JwtProvider;
 import com.gmail.javacoded78.service.AuthenticationService;
+import com.gmail.javacoded78.service.UserSettingsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;

@@ -2,6 +2,7 @@ package com.gmail.javacoded78.mapper;
 
 import com.gmail.javacoded78.dto.request.ListsRequest;
 import com.gmail.javacoded78.dto.request.UserToListsRequest;
+import com.gmail.javacoded78.dto.response.HeaderResponse;
 import com.gmail.javacoded78.dto.response.lists.BaseListResponse;
 import com.gmail.javacoded78.dto.response.lists.ListMemberResponse;
 import com.gmail.javacoded78.dto.response.lists.ListResponse;
@@ -11,6 +12,7 @@ import com.gmail.javacoded78.dto.response.lists.PinnedListResponse;
 import com.gmail.javacoded78.dto.response.lists.SimpleListResponse;
 import com.gmail.javacoded78.dto.response.notification.NotificationResponse;
 import com.gmail.javacoded78.dto.response.tweet.TweetResponse;
+import com.gmail.javacoded78.model.Lists;
 import com.gmail.javacoded78.model.Notification;
 import com.gmail.javacoded78.repository.projection.lists.BaseListProjection;
 import com.gmail.javacoded78.repository.projection.lists.ListMemberProjection;

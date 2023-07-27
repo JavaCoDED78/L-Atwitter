@@ -23,6 +23,7 @@ import com.gmail.javacoded78.enums.BackgroundColorType;
 import com.gmail.javacoded78.enums.ColorSchemeType;
 import com.gmail.javacoded78.model.Image;
 import com.gmail.javacoded78.model.Notification;
+import com.gmail.javacoded78.model.User;
 import com.gmail.javacoded78.repository.projection.BookmarkProjection;
 import com.gmail.javacoded78.repository.projection.LikeTweetProjection;
 import com.gmail.javacoded78.repository.projection.notification.NotificationInfoProjection;

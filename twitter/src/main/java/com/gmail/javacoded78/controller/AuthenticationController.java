@@ -3,6 +3,7 @@ package com.gmail.javacoded78.controller;
 import com.gmail.javacoded78.dto.request.AuthenticationRequest;
 import com.gmail.javacoded78.dto.request.CurrentPasswordResetRequest;
 import com.gmail.javacoded78.dto.request.EndRegistrationRequest;
+import com.gmail.javacoded78.dto.request.PasswordResetRequest;
 import com.gmail.javacoded78.dto.request.ProcessEmailRequest;
 import com.gmail.javacoded78.dto.request.RegistrationRequest;
 import com.gmail.javacoded78.dto.response.AuthUserResponse;

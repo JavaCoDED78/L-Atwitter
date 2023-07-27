@@ -10,6 +10,8 @@ import com.gmail.javacoded78.dto.response.notification.NotificationResponse;
 import com.gmail.javacoded78.dto.response.tweet.TweetAdditionalInfoResponse;
 import com.gmail.javacoded78.dto.response.tweet.TweetResponse;
 import com.gmail.javacoded78.enums.NotificationType;
+import com.gmail.javacoded78.enums.ReplyType;
+import com.gmail.javacoded78.model.Tweet;
 import com.gmail.javacoded78.repository.projection.tweet.TweetAdditionalInfoProjection;
 import com.gmail.javacoded78.repository.projection.tweet.TweetProjection;
 import com.gmail.javacoded78.repository.projection.user.UserProjection;

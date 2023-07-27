@@ -5,6 +5,12 @@ plugins {
     id 'jacoco'
 }
 
+repositories {
+        mavenCentral()
+        maven { url 'https://repo.spring.io/milestone' }
+        maven { url 'https://repo.spring.io/snapshot' }
+    }
+
 apply from: "$rootProject.projectDir/versions-script.gradle"
 
 description = 'Clone Twitter'

@@ -1,6 +1,8 @@
 package com.gmail.javacoded78.controller;
 
+import com.gmail.javacoded78.dto.request.UserRequest;
 import com.gmail.javacoded78.dto.response.AuthUserResponse;
+import com.gmail.javacoded78.dto.response.BlockedUserResponse;
 import com.gmail.javacoded78.dto.response.FollowerUserResponse;
 import com.gmail.javacoded78.dto.response.HeaderResponse;
 import com.gmail.javacoded78.dto.response.ImageResponse;

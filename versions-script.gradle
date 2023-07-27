@@ -3,6 +3,7 @@ ext {
         'jjwt': '0.11.5',
         'modelMapper': '2.4.5',
         'aws': '1.12.462',
-        'jsoup': '1.13.1'
+        'jsoup': '1.13.1',
+        'springCloudVersion': '2021.0.8'
     ]
 }

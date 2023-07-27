@@ -8,6 +8,7 @@ import com.gmail.javacoded78.exception.ApiRequestException;
 import com.gmail.javacoded78.model.Bookmark;
 import com.gmail.javacoded78.model.Image;
 import com.gmail.javacoded78.model.Notification;
+import com.gmail.javacoded78.model.Tweet;
 import com.gmail.javacoded78.model.User;
 import com.gmail.javacoded78.repository.BookmarkRepository;
 import com.gmail.javacoded78.repository.ImageRepository;
