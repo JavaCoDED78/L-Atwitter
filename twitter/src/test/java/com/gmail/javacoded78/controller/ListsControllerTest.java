@@ -3,7 +3,6 @@ package com.gmail.javacoded78.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gmail.javacoded78.dto.request.ListsRequest;
 import com.gmail.javacoded78.dto.request.UserToListsRequest;
-import com.gmail.javacoded78.dto.response.UserResponse;
 import com.gmail.javacoded78.enums.ReplyType;
 import com.gmail.javacoded78.util.TestConstants;
 import org.hamcrest.Matchers;

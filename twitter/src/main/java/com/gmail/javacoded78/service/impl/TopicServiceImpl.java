@@ -1,6 +1,5 @@
 package com.gmail.javacoded78.service.impl;
 
-import com.gmail.javacoded78.dto.response.TopicsByCategoriesResponse;
 import com.gmail.javacoded78.enums.TopicCategory;
 import com.gmail.javacoded78.exception.ApiRequestException;
 import com.gmail.javacoded78.repository.TopicRepository;

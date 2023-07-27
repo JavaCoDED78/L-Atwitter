@@ -1,6 +1,5 @@
 package com.gmail.javacoded78.controller;
 
-import com.gmail.javacoded78.dto.EmailRequest;
 import com.gmail.javacoded78.service.EmailService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

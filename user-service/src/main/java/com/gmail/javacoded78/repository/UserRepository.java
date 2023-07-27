@@ -12,7 +12,7 @@ import com.gmail.javacoded78.repository.projection.TweetAuthorProjection;
 import com.gmail.javacoded78.repository.projection.UserCommonProjection;
 import com.gmail.javacoded78.repository.projection.UserDetailProjection;
 import com.gmail.javacoded78.repository.projection.UserProfileProjection;
-import com.gmail.javacoded78.repository.projection.UserProjection;
+import com.gmail.javacoded78.projection.UserProjection;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

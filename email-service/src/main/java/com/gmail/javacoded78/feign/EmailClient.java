@@ -1,6 +1,5 @@
 package com.gmail.javacoded78.feign;
 
-import com.gmail.javacoded78.dto.EmailRequest;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;

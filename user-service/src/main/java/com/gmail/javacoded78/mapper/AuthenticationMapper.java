@@ -5,8 +5,7 @@ import com.gmail.javacoded78.dto.request.CurrentPasswordResetRequest;
 import com.gmail.javacoded78.dto.request.EndRegistrationRequest;
 import com.gmail.javacoded78.dto.request.PasswordResetRequest;
 import com.gmail.javacoded78.dto.request.RegistrationRequest;
-import com.gmail.javacoded78.dto.response.AuthUserResponse;
-import com.gmail.javacoded78.dto.response.AuthenticationResponse;
+import com.gmail.javacoded78.dto.AuthenticationResponse;
 import com.gmail.javacoded78.exception.InputFieldException;
 import com.gmail.javacoded78.service.AuthenticationService;
 import lombok.RequiredArgsConstructor;
@@ -57,8 +56,7 @@ public class AuthenticationMapper {
     }
 
     public AuthUserResponse findByPasswordResetCode(String code) {
-//        AuthUserProjection user = authenticationService.findByPasswordResetCode(code);
-        Object user = authenticationService.findByPasswordResetCode(code);
+        AuthUserProjection user = authenticationService.findByPasswordResetCode(code);
         return modelMapper.map(user, AuthUserResponse.class);
     }
 

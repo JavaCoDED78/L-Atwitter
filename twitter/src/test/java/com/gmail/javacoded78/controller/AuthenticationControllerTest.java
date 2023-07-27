@@ -1,11 +1,6 @@
 package com.gmail.javacoded78.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.gmail.javacoded78.dto.request.AuthenticationRequest;
-import com.gmail.javacoded78.dto.request.CurrentPasswordResetRequest;
-import com.gmail.javacoded78.dto.request.PasswordResetRequest;
-import com.gmail.javacoded78.dto.request.ProcessEmailRequest;
-import com.gmail.javacoded78.dto.request.RegistrationRequest;
 import com.gmail.javacoded78.security.JwtAuthenticationException;
 import com.gmail.javacoded78.util.TestConstants;
 import org.hamcrest.Matchers;
@@ -32,7 +27,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
-@TestPropertySource("/application-test.properties")
+@TestPropertySource("/application-test.yml")
 @Sql(value = {"/sql/populate-table-before.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
 @Sql(value = {"/sql/populate-table-after.sql"}, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
 public class AuthenticationControllerTest {

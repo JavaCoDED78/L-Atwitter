@@ -2,8 +2,6 @@ package com.gmail.javacoded78.controller;
 
 import com.gmail.javacoded78.dto.request.SuggestedTopicsRequest;
 import com.gmail.javacoded78.dto.request.TopicsCategoriesRequest;
-import com.gmail.javacoded78.dto.response.TopicResponse;
-import com.gmail.javacoded78.dto.response.TopicsByCategoriesResponse;
 import com.gmail.javacoded78.mapper.TopicMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

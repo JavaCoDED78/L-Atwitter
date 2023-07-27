@@ -1,7 +1,5 @@
 package com.gmail.javacoded78.dto.request;
 
-import com.gmail.javacoded78.dto.response.ImageResponse;
-import com.gmail.javacoded78.dto.response.UserResponse;
 import lombok.Data;
 
 @Data

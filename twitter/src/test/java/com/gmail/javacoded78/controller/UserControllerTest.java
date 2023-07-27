@@ -1,7 +1,6 @@
 package com.gmail.javacoded78.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.gmail.javacoded78.dto.request.UserRequest;
 import com.gmail.javacoded78.enums.ReplyType;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.DisplayName;
@@ -21,7 +20,33 @@ import org.springframework.web.context.WebApplicationContext;
 
 import java.io.FileInputStream;
 
-import static com.gmail.javacoded78.util.TestConstants.*;
+import static com.gmail.javacoded78.util.TestConstants.ABOUT;
+import static com.gmail.javacoded78.util.TestConstants.ABOUT2;
+import static com.gmail.javacoded78.util.TestConstants.AVATAR_ID;
+import static com.gmail.javacoded78.util.TestConstants.BACKGROUND_COLOR;
+import static com.gmail.javacoded78.util.TestConstants.BIRTHDAY;
+import static com.gmail.javacoded78.util.TestConstants.COLOR_SCHEME;
+import static com.gmail.javacoded78.util.TestConstants.COUNTRY;
+import static com.gmail.javacoded78.util.TestConstants.FULL_NAME;
+import static com.gmail.javacoded78.util.TestConstants.GENDER;
+import static com.gmail.javacoded78.util.TestConstants.LIKE_TWEET_COUNT;
+import static com.gmail.javacoded78.util.TestConstants.LINK_DESCRIPTION;
+import static com.gmail.javacoded78.util.TestConstants.LOCATION;
+import static com.gmail.javacoded78.util.TestConstants.MEDIA_TWEET_COUNT;
+import static com.gmail.javacoded78.util.TestConstants.PHONE;
+import static com.gmail.javacoded78.util.TestConstants.PINNED_TWEET_ID;
+import static com.gmail.javacoded78.util.TestConstants.REGISTRATION_DATE;
+import static com.gmail.javacoded78.util.TestConstants.TWEET_COUNT;
+import static com.gmail.javacoded78.util.TestConstants.URL_USER_BASIC;
+import static com.gmail.javacoded78.util.TestConstants.USERNAME;
+import static com.gmail.javacoded78.util.TestConstants.USERNAME2;
+import static com.gmail.javacoded78.util.TestConstants.USER_EMAIL;
+import static com.gmail.javacoded78.util.TestConstants.USER_ID;
+import static com.gmail.javacoded78.util.TestConstants.WALLPAPER_ID;
+import static com.gmail.javacoded78.util.TestConstants.WEBSITE;
+import static com.gmail.javacoded78.util.TestConstants.YOUTUBE_LINK;
+import static com.gmail.javacoded78.util.TestConstants.YOUTUBE_LINK_COVER;
+import static com.gmail.javacoded78.util.TestConstants.YOUTUBE_LINK_TITLE;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;

@@ -1,0 +1,23 @@
+server:
+  port: 8021
+
+spring:
+  application:
+    name: topic-service
+  zipkin:
+    base-url: http://localhost:9411
+
+amazon:
+  aws:
+    access-key: AKIA2GKIUFNQ24L7PXBB
+    secret-key: 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
+  s3:
+    bucket:
+      name: perfumeshop
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka
+    fetch-registry: true
+    register-with-eureka: true

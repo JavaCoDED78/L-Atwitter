@@ -2,7 +2,6 @@ package com.gmail.javacoded78.controller;
 
 import com.gmail.javacoded78.dto.request.ChatMessageRequest;
 import com.gmail.javacoded78.dto.request.MessageWithTweetRequest;
-import com.gmail.javacoded78.dto.response.HeaderResponse;
 import com.gmail.javacoded78.dto.response.UserChatResponse;
 import com.gmail.javacoded78.dto.response.UserResponse;
 import com.gmail.javacoded78.dto.response.chats.ChatMessageResponse;

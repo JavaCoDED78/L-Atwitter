@@ -1,0 +1,39 @@
+server:
+  port: 8003
+spring:
+  application:
+    name: tweet-service
+  datasource:
+    url: jdbc:postgresql://localhost:5433/twt_base
+    username: postgres
+    password: pass
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    properties.hibernate:
+      batch_size: 50
+      fetch_size: 50
+      show_sql: false
+      format_sql: false
+    #     open-in-view: false
+    hibernate:
+      ddl-auto: validate
+    generate-ddl: false
+    show-sql: false
+  flyway:
+    locations: classpath:db/migration
+  zipkin:
+    base-url: http://localhost:9411
+  rabbitmq:
+    addresses: localhost:5672
+
+google:
+  api:
+    url: https://www.googleapis.com/youtube/v3/videos?id=%s&key=%s&part=snippet,contentDetails,statistics,status
+    key: AIzaSyAyhB6MnJNlOGXJkibk-07VgGSxmn72-vU
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka
+    fetch-registry: true
+    register-with-eureka: true

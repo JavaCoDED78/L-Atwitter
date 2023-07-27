@@ -2,7 +2,6 @@ package com.gmail.javacoded78.controller;
 
 import com.gmail.javacoded78.dto.request.ListsRequest;
 import com.gmail.javacoded78.dto.request.UserToListsRequest;
-import com.gmail.javacoded78.dto.response.HeaderResponse;
 import com.gmail.javacoded78.dto.response.lists.BaseListResponse;
 import com.gmail.javacoded78.dto.response.lists.ListMemberResponse;
 import com.gmail.javacoded78.dto.response.lists.ListResponse;

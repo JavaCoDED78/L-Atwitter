@@ -3,7 +3,6 @@ package com.gmail.javacoded78.controller;
 import com.gmail.javacoded78.dto.request.TweetDeleteRequest;
 import com.gmail.javacoded78.dto.request.TweetRequest;
 import com.gmail.javacoded78.dto.request.VoteRequest;
-import com.gmail.javacoded78.dto.response.HeaderResponse;
 import com.gmail.javacoded78.dto.response.UserResponse;
 import com.gmail.javacoded78.dto.response.notification.NotificationReplyResponse;
 import com.gmail.javacoded78.dto.response.notification.NotificationResponse;

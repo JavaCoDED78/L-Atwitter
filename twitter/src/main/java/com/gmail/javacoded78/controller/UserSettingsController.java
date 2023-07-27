@@ -1,7 +1,6 @@
 package com.gmail.javacoded78.controller;
 
 import com.gmail.javacoded78.dto.request.SettingsRequest;
-import com.gmail.javacoded78.dto.response.AuthenticationResponse;
 import com.gmail.javacoded78.dto.response.UserPhoneResponse;
 import com.gmail.javacoded78.enums.BackgroundColorType;
 import com.gmail.javacoded78.enums.ColorSchemeType;

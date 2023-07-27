@@ -1,7 +1,6 @@
 package com.gmail.javacoded78.dto.response.chats;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.gmail.javacoded78.dto.response.ImageResponse;
 import lombok.Getter;
 import lombok.Setter;
 
