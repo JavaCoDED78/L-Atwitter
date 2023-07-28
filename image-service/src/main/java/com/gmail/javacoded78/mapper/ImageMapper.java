@@ -1,7 +1,8 @@
 package com.gmail.javacoded78.mapper;
 
-import com.gmail.javacoded78.dto.ImageResponse;
-import com.gmail.javacoded78.models.Image;
+import com.gmail.javacoded78.common.dto.ImageResponse;
+import com.gmail.javacoded78.common.mapper.BasicMapper;
+import com.gmail.javacoded78.common.models.Image;
 import com.gmail.javacoded78.service.ImageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;

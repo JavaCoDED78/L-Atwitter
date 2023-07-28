@@ -1,8 +1,8 @@
 package com.gmail.javacoded78.controller.rest;
 
-import com.gmail.javacoded78.dto.HeaderResponse;
+import com.gmail.javacoded78.common.dto.HeaderResponse;
+import com.gmail.javacoded78.common.dto.TweetResponse;
 import com.gmail.javacoded78.dto.TagResponse;
-import com.gmail.javacoded78.dto.TweetResponse;
 import com.gmail.javacoded78.mapper.TagMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;

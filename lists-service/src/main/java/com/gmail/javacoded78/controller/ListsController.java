@@ -1,8 +1,8 @@
 package com.gmail.javacoded78.controller;
 
-import com.gmail.javacoded78.dto.HeaderResponse;
-import com.gmail.javacoded78.dto.NotificationResponse;
-import com.gmail.javacoded78.dto.TweetResponse;
+import com.gmail.javacoded78.common.dto.HeaderResponse;
+import com.gmail.javacoded78.common.dto.NotificationResponse;
+import com.gmail.javacoded78.common.dto.TweetResponse;
 import com.gmail.javacoded78.dto.request.ListsRequest;
 import com.gmail.javacoded78.dto.request.UserToListsRequest;
 import com.gmail.javacoded78.dto.response.BaseListResponse;

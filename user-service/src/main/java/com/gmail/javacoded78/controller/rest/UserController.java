@@ -1,11 +1,11 @@
 package com.gmail.javacoded78.controller.rest;
 
-import com.gmail.javacoded78.dto.AuthUserResponse;
-import com.gmail.javacoded78.dto.HeaderResponse;
-import com.gmail.javacoded78.dto.NotificationResponse;
-import com.gmail.javacoded78.dto.NotificationUserResponse;
-import com.gmail.javacoded78.dto.TweetResponse;
-import com.gmail.javacoded78.dto.UserResponse;
+import com.gmail.javacoded78.common.dto.AuthUserResponse;
+import com.gmail.javacoded78.common.dto.HeaderResponse;
+import com.gmail.javacoded78.common.dto.NotificationResponse;
+import com.gmail.javacoded78.common.dto.NotificationUserResponse;
+import com.gmail.javacoded78.common.dto.TweetResponse;
+import com.gmail.javacoded78.common.dto.UserResponse;
 import com.gmail.javacoded78.dto.request.UserRequest;
 import com.gmail.javacoded78.dto.response.BlockedUserResponse;
 import com.gmail.javacoded78.dto.response.FollowerUserResponse;

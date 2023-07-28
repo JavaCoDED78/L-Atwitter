@@ -1,12 +1,12 @@
 package com.gmail.javacoded78.mapper;
 
-import com.gmail.javacoded78.dto.AuthUserResponse;
+import com.gmail.javacoded78.common.dto.AuthUserResponse;
+import com.gmail.javacoded78.common.dto.AuthenticationResponse;
 import com.gmail.javacoded78.dto.request.AuthenticationRequest;
 import com.gmail.javacoded78.dto.request.CurrentPasswordResetRequest;
 import com.gmail.javacoded78.dto.request.EndRegistrationRequest;
 import com.gmail.javacoded78.dto.request.PasswordResetRequest;
 import com.gmail.javacoded78.dto.request.RegistrationRequest;
-import com.gmail.javacoded78.dto.AuthenticationResponse;
 import com.gmail.javacoded78.exception.InputFieldException;
 import com.gmail.javacoded78.repository.projection.AuthUserProjection;
 import com.gmail.javacoded78.service.AuthenticationService;

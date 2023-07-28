@@ -9,7 +9,7 @@ public interface SameFollower {
     String getFullName();
     String getUsername();
 
-    @Value("#{T(com.gmail.javacoded78.repository.projection.user.SameFollower).convertToAvatar(target.img_id, target.img_src)}")
+    @Value("#{T(com.gmail.javacoded78.repository.projection.SameFollower).convertToAvatar(target.img_id, target.img_src)}")
     Map<String, Object> getAvatar();
 
     static Map<String, Object> convertToAvatar(Long id, String src) {

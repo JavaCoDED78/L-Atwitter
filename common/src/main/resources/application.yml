@@ -1,0 +1,26 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5433/twt_base
+    username: postgres
+    password: pass
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    properties.hibernate:
+      batch_size: 50
+      fetch_size: 50
+      show_sql: false
+      format_sql: false
+    #     open-in-view: false
+    hibernate:
+      ddl-auto: validate
+    generate-ddl: false
+    show-sql: false
+
+  flyway:
+    locations: classpath:db/migration
+hostname: http://localhost:3000
+jwt:
+  header: Authorization
+  secret: dejavudejavudejavudejavudejavudejavudejavudejavudejavudejavu
+  expiration: 6048000

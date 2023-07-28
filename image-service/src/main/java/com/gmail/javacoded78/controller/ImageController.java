@@ -1,8 +1,8 @@
 package com.gmail.javacoded78.controller;
 
-import com.gmail.javacoded78.dto.ImageResponse;
+import com.gmail.javacoded78.common.dto.ImageResponse;
+import com.gmail.javacoded78.common.models.Image;
 import com.gmail.javacoded78.mapper.ImageMapper;
-import com.gmail.javacoded78.models.Image;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;

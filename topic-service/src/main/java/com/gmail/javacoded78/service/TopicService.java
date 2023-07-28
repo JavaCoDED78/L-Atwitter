@@ -1,7 +1,7 @@
 package com.gmail.javacoded78.service;
 
+import com.gmail.javacoded78.common.enums.TopicCategory;
 import com.gmail.javacoded78.dto.response.TopicsByCategoriesResponse;
-import com.gmail.javacoded78.enums.TopicCategory;
 import com.gmail.javacoded78.repository.projetion.FollowedTopicProjection;
 import com.gmail.javacoded78.repository.projetion.NotInterestedTopicProjection;
 import com.gmail.javacoded78.repository.projetion.TopicProjection;

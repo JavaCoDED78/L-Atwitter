@@ -1,9 +1,10 @@
 package com.gmail.javacoded78.service;
 
+import com.gmail.javacoded78.common.models.User;
 import com.gmail.javacoded78.dto.request.AuthenticationRequest;
 import com.gmail.javacoded78.dto.request.RegistrationRequest;
-import com.gmail.javacoded78.models.User;
 import com.gmail.javacoded78.repository.projection.AuthUserProjection;
+import com.gmail.javacoded78.repository.projection.UserPrincipalProjection;
 import org.springframework.validation.BindingResult;
 
 import java.util.Map;
@@ -13,6 +14,8 @@ public interface AuthenticationService {
     Long getAuthenticatedUserId();
 
     User getAuthenticatedUser();
+
+    UserPrincipalProjection getUserPrincipalByEmail(String email);
 
     Map<String, Object> login(AuthenticationRequest request, BindingResult bindingResult);
 

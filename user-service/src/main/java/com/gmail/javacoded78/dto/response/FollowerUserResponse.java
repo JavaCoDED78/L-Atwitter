@@ -1,6 +1,6 @@
 package com.gmail.javacoded78.dto.response;
 
-import com.gmail.javacoded78.dto.ImageResponse;
+import com.gmail.javacoded78.common.dto.ImageResponse;
 import lombok.Getter;
 import lombok.Setter;
 

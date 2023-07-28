@@ -1,8 +1,8 @@
 package com.gmail.javacoded78.service.impl;
 
 import com.gmail.javacoded78.client.user.UserIdsRequest;
-import com.gmail.javacoded78.models.User;
-import com.gmail.javacoded78.projection.UserChatProjection;
+import com.gmail.javacoded78.common.models.User;
+import com.gmail.javacoded78.common.projection.UserChatProjection;
 import com.gmail.javacoded78.repository.UserRepository;
 import com.gmail.javacoded78.service.AuthenticationService;
 import com.gmail.javacoded78.service.UserClientService;

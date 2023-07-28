@@ -1,6 +1,7 @@
 package com.gmail.javacoded78.service;
 
-import com.gmail.javacoded78.models.Tag;
+
+import com.gmail.javacoded78.common.models.Tag;
 
 import java.util.List;
 

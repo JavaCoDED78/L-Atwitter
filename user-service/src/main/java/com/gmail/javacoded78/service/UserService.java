@@ -1,14 +1,13 @@
 package com.gmail.javacoded78.service;
-
-import com.gmail.javacoded78.models.User;
-import com.gmail.javacoded78.projection.LikeTweetProjection;
-import com.gmail.javacoded78.projection.NotificationInfoProjection;
-import com.gmail.javacoded78.projection.NotificationProjection;
-import com.gmail.javacoded78.projection.TweetImageProjection;
-import com.gmail.javacoded78.projection.TweetProjection;
-import com.gmail.javacoded78.projection.TweetUserProjection;
-import com.gmail.javacoded78.projection.TweetsProjection;
-import com.gmail.javacoded78.projection.UserProjection;
+import com.gmail.javacoded78.common.models.User;
+import com.gmail.javacoded78.common.projection.LikeTweetProjection;
+import com.gmail.javacoded78.common.projection.NotificationInfoProjection;
+import com.gmail.javacoded78.common.projection.NotificationProjection;
+import com.gmail.javacoded78.common.projection.TweetImageProjection;
+import com.gmail.javacoded78.common.projection.TweetProjection;
+import com.gmail.javacoded78.common.projection.TweetUserProjection;
+import com.gmail.javacoded78.common.projection.TweetsProjection;
+import com.gmail.javacoded78.common.projection.UserProjection;
 import com.gmail.javacoded78.repository.projection.AuthUserProjection;
 import com.gmail.javacoded78.repository.projection.BaseUserProjection;
 import com.gmail.javacoded78.repository.projection.BlockedUserProjection;

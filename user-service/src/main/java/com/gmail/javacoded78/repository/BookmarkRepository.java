@@ -1,6 +1,5 @@
 package com.gmail.javacoded78.repository;
-
-import com.gmail.javacoded78.models.Bookmark;
+import com.gmail.javacoded78.common.models.Bookmark;
 import com.gmail.javacoded78.repository.projection.BookmarkProjection;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

@@ -1,7 +1,7 @@
 package com.gmail.javacoded78.service;
 
-import com.gmail.javacoded78.projection.TagProjection;
-import com.gmail.javacoded78.projection.TweetProjection;
+import com.gmail.javacoded78.common.projection.TagProjection;
+import com.gmail.javacoded78.common.projection.TweetProjection;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 

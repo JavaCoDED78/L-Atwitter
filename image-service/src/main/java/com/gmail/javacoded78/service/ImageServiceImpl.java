@@ -2,7 +2,7 @@ package com.gmail.javacoded78.service;
 
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.PutObjectRequest;
-import com.gmail.javacoded78.models.Image;
+import com.gmail.javacoded78.common.models.Image;
 import com.gmail.javacoded78.repository.ImageRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;

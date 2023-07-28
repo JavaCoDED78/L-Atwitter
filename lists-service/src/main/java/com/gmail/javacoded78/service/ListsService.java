@@ -1,8 +1,8 @@
 package com.gmail.javacoded78.service;
 
+import com.gmail.javacoded78.common.models.Lists;
+import com.gmail.javacoded78.common.projection.TweetProjection;
 import com.gmail.javacoded78.dto.request.UserToListsRequest;
-import com.gmail.javacoded78.models.Lists;
-import com.gmail.javacoded78.projection.TweetProjection;
 import com.gmail.javacoded78.repository.projection.BaseListProjection;
 import com.gmail.javacoded78.repository.projection.ListMemberProjection;
 import com.gmail.javacoded78.repository.projection.ListProjection;

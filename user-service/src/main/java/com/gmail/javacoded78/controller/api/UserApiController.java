@@ -2,8 +2,8 @@ package com.gmail.javacoded78.controller.api;
 
 
 import com.gmail.javacoded78.client.user.UserIdsRequest;
-import com.gmail.javacoded78.models.User;
-import com.gmail.javacoded78.projection.UserChatProjection;
+import com.gmail.javacoded78.common.models.User;
+import com.gmail.javacoded78.common.projection.UserChatProjection;
 import com.gmail.javacoded78.service.UserClientService;
 import com.gmail.javacoded78.service.UserService;
 import lombok.RequiredArgsConstructor;

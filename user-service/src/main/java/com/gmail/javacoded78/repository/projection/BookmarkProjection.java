@@ -1,6 +1,6 @@
 package com.gmail.javacoded78.repository.projection;
 
-import com.gmail.javacoded78.repository.projection.tweet.TweetProjection;
+import com.gmail.javacoded78.common.projection.TweetProjection;
 
 import java.time.LocalDateTime;
 

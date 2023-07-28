@@ -1,10 +1,10 @@
 package com.gmail.javacoded78.controller.api;
 
 import com.gmail.javacoded78.client.tweet.TweetUserIdsRequest;
-import com.gmail.javacoded78.models.Tweet;
-import com.gmail.javacoded78.projection.TweetImageProjection;
-import com.gmail.javacoded78.projection.TweetProjection;
-import com.gmail.javacoded78.projection.TweetsUserProjection;
+import com.gmail.javacoded78.common.models.Tweet;
+import com.gmail.javacoded78.common.projection.TweetImageProjection;
+import com.gmail.javacoded78.common.projection.TweetProjection;
+import com.gmail.javacoded78.common.projection.TweetsUserProjection;
 import com.gmail.javacoded78.service.TweetClientService;
 import com.gmail.javacoded78.client.tweet.TweetPageableRequest;
 import lombok.RequiredArgsConstructor;

@@ -1,12 +1,12 @@
 package com.gmail.javacoded78.service.impl;
 
-import com.gmail.javacoded78.enums.BackgroundColorType;
-import com.gmail.javacoded78.enums.ColorSchemeType;
-import com.gmail.javacoded78.exception.ApiRequestException;
-import com.gmail.javacoded78.models.User;
+import com.gmail.javacoded78.common.enums.BackgroundColorType;
+import com.gmail.javacoded78.common.enums.ColorSchemeType;
+import com.gmail.javacoded78.common.exception.ApiRequestException;
+import com.gmail.javacoded78.common.models.User;
 import com.gmail.javacoded78.repository.UserRepository;
 import com.gmail.javacoded78.repository.projection.UserCommonProjection;
-import com.gmail.javacoded78.security.JwtProvider;
+import com.gmail.javacoded78.common.security.JwtProvider;
 import com.gmail.javacoded78.service.AuthenticationService;
 import com.gmail.javacoded78.service.UserSettingsService;
 import lombok.RequiredArgsConstructor;

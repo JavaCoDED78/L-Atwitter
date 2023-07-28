@@ -1,7 +1,7 @@
 package com.gmail.javacoded78.dto.request;
 
-import com.gmail.javacoded78.enums.BackgroundColorType;
-import com.gmail.javacoded78.enums.ColorSchemeType;
+import com.gmail.javacoded78.common.enums.BackgroundColorType;
+import com.gmail.javacoded78.common.enums.ColorSchemeType;
 import lombok.Data;
 
 @Data

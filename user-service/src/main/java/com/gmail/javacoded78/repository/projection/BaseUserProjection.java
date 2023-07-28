@@ -11,7 +11,7 @@ public interface BaseUserProjection {
     String getAbout();
     boolean getIsPrivateProfile();
 
-    @Value("#{T(com.gmail.javacoded78.repository.projection.user.BaseUserProjection).convertToAvatar(target.img_id, target.img_src)}")
+    @Value("#{T(com.gmail.javacoded78.repository.projection.BaseUserProjection).convertToAvatar(target.img_id, target.img_src)}")
     Map<String, Object> getAvatar();
 
     @Value("#{@userServiceImpl.isUserBlockedByMyProfile(target.id)}")

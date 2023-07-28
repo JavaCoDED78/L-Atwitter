@@ -1,8 +1,8 @@
 package com.gmail.javacoded78.repository.projection;
 
-import com.gmail.javacoded78.enums.BackgroundColorType;
-import com.gmail.javacoded78.enums.ColorSchemeType;
-import com.gmail.javacoded78.projection.ImageProjection;
+import com.gmail.javacoded78.common.enums.BackgroundColorType;
+import com.gmail.javacoded78.common.enums.ColorSchemeType;
+import com.gmail.javacoded78.common.projection.ImageProjection;
 import org.springframework.beans.factory.annotation.Value;
 
 import java.time.LocalDateTime;

@@ -1,8 +1,8 @@
 package com.gmail.javacoded78.dto.request;
 
-import com.gmail.javacoded78.enums.LinkCoverSize;
-import com.gmail.javacoded78.enums.ReplyType;
-import com.gmail.javacoded78.models.Image;
+import com.gmail.javacoded78.common.enums.LinkCoverSize;
+import com.gmail.javacoded78.common.enums.ReplyType;
+import com.gmail.javacoded78.common.models.Image;
 import lombok.Data;
 
 import java.time.LocalDateTime;

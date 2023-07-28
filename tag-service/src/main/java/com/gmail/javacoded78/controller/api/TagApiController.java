@@ -1,6 +1,6 @@
 package com.gmail.javacoded78.controller.api;
 
-import com.gmail.javacoded78.models.Tag;
+import com.gmail.javacoded78.common.models.Tag;
 import com.gmail.javacoded78.service.TagClientService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;

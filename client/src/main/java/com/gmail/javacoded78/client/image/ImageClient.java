@@ -1,7 +1,7 @@
 package com.gmail.javacoded78.client.image;
 
-import com.gmail.javacoded78.dto.ImageResponse;
-import com.gmail.javacoded78.models.Image;
+import com.gmail.javacoded78.common.dto.ImageResponse;
+import com.gmail.javacoded78.common.models.Image;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;

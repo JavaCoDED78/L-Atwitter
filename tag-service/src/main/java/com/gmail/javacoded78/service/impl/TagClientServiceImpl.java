@@ -1,6 +1,6 @@
 package com.gmail.javacoded78.service.impl;
 
-import com.gmail.javacoded78.models.Tag;
+import com.gmail.javacoded78.common.models.Tag;
 import com.gmail.javacoded78.repository.TagRepository;
 import com.gmail.javacoded78.service.TagClientService;
 import lombok.RequiredArgsConstructor;

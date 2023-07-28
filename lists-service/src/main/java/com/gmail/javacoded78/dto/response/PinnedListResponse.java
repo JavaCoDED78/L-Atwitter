@@ -1,7 +1,7 @@
 package com.gmail.javacoded78.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.gmail.javacoded78.dto.ImageResponse;
+import com.gmail.javacoded78.common.dto.ImageResponse;
 import lombok.Data;
 
 import java.time.LocalDateTime;

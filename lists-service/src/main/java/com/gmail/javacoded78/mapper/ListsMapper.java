@@ -1,8 +1,12 @@
 package com.gmail.javacoded78.mapper;
 
-import com.gmail.javacoded78.dto.HeaderResponse;
-import com.gmail.javacoded78.dto.NotificationResponse;
-import com.gmail.javacoded78.dto.TweetResponse;
+import com.gmail.javacoded78.common.dto.HeaderResponse;
+import com.gmail.javacoded78.common.dto.NotificationResponse;
+import com.gmail.javacoded78.common.dto.TweetResponse;
+import com.gmail.javacoded78.common.mapper.BasicMapper;
+import com.gmail.javacoded78.common.models.Lists;
+import com.gmail.javacoded78.common.models.Notification;
+import com.gmail.javacoded78.common.projection.TweetProjection;
 import com.gmail.javacoded78.dto.request.ListsRequest;
 import com.gmail.javacoded78.dto.request.UserToListsRequest;
 import com.gmail.javacoded78.dto.response.BaseListResponse;
@@ -12,9 +16,6 @@ import com.gmail.javacoded78.dto.response.ListUserResponse;
 import com.gmail.javacoded78.dto.response.ListsOwnerMemberResponse;
 import com.gmail.javacoded78.dto.response.PinnedListResponse;
 import com.gmail.javacoded78.dto.response.SimpleListResponse;
-import com.gmail.javacoded78.models.Lists;
-import com.gmail.javacoded78.models.Notification;
-import com.gmail.javacoded78.projection.TweetProjection;
 import com.gmail.javacoded78.repository.projection.BaseListProjection;
 import com.gmail.javacoded78.repository.projection.ListMemberProjection;
 import com.gmail.javacoded78.repository.projection.ListProjection;

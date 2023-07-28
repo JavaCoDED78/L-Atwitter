@@ -1,7 +1,7 @@
 package com.gmail.javacoded78.repository;
 
-import com.gmail.javacoded78.models.Tag;
-import com.gmail.javacoded78.projection.TagProjection;
+import com.gmail.javacoded78.common.models.Tag;
+import com.gmail.javacoded78.common.projection.TagProjection;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

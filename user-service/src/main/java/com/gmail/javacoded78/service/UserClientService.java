@@ -1,8 +1,8 @@
 package com.gmail.javacoded78.service;
 
 import com.gmail.javacoded78.client.user.UserIdsRequest;
-import com.gmail.javacoded78.models.User;
-import com.gmail.javacoded78.projection.UserChatProjection;
+import com.gmail.javacoded78.common.models.User;
+import com.gmail.javacoded78.common.projection.UserChatProjection;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 

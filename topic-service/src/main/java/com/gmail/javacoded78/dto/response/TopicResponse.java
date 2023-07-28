@@ -1,7 +1,7 @@
 package com.gmail.javacoded78.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.gmail.javacoded78.enums.TopicCategory;
+import com.gmail.javacoded78.common.enums.TopicCategory;
 import lombok.Getter;
 import lombok.Setter;
 

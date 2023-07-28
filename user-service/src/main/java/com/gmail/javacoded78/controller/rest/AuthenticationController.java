@@ -1,13 +1,13 @@
 package com.gmail.javacoded78.controller.rest;
 
-import com.gmail.javacoded78.dto.AuthUserResponse;
+import com.gmail.javacoded78.common.dto.AuthUserResponse;
+import com.gmail.javacoded78.common.dto.AuthenticationResponse;
 import com.gmail.javacoded78.dto.request.AuthenticationRequest;
 import com.gmail.javacoded78.dto.request.CurrentPasswordResetRequest;
 import com.gmail.javacoded78.dto.request.EndRegistrationRequest;
 import com.gmail.javacoded78.dto.request.PasswordResetRequest;
 import com.gmail.javacoded78.dto.request.ProcessEmailRequest;
 import com.gmail.javacoded78.dto.request.RegistrationRequest;
-import com.gmail.javacoded78.dto.AuthenticationResponse;
 import com.gmail.javacoded78.mapper.AuthenticationMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

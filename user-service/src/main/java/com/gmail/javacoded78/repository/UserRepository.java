@@ -1,9 +1,9 @@
 package com.gmail.javacoded78.repository;
 
-import com.gmail.javacoded78.enums.BackgroundColorType;
-import com.gmail.javacoded78.enums.ColorSchemeType;
-import com.gmail.javacoded78.models.Tweet;
-import com.gmail.javacoded78.models.User;
+import com.gmail.javacoded78.common.enums.BackgroundColorType;
+import com.gmail.javacoded78.common.enums.ColorSchemeType;
+import com.gmail.javacoded78.common.models.User;
+import com.gmail.javacoded78.common.projection.UserProjection;
 import com.gmail.javacoded78.repository.projection.AuthUserProjection;
 import com.gmail.javacoded78.repository.projection.BlockedUserProjection;
 import com.gmail.javacoded78.repository.projection.FollowerUserProjection;
@@ -12,7 +12,6 @@ import com.gmail.javacoded78.repository.projection.TweetAuthorProjection;
 import com.gmail.javacoded78.repository.projection.UserCommonProjection;
 import com.gmail.javacoded78.repository.projection.UserDetailProjection;
 import com.gmail.javacoded78.repository.projection.UserProfileProjection;
-import com.gmail.javacoded78.projection.UserProjection;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -26,23 +25,27 @@ import java.util.Optional;
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
 
+    Optional<User> findByEmail(String email);
+
+    Optional<AuthUserProjection> findByPasswordResetCode(String code);
+
+    List<User> findByIdIn(List<Long> ids);
+
+    List<UserProjection> findTop5ByActiveTrue();
+
     Page<UserProjection> findByActiveTrueAndIdNot(Long id, Pageable pageable);
 
     @Query("SELECT user FROM User user WHERE user.id = :userId")
     Optional<AuthUserProjection> findAuthUserById(Long userId);
 
     @Query("SELECT user FROM User user WHERE user.email = :email")
-    Optional<AuthUserProjection> getAuthUserByEmail(String email);
+    <T> Optional<T> getAuthUserByEmail(String email, Class<T> type);
 
     @Query("SELECT user FROM User user WHERE user.id = :userId")
     Optional<UserProfileProjection> getUserProfileById(Long userId);
 
     @Query("SELECT user.password FROM User user WHERE user.id = :userId")
     String getUserPasswordById(Long userId);
-
-    Optional<User> findByEmail(String email);
-
-    List<User> findByIdIn(List<Long> ids);
 
     @Query("SELECT u.id AS id, u.fullName AS fullName, u.username AS username, u.about AS about, u.avatar AS avatar, " +
             "u.privateProfile AS privateProfile, u.mutedDirectMessages AS mutedDirectMessages " +
@@ -56,12 +59,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     @Query("SELECT user FROM User user WHERE user.activationCode = :code")
     Optional<UserCommonProjection> findCommonUserByActivationCode(String code);
-
-    Optional<AuthUserProjection> findByPasswordResetCode(String code);
-
-    List<UserProjection> findTop5ByActiveTrue();
-
-    List<User> findByUnreadMessages_Tweet(Tweet tweet);
 
     @Query("SELECT user FROM User user " +
             "LEFT JOIN user.followers follower " +
@@ -108,9 +105,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
             "LEFT JOIN user.followerRequests f " +
             "WHERE user.id = :userId")
     Page<FollowerUserProjection> getFollowerRequests(Long userId, Pageable pageable);
-
-    @Query("SELECT user.userMutedList FROM User user WHERE user.id = :userId")
-    List<User> getUserMutedListById(Long userId);
 
     @Query("SELECT notification.tweet.user as tweetAuthor FROM User user " +
             "LEFT JOIN user.notifications notification " +

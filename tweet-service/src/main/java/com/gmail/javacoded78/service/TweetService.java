@@ -1,9 +1,9 @@
 package com.gmail.javacoded78.service;
 
-import com.gmail.javacoded78.enums.ReplyType;
-import com.gmail.javacoded78.models.Tweet;
-import com.gmail.javacoded78.projection.TweetProjection;
-import com.gmail.javacoded78.projection.UserProjection;
+import com.gmail.javacoded78.common.enums.ReplyType;
+import com.gmail.javacoded78.common.models.Tweet;
+import com.gmail.javacoded78.common.projection.TweetProjection;
+import com.gmail.javacoded78.common.projection.UserProjection;
 import com.gmail.javacoded78.repository.TweetAdditionalInfoProjection;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

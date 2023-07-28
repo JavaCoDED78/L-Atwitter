@@ -1,6 +1,6 @@
 package com.gmail.javacoded78.client.tag;
 
-import com.gmail.javacoded78.models.Tag;
+import com.gmail.javacoded78.common.models.Tag;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,10 +15,10 @@ import java.util.List;
 public interface TagClient {
 
     @GetMapping("/api/v1/tags/{tweetId}")
-    List<Tag> getTagsByTweetId(@PathVariable Long tweetId);
+    List<Tag> getTagsByTweetId(@PathVariable("tweetId") Long tweetId);
 
     @GetMapping("/api/v1/tags/search")
-    Tag getTagByTagName(@RequestParam String tagName);
+    Tag getTagByTagName(@RequestParam("tagName") String tagName);
 
     @PostMapping("/api/v1/tags/save")
     Tag saveTag(@RequestBody Tag tag);

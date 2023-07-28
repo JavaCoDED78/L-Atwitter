@@ -1,16 +1,16 @@
 package com.gmail.javacoded78.controller.rest;
 
-import com.gmail.javacoded78.dto.HeaderResponse;
-import com.gmail.javacoded78.dto.NotificationResponse;
-import com.gmail.javacoded78.dto.NotificationTweetResponse;
-import com.gmail.javacoded78.dto.TweetResponse;
-import com.gmail.javacoded78.dto.UserResponse;
+import com.gmail.javacoded78.common.dto.HeaderResponse;
+import com.gmail.javacoded78.common.dto.NotificationResponse;
+import com.gmail.javacoded78.common.dto.NotificationTweetResponse;
+import com.gmail.javacoded78.common.dto.TweetResponse;
+import com.gmail.javacoded78.common.dto.UserResponse;
+import com.gmail.javacoded78.common.enums.ReplyType;
 import com.gmail.javacoded78.dto.request.TweetDeleteRequest;
 import com.gmail.javacoded78.dto.request.TweetRequest;
 import com.gmail.javacoded78.dto.request.VoteRequest;
 import com.gmail.javacoded78.dto.response.NotificationReplyResponse;
 import com.gmail.javacoded78.dto.response.TweetAdditionalInfoResponse;
-import com.gmail.javacoded78.enums.ReplyType;
 import com.gmail.javacoded78.mapper.TweetMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
