@@ -1,11 +1,11 @@
 package com.gmail.javacoded78.service;
 
+import com.gmail.javacoded78.client.tweet.TweetUserIdsRequest;
 import com.gmail.javacoded78.models.Tweet;
 import com.gmail.javacoded78.projection.TweetImageProjection;
 import com.gmail.javacoded78.projection.TweetProjection;
-import com.gmail.javacoded78.projection.TweetsProjection;
 import com.gmail.javacoded78.projection.TweetsUserProjection;
-import com.gmail.javacoded78.tweet.TweetPageableRequest;
+import com.gmail.javacoded78.client.tweet.TweetPageableRequest;
 import org.springframework.data.domain.Page;
 
 import java.util.List;
@@ -27,5 +27,9 @@ public interface TweetClientService {
 
     List<TweetsUserProjection> getRepliesByUserId(Long userId);
 
-    List<TweetsProjection> getNotificationsFromTweetAuthors(Long userId);
+    List<TweetProjection> getNotificationsFromTweetAuthors(Long userId);
+
+    List<TweetProjection> getTweetsByTagName(String tagName);
+
+    Page<TweetProjection> getTweetsByUserIds(TweetUserIdsRequest request);
 }

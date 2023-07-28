@@ -1,10 +1,10 @@
 server:
-  port: 8003
+  port: 8002
 spring:
   application:
     name: tweet-service
   datasource:
-    url: jdbc:postgresql://localhost:5433/twt_base
+    url: jdbc:postgresql://localhost:5432/twitter
     username: postgres
     password: pass
     driver-class-name: org.postgresql.Driver

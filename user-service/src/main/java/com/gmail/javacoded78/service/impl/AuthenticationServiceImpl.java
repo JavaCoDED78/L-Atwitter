@@ -1,11 +1,11 @@
 package com.gmail.javacoded78.service.impl;
 
+import com.gmail.javacoded78.client.email.EmailClient;
+import com.gmail.javacoded78.client.email.EmailRequest;
 import com.gmail.javacoded78.dto.request.AuthenticationRequest;
 import com.gmail.javacoded78.dto.request.RegistrationRequest;
 import com.gmail.javacoded78.exception.ApiRequestException;
 import com.gmail.javacoded78.exception.InputFieldException;
-import com.gmail.javacoded78.feign.email.EmailClient;
-import com.gmail.javacoded78.feign.email.EmailRequest;
 import com.gmail.javacoded78.models.User;
 import com.gmail.javacoded78.repository.UserRepository;
 import com.gmail.javacoded78.repository.projection.AuthUserProjection;

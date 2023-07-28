@@ -1,5 +1,6 @@
 package com.gmail.javacoded78.controller.rest;
 
+import com.gmail.javacoded78.dto.AuthUserResponse;
 import com.gmail.javacoded78.dto.request.AuthenticationRequest;
 import com.gmail.javacoded78.dto.request.CurrentPasswordResetRequest;
 import com.gmail.javacoded78.dto.request.EndRegistrationRequest;

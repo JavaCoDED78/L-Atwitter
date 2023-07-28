@@ -1,5 +1,42 @@
 package com.gmail.javacoded78.service.impl;
 
+import com.gmail.javacoded78.client.image.ImageClient;
+import com.gmail.javacoded78.client.tweet.TweetClient;
+import com.gmail.javacoded78.client.tweet.TweetPageableRequest;
+import com.gmail.javacoded78.enums.NotificationType;
+import com.gmail.javacoded78.exception.ApiRequestException;
+import com.gmail.javacoded78.models.Bookmark;
+import com.gmail.javacoded78.models.Notification;
+import com.gmail.javacoded78.models.Tweet;
+import com.gmail.javacoded78.models.User;
+import com.gmail.javacoded78.projection.LikeTweetProjection;
+import com.gmail.javacoded78.projection.NotificationInfoProjection;
+import com.gmail.javacoded78.projection.NotificationProjection;
+import com.gmail.javacoded78.projection.RetweetProjection;
+import com.gmail.javacoded78.projection.RetweetsProjection;
+import com.gmail.javacoded78.projection.TweetImageProjection;
+import com.gmail.javacoded78.projection.TweetProjection;
+import com.gmail.javacoded78.projection.TweetUserProjection;
+import com.gmail.javacoded78.projection.TweetsProjection;
+import com.gmail.javacoded78.projection.TweetsUserProjection;
+import com.gmail.javacoded78.projection.UserProjection;
+import com.gmail.javacoded78.repository.BookmarkRepository;
+import com.gmail.javacoded78.repository.LikeTweetRepository;
+import com.gmail.javacoded78.repository.NotificationRepository;
+import com.gmail.javacoded78.repository.RetweetRepository;
+import com.gmail.javacoded78.repository.UserRepository;
+import com.gmail.javacoded78.repository.projection.AuthUserProjection;
+import com.gmail.javacoded78.repository.projection.BaseUserProjection;
+import com.gmail.javacoded78.repository.projection.BlockedUserProjection;
+import com.gmail.javacoded78.repository.projection.BookmarkProjection;
+import com.gmail.javacoded78.repository.projection.FollowerUserProjection;
+import com.gmail.javacoded78.repository.projection.MutedUserProjection;
+import com.gmail.javacoded78.repository.projection.SameFollower;
+import com.gmail.javacoded78.repository.projection.TweetAuthorProjection;
+import com.gmail.javacoded78.repository.projection.UserDetailProjection;
+import com.gmail.javacoded78.repository.projection.UserProfileProjection;
+import com.gmail.javacoded78.service.AuthenticationService;
+import com.gmail.javacoded78.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.support.PagedListHolder;
 import org.springframework.data.domain.Page;
@@ -388,19 +425,6 @@ public class UserServiceImpl implements UserService {
     public Page<FollowerUserProjection> getFollowerRequests(Pageable pageable) {
         Long authUserId = authenticationService.getAuthenticatedUserId();
         return userRepository.getFollowerRequests(authUserId, pageable);
-    }
-
-    @Override
-    public List<Long> getUserFollowersIds() {
-        Long authUserId = authenticationService.getAuthenticatedUserId();
-        List<Long> userFollowersIds = userRepository.getUserFollowersIds(authUserId);
-        userFollowersIds.add(authUserId);
-        return userFollowersIds;
-    }
-
-    @Override
-    public void saveUser(User user) {
-        userRepository.save(user);
     }
 
     private void checkIsUserExist(Long userId) {

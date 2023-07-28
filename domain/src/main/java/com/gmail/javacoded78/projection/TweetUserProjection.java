@@ -2,7 +2,6 @@ package com.gmail.javacoded78.projection;
 
 import com.gmail.javacoded78.enums.LinkCoverSize;
 import com.gmail.javacoded78.enums.ReplyType;
-import com.gmail.javacoded78.repository.projection.ImageProjection;
 import org.springframework.beans.factory.annotation.Value;
 
 import java.time.LocalDateTime;

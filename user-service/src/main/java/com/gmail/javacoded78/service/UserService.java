@@ -1,7 +1,23 @@
 package com.gmail.javacoded78.service;
 
 import com.gmail.javacoded78.models.User;
+import com.gmail.javacoded78.projection.LikeTweetProjection;
+import com.gmail.javacoded78.projection.NotificationInfoProjection;
+import com.gmail.javacoded78.projection.NotificationProjection;
+import com.gmail.javacoded78.projection.TweetImageProjection;
+import com.gmail.javacoded78.projection.TweetProjection;
+import com.gmail.javacoded78.projection.TweetUserProjection;
+import com.gmail.javacoded78.projection.TweetsProjection;
+import com.gmail.javacoded78.projection.UserProjection;
 import com.gmail.javacoded78.repository.projection.AuthUserProjection;
+import com.gmail.javacoded78.repository.projection.BaseUserProjection;
+import com.gmail.javacoded78.repository.projection.BlockedUserProjection;
+import com.gmail.javacoded78.repository.projection.BookmarkProjection;
+import com.gmail.javacoded78.repository.projection.FollowerUserProjection;
+import com.gmail.javacoded78.repository.projection.MutedUserProjection;
+import com.gmail.javacoded78.repository.projection.TweetAuthorProjection;
+import com.gmail.javacoded78.repository.projection.UserDetailProjection;
+import com.gmail.javacoded78.repository.projection.UserProfileProjection;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -75,8 +91,4 @@ public interface UserService {
     UserDetailProjection getUserDetails(Long userId);
 
     Page<FollowerUserProjection> getFollowerRequests(Pageable pageable);
-
-    List<Long> getUserFollowersIds();
-
-    void saveUser(User user);
 }

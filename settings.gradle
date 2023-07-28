@@ -6,10 +6,8 @@ pluginManagement {
     }
 }
 rootProject.name = 'L-Atwitter'
-include 'common'
-include 'eureka'
-include 'topic'
-include 'twitter'
+include 'eureka-server'
+//include 'twitter'
 include 'api-gateway'
 include 'common-util'
 include 'domain'
@@ -20,4 +18,6 @@ include 'user-service'
 include 'client'
 include 'image-service'
 include 'tweet-service'
+include 'lists-service'
+include 'tag-service'
 

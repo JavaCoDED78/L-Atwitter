@@ -1,6 +1,5 @@
 package com.gmail.javacoded78.projection;
 
-import com.gmail.javacoded78.projection.ImageProjection;
 import org.springframework.beans.factory.annotation.Value;
 
 public interface UserProjection {

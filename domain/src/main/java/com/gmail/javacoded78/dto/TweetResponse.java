@@ -1,7 +1,6 @@
 package com.gmail.javacoded78.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.gmail.javacoded78.dto.response.ImageResponse;
 import com.gmail.javacoded78.enums.LinkCoverSize;
 import com.gmail.javacoded78.enums.ReplyType;
 import lombok.Getter;
