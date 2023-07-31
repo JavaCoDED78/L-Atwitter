@@ -1,30 +1,25 @@
 package com.gmail.javacoded78.mapper;
 
-import brave.internal.collect.Lists;
 import com.gmail.javacoded78.dto.HeaderResponse;
 import com.gmail.javacoded78.dto.TweetResponse;
 import com.gmail.javacoded78.dto.request.ListsRequest;
 import com.gmail.javacoded78.dto.request.UserToListsRequest;
 import com.gmail.javacoded78.dto.response.BaseListResponse;
-import com.gmail.javacoded78.dto.response.ListMemberResponse;
+import com.gmail.javacoded78.dto.lists.ListMemberResponse;
 import com.gmail.javacoded78.dto.response.ListResponse;
 import com.gmail.javacoded78.dto.response.ListUserResponse;
-import com.gmail.javacoded78.dto.response.ListsOwnerMemberResponse;
 import com.gmail.javacoded78.dto.response.PinnedListResponse;
 import com.gmail.javacoded78.dto.response.SimpleListResponse;
+import com.gmail.javacoded78.model.Lists;
 import com.gmail.javacoded78.repository.projection.BaseListProjection;
-import com.gmail.javacoded78.repository.projection.ListMemberProjection;
 import com.gmail.javacoded78.repository.projection.ListProjection;
 import com.gmail.javacoded78.repository.projection.ListUserProjection;
-import com.gmail.javacoded78.repository.projection.ListsOwnerMemberProjection;
-import com.gmail.javacoded78.repository.projection.pinned.PinnedListProjection;
+import com.gmail.javacoded78.repository.projection.PinnedListProjection;
 import com.gmail.javacoded78.service.ListsService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -123,41 +118,14 @@ public class ListsMapper {
     }
 
     public List<ListMemberResponse> getListFollowers(Long listId, Long listOwnerId) {
-        List<ListMemberProjection> followers = listsService.getListFollowers(listId, listOwnerId);
-        return basicMapper.convertToResponseList(followers, ListMemberResponse.class);
+        return listsService.getListFollowers(listId, listOwnerId);
     }
 
-    public List<?> getListMembers(Long listId, Long listOwnerId) {
-        Map<String, Object> listMembers = listsService.getListMembers(listId, listOwnerId);
-
-        if (listMembers.get("userMembers") != null) {
-            List<ListMemberProjection> userMembers = (List<ListMemberProjection>) listMembers.get("userMembers");
-            return basicMapper.convertToResponseList(userMembers, ListMemberResponse.class);
-        } else {
-            List<ListsOwnerMemberProjection> userMembers = (List<ListsOwnerMemberProjection>) listMembers.get("authUserMembers");
-
-            if (userMembers.get(0).getMember() == null) {
-                return new ArrayList<>();
-            } else {
-                List<ListsOwnerMemberResponse> members = new ArrayList<>();
-                userMembers.forEach(listsMemberProjection -> {
-                    ListsOwnerMemberResponse member = basicMapper.convertToResponse(listsMemberProjection.getMember(), ListsOwnerMemberResponse.class);
-                    member.setMemberInList(listsMemberProjection.getIsMemberInList());
-                    members.add(member);
-                });
-                return members;
-            }
-        }
+    public List<ListMemberResponse> getListMembers(Long listId, Long listOwnerId) {
+        return listsService.getListMembers(listId, listOwnerId);
     }
 
-    public List<ListsOwnerMemberResponse> searchListMembersByUsername(Long listId, String username) {
-        List<Map<String, Object>> userMembers = listsService.searchListMembersByUsername(listId, username);
-        return userMembers.stream()
-                .map(userMemberMap -> {
-                    ListsOwnerMemberResponse member = basicMapper.convertToResponse(userMemberMap.get("member"), ListsOwnerMemberResponse.class);
-                    member.setMemberInList((Boolean) userMemberMap.get("isMemberInList"));
-                    return member;
-                })
-                .collect(Collectors.toList());
+    public List<ListMemberResponse> searchListMembersByUsername(Long listId, String username) {
+        return listsService.searchListMembersByUsername(listId, username);
     }
 }

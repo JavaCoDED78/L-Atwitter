@@ -1,6 +1,7 @@
 package com.gmail.javacoded78.service;
 
-import com.gmail.javacoded78.client.user.UserIdsRequest;
+import com.gmail.javacoded78.common.dto.common_new.UserIdsRequest;
+import com.gmail.javacoded78.common.dto.common_new.ListMemberResponse;
 import com.gmail.javacoded78.common.dto.common_new.ListOwnerResponse;
 import com.gmail.javacoded78.common.models.User;
 import com.gmail.javacoded78.common.projection.UserChatProjection;
@@ -51,4 +52,8 @@ public interface UserClientService {
     void saveUser(User user);
     // NEW
     ListOwnerResponse getListOwnerById(Long userId);
+
+    List<ListMemberResponse> getListParticipantsByIds(UserIdsRequest request);
+
+    List<ListMemberResponse> searchListMembersByUsername(String username);
 }

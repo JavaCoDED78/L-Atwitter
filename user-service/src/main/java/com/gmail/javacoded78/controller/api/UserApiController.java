@@ -1,7 +1,8 @@
 package com.gmail.javacoded78.controller.api;
 
 
-import com.gmail.javacoded78.client.user.UserIdsRequest;
+import com.gmail.javacoded78.common.dto.common_new.UserIdsRequest;
+import com.gmail.javacoded78.common.dto.common_new.ListMemberResponse;
 import com.gmail.javacoded78.common.dto.common_new.ListOwnerResponse;
 import com.gmail.javacoded78.common.models.User;
 import com.gmail.javacoded78.common.projection.UserChatProjection;
@@ -128,5 +129,15 @@ public class UserApiController {
     @GetMapping("/list/owner/{userId}")
     public ListOwnerResponse getListOwnerById(@PathVariable("userId") Long userId) {
         return userService.getListOwnerById(userId);
+    }
+
+    @PostMapping("/list/participants")
+    public List<ListMemberResponse> getListParticipantsByIds(@RequestBody UserIdsRequest request) {
+        return userService.getListParticipantsByIds(request);
+    }
+
+    @GetMapping("/list/participants/{username}")
+    public List<ListMemberResponse> searchListMembersByUsername(@PathVariable("username") String username) {
+        return userService.searchListMembersByUsername(username);
     }
 }

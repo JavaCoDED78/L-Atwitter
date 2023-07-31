@@ -5,7 +5,7 @@ import com.gmail.javacoded78.dto.TweetResponse;
 import com.gmail.javacoded78.dto.request.ListsRequest;
 import com.gmail.javacoded78.dto.request.UserToListsRequest;
 import com.gmail.javacoded78.dto.response.BaseListResponse;
-import com.gmail.javacoded78.dto.response.ListMemberResponse;
+import com.gmail.javacoded78.dto.lists.ListMemberResponse;
 import com.gmail.javacoded78.dto.response.ListResponse;
 import com.gmail.javacoded78.dto.response.ListUserResponse;
 import com.gmail.javacoded78.dto.response.ListsOwnerMemberResponse;
@@ -133,14 +133,14 @@ public class ListsController {
     }
 
     @GetMapping("/{listId}/{listOwnerId}/members")
-    public ResponseEntity<List<?>> getListMembers(@PathVariable("listId") Long listId,
-                                                  @PathVariable("listOwnerId") Long listOwnerId) {
+    public ResponseEntity<List<ListMemberResponse>> getListMembers(@PathVariable("listId") Long listId,
+                                                                   @PathVariable("listOwnerId") Long listOwnerId) {
         return ResponseEntity.ok(listsMapper.getListMembers(listId, listOwnerId));
     }
 
     @GetMapping("/search/{listId}/{username}")
-    public ResponseEntity<List<ListsOwnerMemberResponse>> searchListMembersByUsername(@PathVariable("listId") Long listId,
-                                                                                      @PathVariable("username") String username) {
+    public ResponseEntity<List<ListMemberResponse>> searchListMembersByUsername(@PathVariable("listId") Long listId,
+                                                                                @PathVariable("username") String username) {
         return ResponseEntity.ok(listsMapper.searchListMembersByUsername(listId, username));
     }
 }

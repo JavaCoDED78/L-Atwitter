@@ -2,13 +2,13 @@ package com.gmail.javacoded78.service;
 
 import com.gmail.javacoded78.dto.HeaderResponse;
 import com.gmail.javacoded78.dto.TweetResponse;
+import com.gmail.javacoded78.dto.lists.ListMemberResponse;
 import com.gmail.javacoded78.dto.request.UserToListsRequest;
 import com.gmail.javacoded78.model.Lists;
 import com.gmail.javacoded78.repository.projection.BaseListProjection;
-import com.gmail.javacoded78.repository.projection.ListMemberProjection;
 import com.gmail.javacoded78.repository.projection.ListProjection;
 import com.gmail.javacoded78.repository.projection.ListUserProjection;
-import com.gmail.javacoded78.repository.projection.pinned.PinnedListProjection;
+import com.gmail.javacoded78.repository.projection.PinnedListProjection;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
@@ -48,9 +48,9 @@ public interface ListsService {
 
     BaseListProjection getListDetails(Long listId);
 
-    List<ListMemberProjection> getListFollowers(Long listId, Long listOwnerId);
+    List<ListMemberResponse> getListFollowers(Long listId, Long listOwnerId);
 
-    Map<String, Object> getListMembers(Long listId, Long listOwnerId);
+    List<ListMemberResponse> getListMembers(Long listId, Long listOwnerId);
 
-    List<Map<String, Object>> searchListMembersByUsername(Long listId, String username);
+    List<ListMemberResponse> searchListMembersByUsername(Long listId, String username);
 }

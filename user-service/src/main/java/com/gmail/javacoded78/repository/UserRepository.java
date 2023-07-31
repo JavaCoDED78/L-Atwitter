@@ -9,6 +9,7 @@ import com.gmail.javacoded78.repository.projection.AuthNotificationUserProjectio
 import com.gmail.javacoded78.repository.projection.AuthUserProjection;
 import com.gmail.javacoded78.repository.projection.BlockedUserProjection;
 import com.gmail.javacoded78.repository.projection.FollowerUserProjection;
+import com.gmail.javacoded78.repository.projection.ListMemberProjection;
 import com.gmail.javacoded78.repository.projection.MutedUserProjection;
 import com.gmail.javacoded78.repository.projection.NotificationUserProjection;
 import com.gmail.javacoded78.repository.projection.TweetAuthorProjection;
@@ -285,4 +286,12 @@ public interface UserRepository extends JpaRepository<User, Long> {
     // NEW
     @Query("SELECT user FROM User user WHERE user.id = :userId")
     ListOwnerProjection getListOwnerById(@Param("userId") Long userId);
+
+    @Query("SELECT user FROM User user WHERE user.id IN :userIds")
+    List<ListMemberProjection> getUsersByIds(@Param("userIds") List<Long> userIds);
+
+    @Query("SELECT user FROM User user " +
+            "WHERE UPPER(user.fullName) LIKE UPPER(CONCAT('%',:username,'%')) AND user.active = true " +
+            "OR UPPER(user.username) LIKE UPPER(CONCAT('%',:username,'%')) AND user.active = true")
+    List<ListMemberProjection> searchListMembersByUsername(@Param("username") String username);
 }

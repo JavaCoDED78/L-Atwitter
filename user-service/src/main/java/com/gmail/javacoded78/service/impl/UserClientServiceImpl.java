@@ -1,6 +1,9 @@
 package com.gmail.javacoded78.service.impl;
 
-import com.gmail.javacoded78.client.user.UserIdsRequest;
+
+
+import com.gmail.javacoded78.common.dto.common_new.UserIdsRequest;
+import com.gmail.javacoded78.common.dto.common_new.ListMemberResponse;
 import com.gmail.javacoded78.common.dto.common_new.ListOwnerResponse;
 import com.gmail.javacoded78.common.exception.ApiRequestException;
 import com.gmail.javacoded78.common.mapper.BasicMapper;
@@ -10,6 +13,7 @@ import com.gmail.javacoded78.common.projection.common_new.ListOwnerProjection;
 import com.gmail.javacoded78.common.util.AuthUtil;
 import com.gmail.javacoded78.repository.UserRepository;
 import com.gmail.javacoded78.repository.projection.AuthNotificationUserProjection;
+import com.gmail.javacoded78.repository.projection.ListMemberProjection;
 import com.gmail.javacoded78.repository.projection.NotificationUserProjection;
 import com.gmail.javacoded78.repository.projection.UserSubscriberProjection;
 import com.gmail.javacoded78.service.AuthenticationService;
@@ -40,7 +44,7 @@ public class UserClientServiceImpl implements UserClientService {
 
     @Override
     public List<User> getUsersByIds(UserIdsRequest request) {
-        return userRepository.findByIdIn(request.getUsersIds());
+        return userRepository.findByIdIn(request.getUserIds());
     }
 
     @Override
@@ -148,5 +152,17 @@ public class UserClientServiceImpl implements UserClientService {
     public ListOwnerResponse getListOwnerById(Long userId) {
         ListOwnerProjection user = userRepository.getListOwnerById(userId);
         return basicMapper.convertToResponse(user, ListOwnerResponse.class);
+    }
+
+    @Override
+    public List<ListMemberResponse> getListParticipantsByIds(UserIdsRequest request) {
+        List<ListMemberProjection> users = userRepository.getUsersByIds(request.getUserIds());
+        return basicMapper.convertToResponseList(users, ListMemberResponse.class);
+    }
+
+    @Override
+    public List<ListMemberResponse> searchListMembersByUsername(String username) {
+        List<ListMemberProjection> users = userRepository.searchListMembersByUsername(username);
+        return basicMapper.convertToResponseList(users, ListMemberResponse.class);
     }
 }

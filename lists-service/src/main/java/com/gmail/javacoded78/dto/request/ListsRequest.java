@@ -1,7 +1,5 @@
 package com.gmail.javacoded78.dto.request;
 
-import com.gmail.javacoded78.dto.lists.ListOwnerResponse;
-import com.gmail.javacoded78.dto.response.ListsWallpaperResponse;
 import lombok.Data;
 
 @Data

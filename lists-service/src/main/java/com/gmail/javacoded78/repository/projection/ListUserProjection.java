@@ -4,11 +4,12 @@ import com.gmail.javacoded78.projection.ListOwnerProjection;
 import org.springframework.beans.factory.annotation.Value;
 
 public interface ListUserProjection {
+
     Long getId();
     String getName();
     String getDescription();
     String getAltWallpaper();
-    ListsWallpaperProjection getWallpaper();
+    String getWallpaper();
     boolean getIsPrivate();
     Long getListOwnerId();
 
