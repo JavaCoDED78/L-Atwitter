@@ -1,6 +1,7 @@
 package com.gmail.javacoded78.client.tweet;
 
 import com.gmail.javacoded78.common.configuration.FeignConfiguration;
+import com.gmail.javacoded78.common.dto.HeaderResponse;
 import com.gmail.javacoded78.common.dto.TweetResponse;
 import com.gmail.javacoded78.common.models.Tweet;
 import com.gmail.javacoded78.common.projection.TweetImageProjection;
@@ -8,7 +9,9 @@ import com.gmail.javacoded78.common.projection.TweetProjection;
 import com.gmail.javacoded78.common.projection.TweetsProjection;
 import com.gmail.javacoded78.common.projection.TweetsUserProjection;
 import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.cloud.openfeign.SpringQueryMap;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -50,6 +53,6 @@ public interface TweetClient {
     @GetMapping(API_V1_TWEETS + "/tag")
     List<TweetResponse> getTweetsByTagName(@RequestParam("tagName") String tagName);
 
-    @GetMapping(API_V1_TWEETS + "/user/ids")
-    Page<TweetProjection> getTweetsByUserIds(@RequestBody TweetUserIdsRequest request);
+    @PostMapping(API_V1_TWEETS + "/user/ids")
+    HeaderResponse<TweetResponse> getTweetsByUserIds(@RequestBody TweetUserIdsRequest request, @SpringQueryMap Pageable pageable);
 }

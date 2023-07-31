@@ -21,7 +21,7 @@ import com.gmail.javacoded78.repository.projection.ListMemberProjection;
 import com.gmail.javacoded78.repository.projection.ListProjection;
 import com.gmail.javacoded78.repository.projection.ListUserProjection;
 import com.gmail.javacoded78.repository.projection.ListsOwnerMemberProjection;
-import com.gmail.javacoded78.repository.projection.PinnedListProjection;
+import com.gmail.javacoded78.repository.projection.pinned.PinnedListProjection;
 import com.gmail.javacoded78.service.ListsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -118,8 +118,7 @@ public class ListsMapper {
     }
 
     public HeaderResponse<TweetResponse> getTweetsByListId(Long listId, Pageable pageable) {
-        Page<TweetProjection> tweets = listsService.getTweetsByListId(listId, pageable);
-        return basicMapper.getHeaderResponse(tweets, TweetResponse.class);
+        return listsService.getTweetsByListId(listId, pageable);
     }
 
     public BaseListResponse getListDetails(Long listId) {

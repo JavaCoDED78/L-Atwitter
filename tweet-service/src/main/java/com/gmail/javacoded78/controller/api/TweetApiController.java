@@ -1,7 +1,9 @@
 package com.gmail.javacoded78.controller.api;
 
 import com.gmail.javacoded78.client.tweet.TweetUserIdsRequest;
+import com.gmail.javacoded78.common.dto.HeaderResponse;
 import com.gmail.javacoded78.common.dto.TweetResponse;
+import com.gmail.javacoded78.common.mapper.BasicMapper;
 import com.gmail.javacoded78.common.models.Tweet;
 import com.gmail.javacoded78.common.projection.TweetImageProjection;
 import com.gmail.javacoded78.common.projection.TweetProjection;
@@ -10,7 +12,9 @@ import com.gmail.javacoded78.mapper.TweetClientMapper;
 import com.gmail.javacoded78.service.TweetClientService;
 import com.gmail.javacoded78.client.tweet.TweetPageableRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cloud.openfeign.SpringQueryMap;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -31,6 +35,7 @@ public class TweetApiController {
 
     private final TweetClientService tweetClientService;
     private final TweetClientMapper tweetClientMapper;
+    private final BasicMapper basicMapper;
 
     @GetMapping("/{userId}")
     public Optional<Tweet> getTweetById(@PathVariable("userId") Long userId) {
@@ -77,8 +82,9 @@ public class TweetApiController {
         return tweetClientMapper.getTweetsByTagName(tagName);
     }
 
-    @GetMapping("/user/ids")
-    public Page<TweetProjection> getTweetsByUserIds(@RequestBody TweetUserIdsRequest request) {
-        return tweetClientService.getTweetsByUserIds(request);
+    @PostMapping("/user/ids")
+    public HeaderResponse<TweetResponse> getTweetsByUserIds(@RequestBody TweetUserIdsRequest request, @SpringQueryMap Pageable pageable) {
+        Page<TweetProjection> tweets = tweetClientService.getTweetsByUserIds(request, pageable);
+        return basicMapper.getHeaderResponse(tweets, TweetResponse.class);
     }
 }

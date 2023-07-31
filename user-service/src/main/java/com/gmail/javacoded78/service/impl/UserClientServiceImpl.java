@@ -1,15 +1,20 @@
 package com.gmail.javacoded78.service.impl;
 
 import com.gmail.javacoded78.client.user.UserIdsRequest;
+import com.gmail.javacoded78.common.exception.ApiRequestException;
+import com.gmail.javacoded78.common.mapper.BasicMapper;
 import com.gmail.javacoded78.common.models.User;
 import com.gmail.javacoded78.common.projection.UserChatProjection;
 import com.gmail.javacoded78.repository.UserRepository;
+import com.gmail.javacoded78.repository.projection.NotificationUserProjection;
 import com.gmail.javacoded78.service.AuthenticationService;
 import com.gmail.javacoded78.service.UserClientService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -19,6 +24,7 @@ import java.util.Optional;
 public class UserClientServiceImpl implements UserClientService {
 
     private final UserRepository userRepository;
+    private final BasicMapper basicMapper;
     private final AuthenticationService authenticationService;
     private final UserServiceImpl userService;
 
@@ -46,8 +52,10 @@ public class UserClientServiceImpl implements UserClientService {
     }
 
     @Override
-    public Optional<User> getValidUser(Long userId, Long authUserId) {
-        return userRepository.getValidUser(userId, authUserId);
+    public User getValidUser(Long userId, Long authUserId) {
+        NotificationUserProjection user = userRepository.getValidUser(userId, authUserId)
+                .orElseThrow(() -> new ApiRequestException("User not found", HttpStatus.NOT_FOUND));
+        return basicMapper.convertToResponse(user, User.class);
     }
 
     @Override
@@ -81,6 +89,13 @@ public class UserClientServiceImpl implements UserClientService {
     }
 
     @Override
+    @Transactional
+    public void increaseNotificationsCount(Long userId) {
+        userRepository.increaseNotificationsCount(userId);
+    }
+
+    @Override
+    @Transactional
     public void saveUser(User user) {
         userRepository.save(user);
     }

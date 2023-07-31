@@ -1,5 +1,7 @@
 package com.gmail.javacoded78.service;
 
+import com.gmail.javacoded78.common.dto.HeaderResponse;
+import com.gmail.javacoded78.common.dto.TweetResponse;
 import com.gmail.javacoded78.common.models.Lists;
 import com.gmail.javacoded78.common.projection.TweetProjection;
 import com.gmail.javacoded78.dto.request.UserToListsRequest;
@@ -7,7 +9,7 @@ import com.gmail.javacoded78.repository.projection.BaseListProjection;
 import com.gmail.javacoded78.repository.projection.ListMemberProjection;
 import com.gmail.javacoded78.repository.projection.ListProjection;
 import com.gmail.javacoded78.repository.projection.ListUserProjection;
-import com.gmail.javacoded78.repository.projection.PinnedListProjection;
+import com.gmail.javacoded78.repository.projection.pinned.PinnedListProjection;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -44,7 +46,7 @@ public interface ListsService {
 
     Map<String, Object> addUserToList(Long userId, Long listId);
 
-    Page<TweetProjection> getTweetsByListId(Long listId, Pageable pageable);
+    HeaderResponse<TweetResponse> getTweetsByListId(Long listId, Pageable pageable);
 
     BaseListProjection getListDetails(Long listId);
 

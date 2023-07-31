@@ -2,6 +2,7 @@ package com.gmail.javacoded78.service.impl;
 
 import com.gmail.javacoded78.client.email.EmailClient;
 import com.gmail.javacoded78.client.email.EmailRequest;
+import com.gmail.javacoded78.common.mapper.BasicMapper;
 import com.gmail.javacoded78.common.models.User;
 import com.gmail.javacoded78.dto.request.AuthenticationRequest;
 import com.gmail.javacoded78.dto.request.RegistrationRequest;
@@ -42,6 +43,12 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     @Override
     public Long getAuthenticatedUserId() {
         return getUserId();
+    }
+
+    @Override
+    public AuthUserProjection getAuthenticatedUserProjection() {
+        return userRepository.findAuthUserById(getUserId())
+                .orElseThrow(() -> new ApiRequestException("User not found", HttpStatus.NOT_FOUND));
     }
 
     @Override

@@ -49,7 +49,7 @@ public class UserApiController {
     }
 
     @GetMapping("/valid/{userId}/{authUserId}")
-    public Optional<User> getValidUser(@PathVariable("userId") Long userId, @PathVariable("authUserId") Long authUserId) {
+    public User getValidUser(@PathVariable("userId") Long userId, @PathVariable("authUserId") Long authUserId) {
         return userService.getValidUser(userId, authUserId);
     }
 
@@ -81,6 +81,11 @@ public class UserApiController {
     @GetMapping("/is_approved/{userId}")
     public Boolean isMyProfileWaitingForApprove(@PathVariable("userId") Long userId) {
         return userService.isMyProfileWaitingForApprove(userId);
+    }
+
+    @GetMapping("/notification/{userId}")
+    public void increaseNotificationsCount(@PathVariable("userId") Long userId) {
+        userService.increaseNotificationsCount(userId);
     }
 
     @PostMapping
