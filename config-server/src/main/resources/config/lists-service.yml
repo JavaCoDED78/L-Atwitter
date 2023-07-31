@@ -4,7 +4,7 @@ spring:
   application:
     name: lists-service
   datasource:
-    url: jdbc:postgresql://localhost:5432/twitter
+    url: jdbc:postgresql://localhost:5432/lists
     username: postgres
     password: pass
     driver-class-name: org.postgresql.Driver
@@ -20,7 +20,7 @@ spring:
     generate-ddl: false
     show-sql: false
   flyway:
-    locations: classpath:db/migration
+    locations: classpath:db/migration/lists
   zipkin:
     base-url: http://localhost:9411
   rabbitmq:

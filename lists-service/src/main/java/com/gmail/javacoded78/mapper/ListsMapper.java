@@ -1,12 +1,8 @@
 package com.gmail.javacoded78.mapper;
 
-import com.gmail.javacoded78.common.dto.HeaderResponse;
-import com.gmail.javacoded78.common.dto.NotificationResponse;
-import com.gmail.javacoded78.common.dto.TweetResponse;
-import com.gmail.javacoded78.common.mapper.BasicMapper;
-import com.gmail.javacoded78.common.models.Lists;
-import com.gmail.javacoded78.common.models.Notification;
-import com.gmail.javacoded78.common.projection.TweetProjection;
+import brave.internal.collect.Lists;
+import com.gmail.javacoded78.dto.HeaderResponse;
+import com.gmail.javacoded78.dto.TweetResponse;
 import com.gmail.javacoded78.dto.request.ListsRequest;
 import com.gmail.javacoded78.dto.request.UserToListsRequest;
 import com.gmail.javacoded78.dto.response.BaseListResponse;
@@ -109,13 +105,13 @@ public class ListsMapper {
         return listsService.addUserToLists(userToListsRequest);
     }
 
-    public NotificationResponse addUserToList(Long userId, Long listId) {
-        Map<String, Object> notificationDetails = listsService.addUserToList(userId, listId);
-        Notification notification = (Notification) notificationDetails.get("notification");
-        NotificationResponse notificationResponse = basicMapper.convertToResponse(notification, NotificationResponse.class);
-        notificationResponse.setAddedToList((Boolean) notificationDetails.get("isAddedToList"));
-        return notificationResponse;
-    }
+//    public NotificationResponse addUserToList(Long userId, Long listId) {
+//        Map<String, Object> notificationDetails = listsService.addUserToList(userId, listId);
+//        Notification notification = (Notification) notificationDetails.get("notification");
+//        NotificationResponse notificationResponse = basicMapper.convertToResponse(notification, NotificationResponse.class);
+//        notificationResponse.setAddedToList((Boolean) notificationDetails.get("isAddedToList"));
+//        return notificationResponse;
+//    }
 
     public HeaderResponse<TweetResponse> getTweetsByListId(Long listId, Pageable pageable) {
         return listsService.getTweetsByListId(listId, pageable);

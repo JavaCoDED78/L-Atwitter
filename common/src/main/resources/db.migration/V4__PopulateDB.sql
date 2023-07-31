@@ -137,13 +137,13 @@ INSERT INTO chat_messages (id, date, text, user_id, chat_id, tweet_id) VALUES (3
 INSERT INTO chat_messages (id, date, text, user_id, chat_id, tweet_id) VALUES (4, '2021-10-16 16:42:50.000000', 'Good)', 1, 1, 14);
 -- unread_messages
 INSERT INTO unread_messages (user_id, chat_message_id) VALUES (2, 4);
--- lists
-INSERT INTO lists (id, alt_wallpaper, description, private, name, user_id, wallpaper_id) VALUES (3, 'https://pbs.twimg.com/media/EXZ27UwVcAIcDfd?format=png&name=small', 'Hello from my list', false, 'Hello World!', 2, null);
-INSERT INTO lists (id, alt_wallpaper, description, private, name, user_id, wallpaper_id) VALUES (2, 'https://pbs.twimg.com/media/EXZ2w_qUcAMwN3x?format=png&name=small', 'Some description', false, 'Internal', 1, null);
-INSERT INTO lists (id, alt_wallpaper, description, private, name, user_id, wallpaper_id) VALUES (1, 'https://pbs.twimg.com/media/EXZ1_hkUYAA56JA?format=png&name=small', 'Random List Description', false, 'Random List', 1, null);
--- lists_members
-INSERT INTO lists_members (lists_id, members_id) VALUES (1, 4);
-INSERT INTO lists_members (lists_id, members_id) VALUES (1, 2);
+-- -- lists
+-- INSERT INTO lists (id, alt_wallpaper, description, private, name, user_id, wallpaper_id) VALUES (3, 'https://pbs.twimg.com/media/EXZ27UwVcAIcDfd?format=png&name=small', 'Hello from my list', false, 'Hello World!', 2, null);
+-- INSERT INTO lists (id, alt_wallpaper, description, private, name, user_id, wallpaper_id) VALUES (2, 'https://pbs.twimg.com/media/EXZ2w_qUcAMwN3x?format=png&name=small', 'Some description', false, 'Internal', 1, null);
+-- INSERT INTO lists (id, alt_wallpaper, description, private, name, user_id, wallpaper_id) VALUES (1, 'https://pbs.twimg.com/media/EXZ1_hkUYAA56JA?format=png&name=small', 'Random List Description', false, 'Random List', 1, null);
+-- -- lists_members
+-- INSERT INTO lists_members (lists_id, members_id) VALUES (1, 4);
+-- INSERT INTO lists_members (lists_id, members_id) VALUES (1, 2);
 -- notifications
 INSERT INTO notifications (id, date, notification_type, tweet_id, user_id, user_to_follow_id, list_id, notified_user_id) VALUES (1, '2021-10-15 21:36:52.000000', 'LIKE', 1, 2, null, null, 1);
 INSERT INTO notifications (id, date, notification_type, tweet_id, user_id, user_to_follow_id, list_id, notified_user_id) VALUES (2, '2021-10-15 21:37:01.000000', 'LIKE', 2, 2, null, null, 1);
@@ -197,32 +197,32 @@ INSERT INTO users_notifications (user_id, notifications_id) VALUES (1, 4);
 INSERT INTO users_notifications (user_id, notifications_id) VALUES (1, 3);
 INSERT INTO users_notifications (user_id, notifications_id) VALUES (1, 2);
 INSERT INTO users_notifications (user_id, notifications_id) VALUES (1, 1);
--- topics
-INSERT INTO topics (id, topic_category, topic_name) VALUES (1001, null, 'Elon Musk');
-INSERT INTO topics (id, topic_category, topic_name) VALUES (1002, null, 'Technology');
-INSERT INTO topics (id, topic_category, topic_name) VALUES (1003, null, 'Web development');
-INSERT INTO topics (id, topic_category, topic_name) VALUES (1004, null, 'Entertainment');
-INSERT INTO topics (id, topic_category, topic_name) VALUES (1005, null, 'Digital creators');
-INSERT INTO topics (id, topic_category, topic_name) VALUES (1006, null, 'Kanye West');
-INSERT INTO topics (id, topic_category, topic_name) VALUES (1007, 'GAMING', 'Animal Crossing');
-INSERT INTO topics (id, topic_category, topic_name) VALUES (1008, 'GAMING', 'Minecraft');
-INSERT INTO topics (id, topic_category, topic_name) VALUES (1009, 'GAMING', 'MrBeast');
-INSERT INTO topics (id, topic_category, topic_name) VALUES (1010, 'GAMING', 'PewDiePie');
-INSERT INTO topics (id, topic_category, topic_name) VALUES (1011, null, 'Science');
-INSERT INTO topics (id, topic_category, topic_name) VALUES (1012, null, 'Cats');
-INSERT INTO topics (id, topic_category, topic_name) VALUES (1013, null, 'Dogs');
-INSERT INTO topics (id, topic_category, topic_name) VALUES (1014, null, 'Bitcoin');
-INSERT INTO topics (id, topic_category, topic_name) VALUES (1015, null, 'Science');
-INSERT INTO topics (id, topic_category, topic_name) VALUES (1016, null, 'Xbox');
-INSERT INTO topics (id, topic_category, topic_name) VALUES (1017, 'GAMING', 'Game');
-INSERT INTO topics (id, topic_category, topic_name) VALUES (1018, 'GAMING', 'Cyberpunk 2077');
-INSERT INTO topics (id, topic_category, topic_name) VALUES (1019, 'ONLY_ON_TWITTER', 'Funny Tweets');
-INSERT INTO topics (id, topic_category, topic_name) VALUES (1020, 'ONLY_ON_TWITTER', 'Viral Tweets');
-INSERT INTO topics (id, topic_category, topic_name) VALUES (1021, 'ONLY_ON_TWITTER', 'Based on your searches');
-INSERT INTO topics (id, topic_category, topic_name) VALUES (1022, 'ONLY_ON_TWITTER', 'Spaces You Might Like');
-INSERT INTO topics (id, topic_category, topic_name) VALUES (1023, 'ONLY_ON_TWITTER', 'Popular images');
-INSERT INTO topics (id, topic_category, topic_name) VALUES (1024, 'ONLY_ON_TWITTER', 'Popular videos');
-INSERT INTO topics (id, topic_category, topic_name) VALUES (1025, 'ONLY_ON_TWITTER', 'Days of celebration');
-INSERT INTO topics (id, topic_category, topic_name) VALUES (1026, 'ONLY_ON_TWITTER', 'On this day');
-INSERT INTO topics (id, topic_category, topic_name) VALUES (1027, 'GAMING', 'Game development');
-INSERT INTO topics (id, topic_category, topic_name) VALUES (1028, 'GAMING', 'Among Us');
+-- -- topics
+-- INSERT INTO topics (id, topic_category, topic_name) VALUES (1001, null, 'Elon Musk');
+-- INSERT INTO topics (id, topic_category, topic_name) VALUES (1002, null, 'Technology');
+-- INSERT INTO topics (id, topic_category, topic_name) VALUES (1003, null, 'Web development');
+-- INSERT INTO topics (id, topic_category, topic_name) VALUES (1004, null, 'Entertainment');
+-- INSERT INTO topics (id, topic_category, topic_name) VALUES (1005, null, 'Digital creators');
+-- INSERT INTO topics (id, topic_category, topic_name) VALUES (1006, null, 'Kanye West');
+-- INSERT INTO topics (id, topic_category, topic_name) VALUES (1007, 'GAMING', 'Animal Crossing');
+-- INSERT INTO topics (id, topic_category, topic_name) VALUES (1008, 'GAMING', 'Minecraft');
+-- INSERT INTO topics (id, topic_category, topic_name) VALUES (1009, 'GAMING', 'MrBeast');
+-- INSERT INTO topics (id, topic_category, topic_name) VALUES (1010, 'GAMING', 'PewDiePie');
+-- INSERT INTO topics (id, topic_category, topic_name) VALUES (1011, null, 'Science');
+-- INSERT INTO topics (id, topic_category, topic_name) VALUES (1012, null, 'Cats');
+-- INSERT INTO topics (id, topic_category, topic_name) VALUES (1013, null, 'Dogs');
+-- INSERT INTO topics (id, topic_category, topic_name) VALUES (1014, null, 'Bitcoin');
+-- INSERT INTO topics (id, topic_category, topic_name) VALUES (1015, null, 'Science');
+-- INSERT INTO topics (id, topic_category, topic_name) VALUES (1016, null, 'Xbox');
+-- INSERT INTO topics (id, topic_category, topic_name) VALUES (1017, 'GAMING', 'Game');
+-- INSERT INTO topics (id, topic_category, topic_name) VALUES (1018, 'GAMING', 'Cyberpunk 2077');
+-- INSERT INTO topics (id, topic_category, topic_name) VALUES (1019, 'ONLY_ON_TWITTER', 'Funny Tweets');
+-- INSERT INTO topics (id, topic_category, topic_name) VALUES (1020, 'ONLY_ON_TWITTER', 'Viral Tweets');
+-- INSERT INTO topics (id, topic_category, topic_name) VALUES (1021, 'ONLY_ON_TWITTER', 'Based on your searches');
+-- INSERT INTO topics (id, topic_category, topic_name) VALUES (1022, 'ONLY_ON_TWITTER', 'Spaces You Might Like');
+-- INSERT INTO topics (id, topic_category, topic_name) VALUES (1023, 'ONLY_ON_TWITTER', 'Popular images');
+-- INSERT INTO topics (id, topic_category, topic_name) VALUES (1024, 'ONLY_ON_TWITTER', 'Popular videos');
+-- INSERT INTO topics (id, topic_category, topic_name) VALUES (1025, 'ONLY_ON_TWITTER', 'Days of celebration');
+-- INSERT INTO topics (id, topic_category, topic_name) VALUES (1026, 'ONLY_ON_TWITTER', 'On this day');
+-- INSERT INTO topics (id, topic_category, topic_name) VALUES (1027, 'GAMING', 'Game development');
+-- INSERT INTO topics (id, topic_category, topic_name) VALUES (1028, 'GAMING', 'Among Us');

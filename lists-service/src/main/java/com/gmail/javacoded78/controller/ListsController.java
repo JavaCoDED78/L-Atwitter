@@ -1,8 +1,7 @@
 package com.gmail.javacoded78.controller;
 
-import com.gmail.javacoded78.common.dto.HeaderResponse;
-import com.gmail.javacoded78.common.dto.NotificationResponse;
-import com.gmail.javacoded78.common.dto.TweetResponse;
+import com.gmail.javacoded78.dto.HeaderResponse;
+import com.gmail.javacoded78.dto.TweetResponse;
 import com.gmail.javacoded78.dto.request.ListsRequest;
 import com.gmail.javacoded78.dto.request.UserToListsRequest;
 import com.gmail.javacoded78.dto.response.BaseListResponse;
@@ -29,7 +28,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-import static com.gmail.javacoded78.common.controller.PathConstants.UI_V1_LISTS;
+import static com.gmail.javacoded78.controller.PathConstants.UI_V1_LISTS;
 
 @RestController
 @RequiredArgsConstructor
@@ -106,12 +105,13 @@ public class ListsController {
 
     @GetMapping("/add/user/{userId}/{listId}")
     public ResponseEntity<Boolean> addUserToList(@PathVariable("userId") Long userId, @PathVariable("listId") Long listId) {
-        NotificationResponse notification = listsMapper.addUserToList(userId, listId);
-
-        if (notification.getId() != null) {
-            messagingTemplate.convertAndSend("/topic/notifications/" + notification.getUser().getId(), notification);
-        }
-        return ResponseEntity.ok(notification.isAddedToList());
+//        NotificationResponse notification = listsMapper.addUserToList(userId, listId);
+//
+//        if (notification.getId() != null) {
+//            messagingTemplate.convertAndSend("/topic/notifications/" + notification.getUser().getId(), notification);
+//        }
+//        return ResponseEntity.ok(notification.isAddedToList());
+        return null;
     }
 
     @GetMapping("/{listId}/tweets")

@@ -4,6 +4,7 @@ import com.gmail.javacoded78.common.enums.BackgroundColorType;
 import com.gmail.javacoded78.common.enums.ColorSchemeType;
 import com.gmail.javacoded78.common.models.User;
 import com.gmail.javacoded78.common.projection.UserProjection;
+import com.gmail.javacoded78.common.projection.common_new.ListOwnerProjection;
 import com.gmail.javacoded78.repository.projection.AuthNotificationUserProjection;
 import com.gmail.javacoded78.repository.projection.AuthUserProjection;
 import com.gmail.javacoded78.repository.projection.BlockedUserProjection;
@@ -280,4 +281,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Modifying
     @Query("UPDATE User user SET user.backgroundColor = :backgroundColor WHERE user.id = :userId")
     void updateBackgroundColor(@Param("backgroundColor") BackgroundColorType backgroundColorType, @Param("userId") Long userId);
+
+    // NEW
+    @Query("SELECT user FROM User user WHERE user.id = :userId")
+    ListOwnerProjection getListOwnerById(@Param("userId") Long userId);
 }

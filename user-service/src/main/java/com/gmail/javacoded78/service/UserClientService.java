@@ -1,6 +1,7 @@
 package com.gmail.javacoded78.service;
 
 import com.gmail.javacoded78.client.user.UserIdsRequest;
+import com.gmail.javacoded78.common.dto.common_new.ListOwnerResponse;
 import com.gmail.javacoded78.common.models.User;
 import com.gmail.javacoded78.common.projection.UserChatProjection;
 import org.springframework.data.domain.Page;
@@ -48,4 +49,6 @@ public interface UserClientService {
     void updateMediaTweetCount(boolean increaseCount);
 
     void saveUser(User user);
+    // NEW
+    ListOwnerResponse getListOwnerById(Long userId);
 }

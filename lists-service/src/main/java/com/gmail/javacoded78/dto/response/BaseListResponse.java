@@ -1,7 +1,7 @@
 package com.gmail.javacoded78.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.gmail.javacoded78.common.dto.ImageResponse;
+import com.gmail.javacoded78.dto.lists.ListOwnerResponse;
 import lombok.Data;
 
 @Data
@@ -11,10 +11,10 @@ public class BaseListResponse {
     private String name;
     private String description;
     private String altWallpaper;
-    private ImageResponse wallpaper;
+    private ListsWallpaperResponse wallpaper;
     private ListOwnerResponse listOwner;
-    private Integer membersSize;
-    private Integer followersSize;
+    private Long membersSize;
+    private Long followersSize;
 
     @JsonProperty("isPrivate")
     private boolean isPrivate;

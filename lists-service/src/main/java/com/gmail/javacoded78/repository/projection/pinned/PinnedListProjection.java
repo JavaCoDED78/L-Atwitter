@@ -1,12 +1,13 @@
 package com.gmail.javacoded78.repository.projection.pinned;
 
-import com.gmail.javacoded78.common.projection.ImageProjection;
+
+import com.gmail.javacoded78.repository.projection.ListsWallpaperProjection;
 
 public interface PinnedListProjection {
 
     Long getId();
     String getName();
     String getAltWallpaper();
-    ImageProjection getWallpaper();
+    ListsWallpaperProjection getWallpaper();
     boolean getIsPrivate();
 }

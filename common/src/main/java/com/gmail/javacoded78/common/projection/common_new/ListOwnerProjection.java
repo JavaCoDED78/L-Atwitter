@@ -1,4 +1,4 @@
-package com.gmail.javacoded78.repository.projection;
+package com.gmail.javacoded78.common.projection.common_new;
 
 
 import com.gmail.javacoded78.common.projection.ImageProjection;

@@ -1,10 +1,12 @@
 package com.gmail.javacoded78.service.impl;
 
 import com.gmail.javacoded78.client.user.UserIdsRequest;
+import com.gmail.javacoded78.common.dto.common_new.ListOwnerResponse;
 import com.gmail.javacoded78.common.exception.ApiRequestException;
 import com.gmail.javacoded78.common.mapper.BasicMapper;
 import com.gmail.javacoded78.common.models.User;
 import com.gmail.javacoded78.common.projection.UserChatProjection;
+import com.gmail.javacoded78.common.projection.common_new.ListOwnerProjection;
 import com.gmail.javacoded78.common.util.AuthUtil;
 import com.gmail.javacoded78.repository.UserRepository;
 import com.gmail.javacoded78.repository.projection.AuthNotificationUserProjection;
@@ -139,5 +141,12 @@ public class UserClientServiceImpl implements UserClientService {
     @Transactional
     public void saveUser(User user) {
         userRepository.save(user);
+    }
+
+    // NEW
+    @Override
+    public ListOwnerResponse getListOwnerById(Long userId) {
+        ListOwnerProjection user = userRepository.getListOwnerById(userId);
+        return basicMapper.convertToResponse(user, ListOwnerResponse.class);
     }
 }

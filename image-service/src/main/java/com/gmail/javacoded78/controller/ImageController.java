@@ -1,6 +1,5 @@
 package com.gmail.javacoded78.controller;
 
-import com.gmail.javacoded78.common.dto.ImageResponse;
 import com.gmail.javacoded78.common.models.Image;
 import com.gmail.javacoded78.mapper.ImageMapper;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +20,7 @@ public class ImageController {
     private final ImageMapper imageMapper;
 
     @PostMapping("/upload")
-    public ImageResponse uploadImage(@RequestPart("file") MultipartFile file) {
+    public String uploadImage(@RequestPart("file") MultipartFile file) {
         return imageMapper.uploadImage(file);
     }
 
