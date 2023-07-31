@@ -4,6 +4,7 @@ import com.gmail.javacoded78.common.enums.BackgroundColorType;
 import com.gmail.javacoded78.common.enums.ColorSchemeType;
 import com.gmail.javacoded78.common.models.User;
 import com.gmail.javacoded78.common.projection.UserProjection;
+import com.gmail.javacoded78.repository.projection.AuthNotificationUserProjection;
 import com.gmail.javacoded78.repository.projection.AuthUserProjection;
 import com.gmail.javacoded78.repository.projection.BlockedUserProjection;
 import com.gmail.javacoded78.repository.projection.FollowerUserProjection;
@@ -13,6 +14,7 @@ import com.gmail.javacoded78.repository.projection.TweetAuthorProjection;
 import com.gmail.javacoded78.repository.projection.UserCommonProjection;
 import com.gmail.javacoded78.repository.projection.UserDetailProjection;
 import com.gmail.javacoded78.repository.projection.UserProfileProjection;
+import com.gmail.javacoded78.repository.projection.UserSubscriberProjection;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -68,6 +70,9 @@ public interface UserRepository extends JpaRepository<User, Long> {
             "OR user.id = :userId AND following.id = :authUserId")
     Optional<NotificationUserProjection> getValidUser(@Param("userId") Long userId, @Param("authUserId") Long authUserId);
 
+    @Query("SELECT user FROM User user WHERE user.id = :authUserId")
+    AuthNotificationUserProjection getAuthNotificationUser(@Param("authUserId") Long authUserId);
+
     @Query("SELECT CASE WHEN count(user) > 0 THEN true ELSE false END FROM User user WHERE user.id = :userId")
     boolean isUserExist(@Param("userId") Long userId);
 
@@ -115,6 +120,17 @@ public interface UserRepository extends JpaRepository<User, Long> {
             "AND notification.notificationType = 'TWEET' " +
             "AND subscriber.id = :userId ")
     List<TweetAuthorProjection> getNotificationsTweetAuthors(@Param("userId") Long userId);
+
+    @Query("SELECT subscriber FROM User user " +
+            "LEFT JOIN user.subscribers subscriber " +
+            "WHERE user.id = :userId")
+    List<UserSubscriberProjection> getSubscribersByUserId(@Param("userId") Long userId);
+
+    @Query("SELECT CASE WHEN count(user) > 0 THEN true ELSE false END FROM User user " +
+            "LEFT JOIN user.following following " +
+            "WHERE user.id = :userId AND user.privateProfile = false " +
+            "OR user.id = :userId AND user.privateProfile = true AND following.id = :authUserId")
+    boolean isUserHavePrivateProfile(@Param("userId") Long userId, @Param("authUserId") Long authUserId);
 
     @Query("SELECT CASE WHEN count(blockedUser) > 0 THEN true ELSE false END FROM User user " +
             "LEFT JOIN user.userBlockedList blockedUser " +
@@ -183,6 +199,27 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Modifying
     @Query("UPDATE User user SET user.notificationsCount = user.notificationsCount + 1 WHERE user.id = :userId")
     void increaseNotificationsCount(@Param("userId") Long userId);
+
+    @Modifying
+    @Query("UPDATE User user SET user.likeCount = " +
+            "CASE WHEN :increaseCount = true THEN (user.likeCount + 1) " +
+            "ELSE (user.likeCount - 1) END " +
+            "WHERE user.id = :userId")
+    void updateLikeCount(@Param("increaseCount") boolean increaseCount, @Param("userId") Long userId);
+
+    @Modifying
+    @Query("UPDATE User user SET user.tweetCount = " +
+            "CASE WHEN :increaseCount = true THEN (user.tweetCount + 1) " +
+            "ELSE (user.tweetCount - 1) END " +
+            "WHERE user.id = :userId")
+    void updateTweetCount(@Param("increaseCount") boolean increaseCount, @Param("userId") Long userId);
+
+    @Modifying
+    @Query("UPDATE User user SET user.mediaTweetCount = " +
+            "CASE WHEN :increaseCount = true THEN (user.mediaTweetCount + 1) " +
+            "ELSE (user.mediaTweetCount - 1) END " +
+            "WHERE user.id = :userId")
+    void updateMediaTweetCount(@Param("increaseCount") boolean increaseCount, @Param("userId") Long userId);
 
     @Modifying
     @Query("UPDATE User user SET user.email = :email WHERE user.id = :userId")

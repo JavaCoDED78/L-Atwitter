@@ -21,13 +21,12 @@ import java.time.LocalDateTime;
 @EqualsAndHashCode
 @Table(name = "retweets")
 public class Retweet {
-
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "retweets_seq")
     @SequenceGenerator(name = "retweets_seq", sequenceName = "retweets_seq", initialValue = 100, allocationSize = 1)
     private Long id;
 
-    @Column(name = "retweet_date")
+    @Column(name = "retweet_date", columnDefinition="timestamp default current_timestamp")
     private LocalDateTime retweetDate;
 
     @ManyToOne
@@ -37,8 +36,4 @@ public class Retweet {
     @ManyToOne
     @JoinColumn(name = "tweets_id")
     private Tweet tweet;
-
-    public Retweet() {
-        this.retweetDate = LocalDateTime.now().withNano(0);
-    }
 }

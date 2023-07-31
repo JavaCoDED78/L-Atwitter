@@ -142,7 +142,7 @@ public class User {
     private Image wallpaper;
 
     @ManyToMany
-    private List<Tweet> tweets;
+    private List<Tweet> tweets; // TODO DELETE
 
     @OneToMany(mappedBy = "user")
     private List<LikeTweet> likedTweets;
@@ -154,7 +154,7 @@ public class User {
     private List<Bookmark> bookmarks;
 
     @OneToMany
-    private List<Notification> notifications;
+    private List<Notification> notifications; // TODO DELETE
 
     @OneToMany(mappedBy = "user")
     private List<ChatParticipant> chats;

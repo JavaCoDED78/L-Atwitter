@@ -7,10 +7,13 @@ import com.gmail.javacoded78.common.projection.NotificationProjection;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Repository
@@ -29,6 +32,16 @@ public interface NotificationRepository extends JpaRepository<Notification, Long
     boolean isNotificationExists(@Param("userId") Long userId,
                                  @Param("listId") Long listId,
                                  @Param("notificationType") NotificationType type);
+
+    @Query("SELECT CASE WHEN count(notification) > 0 THEN true ELSE false END FROM Notification notification " +
+            "WHERE notification.notifiedUser.id = :userId " +
+            "AND notification.user.id = :authUserId " +
+            "AND notification.tweet.id = :tweetId " +
+            "AND notification.notificationType = :notificationType")
+    boolean isTweetNotificationExists(@Param("userId") Long userId,
+                                      @Param("authUserId") Long authUserId,
+                                      @Param("tweetId") Long tweetId,
+                                      @Param("notificationType") NotificationType type);
 
     @Query("SELECT n.id AS id, n.date AS date, n.notificationType AS notificationType, n.user AS user, n.tweet AS tweet " +
             "FROM User u " +

@@ -21,7 +21,13 @@ public interface UserClientService {
 
     User getValidUser(Long userId, Long authUserId);
 
+    User getAuthNotificationUser(Long authUserId);
+
+    List<User> getSubscribersByUserId(Long userId);
+
     Boolean isUserFollowByOtherUser(Long userId);
+
+    Boolean isUserHavePrivateProfile(Long userId);
 
     Boolean isUserMutedByMyProfile(Long userId);
 
@@ -34,6 +40,12 @@ public interface UserClientService {
     Boolean isMyProfileWaitingForApprove(Long userId);
 
     void increaseNotificationsCount(Long userId);
+
+    void updateLikeCount(boolean increase);
+
+    void updateTweetCount(boolean increaseCount);
+
+    void updateMediaTweetCount(boolean increaseCount);
 
     void saveUser(User user);
 }

@@ -9,6 +9,7 @@ import com.gmail.javacoded78.common.projection.UserProjection;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -25,6 +26,9 @@ public interface TweetRepository extends JpaRepository<Tweet, Long> {
 
     @Query("SELECT tweet FROM Tweet tweet WHERE tweet.id = :tweetId")
     Optional<TweetAdditionalInfoProjection> getTweetAdditionalInfoById(@Param("tweetId") Long tweetId);
+
+    @Query("SELECT tweet FROM Tweet tweet WHERE tweet.id = :tweetId")
+    Optional<Tweet> getTweetAuthorId(@Param("tweetId") Long tweetId);
 
     @Query("SELECT tweet FROM Tweet tweet " +
             "LEFT JOIN tweet.user user " +
@@ -127,13 +131,19 @@ public interface TweetRepository extends JpaRepository<Tweet, Long> {
             "ORDER BY notificationTweet.dateTime DESC")
     List<TweetsProjection> getNotificationsFromTweetAuthors(@Param("userId") Long userId);
 
-    @Query("SELECT tagTweet as tweet " +
-            "FROM Tag tag " +
-            "LEFT JOIN tag.tweets tagTweet " +
-            "WHERE tag.tagName = :tagName " +
-            "AND tagTweet.deleted = false " +
-            "ORDER BY tagTweet.dateTime DESC")
-    List<TweetsProjection> getTweetsByTagName(@Param("tagName") String tagName);
+//    @Query("SELECT tagTweet as tweet " +
+//            "FROM Tag tag " +
+//            "LEFT JOIN tag.tweets tagTweet " +
+//            "WHERE tag.tagName = :tagName " +
+//            "AND tagTweet.deleted = false " +
+//            "ORDER BY tagTweet.dateTime DESC")
+//    List<TweetsProjection> getTweetsByTagName(@Param("tagName") String tagName);
+
+    @Query("SELECT tweet FROM Tweet tweet " +
+            "WHERE tweet.id IN :tweetIds " +
+            "AND tweet.deleted = false " +
+            "ORDER BY tweet.dateTime DESC")
+    List<TweetProjection> getTweetsByIds(@Param("tweetIds") List<Long> tweetIds);
 
     @Query("SELECT u.id FROM Tweet tweet " +
             "LEFT JOIN tweet.retweets retweet " +
@@ -202,4 +212,8 @@ public interface TweetRepository extends JpaRepository<Tweet, Long> {
             "AND tweet.deleted = false " +
             "ORDER BY tweet.dateTime DESC")
     Page<TweetProjection> getUserMentions(@Param("userId") Long userId, Pageable pageable);
+
+    @Modifying
+    @Query(value = "INSERT INTO replies (tweets_id, reply_id) VALUES (?1, ?2)", nativeQuery = true)
+    void addReply(@Param("tweetId") Long tweetId, @Param("replyId") Long replyId);
 }

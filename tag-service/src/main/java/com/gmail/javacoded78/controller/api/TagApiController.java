@@ -3,6 +3,7 @@ package com.gmail.javacoded78.controller.api;
 import com.gmail.javacoded78.common.models.Tag;
 import com.gmail.javacoded78.service.TagClientService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -22,23 +23,13 @@ public class TagApiController {
 
     private final TagClientService tagClientService;
 
-    @GetMapping("/{tweetId}")
-    public List<Tag> getTagsByTweetId(@PathVariable("tweetId") Long tweetId) {
-        return tagClientService.getTagsByTweetId(tweetId);
+    @GetMapping("/parse/{text}/{tweetId}")
+    public void parseHashtagsInText(@PathVariable("text") String text, @PathVariable("tweetId") Long tweetId) {
+        tagClientService.parseHashtagsInText(text, tweetId);
     }
 
-    @GetMapping("/search")
-    public Tag getTagByTagName(@RequestParam("tagName") String tagName) {
-        return tagClientService.getTagByTagName(tagName);
-    }
-
-    @PostMapping("/save")
-    public Tag saveTag(@RequestBody Tag tag) {
-        return tagClientService.saveTag(tag);
-    }
-
-    @PostMapping("/delete")
-    public void deleteTag(@RequestBody Tag tag) {
-        tagClientService.deleteTag(tag);
+    @DeleteMapping("/delete/{tweetId}")
+    public void deleteTagsByTweetId(@PathVariable("tweetId") Long tweetId) {
+        tagClientService.deleteTagsByTweetId(tweetId);
     }
 }

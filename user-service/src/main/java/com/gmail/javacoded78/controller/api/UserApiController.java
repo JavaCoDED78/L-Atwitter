@@ -53,9 +53,24 @@ public class UserApiController {
         return userService.getValidUser(userId, authUserId);
     }
 
+    @GetMapping("/notification/user/{authUserId}")
+    public User getAuthNotificationUser(@PathVariable("authUserId") Long authUserId) {
+        return userService.getAuthNotificationUser(authUserId);
+    }
+
+    @GetMapping("/subscribers/{userId}")
+    public List<User> getSubscribersByUserId(@PathVariable("userId") Long userId) {
+        return userService.getSubscribersByUserId(userId);
+    }
+
     @GetMapping("/is_followed/{userId}")
     public Boolean isUserFollowByOtherUser(@PathVariable("userId") Long userId) {
         return userService.isUserFollowByOtherUser(userId);
+    }
+
+    @GetMapping("/is_private/{userId}")
+    public Boolean isUserHavePrivateProfile(@PathVariable("userId") Long userId) {
+        return userService.isUserHavePrivateProfile(userId);
     }
 
     @GetMapping("/is_muted/{userId}")
@@ -86,6 +101,21 @@ public class UserApiController {
     @GetMapping("/notification/{userId}")
     public void increaseNotificationsCount(@PathVariable("userId") Long userId) {
         userService.increaseNotificationsCount(userId);
+    }
+
+    @GetMapping("/like/count/{increaseCount}")
+    public void updateLikeCount(@PathVariable("increaseCount") boolean increaseCount) {
+        userService.updateLikeCount(increaseCount);
+    }
+
+    @GetMapping("/tweet/count/{increaseCount}")
+    public void updateTweetCount(@PathVariable("increaseCount") boolean increaseCount) {
+        userService.updateTweetCount(increaseCount);
+    }
+
+    @GetMapping("/media/count/{increaseCount}")
+    public void updateMediaTweetCount(@PathVariable("increaseCount") boolean increaseCount) {
+        userService.updateMediaTweetCount(increaseCount);
     }
 
     @PostMapping

@@ -21,4 +21,5 @@ include 'tweet-service'
 include 'lists-service'
 include 'tag-service'
 include 'chat-service'
+include 'common-new'
 

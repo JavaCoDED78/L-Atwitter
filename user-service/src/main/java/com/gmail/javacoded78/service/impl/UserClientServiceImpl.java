@@ -5,8 +5,11 @@ import com.gmail.javacoded78.common.exception.ApiRequestException;
 import com.gmail.javacoded78.common.mapper.BasicMapper;
 import com.gmail.javacoded78.common.models.User;
 import com.gmail.javacoded78.common.projection.UserChatProjection;
+import com.gmail.javacoded78.common.util.AuthUtil;
 import com.gmail.javacoded78.repository.UserRepository;
+import com.gmail.javacoded78.repository.projection.AuthNotificationUserProjection;
 import com.gmail.javacoded78.repository.projection.NotificationUserProjection;
+import com.gmail.javacoded78.repository.projection.UserSubscriberProjection;
 import com.gmail.javacoded78.service.AuthenticationService;
 import com.gmail.javacoded78.service.UserClientService;
 import lombok.RequiredArgsConstructor;
@@ -59,8 +62,25 @@ public class UserClientServiceImpl implements UserClientService {
     }
 
     @Override
+    public User getAuthNotificationUser(Long authUserId) {
+        AuthNotificationUserProjection user = userRepository.getAuthNotificationUser(authUserId);
+        return basicMapper.convertToResponse(user, User.class);
+    }
+
+    @Override
+    public List<User> getSubscribersByUserId(Long userId) {
+        List<UserSubscriberProjection> subscribers = userRepository.getSubscribersByUserId(userId);
+        return basicMapper.convertToResponseList(subscribers, User.class);
+    }
+
+    @Override
     public Boolean isUserFollowByOtherUser(Long userId) {
         return userService.isUserFollowByOtherUser(userId);
+    }
+
+    @Override
+    public Boolean isUserHavePrivateProfile(Long userId) {
+        return userService.isUserHavePrivateProfile(userId);
     }
 
     @Override
@@ -92,6 +112,27 @@ public class UserClientServiceImpl implements UserClientService {
     @Transactional
     public void increaseNotificationsCount(Long userId) {
         userRepository.increaseNotificationsCount(userId);
+    }
+
+    @Override
+    @Transactional
+    public void updateLikeCount(boolean increaseCount) {
+        Long userId = AuthUtil.getAuthenticatedUserId();
+        userRepository.updateLikeCount(increaseCount, userId);
+    }
+
+    @Override
+    @Transactional
+    public void updateTweetCount(boolean increaseCount) {
+        Long userId = AuthUtil.getAuthenticatedUserId();
+        userRepository.updateTweetCount(increaseCount, userId);
+    }
+
+    @Override
+    @Transactional
+    public void updateMediaTweetCount(boolean increaseCount) {
+        Long userId = AuthUtil.getAuthenticatedUserId();
+        userRepository.updateMediaTweetCount(increaseCount, userId);
     }
 
     @Override
