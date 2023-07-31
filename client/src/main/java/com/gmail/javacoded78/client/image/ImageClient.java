@@ -1,5 +1,6 @@
 package com.gmail.javacoded78.client.image;
 
+import com.gmail.javacoded78.common.configuration.FeignConfiguration;
 import com.gmail.javacoded78.common.dto.ImageResponse;
 import com.gmail.javacoded78.common.models.Image;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -9,15 +10,17 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.multipart.MultipartFile;
 
-@FeignClient("image-service")
+import static com.gmail.javacoded78.common.controller.PathConstants.API_V1_IMAGE;
+
+@FeignClient(value = "image-service", configuration = FeignConfiguration.class)
 public interface ImageClient {
 
-    @PostMapping("/api/v1/image/upload")
+    @PostMapping(API_V1_IMAGE + "/upload")
     ImageResponse uploadImage(@RequestPart("file") MultipartFile file);
 
-    @PostMapping("/api/v1/image/save")
+    @PostMapping(API_V1_IMAGE + "/save")
     Image saveImage(@RequestBody Image image);
 
-    @DeleteMapping("/api/v1/image/delete")
+    @DeleteMapping(API_V1_IMAGE + "/delete")
     void deleteImage(@RequestBody Image image);
 }

@@ -8,41 +8,23 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public interface TweetProjection {
-
     Long getId();
-
     String getText();
-
     LocalDateTime getDateTime();
-
     LocalDateTime getScheduledDate();
-
     String getAddressedUsername();
-
     Long getAddressedId();
-
     Long getAddressedTweetId();
-
     ReplyType getReplyType();
-
     String getLink();
-
     String getLinkTitle();
-
     String getLinkDescription();
-
     String getLinkCover();
-
     LinkCoverSize getLinkCoverSize();
-
     UserProjection getUser();
-
     List<ImageProjection> getImages();
-
     QuoteTweetProjection getQuoteTweet();
-
     PollProjection getPoll();
-
     boolean isDeleted();
 
     @Value("#{@tweetServiceImpl.isUserLikedTweet(target.id)}")
@@ -54,7 +36,7 @@ public interface TweetProjection {
     @Value("#{@tweetServiceImpl.isUserBookmarkedTweet(target.id)}")
     boolean getIsTweetBookmarked();
 
-    @Value("#{@userServiceImpl.isUserFollowByOtherUser(target.user.id)}")
+    @Value("#{@tweetServiceImpl.isUserFollowByOtherUser(target.user.id)}")
     boolean getIsUserFollowByOtherUser();
 
     @Value("#{target.retweets.size()}")
@@ -71,28 +53,24 @@ public interface TweetProjection {
 
     interface UserProjection {
         Long getId();
-
         String getEmail();
-
         String getFullName();
-
         String getUsername();
-
         ImageProjection getAvatar();
 
-        @Value("#{@userServiceImpl.isUserMutedByMyProfile(target.id)}")
+        @Value("#{@tweetServiceImpl.isUserMutedByMyProfile(target.id)}")
         boolean getIsUserMuted();
 
-        @Value("#{@userServiceImpl.isUserBlockedByMyProfile(target.id)}")
+        @Value("#{@tweetServiceImpl.isUserBlockedByMyProfile(target.id)}")
         boolean getIsUserBlocked();
 
-        @Value("#{@userServiceImpl.isMyProfileBlockedByUser(target.id)}")
+        @Value("#{@tweetServiceImpl.isMyProfileBlockedByUser(target.id)}")
         boolean getIsMyProfileBlocked();
 
-        @Value("#{@userServiceImpl.isMyProfileWaitingForApprove(target.id)}")
+        @Value("#{@tweetServiceImpl.isMyProfileWaitingForApprove(target.id)}")
         boolean getIsWaitingForApprove();
 
-        @Value("#{@userServiceImpl.isUserFollowByOtherUser(target.id)}")
+        @Value("#{@tweetServiceImpl.isUserFollowByOtherUser(target.id)}")
         boolean getIsFollower();
     }
 
@@ -123,23 +101,18 @@ public interface TweetProjection {
 
         @Value("#{target.isDeleted ? null : target.user}")
         UserProjection getUser();
-
         boolean isDeleted();
     }
 
     interface PollProjection {
         Long getId();
-
         LocalDateTime getDateTime();
-
         List<PollChoiceProjection> getPollChoices();
     }
 
     interface PollChoiceProjection {
         Long getId();
-
         String getChoice();
-
         List<VotedUser> getVotedUser();
     }
 

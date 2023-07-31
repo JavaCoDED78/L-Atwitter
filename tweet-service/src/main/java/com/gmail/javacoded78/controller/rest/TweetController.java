@@ -29,9 +29,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+import static com.gmail.javacoded78.common.controller.PathConstants.API_V1_TWEETS;
+
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/ui/v1/tweets")
+@RequestMapping(API_V1_TWEETS)
 public class TweetController {
 
     private final TweetMapper tweetMapper;
@@ -44,34 +46,37 @@ public class TweetController {
     }
 
     @GetMapping("/{tweetId}")
-    public ResponseEntity<TweetResponse> getTweetById(@PathVariable Long tweetId) {
+    public ResponseEntity<TweetResponse> getTweetById(@PathVariable("tweetId") Long tweetId) {
         return ResponseEntity.ok(tweetMapper.getTweetById(tweetId));
     }
 
     @GetMapping("/{tweetId}/info")
-    public ResponseEntity<TweetAdditionalInfoResponse> getTweetAdditionalInfoById(@PathVariable Long tweetId) {
+    public ResponseEntity<TweetAdditionalInfoResponse> getTweetAdditionalInfoById(@PathVariable("tweetId") Long tweetId) {
         return ResponseEntity.ok(tweetMapper.getTweetAdditionalInfoById(tweetId));
     }
 
     @GetMapping("/{tweetId}/replies") // TODO add pagination
-    public ResponseEntity<List<TweetResponse>> getRepliesByTweetId(@PathVariable Long tweetId) {
+    public ResponseEntity<List<TweetResponse>> getRepliesByTweetId(@PathVariable("tweetId") Long tweetId) {
         return ResponseEntity.ok(tweetMapper.getRepliesByTweetId(tweetId));
     }
 
     @GetMapping("/{tweetId}/quotes")
-    public ResponseEntity<List<TweetResponse>> getQuotesByTweetId(@PageableDefault(size = 10) Pageable pageable, @PathVariable Long tweetId) {
+    public ResponseEntity<List<TweetResponse>> getQuotesByTweetId(@PathVariable("tweetId") Long tweetId,
+                                                                  @PageableDefault(size = 10) Pageable pageable) {
         HeaderResponse<TweetResponse> response = tweetMapper.getQuotesByTweetId(pageable, tweetId);
         return ResponseEntity.ok().headers(response.getHeaders()).body(response.getItems());
     }
 
     @GetMapping("/{tweetId}/liked-users")
-    public ResponseEntity<List<UserResponse>> getLikedUsersByTweetId(@PathVariable Long tweetId, @PageableDefault(size = 15) Pageable pageable) {
+    public ResponseEntity<List<UserResponse>> getLikedUsersByTweetId(@PathVariable("tweetId") Long tweetId,
+                                                                     @PageableDefault(size = 15) Pageable pageable) {
         HeaderResponse<UserResponse> response = tweetMapper.getLikedUsersByTweetId(tweetId, pageable);
         return ResponseEntity.ok().headers(response.getHeaders()).body(response.getItems());
     }
 
     @GetMapping("/{tweetId}/retweeted-users")
-    public ResponseEntity<List<UserResponse>> getRetweetedUsersByTweetId(@PathVariable Long tweetId, @PageableDefault(size = 15) Pageable pageable) {
+    public ResponseEntity<List<UserResponse>> getRetweetedUsersByTweetId(@PathVariable("tweetId") Long tweetId,
+                                                                         @PageableDefault(size = 15) Pageable pageable) {
         HeaderResponse<UserResponse> response = tweetMapper.getRetweetedUsersByTweetId(tweetId, pageable);
         return ResponseEntity.ok().headers(response.getHeaders()).body(response.getItems());
     }
@@ -132,18 +137,20 @@ public class TweetController {
     }
 
     @DeleteMapping("/{tweetId}")
-    public ResponseEntity<String> deleteTweet(@PathVariable Long tweetId) {
+    public ResponseEntity<String> deleteTweet(@PathVariable("tweetId") Long tweetId) {
         return ResponseEntity.ok(tweetMapper.deleteTweet(tweetId));
     }
 
     @GetMapping("/search/{text}")
-    public ResponseEntity<List<TweetResponse>> searchTweets(@PathVariable String text, @PageableDefault Pageable pageable) {
+    public ResponseEntity<List<TweetResponse>> searchTweets(@PathVariable("text") String text,
+                                                            @PageableDefault Pageable pageable) {
         HeaderResponse<TweetResponse> response = tweetMapper.searchTweets(text, pageable);
         return ResponseEntity.ok().headers(response.getHeaders()).body(response.getItems());
     }
 
     @GetMapping("/like/{userId}/{tweetId}")
-    public ResponseEntity<NotificationTweetResponse> likeTweet(@PathVariable Long userId, @PathVariable Long tweetId) {
+    public ResponseEntity<NotificationTweetResponse> likeTweet(@PathVariable("userId") Long userId,
+                                                               @PathVariable("tweetId") Long tweetId) {
         NotificationResponse notification = tweetMapper.likeTweet(tweetId);
 
         if (notification.getId() != null) {
@@ -156,7 +163,8 @@ public class TweetController {
     }
 
     @GetMapping("/retweet/{userId}/{tweetId}")
-    public ResponseEntity<NotificationTweetResponse> retweet(@PathVariable Long userId, @PathVariable Long tweetId) {
+    public ResponseEntity<NotificationTweetResponse> retweet(@PathVariable("userId") Long userId,
+                                                             @PathVariable("tweetId") Long tweetId) {
         NotificationResponse notification = tweetMapper.retweet(tweetId);
 
         if (notification.getId() != null) {
@@ -169,11 +177,9 @@ public class TweetController {
     }
 
     @PostMapping("/reply/{userId}/{tweetId}")
-    public ResponseEntity<NotificationReplyResponse> replyTweet(
-            @PathVariable Long userId,
-            @PathVariable Long tweetId,
-            @RequestBody TweetRequest tweetRequest
-    ) {
+    public ResponseEntity<NotificationReplyResponse> replyTweet(@PathVariable("userId") Long userId,
+                                                                @PathVariable("tweetId") Long tweetId,
+                                                                @RequestBody TweetRequest tweetRequest) {
         NotificationReplyResponse notification = tweetMapper.replyTweet(tweetId, tweetRequest);
         messagingTemplate.convertAndSend("/topic/feed", notification);
         messagingTemplate.convertAndSend("/topic/tweet/" + notification.getTweetId(), notification);
@@ -182,11 +188,9 @@ public class TweetController {
     }
 
     @PostMapping("/quote/{userId}/{tweetId}")
-    public ResponseEntity<TweetResponse> quoteTweet(
-            @PathVariable Long userId,
-            @PathVariable Long tweetId,
-            @RequestBody TweetRequest tweetRequest
-    ) {
+    public ResponseEntity<TweetResponse> quoteTweet(@PathVariable("userId") Long userId,
+                                                    @PathVariable("tweetId") Long tweetId,
+                                                    @RequestBody TweetRequest tweetRequest) {
         TweetResponse tweet = tweetMapper.quoteTweet(tweetId, tweetRequest);
         messagingTemplate.convertAndSend("/topic/feed/add", tweet);
         messagingTemplate.convertAndSend("/topic/tweet/" + tweet.getId(), tweet);
@@ -195,11 +199,9 @@ public class TweetController {
     }
 
     @GetMapping("/reply/change/{userId}/{tweetId}")
-    public ResponseEntity<TweetResponse> changeTweetReplyType(
-            @PathVariable Long userId,
-            @PathVariable Long tweetId,
-            @RequestParam ReplyType replyType
-    ) {
+    public ResponseEntity<TweetResponse> changeTweetReplyType(@PathVariable("userId") Long userId,
+                                                              @PathVariable("tweetId") Long tweetId,
+                                                              @RequestParam ReplyType replyType) {
         TweetResponse tweet = tweetMapper.changeTweetReplyType(tweetId, replyType);
         messagingTemplate.convertAndSend("/topic/feed", tweet);
         messagingTemplate.convertAndSend("/topic/tweet/" + tweet.getId(), tweet);
@@ -217,8 +219,7 @@ public class TweetController {
     }
 
     @GetMapping("/{tweetId}/bookmarked")
-    public ResponseEntity<Boolean> getIsTweetBookmarked(@PathVariable Long tweetId) {
+    public ResponseEntity<Boolean> getIsTweetBookmarked(@PathVariable("tweetId") Long tweetId) {
         return ResponseEntity.ok(tweetMapper.getIsTweetBookmarked(tweetId));
     }
-
 }

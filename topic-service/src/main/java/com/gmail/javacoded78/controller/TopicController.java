@@ -16,9 +16,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+import static com.gmail.javacoded78.common.controller.PathConstants.UI_V1_TOPICS;
+
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/topics")
+@RequestMapping(UI_V1_TOPICS)
 public class TopicController {
 
     private final TopicMapper topicMapper;
@@ -39,7 +41,7 @@ public class TopicController {
     }
 
     @GetMapping("/followed/{userId}")
-    public ResponseEntity<List<TopicResponse>> getFollowedTopicsByUserId(@PathVariable Long userId) {
+    public ResponseEntity<List<TopicResponse>> getFollowedTopicsByUserId(@PathVariable("userId") Long userId) {
         return ResponseEntity.ok(topicMapper.getFollowedTopicsByUserId(userId));
     }
 
@@ -49,12 +51,12 @@ public class TopicController {
     }
 
     @GetMapping("/not_interested/{topicId}")
-    public ResponseEntity<Boolean> processNotInterestedTopic(@PathVariable Long topicId) {
+    public ResponseEntity<Boolean> processNotInterestedTopic(@PathVariable("topicId") Long topicId) {
         return ResponseEntity.ok(topicMapper.processNotInterestedTopic(topicId));
     }
 
     @GetMapping("/follow/{topicId}")
-    public ResponseEntity<Boolean> processFollowTopic(@PathVariable Long topicId) {
+    public ResponseEntity<Boolean> processFollowTopic(@PathVariable("topicId") Long topicId) {
         return ResponseEntity.ok(topicMapper.processFollowTopic(topicId));
     }
 }

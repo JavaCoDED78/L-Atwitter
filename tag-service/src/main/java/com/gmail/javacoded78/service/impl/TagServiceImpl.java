@@ -1,6 +1,7 @@
 package com.gmail.javacoded78.service.impl;
 
 import com.gmail.javacoded78.client.tweet.TweetClient;
+import com.gmail.javacoded78.common.dto.TweetResponse;
 import com.gmail.javacoded78.common.projection.TagProjection;
 import com.gmail.javacoded78.common.projection.TweetProjection;
 import com.gmail.javacoded78.repository.TagRepository;
@@ -30,7 +31,7 @@ public class TagServiceImpl implements TagService {
     }
 
     @Override
-    public List<TweetProjection> getTweetsByTag(String tagName) {
+    public List<TweetResponse> getTweetsByTag(String tagName) {
         return tweetClient.getTweetsByTagName(tagName);
     }
 }

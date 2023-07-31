@@ -13,20 +13,22 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+import static com.gmail.javacoded78.common.controller.PathConstants.API_V1_TAGS;
+
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/tags")
+@RequestMapping(API_V1_TAGS)
 public class TagApiController {
 
     private final TagClientService tagClientService;
 
     @GetMapping("/{tweetId}")
-    public List<Tag> getTagsByTweetId(@PathVariable Long tweetId) {
+    public List<Tag> getTagsByTweetId(@PathVariable("tweetId") Long tweetId) {
         return tagClientService.getTagsByTweetId(tweetId);
     }
 
     @GetMapping("/search")
-    public Tag getTagByTagName(@RequestParam String tagName) {
+    public Tag getTagByTagName(@RequestParam("tagName") String tagName) {
         return tagClientService.getTagByTagName(tagName);
     }
 

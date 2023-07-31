@@ -22,16 +22,18 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+import static com.gmail.javacoded78.common.controller.PathConstants.UI_V1_CHAT;
+
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/ui/v1/chat")
+@RequestMapping(UI_V1_CHAT)
 public class ChatController {
 
     private final ChatMapper chatMapper;
     private final SimpMessagingTemplate messagingTemplate;
 
     @GetMapping("/{chatId}")
-    public ResponseEntity<ChatResponse> getChatById(@PathVariable Long chatId) {
+    public ResponseEntity<ChatResponse> getChatById(@PathVariable("chatId") Long chatId) {
         return ResponseEntity.ok(chatMapper.getChatById(chatId));
     }
 
@@ -41,17 +43,17 @@ public class ChatController {
     }
 
     @GetMapping("/create/{userId}")
-    public ResponseEntity<ChatResponse> createChat(@PathVariable Long userId) {
+    public ResponseEntity<ChatResponse> createChat(@PathVariable("userId") Long userId) {
         return ResponseEntity.ok(chatMapper.createChat(userId));
     }
 
     @GetMapping("/{chatId}/messages")
-    public ResponseEntity<List<ChatMessageResponse>> getChatMessages(@PathVariable Long chatId) {
+    public ResponseEntity<List<ChatMessageResponse>> getChatMessages(@PathVariable("chatId") Long chatId) {
         return ResponseEntity.ok(chatMapper.getChatMessages(chatId));
     }
 
     @GetMapping("/{chatId}/read/messages")
-    public ResponseEntity<Integer> readChatMessages(@PathVariable Long chatId) {
+    public ResponseEntity<Integer> readChatMessages(@PathVariable("chatId") Long chatId) {
         return ResponseEntity.ok(chatMapper.readChatMessages(chatId));
     }
 
@@ -72,17 +74,20 @@ public class ChatController {
     }
 
     @GetMapping("/leave/{participantId}/{chatId}")
-    public ResponseEntity<String> leaveFromConversation(@PathVariable Long participantId, @PathVariable Long chatId) {
+    public ResponseEntity<String> leaveFromConversation(@PathVariable("participantId") Long participantId,
+                                                        @PathVariable("chatId") Long chatId) {
         return ResponseEntity.ok(chatMapper.leaveFromConversation(participantId, chatId));
     }
 
     @GetMapping("/participant/{participantId}/{chatId}")
-    public ResponseEntity<UserResponse> getParticipant(@PathVariable Long participantId, @PathVariable Long chatId) {
+    public ResponseEntity<UserResponse> getParticipant(@PathVariable("participantId") Long participantId,
+                                                       @PathVariable("chatId") Long chatId) {
         return ResponseEntity.ok(chatMapper.getParticipant(participantId, chatId));
     }
 
     @GetMapping("/search/{username}")
-    public ResponseEntity<List<UserChatResponse>> searchParticipantsByUsername(@PathVariable String username, @PageableDefault(size = 15) Pageable pageable) {
+    public ResponseEntity<List<UserChatResponse>> searchParticipantsByUsername(@PathVariable("username") String username,
+                                                                               @PageableDefault(size = 15) Pageable pageable) {
         HeaderResponse<UserChatResponse> response = chatMapper.searchParticipantsByUsername(username, pageable);
         return ResponseEntity.ok().headers(response.getHeaders()).body(response.getItems());
     }

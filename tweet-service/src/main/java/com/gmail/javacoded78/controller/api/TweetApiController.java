@@ -1,10 +1,12 @@
 package com.gmail.javacoded78.controller.api;
 
 import com.gmail.javacoded78.client.tweet.TweetUserIdsRequest;
+import com.gmail.javacoded78.common.dto.TweetResponse;
 import com.gmail.javacoded78.common.models.Tweet;
 import com.gmail.javacoded78.common.projection.TweetImageProjection;
 import com.gmail.javacoded78.common.projection.TweetProjection;
 import com.gmail.javacoded78.common.projection.TweetsUserProjection;
+import com.gmail.javacoded78.mapper.TweetClientMapper;
 import com.gmail.javacoded78.service.TweetClientService;
 import com.gmail.javacoded78.client.tweet.TweetPageableRequest;
 import lombok.RequiredArgsConstructor;
@@ -20,25 +22,28 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 import java.util.Optional;
 
+import static com.gmail.javacoded78.common.controller.PathConstants.API_V1_TWEETS;
+
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/tweets")
+@RequestMapping(API_V1_TWEETS)
 public class TweetApiController {
 
     private final TweetClientService tweetClientService;
+    private final TweetClientMapper tweetClientMapper;
 
     @GetMapping("/{userId}")
-    public Optional<Tweet> getTweetById(@PathVariable Long userId) {
+    public Optional<Tweet> getTweetById(@PathVariable("userId") Long userId) {
         return tweetClientService.getTweetById(userId);
     }
 
     @GetMapping("/user/{userId}")
-    public List<TweetsUserProjection> getTweetsByUserId(@PathVariable Long userId) {
+    public List<TweetsUserProjection> getTweetsByUserId(@PathVariable("userId") Long userId) {
         return tweetClientService.getTweetsByUserId(userId);
     }
 
     @GetMapping("/pinned/{userId}")
-    public Optional<TweetsUserProjection> getPinnedTweetByUserId(@PathVariable Long userId) {
+    public Optional<TweetsUserProjection> getPinnedTweetByUserId(@PathVariable("userId") Long userId) {
         return tweetClientService.getPinnedTweetByUserId(userId);
     }
 
@@ -58,18 +63,18 @@ public class TweetApiController {
     }
 
     @GetMapping("/replies/{userId}")
-    public List<TweetsUserProjection> getRepliesByUserId(@PathVariable Long userId) {
+    public List<TweetsUserProjection> getRepliesByUserId(@PathVariable("userId") Long userId) {
         return tweetClientService.getRepliesByUserId(userId);
     }
 
     @GetMapping("/notification/{userId}")
-    public List<TweetProjection> getNotificationsFromTweetAuthors(@PathVariable Long userId) {
+    public List<TweetProjection> getNotificationsFromTweetAuthors(@PathVariable("userId") Long userId) {
         return tweetClientService.getNotificationsFromTweetAuthors(userId);
     }
 
     @GetMapping("/tag")
-    public List<TweetProjection> getTweetsByTagName(@RequestParam String tagName) {
-        return tweetClientService.getTweetsByTagName(tagName);
+    public List<TweetResponse> getTweetsByTagName(@RequestParam("tagName") String tagName) {
+        return tweetClientMapper.getTweetsByTagName(tagName);
     }
 
     @GetMapping("/user/ids")

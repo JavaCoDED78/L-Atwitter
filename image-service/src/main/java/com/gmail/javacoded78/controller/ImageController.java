@@ -11,9 +11,11 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import static com.gmail.javacoded78.common.controller.PathConstants.API_V1_IMAGE;
+
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/image")
+@RequestMapping(API_V1_IMAGE)
 public class ImageController {
 
     private final ImageMapper imageMapper;

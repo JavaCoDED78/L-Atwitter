@@ -15,9 +15,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+import static com.gmail.javacoded78.common.controller.PathConstants.UI_V1_TAGS;
+
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/ui/v1/tags")
+@RequestMapping(UI_V1_TAGS)
 public class TagController {
 
     private final TagMapper tagMapper;
@@ -34,7 +36,7 @@ public class TagController {
     }
 
     @GetMapping("/search")
-    public ResponseEntity<List<TweetResponse>> getTweetsByTag(@RequestParam String tagName) {
+    public ResponseEntity<List<TweetResponse>> getTweetsByTag(@RequestParam("tagName") String tagName) {
         return ResponseEntity.ok(tagMapper.getTweetsByTag(tagName));
     }
 }

@@ -29,9 +29,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+import static com.gmail.javacoded78.common.controller.PathConstants.UI_V1_LISTS;
+
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/ui/v1/lists")
+@RequestMapping(UI_V1_LISTS)
 public class ListsController {
 
     private final ListsMapper listsMapper;
@@ -48,7 +50,7 @@ public class ListsController {
     }
 
     @GetMapping("/user/{userId}")
-    public ResponseEntity<List<ListResponse>> getUserTweetListsById(@PathVariable Long userId) {
+    public ResponseEntity<List<ListResponse>> getUserTweetListsById(@PathVariable("userId") Long userId) {
         return ResponseEntity.ok(listsMapper.getUserTweetListsById(userId));
     }
 
@@ -63,7 +65,7 @@ public class ListsController {
     }
 
     @GetMapping("/{listId}")
-    public ResponseEntity<BaseListResponse> getListById(@PathVariable Long listId) {
+    public ResponseEntity<BaseListResponse> getListById(@PathVariable("listId") Long listId) {
         return ResponseEntity.ok(listsMapper.getListById(listId));
     }
 
@@ -78,22 +80,22 @@ public class ListsController {
     }
 
     @DeleteMapping("/{listId}")
-    public ResponseEntity<String> deleteList(@PathVariable Long listId) {
+    public ResponseEntity<String> deleteList(@PathVariable("listId") Long listId) {
         return ResponseEntity.ok(listsMapper.deleteList(listId));
     }
 
     @GetMapping("/follow/{listId}")
-    public ResponseEntity<ListUserResponse> followList(@PathVariable Long listId) {
+    public ResponseEntity<ListUserResponse> followList(@PathVariable("listId") Long listId) {
         return ResponseEntity.ok(listsMapper.followList(listId));
     }
 
     @GetMapping("/pin/{listId}")
-    public ResponseEntity<PinnedListResponse> pinList(@PathVariable Long listId) {
+    public ResponseEntity<PinnedListResponse> pinList(@PathVariable("listId") Long listId) {
         return ResponseEntity.ok(listsMapper.pinList(listId));
     }
 
     @GetMapping("/add/user/{userId}")
-    public ResponseEntity<List<SimpleListResponse>> getListsToAddUser(@PathVariable Long userId) {
+    public ResponseEntity<List<SimpleListResponse>> getListsToAddUser(@PathVariable("userId") Long userId) {
         return ResponseEntity.ok(listsMapper.getListsToAddUser(userId));
     }
 
@@ -103,7 +105,7 @@ public class ListsController {
     }
 
     @GetMapping("/add/user/{userId}/{listId}")
-    public ResponseEntity<Boolean> addUserToList(@PathVariable Long userId, @PathVariable Long listId) {
+    public ResponseEntity<Boolean> addUserToList(@PathVariable("userId") Long userId, @PathVariable("listId") Long listId) {
         NotificationResponse notification = listsMapper.addUserToList(userId, listId);
 
         if (notification.getId() != null) {
@@ -113,29 +115,32 @@ public class ListsController {
     }
 
     @GetMapping("/{listId}/tweets")
-    public ResponseEntity<List<TweetResponse>> getTweetsByListId(@PathVariable Long listId, @PageableDefault(size = 10) Pageable pageable) {
+    public ResponseEntity<List<TweetResponse>> getTweetsByListId(@PathVariable("listId") Long listId,
+                                                                 @PageableDefault(size = 10) Pageable pageable) {
         HeaderResponse<TweetResponse> response = listsMapper.getTweetsByListId(listId, pageable);
         return ResponseEntity.ok().headers(response.getHeaders()).body(response.getItems());
     }
 
     @GetMapping("/{listId}/details")
-    public ResponseEntity<BaseListResponse> getListDetails(@PathVariable Long listId) {
+    public ResponseEntity<BaseListResponse> getListDetails(@PathVariable("listId") Long listId) {
         return ResponseEntity.ok(listsMapper.getListDetails(listId));
     }
 
     @GetMapping("/{listId}/{listOwnerId}/followers")
-    public ResponseEntity<List<ListMemberResponse>> getListFollowers(@PathVariable Long listId, @PathVariable Long listOwnerId) {
+    public ResponseEntity<List<ListMemberResponse>> getListFollowers(@PathVariable("listId") Long listId,
+                                                                     @PathVariable("listOwnerId") Long listOwnerId) {
         return ResponseEntity.ok(listsMapper.getListFollowers(listId, listOwnerId));
     }
 
     @GetMapping("/{listId}/{listOwnerId}/members")
-    public ResponseEntity<List<?>> getListMembers(@PathVariable Long listId, @PathVariable Long listOwnerId) {
+    public ResponseEntity<List<?>> getListMembers(@PathVariable("listId") Long listId,
+                                                  @PathVariable("listOwnerId") Long listOwnerId) {
         return ResponseEntity.ok(listsMapper.getListMembers(listId, listOwnerId));
     }
 
     @GetMapping("/search/{listId}/{username}")
-    public ResponseEntity<List<ListsOwnerMemberResponse>> searchListMembersByUsername(
-            @PathVariable Long listId, @PathVariable String username) {
+    public ResponseEntity<List<ListsOwnerMemberResponse>> searchListMembersByUsername(@PathVariable("listId") Long listId,
+                                                                                      @PathVariable("username") String username) {
         return ResponseEntity.ok(listsMapper.searchListMembersByUsername(listId, username));
     }
 }
