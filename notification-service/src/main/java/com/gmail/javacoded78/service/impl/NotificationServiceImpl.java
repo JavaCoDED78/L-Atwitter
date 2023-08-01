@@ -1,20 +1,31 @@
 package com.gmail.javacoded78.service.impl;
 
+import com.gmail.javacoded78.dto.HeaderResponse;
+import com.gmail.javacoded78.dto.IdsRequest;
+import com.gmail.javacoded78.dto.TweetResponse;
+import com.gmail.javacoded78.dto.UserResponse;
 import com.gmail.javacoded78.dto.notification.NotificationListResponse;
 import com.gmail.javacoded78.dto.notification.NotificationResponse;
 import com.gmail.javacoded78.dto.notification.NotificationTweetResponse;
 import com.gmail.javacoded78.dto.notification.NotificationUserResponse;
 import com.gmail.javacoded78.enums.NotificationType;
+import com.gmail.javacoded78.exception.ApiRequestException;
 import com.gmail.javacoded78.feign.ListsClient;
 import com.gmail.javacoded78.feign.TweetClient;
 import com.gmail.javacoded78.feign.UserClient;
 import com.gmail.javacoded78.mapper.BasicMapper;
 import com.gmail.javacoded78.model.Notification;
 import com.gmail.javacoded78.repository.NotificationRepository;
+import com.gmail.javacoded78.repository.projection.NotificationInfoProjection;
+import com.gmail.javacoded78.repository.projection.NotificationProjection;
 import com.gmail.javacoded78.service.NotificationService;
 import com.gmail.javacoded78.util.AuthUtil;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -24,79 +35,56 @@ public class NotificationServiceImpl implements NotificationService {
 
     private final NotificationRepository notificationRepository;
     private final UserClient userClient;
-    private final ListsClient listsClient;
     private final TweetClient tweetClient;
-    private final BasicMapper basicMapper;
+    private final ListsClient listsClient;
 
     @Override
-    public NotificationResponse sendListNotification(Notification notification, boolean isAddedToList) {
-        Long authUserId = AuthUtil.getAuthenticatedUserId();
-
-        if (!notification.getNotifiedUserId().equals(authUserId)) {
-            boolean isNotificationExists = notificationRepository.isListNotificationExists(
-                    notification.getNotifiedUserId(), notification.getListId(), notification.getNotificationType());
-
-            if (!isNotificationExists) {
-                notificationRepository.save(notification);
-                userClient.increaseNotificationsCount(notification.getUserId());
-                return convertToNotificationListResponse(notification, isAddedToList);
-            }
-        }
-        return convertToNotificationListResponse(notification, isAddedToList);
+    @Transactional
+    public Page<NotificationProjection> getUserNotifications(Pageable pageable) {
+        Long userId = AuthUtil.getAuthenticatedUserId();
+        userClient.resetNotificationCount();
+        return notificationRepository.getNotificationsByUserId(userId, pageable);
     }
 
     @Override
-    public NotificationResponse sendTweetNotification(Notification notification, boolean isTweetLiked) {
-        Long authUserId = AuthUtil.getAuthenticatedUserId();
-
-        if (!notification.getNotifiedUserId().equals(authUserId)) {
-            boolean isNotificationExists = notificationRepository.isTweetNotificationExists(
-                    notification.getNotifiedUserId(), notification.getTweetId(), notification.getNotificationType());
-
-            if (!isNotificationExists) {
-                notificationRepository.save(notification);
-                userClient.increaseNotificationsCount(notification.getUserId());
-                return convertToNotificationTweetResponse(notification, isTweetLiked);
-            }
-        }
-        return convertToNotificationTweetResponse(notification, isTweetLiked);
+    @Transactional
+    public List<NotificationUserResponse> getTweetAuthorsNotifications() {
+        userClient.resetNotificationCount();
+        return userClient.getUsersWhichUserSubscribed();
     }
 
     @Override
-    public void sendTweetNotificationToSubscribers(Long tweetId) {
+    public NotificationInfoProjection getUserNotificationById(Long notificationId) {
+        Long userId = AuthUtil.getAuthenticatedUserId();
+        return notificationRepository.getUserNotificationById(userId, notificationId)
+                .orElseThrow(() -> new ApiRequestException("Notification not found", HttpStatus.NOT_FOUND));
+    }
+
+    @Override
+    public HeaderResponse<TweetResponse> getNotificationsFromTweetAuthors(Pageable pageable) {
         Long authUserId = AuthUtil.getAuthenticatedUserId();
-        List<Long> subscribersIds = userClient.getSubscribersByUserId(authUserId);
-
-        if (!subscribersIds.contains(null)) {
-            subscribersIds.forEach(subscriberId -> {
-                Notification notification = new Notification();
-                notification.setNotificationType(NotificationType.TWEET);
-                notification.setUserId(authUserId);
-                notification.setTweetId(tweetId);
-                notification.setNotifiedUserId(subscriberId);
-                notificationRepository.save(notification);
-                userClient.increaseNotificationsCount(subscriberId);
-            });
-        }
+        List<Long> userIds = userClient.getUserIdsWhichUserSubscribed();
+        List<Long> tweetIds = notificationRepository.getTweetIdsByNotificationType(userIds, authUserId);
+        return tweetClient.getTweetsByIds(new IdsRequest(tweetIds), pageable);
     }
 
-    private NotificationResponse convertToNotificationListResponse(Notification notification, boolean isAddedToList) {
-        NotificationUserResponse userResponse = userClient.getNotificationUser(notification.getUserId());
-        NotificationListResponse listResponse = listsClient.getNotificationList(notification.getListId());
-        NotificationResponse notificationResponse = basicMapper.convertToResponse(notification, NotificationResponse.class);
-        notificationResponse.setUser(userResponse);
-        notificationResponse.setList(listResponse);
-        notificationResponse.setAddedToList(isAddedToList);
-        return notificationResponse;
+    public UserResponse getUserById(Long userId) {
+        return userClient.getUserById(userId);
     }
 
-    private NotificationResponse convertToNotificationTweetResponse(Notification notification, boolean isTweetLiked) {
-        NotificationUserResponse userResponse = userClient.getNotificationUser(notification.getUserId());
-        NotificationTweetResponse tweetResponse = tweetClient.getNotificationTweet(notification.getTweetId());
-        tweetResponse.setNotificationCondition(isTweetLiked);
-        NotificationResponse notificationResponse = basicMapper.convertToResponse(notification, NotificationResponse.class);
-        notificationResponse.setUser(userResponse);
-        notificationResponse.setTweet(tweetResponse);
-        return notificationResponse;
+    public TweetResponse getTweetById(Long tweetId) {
+        return tweetClient.getTweetById(tweetId);
+    }
+
+    public NotificationUserResponse getNotificationUser(Long userId) {
+        return userClient.getNotificationUser(userId);
+    }
+
+    public NotificationTweetResponse getNotificationTweet(Long userId) {
+        return tweetClient.getNotificationTweet(userId);
+    }
+
+    public NotificationListResponse getNotificationList(Long listId) {
+        return listsClient.getNotificationList(listId);
     }
 }

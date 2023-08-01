@@ -35,8 +35,8 @@ dependencyManagement {
 }
 
 dependencies {
-    implementation project(':common')
-    implementation project(":client")
+    implementation project(':common-new')
+//    implementation project(":client")
     implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
     implementation 'org.springframework.cloud:spring-cloud-starter-sleuth'
     implementation 'org.springframework.cloud:spring-cloud-sleuth-zipkin'
@@ -48,6 +48,9 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-websocket'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
     implementation "org.modelmapper:modelmapper:${versions.modelMapper}"
+    implementation "io.jsonwebtoken:jjwt-api:${versions.jjwt}"
+    runtimeOnly "io.jsonwebtoken:jjwt-impl:${versions.jjwt}",
+            "io.jsonwebtoken:jjwt-jackson:${versions.jjwt}"
 
     runtimeOnly 'org.postgresql:postgresql'
 

@@ -5,8 +5,10 @@ import com.gmail.javacoded78.dto.UserResponse;
 import com.gmail.javacoded78.dto.notification.NotificationResponse;
 import com.gmail.javacoded78.enums.ReplyType;
 import com.gmail.javacoded78.model.Tweet;
+import com.gmail.javacoded78.repository.projection.LikeTweetProjection;
 import com.gmail.javacoded78.repository.projection.TweetAdditionalInfoProjection;
 import com.gmail.javacoded78.repository.projection.TweetProjection;
+import com.gmail.javacoded78.repository.projection.TweetUserProjection;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -18,6 +20,14 @@ public interface TweetService {
     Page<TweetProjection> getTweets(Pageable pageable);
 
     TweetProjection getTweetById(Long tweetId);
+
+    Page<TweetUserProjection> getUserTweets(Long userId, Pageable pageable);
+
+    Page<LikeTweetProjection> getUserLikedTweets(Long userId, Pageable pageable);
+
+    Page<TweetProjection> getUserMediaTweets(Long userId, Pageable pageable);
+
+    Page<TweetUserProjection> getUserRetweetsAndReplies(Long userId, Pageable pageable);
 
     TweetAdditionalInfoProjection getTweetAdditionalInfoById(Long tweetId);
 

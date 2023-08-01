@@ -1,6 +1,6 @@
 package com.gmail.javacoded78.dto.response;
 
-import com.gmail.javacoded78.common.dto.TweetResponse;
+import com.gmail.javacoded78.dto.TweetResponse;
 import lombok.Getter;
 import lombok.Setter;
 

@@ -1,10 +1,10 @@
 package com.gmail.javacoded78.mapper;
 
-import com.gmail.javacoded78.common.dto.AuthenticationResponse;
-import com.gmail.javacoded78.common.enums.BackgroundColorType;
-import com.gmail.javacoded78.common.enums.ColorSchemeType;
 import com.gmail.javacoded78.dto.request.SettingsRequest;
+import com.gmail.javacoded78.dto.response.AuthenticationResponse;
 import com.gmail.javacoded78.dto.response.UserPhoneResponse;
+import com.gmail.javacoded78.enums.BackgroundColorType;
+import com.gmail.javacoded78.enums.ColorSchemeType;
 import com.gmail.javacoded78.service.UserSettingsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;

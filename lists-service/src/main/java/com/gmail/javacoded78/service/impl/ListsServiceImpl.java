@@ -5,7 +5,7 @@ import com.gmail.javacoded78.dto.NotificationRequest;
 import com.gmail.javacoded78.dto.TweetResponse;
 import com.gmail.javacoded78.dto.lists.ListMemberResponse;
 import com.gmail.javacoded78.dto.lists.ListOwnerResponse;
-import com.gmail.javacoded78.dto.lists.UserIdsRequest;
+import com.gmail.javacoded78.dto.IdsRequest;
 import com.gmail.javacoded78.dto.request.UserToListsRequest;
 import com.gmail.javacoded78.exception.ApiRequestException;
 import com.gmail.javacoded78.feign.NotificationClient;
@@ -34,7 +34,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -237,7 +236,7 @@ public class ListsServiceImpl implements ListsService {
             throw new ApiRequestException("List not found", HttpStatus.NOT_FOUND);
         }
         List<Long> membersIds = listsMembersRepository.getMembersIds(listId);
-        return tweetClient.getTweetsByUserIds(new UserIdsRequest(membersIds), pageable);
+        return tweetClient.getTweetsByUserIds(new IdsRequest(membersIds), pageable);
     }
 
     @Override
@@ -256,11 +255,11 @@ public class ListsServiceImpl implements ListsService {
             checkIsListExist(listId, listOwnerId);
             checkIsListPrivate(listId);
             List<Long> followersIds = listsFollowersRepository.getFollowersIds(listId);
-            return userClient.getListParticipantsByIds(new UserIdsRequest(followersIds));
+            return userClient.getListParticipantsByIds(new IdsRequest(followersIds));
         } else {
             checkIsListExist(listId, authUserId);
             List<Long> followersIds = listsFollowersRepository.getFollowersIds(listId);
-            return userClient.getListParticipantsByIds(new UserIdsRequest(followersIds));
+            return userClient.getListParticipantsByIds(new IdsRequest(followersIds));
         }
     }
 
@@ -290,7 +289,7 @@ public class ListsServiceImpl implements ListsService {
 
     private List<ListMemberResponse> getListMemberResponses(Long listId) {
         List<Long> membersIds = listsMembersRepository.getMembersIds(listId);
-        return userClient.getListParticipantsByIds(new UserIdsRequest(membersIds));
+        return userClient.getListParticipantsByIds(new IdsRequest(membersIds));
     }
 
     public boolean isMyProfileFollowList(Long listId) {

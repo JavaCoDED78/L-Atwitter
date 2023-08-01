@@ -4,7 +4,6 @@ import com.gmail.javacoded78.dto.ChatTweetResponse;
 import com.gmail.javacoded78.dto.ChatUserParticipantResponse;
 import com.gmail.javacoded78.dto.HeaderResponse;
 import com.gmail.javacoded78.dto.UserResponse;
-import com.gmail.javacoded78.dto.lists.UserIdsRequest;
 import com.gmail.javacoded78.dto.response.UserChatResponse;
 import com.gmail.javacoded78.exception.ApiRequestException;
 import com.gmail.javacoded78.feign.TweetClient;
@@ -16,24 +15,19 @@ import com.gmail.javacoded78.repository.ChatMessageRepository;
 import com.gmail.javacoded78.repository.ChatParticipantRepository;
 import com.gmail.javacoded78.repository.ChatRepository;
 import com.gmail.javacoded78.repository.projection.ChatMessageProjection;
-import com.gmail.javacoded78.repository.projection.ChatParticipantProjection;
 import com.gmail.javacoded78.repository.projection.ChatProjection;
 import com.gmail.javacoded78.service.ChatService;
 import com.gmail.javacoded78.util.AuthUtil;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -126,7 +120,7 @@ public class ChatServiceImpl implements ChatService {
         if (!tweetClient.isTweetExists(tweetId)) {
             throw new ApiRequestException("Tweet not found", HttpStatus.NOT_FOUND);
         }
-        List<Long> validUserIds = userClient.validateChatUsersIds(new UserIdsRequest(usersIds));
+        List<Long> validUserIds = userClient.validateChatUsersIds(new IdsRequest(usersIds));
         Map<Long, ChatMessageProjection> chatParticipants = new HashMap<>();
         Long authUserId = AuthUtil.getAuthenticatedUserId();
         validUserIds.forEach(userId -> {

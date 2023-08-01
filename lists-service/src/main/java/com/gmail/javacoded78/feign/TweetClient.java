@@ -3,7 +3,7 @@ package com.gmail.javacoded78.feign;
 import com.gmail.javacoded78.configuration.FeignConfiguration;
 import com.gmail.javacoded78.dto.HeaderResponse;
 import com.gmail.javacoded78.dto.TweetResponse;
-import com.gmail.javacoded78.dto.lists.UserIdsRequest;
+import com.gmail.javacoded78.dto.IdsRequest;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.cloud.openfeign.SpringQueryMap;
 import org.springframework.data.domain.Pageable;
@@ -16,6 +16,6 @@ import static com.gmail.javacoded78.controller.PathConstants.API_V1_TWEETS;
 public interface TweetClient {
 
     @PostMapping(API_V1_TWEETS + "/user/ids")
-    HeaderResponse<TweetResponse> getTweetsByUserIds(@RequestBody UserIdsRequest request,
+    HeaderResponse<TweetResponse> getTweetsByUserIds(@RequestBody IdsRequest request,
                                                      @SpringQueryMap Pageable pageable);
 }

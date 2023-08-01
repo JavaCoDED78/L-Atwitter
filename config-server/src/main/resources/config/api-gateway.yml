@@ -52,6 +52,13 @@ spring:
             - Path=/ui/v1/chat/**
           filters:
             - AuthFilter
+
+        - id: notification-service
+          uri: lb://notification-service
+          predicates:
+            - Path=/ui/v1/notification/**
+          filters:
+            - AuthFilter
   zipkin:
     base-url: http://localhost:9411
 

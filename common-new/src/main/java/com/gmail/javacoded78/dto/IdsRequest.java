@@ -1,4 +1,4 @@
-package com.gmail.javacoded78.dto.lists;
+package com.gmail.javacoded78.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -9,7 +9,7 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserIdsRequest {
+public class IdsRequest {
 
-    private List<Long> userIds;
+    private List<Long> ids;
 }

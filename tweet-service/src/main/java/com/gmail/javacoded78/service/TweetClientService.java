@@ -2,6 +2,9 @@ package com.gmail.javacoded78.service;
 
 
 import com.gmail.javacoded78.dto.ChatTweetResponse;
+import com.gmail.javacoded78.dto.HeaderResponse;
+import com.gmail.javacoded78.dto.IdsRequest;
+import com.gmail.javacoded78.dto.TweetResponse;
 import com.gmail.javacoded78.dto.notification.NotificationTweetResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -32,6 +35,10 @@ public interface TweetClientService {
 //    Page<TweetProjection> getTweetsByUserIds(TweetUserIdsRequest request, Pageable pageable);
 
     // NEW
+    TweetResponse getTweetById(Long tweetId);
+
+    HeaderResponse<TweetResponse> getTweetsByIds(IdsRequest request, Pageable pageable);
+
     NotificationTweetResponse getNotificationTweet(Long tweetId);
 
     Boolean isTweetExists(Long tweetId);

@@ -1,13 +1,13 @@
 package com.gmail.javacoded78.controller.rest;
 
-import com.gmail.javacoded78.common.dto.AuthUserResponse;
-import com.gmail.javacoded78.common.dto.AuthenticationResponse;
 import com.gmail.javacoded78.dto.request.AuthenticationRequest;
 import com.gmail.javacoded78.dto.request.CurrentPasswordResetRequest;
 import com.gmail.javacoded78.dto.request.EndRegistrationRequest;
 import com.gmail.javacoded78.dto.request.PasswordResetRequest;
 import com.gmail.javacoded78.dto.request.ProcessEmailRequest;
 import com.gmail.javacoded78.dto.request.RegistrationRequest;
+import com.gmail.javacoded78.dto.response.AuthUserResponse;
+import com.gmail.javacoded78.dto.response.AuthenticationResponse;
 import com.gmail.javacoded78.mapper.AuthenticationMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 
-import static com.gmail.javacoded78.common.controller.PathConstants.UI_V1_AUTH;
+import static com.gmail.javacoded78.controller.PathConstants.UI_V1_AUTH;
 
 @RestController
 @RequiredArgsConstructor
@@ -61,8 +61,8 @@ public class AuthenticationController {
     }
 
     @PostMapping("/forgot/email")
-    public ResponseEntity<String> findExistingEmail(@Valid @RequestBody ProcessEmailRequest request, BindingResult bindingResult) {
-        return ResponseEntity.ok(authenticationMapper.findEmail(request.getEmail(), bindingResult));
+    public ResponseEntity<String> getExistingEmail(@Valid @RequestBody ProcessEmailRequest request, BindingResult bindingResult) {
+        return ResponseEntity.ok(authenticationMapper.getEmail(request.getEmail(), bindingResult));
     }
 
     @PostMapping("/forgot")
@@ -72,7 +72,7 @@ public class AuthenticationController {
 
     @GetMapping("/reset/{code}")
     public ResponseEntity<AuthUserResponse> getUserByResetCode(@PathVariable String code) {
-        return ResponseEntity.ok(authenticationMapper.findByPasswordResetCode(code));
+        return ResponseEntity.ok(authenticationMapper.getByPasswordResetCode(code));
     }
 
     @PostMapping("/reset")

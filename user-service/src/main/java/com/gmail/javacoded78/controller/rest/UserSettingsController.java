@@ -1,10 +1,10 @@
 package com.gmail.javacoded78.controller.rest;
 
-import com.gmail.javacoded78.common.dto.AuthenticationResponse;
-import com.gmail.javacoded78.common.enums.BackgroundColorType;
-import com.gmail.javacoded78.common.enums.ColorSchemeType;
 import com.gmail.javacoded78.dto.request.SettingsRequest;
+import com.gmail.javacoded78.dto.response.AuthenticationResponse;
 import com.gmail.javacoded78.dto.response.UserPhoneResponse;
+import com.gmail.javacoded78.enums.BackgroundColorType;
+import com.gmail.javacoded78.enums.ColorSchemeType;
 import com.gmail.javacoded78.mapper.UserSettingsMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import static com.gmail.javacoded78.common.controller.PathConstants.UI_V1_USER_SETTINGS_UPDATE;
+import static com.gmail.javacoded78.controller.PathConstants.UI_V1_USER_SETTINGS_UPDATE;
 
 @RestController
 @RequiredArgsConstructor

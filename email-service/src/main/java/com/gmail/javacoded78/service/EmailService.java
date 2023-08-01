@@ -1,6 +1,6 @@
 package com.gmail.javacoded78.service;
 
-import com.gmail.javacoded78.client.email.EmailRequest;
+import com.gmail.javacoded78.dto.EmailRequest;
 
 import javax.mail.MessagingException;
 

@@ -1,8 +1,9 @@
 package com.gmail.javacoded78.service;
 
-import com.gmail.javacoded78.common.models.User;
+
 import com.gmail.javacoded78.dto.request.AuthenticationRequest;
 import com.gmail.javacoded78.dto.request.RegistrationRequest;
+import com.gmail.javacoded78.model.User;
 import com.gmail.javacoded78.repository.projection.AuthUserProjection;
 import com.gmail.javacoded78.repository.projection.UserPrincipalProjection;
 import org.springframework.validation.BindingResult;
@@ -31,9 +32,9 @@ public interface AuthenticationService {
 
     Map<String, Object> getUserByToken();
 
-    String findEmail(String email);
+    String getEmail(String email);
 
-    AuthUserProjection findByPasswordResetCode(String code);
+    AuthUserProjection getByPasswordResetCode(String code);
 
     String sendPasswordResetCode(String email);
 

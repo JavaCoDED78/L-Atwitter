@@ -1,6 +1,6 @@
 package com.gmail.javacoded78.repository.projection;
 
-import com.gmail.javacoded78.common.projection.ImageProjection;
+import com.gmail.javacoded78.projection.ImageProjection;
 import org.springframework.beans.factory.annotation.Value;
 
 public interface NotificationUserProjection {

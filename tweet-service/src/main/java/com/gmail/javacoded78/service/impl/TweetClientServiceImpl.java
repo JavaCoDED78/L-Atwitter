@@ -1,11 +1,15 @@
 package com.gmail.javacoded78.service.impl;
 
 import com.gmail.javacoded78.dto.ChatTweetResponse;
+import com.gmail.javacoded78.dto.HeaderResponse;
+import com.gmail.javacoded78.dto.IdsRequest;
+import com.gmail.javacoded78.dto.TweetResponse;
 import com.gmail.javacoded78.dto.notification.NotificationTweetResponse;
 import com.gmail.javacoded78.mapper.BasicMapper;
 import com.gmail.javacoded78.repository.TweetRepository;
 import com.gmail.javacoded78.repository.projection.ChatTweetProjection;
 import com.gmail.javacoded78.repository.projection.NotificationTweetProjection;
+import com.gmail.javacoded78.repository.projection.TweetProjection;
 import com.gmail.javacoded78.service.TweetClientService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -73,6 +77,18 @@ public class TweetClientServiceImpl implements TweetClientService {
 //    public Page<TweetProjection> getTweetsByUserIds(TweetUserIdsRequest request, Pageable pageable) {
 //        return tweetRepository.findTweetsByUserIds(request.getUserIds(), pageable);
 //    }
+
+    @Override
+    public TweetResponse getTweetById(Long tweetId) {
+        TweetProjection tweet = tweetRepository.getTweetById(tweetId, TweetProjection.class).get();
+        return basicMapper.convertToResponse(tweet, TweetResponse.class);
+    }
+
+    @Override
+    public HeaderResponse<TweetResponse> getTweetsByIds(IdsRequest request, Pageable pageable) {
+        Page<TweetProjection> tweets = tweetRepository.getTweetsByIds(request.getIds(), pageable);
+        return basicMapper.getHeaderResponse(tweets, TweetResponse.class);
+    }
 
     @Override
     public NotificationTweetResponse getNotificationTweet(Long tweetId) {

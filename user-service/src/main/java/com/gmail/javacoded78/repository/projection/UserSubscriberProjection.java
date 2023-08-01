@@ -1,7 +1,7 @@
 package com.gmail.javacoded78.repository.projection;
 
-import com.gmail.javacoded78.common.enums.BackgroundColorType;
-import com.gmail.javacoded78.common.enums.ColorSchemeType;
+import com.gmail.javacoded78.enums.BackgroundColorType;
+import com.gmail.javacoded78.enums.ColorSchemeType;
 
 import java.time.LocalDateTime;
 

@@ -1,11 +1,12 @@
 package com.gmail.javacoded78.dto;
 
 import com.gmail.javacoded78.enums.NotificationType;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@NoArgsConstructor
+@Builder
 public class NotificationRequest {
 
     private NotificationType notificationType;
