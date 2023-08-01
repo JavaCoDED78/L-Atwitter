@@ -26,14 +26,14 @@ public class TweetResponse {
     private String linkDescription;
     private String linkCover;
     private LinkCoverSize linkCoverSize;
-    private UserTweetResponse user;
+    private TweetAuthorResponse user;
     private List<ImageResponse> images;
     private QuoteTweetResponse quoteTweet;
     private PollResponse poll;
-    private Integer retweetsCount;
-    private Integer likedTweetsCount;
-    private Integer repliesCount;
-    private Integer quotesCount;
+    private Long retweetsCount;
+    private Long likedTweetsCount;
+    private Long repliesCount;
+    private Long quotesCount;
 
     @JsonProperty("isDeleted")
     private boolean isDeleted;

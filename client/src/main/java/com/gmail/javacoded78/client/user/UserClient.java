@@ -9,6 +9,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
@@ -34,7 +35,7 @@ public interface UserClient {
     @GetMapping(API_V1_USER + "/valid/{userId}/{authUserId}")
     User getValidUser(@PathVariable("userId") Long userId, @PathVariable("authUserId") Long authUserId);
 
-    @GetMapping(API_V1_USER + "/notification/user/{authUserId}")
+    @GetMapping(API_V1_USER + "/notification/authUser/{authUserId}")
     User getAuthNotificationUser(@PathVariable("authUserId") Long authUserId);
 
     @GetMapping(API_V1_USER + "/subscribers/{userId}")
@@ -64,13 +65,13 @@ public interface UserClient {
     @GetMapping(API_V1_USER + "/notification/{userId}")
     void increaseNotificationsCount(@PathVariable("userId") Long userId);
 
-    @GetMapping(API_V1_USER + "/like/count/{increaseCount}")
+    @PutMapping(API_V1_USER + "/like/count/{increaseCount}")
     void updateLikeCount(@PathVariable("increaseCount") boolean increaseCount);
 
-    @GetMapping(API_V1_USER + "/tweet/count/{increaseCount}")
+    @PutMapping(API_V1_USER + "/tweet/count/{increaseCount}")
     void updateTweetCount(@PathVariable("increaseCount") boolean increaseCount);
 
-    @GetMapping(API_V1_USER + "/media/count/{increaseCount}")
+    @PutMapping(API_V1_USER + "/media/count/{increaseCount}")
     void updateMediaTweetCount(@PathVariable("increaseCount") boolean increaseCount);
 
     @GetMapping(API_V1_USER + "/tweet/create/{userId}/{tweetId}")

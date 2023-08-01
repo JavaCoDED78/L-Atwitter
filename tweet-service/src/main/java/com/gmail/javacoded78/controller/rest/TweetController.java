@@ -1,16 +1,16 @@
 package com.gmail.javacoded78.controller.rest;
 
-import com.gmail.javacoded78.common.dto.HeaderResponse;
-import com.gmail.javacoded78.common.dto.NotificationResponse;
-import com.gmail.javacoded78.common.dto.NotificationTweetResponse;
-import com.gmail.javacoded78.common.dto.TweetResponse;
-import com.gmail.javacoded78.common.dto.UserResponse;
-import com.gmail.javacoded78.common.enums.ReplyType;
+import com.gmail.javacoded78.dto.HeaderResponse;
+import com.gmail.javacoded78.dto.TweetResponse;
+import com.gmail.javacoded78.dto.UserResponse;
+import com.gmail.javacoded78.dto.notification.NotificationResponse;
+import com.gmail.javacoded78.dto.notification.NotificationTweetResponse;
 import com.gmail.javacoded78.dto.request.TweetDeleteRequest;
 import com.gmail.javacoded78.dto.request.TweetRequest;
 import com.gmail.javacoded78.dto.request.VoteRequest;
 import com.gmail.javacoded78.dto.response.NotificationReplyResponse;
 import com.gmail.javacoded78.dto.response.TweetAdditionalInfoResponse;
+import com.gmail.javacoded78.enums.ReplyType;
 import com.gmail.javacoded78.mapper.TweetMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -29,11 +29,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-import static com.gmail.javacoded78.common.controller.PathConstants.API_V1_TWEETS;
+import static com.gmail.javacoded78.controller.PathConstants.UI_V1_TWEETS;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping(API_V1_TWEETS)
+@RequestMapping(UI_V1_TWEETS)
 public class TweetController {
 
     private final TweetMapper tweetMapper;
@@ -152,12 +152,6 @@ public class TweetController {
     public ResponseEntity<NotificationTweetResponse> likeTweet(@PathVariable("userId") Long userId,
                                                                @PathVariable("tweetId") Long tweetId) {
         NotificationResponse notification = tweetMapper.likeTweet(tweetId);
-
-        if (notification.getId() != null) {
-            messagingTemplate.convertAndSend("/topic/notifications/" + notification.getTweet().getUser().getId(), notification);
-        }
-        messagingTemplate.convertAndSend("/topic/feed", notification);
-        messagingTemplate.convertAndSend("/topic/tweet/" + notification.getTweet().getId(), notification);
         messagingTemplate.convertAndSend("/topic/user/update/tweet/" + userId, notification);
         return ResponseEntity.ok(notification.getTweet());
     }
@@ -166,12 +160,6 @@ public class TweetController {
     public ResponseEntity<NotificationTweetResponse> retweet(@PathVariable("userId") Long userId,
                                                              @PathVariable("tweetId") Long tweetId) {
         NotificationResponse notification = tweetMapper.retweet(tweetId);
-
-        if (notification.getId() != null) {
-            messagingTemplate.convertAndSend("/topic/notifications/" + notification.getTweet().getUser().getId(), notification);
-        }
-        messagingTemplate.convertAndSend("/topic/feed", notification);
-        messagingTemplate.convertAndSend("/topic/tweet/" + notification.getTweet().getId(), notification);
         messagingTemplate.convertAndSend("/topic/user/update/tweet/" + userId, notification);
         return ResponseEntity.ok(notification.getTweet());
     }

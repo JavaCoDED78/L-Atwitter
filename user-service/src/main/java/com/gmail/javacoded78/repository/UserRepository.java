@@ -12,7 +12,9 @@ import com.gmail.javacoded78.repository.projection.FollowerUserProjection;
 import com.gmail.javacoded78.repository.projection.ListMemberProjection;
 import com.gmail.javacoded78.repository.projection.MutedUserProjection;
 import com.gmail.javacoded78.repository.projection.NotificationUserProjection;
+import com.gmail.javacoded78.repository.projection.TweetAdditionalInfoUserProjection;
 import com.gmail.javacoded78.repository.projection.TweetAuthorProjection;
+import com.gmail.javacoded78.repository.projection.TweetAuthorsProjection;
 import com.gmail.javacoded78.repository.projection.UserCommonProjection;
 import com.gmail.javacoded78.repository.projection.UserDetailProjection;
 import com.gmail.javacoded78.repository.projection.UserProfileProjection;
@@ -121,12 +123,12 @@ public interface UserRepository extends JpaRepository<User, Long> {
             "WHERE user.id = :userId " +
             "AND notification.notificationType = 'TWEET' " +
             "AND subscriber.id = :userId ")
-    List<TweetAuthorProjection> getNotificationsTweetAuthors(@Param("userId") Long userId);
+    List<TweetAuthorsProjection> getNotificationsTweetAuthors(@Param("userId") Long userId);
 
-    @Query("SELECT subscriber FROM User user " +
+    @Query("SELECT subscriber.id FROM User user " +
             "LEFT JOIN user.subscribers subscriber " +
             "WHERE user.id = :userId")
-    List<UserSubscriberProjection> getSubscribersByUserId(@Param("userId") Long userId);
+    List<Long> getSubscribersByUserId(@Param("userId") Long userId);
 
     @Query("SELECT CASE WHEN count(user) > 0 THEN true ELSE false END FROM User user " +
             "LEFT JOIN user.following following " +
@@ -294,4 +296,43 @@ public interface UserRepository extends JpaRepository<User, Long> {
             "WHERE UPPER(user.fullName) LIKE UPPER(CONCAT('%',:username,'%')) AND user.active = true " +
             "OR UPPER(user.username) LIKE UPPER(CONCAT('%',:username,'%')) AND user.active = true")
     List<ListMemberProjection> searchListMembersByUsername(@Param("username") String username);
+
+    @Query("SELECT user FROM User user WHERE user.id = :userId")
+    NotificationUserProjection getNotificationUser(@Param("userId") Long userId);
+
+    @Query("SELECT user FROM User user WHERE user.id = :userId")
+    TweetAuthorProjection getTweetAuthor(@Param("userId") Long userId);
+
+    @Query("SELECT user FROM User user WHERE user.id = :userId")
+    TweetAdditionalInfoUserProjection getTweetAdditionalInfoUser(@Param("userId") Long userId);
+
+    @Query("SELECT user FROM User user WHERE user.id IN :userIds")
+    Page<UserProjection> getTweetLikedUsersByIds(@Param("userIds") List<Long> userIds, Pageable pageable);
+
+    @Query("SELECT user FROM User user WHERE user.id IN :userIds")
+    Page<UserProjection> getRetweetedUsersByTweetId(@Param("userIds") List<Long> userIds, Pageable pageable);
+
+    @Query("SELECT user.pinnedTweetId FROM User user WHERE user.id = :userId")
+    Long getPinnedTweetId(@Param("userId") Long userId);
+
+    @Modifying
+    @Query("UPDATE User user SET user.pinnedTweetId = :pinnedTweetId WHERE user.id = :userId")
+    void updatePinnedTweetId(@Param("pinnedTweetId") Long pinnedTweetId, @Param("userId") Long userId);
+
+    @Query("SELECT user.id FROM User user " +
+            "LEFT JOIN user.following following " +
+            "WHERE user.id IN :userIds " +
+            "AND (user.privateProfile = false OR (user.privateProfile = true AND following.id IN :userIds) " +
+            "   AND user.active = true)")
+    List<Long> getValidUserIdsByIds(@Param("userIds") List<Long> userIds);
+
+    @Query("SELECT user.id FROM User user " +
+            "LEFT JOIN user.following following " +
+            "WHERE (UPPER(user.fullName) LIKE UPPER(CONCAT('%',:username,'%')) " +
+            "   AND (user.privateProfile = false OR (user.privateProfile = true AND following.id IN :userIds) " +
+            "       AND user.active = true)) " +
+            "OR (UPPER(user.username) LIKE UPPER(CONCAT('%',:username,'%')) " +
+            "   AND (user.privateProfile = false OR (user.privateProfile = true AND following.id IN :userIds) " +
+            "       AND user.active = true))")
+    List<Long> getValidUserIdsByName(@Param("username") String username, @Param("userIds") List<Long> userIds);
 }

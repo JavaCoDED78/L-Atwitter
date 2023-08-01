@@ -1,14 +1,27 @@
 package com.gmail.javacoded78.repository.projection;
 
 import com.gmail.javacoded78.common.projection.ImageProjection;
+import org.springframework.beans.factory.annotation.Value;
 
 public interface TweetAuthorProjection {
-    AuthorProjection getTweetAuthor();
+    Long getId();
+    String getEmail();
+    String getFullName();
+    String getUsername();
+    ImageProjection getAvatar();
 
-    interface AuthorProjection {
-        Long getId();
-        String getUsername();
-        String getFullName();
-        ImageProjection getAvatar();
-    }
+    @Value("#{@userServiceImpl.isUserMutedByMyProfile(target.id)}")
+    boolean getIsUserMuted();
+
+    @Value("#{@userServiceImpl.isUserBlockedByMyProfile(target.id)}")
+    boolean getIsUserBlocked();
+
+    @Value("#{@userServiceImpl.isMyProfileBlockedByUser(target.id)}")
+    boolean getIsMyProfileBlocked();
+
+    @Value("#{@userServiceImpl.isMyProfileWaitingForApprove(target.id)}")
+    boolean getIsWaitingForApprove();
+
+    @Value("#{@userServiceImpl.isUserFollowByOtherUser(target.id)}")
+    boolean getIsFollower();
 }

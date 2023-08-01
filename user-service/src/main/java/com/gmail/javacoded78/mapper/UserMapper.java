@@ -34,6 +34,7 @@ import com.gmail.javacoded78.repository.projection.BookmarkProjection;
 import com.gmail.javacoded78.repository.projection.FollowerUserProjection;
 import com.gmail.javacoded78.repository.projection.MutedUserProjection;
 import com.gmail.javacoded78.repository.projection.TweetAuthorProjection;
+import com.gmail.javacoded78.repository.projection.TweetAuthorsProjection;
 import com.gmail.javacoded78.repository.projection.UserDetailProjection;
 import com.gmail.javacoded78.repository.projection.UserProfileProjection;
 import com.gmail.javacoded78.service.UserService;
@@ -184,11 +185,11 @@ public class UserMapper {
     }
 
     public List<NotificationUserResponse> getTweetAuthorsNotifications() {
-        List<TweetAuthorProjection> tweetAuthorsNotifications = userService.getTweetAuthorsNotifications();
-        List<TweetAuthorProjection.AuthorProjection> tweetAuthorsProjection = tweetAuthorsNotifications.contains(null)
+        List<TweetAuthorsProjection> tweetAuthorsNotifications = userService.getTweetAuthorsNotifications();
+        List<TweetAuthorsProjection.AuthorProjection> tweetAuthorsProjection = tweetAuthorsNotifications.contains(null)
                 ? new ArrayList<>()
                 : tweetAuthorsNotifications.stream()
-                .map(TweetAuthorProjection::getTweetAuthor)
+                .map(TweetAuthorsProjection::getTweetAuthor)
                 .collect(Collectors.toList());
         return basicMapper.convertToResponseList(tweetAuthorsProjection, NotificationUserResponse.class);
     }

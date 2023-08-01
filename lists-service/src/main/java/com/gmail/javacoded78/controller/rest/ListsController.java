@@ -1,4 +1,4 @@
-package com.gmail.javacoded78.controller;
+package com.gmail.javacoded78.controller.rest;
 
 import com.gmail.javacoded78.dto.HeaderResponse;
 import com.gmail.javacoded78.dto.TweetResponse;
@@ -8,7 +8,6 @@ import com.gmail.javacoded78.dto.response.BaseListResponse;
 import com.gmail.javacoded78.dto.lists.ListMemberResponse;
 import com.gmail.javacoded78.dto.response.ListResponse;
 import com.gmail.javacoded78.dto.response.ListUserResponse;
-import com.gmail.javacoded78.dto.response.ListsOwnerMemberResponse;
 import com.gmail.javacoded78.dto.response.PinnedListResponse;
 import com.gmail.javacoded78.dto.response.SimpleListResponse;
 import com.gmail.javacoded78.mapper.ListsMapper;
@@ -16,7 +15,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -36,7 +34,6 @@ import static com.gmail.javacoded78.controller.PathConstants.UI_V1_LISTS;
 public class ListsController {
 
     private final ListsMapper listsMapper;
-    private final SimpMessagingTemplate messagingTemplate;
 
     @GetMapping
     public ResponseEntity<List<ListResponse>> getAllTweetLists() {
@@ -105,13 +102,7 @@ public class ListsController {
 
     @GetMapping("/add/user/{userId}/{listId}")
     public ResponseEntity<Boolean> addUserToList(@PathVariable("userId") Long userId, @PathVariable("listId") Long listId) {
-//        NotificationResponse notification = listsMapper.addUserToList(userId, listId);
-//
-//        if (notification.getId() != null) {
-//            messagingTemplate.convertAndSend("/topic/notifications/" + notification.getUser().getId(), notification);
-//        }
-//        return ResponseEntity.ok(notification.isAddedToList());
-        return null;
+        return ResponseEntity.ok(listsMapper.addUserToList(userId, listId));
     }
 
     @GetMapping("/{listId}/tweets")

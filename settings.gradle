@@ -22,4 +22,5 @@ include 'lists-service'
 include 'tag-service'
 include 'chat-service'
 include 'common-new'
+include 'notification-service'
 

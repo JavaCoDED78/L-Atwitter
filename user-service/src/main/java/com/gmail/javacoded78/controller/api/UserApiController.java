@@ -1,6 +1,11 @@
 package com.gmail.javacoded78.controller.api;
 
 
+import com.gmail.javacoded78.common.dto.HeaderResponse;
+import com.gmail.javacoded78.common.dto.NotificationUserResponse;
+import com.gmail.javacoded78.common.dto.UserResponse;
+import com.gmail.javacoded78.common.dto.common_new.TweetAdditionalInfoUserResponse;
+import com.gmail.javacoded78.common.dto.common_new.TweetAuthorResponse;
 import com.gmail.javacoded78.common.dto.common_new.UserIdsRequest;
 import com.gmail.javacoded78.common.dto.common_new.ListMemberResponse;
 import com.gmail.javacoded78.common.dto.common_new.ListOwnerResponse;
@@ -9,11 +14,13 @@ import com.gmail.javacoded78.common.projection.UserChatProjection;
 import com.gmail.javacoded78.service.UserClientService;
 import com.gmail.javacoded78.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cloud.openfeign.SpringQueryMap;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -55,13 +62,13 @@ public class UserApiController {
         return userService.getValidUser(userId, authUserId);
     }
 
-    @GetMapping("/notification/user/{authUserId}")
+    @GetMapping("/notification/authUser/{authUserId}")
     public User getAuthNotificationUser(@PathVariable("authUserId") Long authUserId) {
         return userService.getAuthNotificationUser(authUserId);
     }
 
     @GetMapping("/subscribers/{userId}")
-    public List<User> getSubscribersByUserId(@PathVariable("userId") Long userId) {
+    public List<Long> getSubscribersByUserId(@PathVariable("userId") Long userId) {
         return userService.getSubscribersByUserId(userId);
     }
 
@@ -105,17 +112,17 @@ public class UserApiController {
         userService.increaseNotificationsCount(userId);
     }
 
-    @GetMapping("/like/count/{increaseCount}")
+    @PutMapping("/like/count/{increaseCount}")
     public void updateLikeCount(@PathVariable("increaseCount") boolean increaseCount) {
         userService.updateLikeCount(increaseCount);
     }
 
-    @GetMapping("/tweet/count/{increaseCount}")
+    @PutMapping("/tweet/count/{increaseCount}")
     public void updateTweetCount(@PathVariable("increaseCount") boolean increaseCount) {
         userService.updateTweetCount(increaseCount);
     }
 
-    @GetMapping("/media/count/{increaseCount}")
+    @PutMapping("/media/count/{increaseCount}")
     public void updateMediaTweetCount(@PathVariable("increaseCount") boolean increaseCount) {
         userService.updateMediaTweetCount(increaseCount);
     }
@@ -139,5 +146,42 @@ public class UserApiController {
     @GetMapping("/list/participants/{username}")
     public List<ListMemberResponse> searchListMembersByUsername(@PathVariable("username") String username) {
         return userService.searchListMembersByUsername(username);
+    }
+
+    @GetMapping("/notification/user/{userId}")
+    public NotificationUserResponse getNotificationUser(@PathVariable("userId") Long userId) {
+        return userService.getNotificationUser(userId);
+    }
+
+    @GetMapping("/tweet/author/{userId}")
+    public TweetAuthorResponse getTweetAuthor(@PathVariable("userId") Long userId) {
+        return userService.getTweetAuthor(userId);
+    }
+
+    @GetMapping("/tweet/additional/info/{userId}")
+    public TweetAdditionalInfoUserResponse getTweetAdditionalInfoUser(@PathVariable("userId") Long userId) {
+        return userService.getTweetAdditionalInfoUser(userId);
+    }
+
+    @PostMapping("/tweet/liked")
+    public HeaderResponse<UserResponse> getTweetLikedUsersByIds(@RequestBody UserIdsRequest request,
+                                                                @SpringQueryMap Pageable pageable) {
+        return userService.getTweetLikedUsersByIds(request, pageable);
+    }
+
+    @PostMapping("/tweet/retweeted")
+    public HeaderResponse<UserResponse> getRetweetedUsersByTweetId(@RequestBody UserIdsRequest request,
+                                                                   @SpringQueryMap Pageable pageable) {
+        return userService.getRetweetedUsersByTweetId(request, pageable);
+    }
+
+    @PutMapping("/tweet/pinned/{tweetId}")
+    public void updatePinnedTweetId(@PathVariable("tweetId") Long tweetId) {
+        userService.updatePinnedTweetId(tweetId);
+    }
+
+    @PostMapping("/tweet/valid/ids/{text}")
+    public List<Long> getValidUserIds(@RequestBody UserIdsRequest request, @PathVariable("text") String text) {
+        return userService.getValidUserIds(request, text);
     }
 }

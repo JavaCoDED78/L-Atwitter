@@ -1,21 +1,19 @@
 package com.gmail.javacoded78.mapper;
 
-import com.gmail.javacoded78.common.dto.HeaderResponse;
-import com.gmail.javacoded78.common.dto.NotificationResponse;
-import com.gmail.javacoded78.common.dto.TweetResponse;
-import com.gmail.javacoded78.common.dto.UserResponse;
-import com.gmail.javacoded78.common.enums.NotificationType;
-import com.gmail.javacoded78.common.enums.ReplyType;
-import com.gmail.javacoded78.common.mapper.BasicMapper;
-import com.gmail.javacoded78.common.models.Tweet;
-import com.gmail.javacoded78.common.projection.TweetProjection;
-import com.gmail.javacoded78.common.projection.UserProjection;
+import com.gmail.javacoded78.dto.HeaderResponse;
+import com.gmail.javacoded78.dto.TweetResponse;
+import com.gmail.javacoded78.dto.UserResponse;
+import com.gmail.javacoded78.dto.notification.NotificationResponse;
 import com.gmail.javacoded78.dto.request.TweetDeleteRequest;
 import com.gmail.javacoded78.dto.request.TweetRequest;
 import com.gmail.javacoded78.dto.request.VoteRequest;
 import com.gmail.javacoded78.dto.response.NotificationReplyResponse;
 import com.gmail.javacoded78.dto.response.TweetAdditionalInfoResponse;
-import com.gmail.javacoded78.repository.TweetAdditionalInfoProjection;
+import com.gmail.javacoded78.enums.NotificationType;
+import com.gmail.javacoded78.enums.ReplyType;
+import com.gmail.javacoded78.model.Tweet;
+import com.gmail.javacoded78.repository.projection.TweetAdditionalInfoProjection;
+import com.gmail.javacoded78.repository.projection.TweetProjection;
 import com.gmail.javacoded78.service.TweetService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -34,26 +32,6 @@ public class TweetMapper {
 
     public HeaderResponse<TweetResponse> getTweets(Pageable pageable) {
         Page<TweetProjection> tweets = tweetService.getTweets(pageable);
-        return basicMapper.getHeaderResponse(tweets, TweetResponse.class);
-    }
-
-    public HeaderResponse<TweetResponse> getMediaTweets(Pageable pageable) {
-        Page<TweetProjection> tweets = tweetService.getMediaTweets(pageable);
-        return basicMapper.getHeaderResponse(tweets, TweetResponse.class);
-    }
-
-    public HeaderResponse<TweetResponse> getTweetsWithVideo(Pageable pageable) {
-        Page<TweetProjection> tweets = tweetService.getTweetsWithVideo(pageable);
-        return basicMapper.getHeaderResponse(tweets, TweetResponse.class);
-    }
-
-    public HeaderResponse<TweetResponse> getFollowersTweets(Pageable pageable) {
-        Page<TweetProjection> tweets = tweetService.getFollowersTweets(pageable);
-        return basicMapper.getHeaderResponse(tweets, TweetResponse.class);
-    }
-
-    public HeaderResponse<TweetResponse> getScheduledTweets(Pageable pageable) {
-        Page<TweetProjection> tweets = tweetService.getScheduledTweets(pageable);
         return basicMapper.getHeaderResponse(tweets, TweetResponse.class);
     }
 
@@ -78,13 +56,31 @@ public class TweetMapper {
     }
 
     public HeaderResponse<UserResponse> getLikedUsersByTweetId(Long tweetId, Pageable pageable) {
-        Page<UserProjection> users = tweetService.getLikedUsersByTweetId(tweetId, pageable);
-        return basicMapper.getHeaderResponse(users, UserResponse.class);
+        return tweetService.getLikedUsersByTweetId(tweetId, pageable);
     }
 
     public HeaderResponse<UserResponse> getRetweetedUsersByTweetId(Long tweetId, Pageable pageable) {
-        Page<UserProjection> users = tweetService.getRetweetedUsersByTweetId(tweetId, pageable);
-        return basicMapper.getHeaderResponse(users, UserResponse.class);
+        return tweetService.getRetweetedUsersByTweetId(tweetId, pageable);
+    }
+
+    public HeaderResponse<TweetResponse> getMediaTweets(Pageable pageable) {
+        Page<TweetProjection> tweets = tweetService.getMediaTweets(pageable);
+        return basicMapper.getHeaderResponse(tweets, TweetResponse.class);
+    }
+
+    public HeaderResponse<TweetResponse> getTweetsWithVideo(Pageable pageable) {
+        Page<TweetProjection> tweets = tweetService.getTweetsWithVideo(pageable);
+        return basicMapper.getHeaderResponse(tweets, TweetResponse.class);
+    }
+
+    public HeaderResponse<TweetResponse> getFollowersTweets(Pageable pageable) {
+        Page<TweetProjection> tweets = tweetService.getFollowersTweets(pageable);
+        return basicMapper.getHeaderResponse(tweets, TweetResponse.class);
+    }
+
+    public HeaderResponse<TweetResponse> getScheduledTweets(Pageable pageable) {
+        Page<TweetProjection> tweets = tweetService.getScheduledTweets(pageable);
+        return basicMapper.getHeaderResponse(tweets, TweetResponse.class);
     }
 
     public TweetResponse createTweet(TweetRequest tweetRequest) {
@@ -113,33 +109,23 @@ public class TweetMapper {
         return tweetService.deleteTweet(tweetId);
     }
 
-    public NotificationResponse likeTweet(Long tweetId) {
-        Map<String, Object> notificationDetails = tweetService.likeTweet(tweetId);
-        NotificationResponse notification = basicMapper.convertToResponse(notificationDetails.get("notification"), NotificationResponse.class);
-        notification.getTweet().setNotificationCondition((Boolean) notificationDetails.get("notificationCondition"));
-        return notification;
-    }
-
-    public NotificationResponse retweet(Long tweetId) {
-        Map<String, Object> notificationDetails = tweetService.retweet(tweetId);
-        NotificationResponse notification = basicMapper.convertToResponse(notificationDetails.get("notification"), NotificationResponse.class);
-        notification.getTweet().setNotificationCondition((Boolean) notificationDetails.get("notificationCondition"));
-        return notification;
-    }
-
     public HeaderResponse<TweetResponse> searchTweets(String text, Pageable pageable) {
         Page<TweetProjection> tweets = tweetService.searchTweets(text, pageable);
         return basicMapper.getHeaderResponse(tweets, TweetResponse.class);
     }
 
+    public NotificationResponse likeTweet(Long tweetId) {
+        return tweetService.likeTweet(tweetId);
+    }
+
+    public NotificationResponse retweet(Long tweetId) {
+        return tweetService.retweet(tweetId);
+    }
+
     public NotificationReplyResponse replyTweet(Long tweetId, TweetRequest tweetRequest) {
         TweetProjection tweet = tweetService.replyTweet(tweetId, basicMapper.convertToResponse(tweetRequest, Tweet.class));
         TweetResponse replyTweet = basicMapper.convertToResponse(tweet, TweetResponse.class);
-        NotificationReplyResponse notificationReplyResponse = new NotificationReplyResponse();
-        notificationReplyResponse.setTweetId(tweetId);
-        notificationReplyResponse.setNotificationType(NotificationType.REPLY);
-        notificationReplyResponse.setTweet(replyTweet);
-        return notificationReplyResponse;
+        return new NotificationReplyResponse(tweetId, NotificationType.REPLY, replyTweet);
     }
 
     public TweetResponse quoteTweet(Long tweetId, TweetRequest tweetRequest) {
@@ -153,7 +139,8 @@ public class TweetMapper {
     }
 
     public TweetResponse voteInPoll(VoteRequest voteRequest) {
-        TweetProjection tweet = tweetService.voteInPoll(voteRequest.getTweetId(), voteRequest.getPollId(), voteRequest.getPollChoiceId());
+        TweetProjection tweet = tweetService.voteInPoll(voteRequest.getTweetId(), voteRequest.getPollId(),
+                voteRequest.getPollChoiceId());
         return basicMapper.convertToResponse(tweet, TweetResponse.class);
     }
 

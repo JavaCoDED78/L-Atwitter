@@ -33,6 +33,7 @@ import com.gmail.javacoded78.repository.projection.FollowerUserProjection;
 import com.gmail.javacoded78.repository.projection.MutedUserProjection;
 import com.gmail.javacoded78.repository.projection.SameFollower;
 import com.gmail.javacoded78.repository.projection.TweetAuthorProjection;
+import com.gmail.javacoded78.repository.projection.TweetAuthorsProjection;
 import com.gmail.javacoded78.repository.projection.UserDetailProjection;
 import com.gmail.javacoded78.repository.projection.UserProfileProjection;
 import com.gmail.javacoded78.service.AuthenticationService;
@@ -150,7 +151,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<TweetAuthorProjection> getTweetAuthorsNotifications() {
+    public List<TweetAuthorsProjection> getTweetAuthorsNotifications() {
         User user = authenticationService.getAuthenticatedUser();
         user.setNotificationsCount(0L);
         return userRepository.getNotificationsTweetAuthors(user.getId());

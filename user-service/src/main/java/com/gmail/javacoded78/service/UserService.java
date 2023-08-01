@@ -15,6 +15,7 @@ import com.gmail.javacoded78.repository.projection.BookmarkProjection;
 import com.gmail.javacoded78.repository.projection.FollowerUserProjection;
 import com.gmail.javacoded78.repository.projection.MutedUserProjection;
 import com.gmail.javacoded78.repository.projection.TweetAuthorProjection;
+import com.gmail.javacoded78.repository.projection.TweetAuthorsProjection;
 import com.gmail.javacoded78.repository.projection.UserDetailProjection;
 import com.gmail.javacoded78.repository.projection.UserProfileProjection;
 import org.springframework.data.domain.Page;
@@ -45,7 +46,7 @@ public interface UserService {
 
     Page<NotificationProjection> getUserNotifications(Pageable pageable);
 
-    List<TweetAuthorProjection> getTweetAuthorsNotifications();
+    List<TweetAuthorsProjection> getTweetAuthorsNotifications();
 
     NotificationInfoProjection getUserNotificationById(Long notificationId);
 

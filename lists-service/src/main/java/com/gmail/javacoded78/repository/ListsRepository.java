@@ -4,6 +4,7 @@ import com.gmail.javacoded78.model.Lists;
 import com.gmail.javacoded78.repository.projection.BaseListProjection;
 import com.gmail.javacoded78.repository.projection.ListProjection;
 import com.gmail.javacoded78.repository.projection.ListUserProjection;
+import com.gmail.javacoded78.repository.projection.NotificationListProjection;
 import com.gmail.javacoded78.repository.projection.PinnedListProjection;
 import com.gmail.javacoded78.repository.projection.SimpleListProjection;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -101,4 +102,7 @@ public interface ListsRepository extends JpaRepository<Lists, Long> {
             "WHERE list.id = :listId " +
             "AND list.listOwnerId != :authUserId")
     boolean isListPrivate(@Param("listId") Long listId, @Param("authUserId") Long authUserId);
+
+    @Query("SELECT list FROM Lists list WHERE list.id = :listId")
+    NotificationListProjection getNotificationList(@Param("listId") Long listId);
 }

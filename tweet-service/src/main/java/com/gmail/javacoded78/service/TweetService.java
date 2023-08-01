@@ -1,10 +1,12 @@
 package com.gmail.javacoded78.service;
 
-import com.gmail.javacoded78.common.enums.ReplyType;
-import com.gmail.javacoded78.common.models.Tweet;
-import com.gmail.javacoded78.common.projection.TweetProjection;
-import com.gmail.javacoded78.common.projection.UserProjection;
-import com.gmail.javacoded78.repository.TweetAdditionalInfoProjection;
+import com.gmail.javacoded78.dto.HeaderResponse;
+import com.gmail.javacoded78.dto.UserResponse;
+import com.gmail.javacoded78.dto.notification.NotificationResponse;
+import com.gmail.javacoded78.enums.ReplyType;
+import com.gmail.javacoded78.model.Tweet;
+import com.gmail.javacoded78.repository.projection.TweetAdditionalInfoProjection;
+import com.gmail.javacoded78.repository.projection.TweetProjection;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -23,9 +25,9 @@ public interface TweetService {
 
     Page<TweetProjection> getQuotesByTweetId(Pageable pageable, Long tweetId);
 
-    Page<UserProjection> getLikedUsersByTweetId(Long tweetId, Pageable pageable);
+    HeaderResponse<UserResponse> getLikedUsersByTweetId(Long tweetId, Pageable pageable);
 
-    Page<UserProjection> getRetweetedUsersByTweetId(Long tweetId, Pageable pageable);
+    HeaderResponse<UserResponse> getRetweetedUsersByTweetId(Long tweetId, Pageable pageable);
 
     Page<TweetProjection> getMediaTweets(Pageable pageable);
 
@@ -47,9 +49,9 @@ public interface TweetService {
 
     Page<TweetProjection> searchTweets(String text, Pageable pageable);
 
-    Map<String, Object> likeTweet(Long tweetId);
+    NotificationResponse likeTweet(Long tweetId);
 
-    Map<String, Object> retweet(Long tweetId);
+    NotificationResponse retweet(Long tweetId);
 
     TweetProjection replyTweet(Long tweetId, Tweet reply);
 

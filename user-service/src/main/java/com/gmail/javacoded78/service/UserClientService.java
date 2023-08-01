@@ -1,5 +1,10 @@
 package com.gmail.javacoded78.service;
 
+import com.gmail.javacoded78.common.dto.HeaderResponse;
+import com.gmail.javacoded78.common.dto.NotificationUserResponse;
+import com.gmail.javacoded78.common.dto.UserResponse;
+import com.gmail.javacoded78.common.dto.common_new.TweetAdditionalInfoUserResponse;
+import com.gmail.javacoded78.common.dto.common_new.TweetAuthorResponse;
 import com.gmail.javacoded78.common.dto.common_new.UserIdsRequest;
 import com.gmail.javacoded78.common.dto.common_new.ListMemberResponse;
 import com.gmail.javacoded78.common.dto.common_new.ListOwnerResponse;
@@ -25,7 +30,7 @@ public interface UserClientService {
 
     User getAuthNotificationUser(Long authUserId);
 
-    List<User> getSubscribersByUserId(Long userId);
+    List<Long> getSubscribersByUserId(Long userId);
 
     Boolean isUserFollowByOtherUser(Long userId);
 
@@ -56,4 +61,18 @@ public interface UserClientService {
     List<ListMemberResponse> getListParticipantsByIds(UserIdsRequest request);
 
     List<ListMemberResponse> searchListMembersByUsername(String username);
+
+    NotificationUserResponse getNotificationUser(Long userId);
+
+    TweetAuthorResponse getTweetAuthor(Long userId);
+
+    TweetAdditionalInfoUserResponse getTweetAdditionalInfoUser(Long userId);
+
+    HeaderResponse<UserResponse> getTweetLikedUsersByIds(UserIdsRequest request, Pageable pageable);
+
+    HeaderResponse<UserResponse> getRetweetedUsersByTweetId(UserIdsRequest request, Pageable pageable);
+
+    void updatePinnedTweetId(Long tweetId);
+
+    List<Long> getValidUserIds(UserIdsRequest request, String text);
 }

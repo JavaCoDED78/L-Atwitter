@@ -129,6 +129,9 @@ public class User {
             inverseJoinColumns = @JoinColumn(name = "tweet_id"))
     private Tweet pinnedTweet;
 
+    @Column(name = "pinned_tweet_id")
+    private Long pinnedTweetId;
+
     @OneToOne(fetch = FetchType.LAZY)
     @JoinTable(name = "user_avatar",
             joinColumns = @JoinColumn(name = "user_id"),
@@ -145,13 +148,13 @@ public class User {
     private List<Tweet> tweets; // TODO DELETE
 
     @OneToMany(mappedBy = "user")
-    private List<LikeTweet> likedTweets;
+    private List<LikeTweet> likedTweets; // TODO DELETE
 
     @OneToMany(mappedBy = "user")
-    private List<Retweet> retweets;
+    private List<Retweet> retweets; // TODO DELETE
 
     @OneToMany(mappedBy = "user")
-    private List<Bookmark> bookmarks;
+    private List<Bookmark> bookmarks; // TODO DELETE
 
     @OneToMany
     private List<Notification> notifications; // TODO DELETE
