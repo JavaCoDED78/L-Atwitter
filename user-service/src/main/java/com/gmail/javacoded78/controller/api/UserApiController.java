@@ -4,8 +4,11 @@ package com.gmail.javacoded78.controller.api;
 import com.gmail.javacoded78.common.dto.HeaderResponse;
 import com.gmail.javacoded78.common.dto.NotificationUserResponse;
 import com.gmail.javacoded78.common.dto.UserResponse;
+import com.gmail.javacoded78.common.dto.common_new.ChatTweetUserResponse;
+import com.gmail.javacoded78.common.dto.common_new.ChatUserParticipantResponse;
 import com.gmail.javacoded78.common.dto.common_new.TweetAdditionalInfoUserResponse;
 import com.gmail.javacoded78.common.dto.common_new.TweetAuthorResponse;
+import com.gmail.javacoded78.common.dto.common_new.UserChatResponse;
 import com.gmail.javacoded78.common.dto.common_new.UserIdsRequest;
 import com.gmail.javacoded78.common.dto.common_new.ListMemberResponse;
 import com.gmail.javacoded78.common.dto.common_new.ListOwnerResponse;
@@ -37,10 +40,10 @@ public class UserApiController {
 
     private final UserClientService userService;
 
-    @GetMapping("/{userId}")
-    public Optional<User> getUserById(@PathVariable("userId") Long userId) {
-        return userService.getUserById(userId);
-    }
+//    @GetMapping("/{userId}")
+//    public Optional<User> getUserById(@PathVariable("userId") Long userId) {
+//        return userService.getUserById(userId);
+//    }
 
     @PostMapping("/ids")
     public List<User> getUsersByIds(@RequestBody UserIdsRequest request) {
@@ -53,7 +56,7 @@ public class UserApiController {
     }
 
     @GetMapping("/search/{username}")
-    public Page<UserChatProjection> searchUsersByUsername(@PathVariable("username") String username, Pageable pageable) {
+    public HeaderResponse<UserChatResponse> searchUsersByUsername(@PathVariable("username") String username, Pageable pageable) {
         return userService.searchUsersByUsername(username, pageable);
     }
 
@@ -183,5 +186,30 @@ public class UserApiController {
     @PostMapping("/tweet/valid/ids/{text}")
     public List<Long> getValidUserIds(@RequestBody UserIdsRequest request, @PathVariable("text") String text) {
         return userService.getValidUserIds(request, text);
+    }
+
+    @GetMapping("/chat/participant/{userId}")
+    public ChatUserParticipantResponse getChatParticipant(@PathVariable("userId") Long userId) {
+        return userService.getChatParticipant(userId);
+    }
+
+    @GetMapping("/is_exists/{userId}")
+    public Boolean isUserExists(@PathVariable("userId") Long userId) {
+        return userService.isUserExists(userId);
+    }
+
+    @GetMapping("/{userId}")
+    public UserResponse getUserResponseById(@PathVariable("userId") Long userId) {
+        return userService.getUserResponseById(userId);
+    }
+
+    @GetMapping("/chat/{userId}")
+    public ChatTweetUserResponse getChatTweetUser(@PathVariable("userId") Long userId) {
+        return userService.getChatTweetUser(userId);
+    }
+
+    @PostMapping("/chat/valid/ids")
+    public List<Long> validateChatUsersIds(@RequestBody UserIdsRequest request) {
+        return userService.validateChatUsersIds(request);
     }
 }

@@ -1,8 +1,9 @@
 package com.gmail.javacoded78.service;
 
-import com.gmail.javacoded78.common.models.ChatMessage;
-import com.gmail.javacoded78.common.projection.UserChatProjection;
-import com.gmail.javacoded78.common.projection.UserProjection;
+import com.gmail.javacoded78.dto.HeaderResponse;
+import com.gmail.javacoded78.dto.UserResponse;
+import com.gmail.javacoded78.dto.response.UserChatResponse;
+import com.gmail.javacoded78.model.ChatMessage;
 import com.gmail.javacoded78.repository.projection.ChatMessageProjection;
 import com.gmail.javacoded78.repository.projection.ChatProjection;
 import org.springframework.data.domain.Page;
@@ -21,15 +22,15 @@ public interface ChatService {
 
     List<ChatMessageProjection> getChatMessages(Long chatId);
 
-    Integer readChatMessages(Long chatId);
+    Long readChatMessages(Long chatId);
 
-    Map<String, Object> addMessage(ChatMessage chatMessage, Long chatId);
+    Map<Long, ChatMessageProjection> addMessage(ChatMessage chatMessage, Long chatId);
 
-    Map<String, Object> addMessageWithTweet(String text, Long tweetId, List<Long> usersIds);
+    Map<Long, ChatMessageProjection> addMessageWithTweet(String text, Long tweetId, List<Long> usersIds);
 
-    UserProjection getParticipant(Long participantId, Long chatId);
+    UserResponse getParticipant(Long participantId, Long chatId);
 
     String leaveFromConversation(Long participantId, Long chatId);
 
-    Page<UserChatProjection> searchUsersByUsername(String username, Pageable pageable);
+    HeaderResponse<UserChatResponse> searchUsersByUsername(String username, Pageable pageable);
 }

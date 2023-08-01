@@ -3,8 +3,11 @@ package com.gmail.javacoded78.service;
 import com.gmail.javacoded78.common.dto.HeaderResponse;
 import com.gmail.javacoded78.common.dto.NotificationUserResponse;
 import com.gmail.javacoded78.common.dto.UserResponse;
+import com.gmail.javacoded78.common.dto.common_new.ChatTweetUserResponse;
+import com.gmail.javacoded78.common.dto.common_new.ChatUserParticipantResponse;
 import com.gmail.javacoded78.common.dto.common_new.TweetAdditionalInfoUserResponse;
 import com.gmail.javacoded78.common.dto.common_new.TweetAuthorResponse;
+import com.gmail.javacoded78.common.dto.common_new.UserChatResponse;
 import com.gmail.javacoded78.common.dto.common_new.UserIdsRequest;
 import com.gmail.javacoded78.common.dto.common_new.ListMemberResponse;
 import com.gmail.javacoded78.common.dto.common_new.ListOwnerResponse;
@@ -24,7 +27,7 @@ public interface UserClientService {
 
     List<Long> getUserFollowersIds();
 
-    Page<UserChatProjection> searchUsersByUsername(String username, Pageable pageable);
+    HeaderResponse<UserChatResponse> searchUsersByUsername(String username, Pageable pageable);
 
     User getValidUser(Long userId, Long authUserId);
 
@@ -75,4 +78,14 @@ public interface UserClientService {
     void updatePinnedTweetId(Long tweetId);
 
     List<Long> getValidUserIds(UserIdsRequest request, String text);
+
+    ChatUserParticipantResponse getChatParticipant(Long userId);
+
+    Boolean isUserExists(Long userId);
+
+    UserResponse getUserResponseById(Long userId);
+
+    ChatTweetUserResponse getChatTweetUser(Long userId);
+
+    List<Long> validateChatUsersIds(UserIdsRequest request);
 }

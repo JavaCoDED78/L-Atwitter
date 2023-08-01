@@ -1,6 +1,7 @@
 package com.gmail.javacoded78.feign;
 
 import com.gmail.javacoded78.configuration.FeignConfiguration;
+import com.gmail.javacoded78.dto.ChatTweetUserResponse;
 import com.gmail.javacoded78.dto.HeaderResponse;
 import com.gmail.javacoded78.dto.TweetAdditionalInfoUserResponse;
 import com.gmail.javacoded78.dto.TweetAuthorResponse;
@@ -62,4 +63,7 @@ public interface UserClient {
 
     @PostMapping(API_V1_USER + "/tweet/valid/ids/{text}")
     List<Long> getValidUserIds(@RequestBody UserIdsRequest request, @PathVariable("text") String text);
+
+    @GetMapping(API_V1_USER + "/chat/{userId}")
+    ChatTweetUserResponse getChatTweetUser(@PathVariable("userId") Long userId);
 }

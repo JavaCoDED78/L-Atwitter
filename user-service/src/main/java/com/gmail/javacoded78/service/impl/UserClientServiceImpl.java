@@ -3,8 +3,11 @@ package com.gmail.javacoded78.service.impl;
 import com.gmail.javacoded78.common.dto.HeaderResponse;
 import com.gmail.javacoded78.common.dto.NotificationUserResponse;
 import com.gmail.javacoded78.common.dto.UserResponse;
+import com.gmail.javacoded78.common.dto.common_new.ChatTweetUserResponse;
+import com.gmail.javacoded78.common.dto.common_new.ChatUserParticipantResponse;
 import com.gmail.javacoded78.common.dto.common_new.TweetAdditionalInfoUserResponse;
 import com.gmail.javacoded78.common.dto.common_new.TweetAuthorResponse;
+import com.gmail.javacoded78.common.dto.common_new.UserChatResponse;
 import com.gmail.javacoded78.common.dto.common_new.UserIdsRequest;
 import com.gmail.javacoded78.common.dto.common_new.ListMemberResponse;
 import com.gmail.javacoded78.common.dto.common_new.ListOwnerResponse;
@@ -17,6 +20,8 @@ import com.gmail.javacoded78.common.projection.common_new.ListOwnerProjection;
 import com.gmail.javacoded78.common.util.AuthUtil;
 import com.gmail.javacoded78.repository.UserRepository;
 import com.gmail.javacoded78.repository.projection.AuthNotificationUserProjection;
+import com.gmail.javacoded78.repository.projection.ChatTweetUserProjection;
+import com.gmail.javacoded78.repository.projection.ChatUserParticipantProjection;
 import com.gmail.javacoded78.repository.projection.ListMemberProjection;
 import com.gmail.javacoded78.repository.projection.NotificationUserProjection;
 import com.gmail.javacoded78.repository.projection.TweetAdditionalInfoUserProjection;
@@ -63,8 +68,9 @@ public class UserClientServiceImpl implements UserClientService {
     }
 
     @Override
-    public Page<UserChatProjection> searchUsersByUsername(String username, Pageable pageable) {
-        return userRepository.findByFullNameOrUsername(username, pageable, UserChatProjection.class);
+    public HeaderResponse<UserChatResponse> searchUsersByUsername(String username, Pageable pageable) {
+        Page<UserChatProjection> users = userRepository.findByFullNameOrUsername(username, pageable, UserChatProjection.class);
+        return basicMapper.getHeaderResponse(users, UserChatResponse.class);
     }
 
     @Override
@@ -218,5 +224,36 @@ public class UserClientServiceImpl implements UserClientService {
         List<Long> validUserIds = userRepository.getValidUserIdsByIds(request.getUserIds());
         List<Long> userIdsByUsername = userRepository.getValidUserIdsByName(text, request.getUserIds());
         return Stream.concat(validUserIds.stream(), userIdsByUsername.stream()).distinct().toList();
+    }
+
+    @Override
+    public ChatUserParticipantResponse getChatParticipant(Long userId) {
+        ChatUserParticipantProjection user = userRepository.getChatParticipant(userId);
+        return basicMapper.convertToResponse(user, ChatUserParticipantResponse.class);
+    }
+
+    @Override
+    public Boolean isUserExists(Long userId) {
+        return userRepository.isUserExists(userId);
+    }
+
+    @Override
+    public UserResponse getUserResponseById(Long userId) {
+        UserProjection user = userRepository.getUserResponseById(userId);
+        return basicMapper.convertToResponse(user, UserResponse.class);
+    }
+
+    @Override
+    public ChatTweetUserResponse getChatTweetUser(Long userId) {
+        ChatTweetUserProjection user = userRepository.getChatTweetUser(userId);
+        return basicMapper.convertToResponse(user, ChatTweetUserResponse.class);
+    }
+
+    @Override
+    public List<Long> validateChatUsersIds(UserIdsRequest request) {
+        Long authUserId = AuthUtil.getAuthenticatedUserId();
+        List<Long> blockedUserIds = userRepository.geUserIdsWhoBlockedMyProfile(request.getUserIds(), authUserId);
+        request.getUserIds().removeAll(blockedUserIds);
+        return request.getUserIds();
     }
 }

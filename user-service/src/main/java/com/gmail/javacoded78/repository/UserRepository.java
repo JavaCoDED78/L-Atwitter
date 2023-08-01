@@ -8,6 +8,8 @@ import com.gmail.javacoded78.common.projection.common_new.ListOwnerProjection;
 import com.gmail.javacoded78.repository.projection.AuthNotificationUserProjection;
 import com.gmail.javacoded78.repository.projection.AuthUserProjection;
 import com.gmail.javacoded78.repository.projection.BlockedUserProjection;
+import com.gmail.javacoded78.repository.projection.ChatTweetUserProjection;
+import com.gmail.javacoded78.repository.projection.ChatUserParticipantProjection;
 import com.gmail.javacoded78.repository.projection.FollowerUserProjection;
 import com.gmail.javacoded78.repository.projection.ListMemberProjection;
 import com.gmail.javacoded78.repository.projection.MutedUserProjection;
@@ -335,4 +337,22 @@ public interface UserRepository extends JpaRepository<User, Long> {
             "   AND (user.privateProfile = false OR (user.privateProfile = true AND following.id IN :userIds) " +
             "       AND user.active = true))")
     List<Long> getValidUserIdsByName(@Param("username") String username, @Param("userIds") List<Long> userIds);
+
+    @Query("SELECT user FROM User user WHERE user.id = :userId")
+    ChatUserParticipantProjection getChatParticipant(@Param("userId") Long userId);
+
+    @Query("SELECT CASE WHEN count(user) > 0 THEN true ELSE false END FROM User user WHERE user.id = :userId")
+    boolean isUserExists(@Param("userId") Long userId);
+
+    @Query("SELECT user FROM User user WHERE user.id = :userId")
+    UserProjection getUserResponseById(@Param("userId") Long userId);
+
+    @Query("SELECT user FROM User user WHERE user.id = :userId")
+    ChatTweetUserProjection getChatTweetUser(@Param("userId") Long userId);
+
+    @Query("SELECT user.id FROM User user " +
+            "LEFT JOIN user.userBlockedList blockedUser " +
+            "WHERE user.id IN :userIds " +
+            "AND blockedUser.id = :authUserId")
+    List<Long> geUserIdsWhoBlockedMyProfile(@Param("userIds") List<Long> userIds, @Param("authUserId") Long authUserId);
 }

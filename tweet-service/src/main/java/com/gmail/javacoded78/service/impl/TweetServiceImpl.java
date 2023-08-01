@@ -1,5 +1,6 @@
 package com.gmail.javacoded78.service.impl;
 ;
+import com.gmail.javacoded78.dto.ChatTweetUserResponse;
 import com.gmail.javacoded78.dto.HeaderResponse;
 import com.gmail.javacoded78.dto.NotificationRequest;
 import com.gmail.javacoded78.dto.TweetAdditionalInfoUserResponse;
@@ -392,6 +393,10 @@ public class TweetServiceImpl implements TweetService {
         if (isMyProfileBlockedByUser(userId)) {
             throw new ApiRequestException("User profile blocked", HttpStatus.BAD_REQUEST);
         }
+    }
+
+    public ChatTweetUserResponse getChatTweetUser(Long userId) {
+        return userClient.getChatTweetUser(userId);
     }
 
     @Transactional

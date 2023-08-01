@@ -1,7 +1,7 @@
 package com.gmail.javacoded78.controller;
 
-import com.gmail.javacoded78.common.dto.HeaderResponse;
-import com.gmail.javacoded78.common.dto.UserResponse;
+import com.gmail.javacoded78.dto.HeaderResponse;
+import com.gmail.javacoded78.dto.UserResponse;
 import com.gmail.javacoded78.dto.request.ChatMessageRequest;
 import com.gmail.javacoded78.dto.request.MessageWithTweetRequest;
 import com.gmail.javacoded78.dto.response.ChatMessageResponse;
@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-import static com.gmail.javacoded78.common.controller.PathConstants.UI_V1_CHAT;
+import static com.gmail.javacoded78.controller.PathConstants.UI_V1_CHAT;
 
 @RestController
 @RequiredArgsConstructor
@@ -53,36 +53,34 @@ public class ChatController {
     }
 
     @GetMapping("/{chatId}/read/messages")
-    public ResponseEntity<Integer> readChatMessages(@PathVariable("chatId") Long chatId) {
+    public ResponseEntity<Long> readChatMessages(@PathVariable("chatId") Long chatId) {
         return ResponseEntity.ok(chatMapper.readChatMessages(chatId));
     }
 
     @PostMapping("/add/message")
-    public ResponseEntity<ChatMessageResponse> addMessage(@RequestBody ChatMessageRequest chatMessage) {
-        ChatMessageResponse message = chatMapper.addMessage(chatMessage);
-        message.getChatParticipantsIds()
-                .forEach(userId -> messagingTemplate.convertAndSend("/topic/chat/" + userId, message));
-        return ResponseEntity.ok(message);
+    public ResponseEntity<Void> addMessage(@RequestBody ChatMessageRequest request) {
+        chatMapper.addMessage(request)
+                .forEach((userId, message) -> messagingTemplate.convertAndSend("/topic/chat/" + userId, message));
+        return ResponseEntity.ok().build();
     }
 
     @PostMapping("/add/message/tweet")
-    public ResponseEntity<ChatMessageResponse> addMessageWithTweet(@RequestBody MessageWithTweetRequest request) {
-        ChatMessageResponse message = chatMapper.addMessageWithTweet(request);
-        message.getChatParticipantsIds()
-                .forEach(userId -> messagingTemplate.convertAndSend("/topic/chat/" + userId, message));
-        return ResponseEntity.ok(message);
-    }
-
-    @GetMapping("/leave/{participantId}/{chatId}")
-    public ResponseEntity<String> leaveFromConversation(@PathVariable("participantId") Long participantId,
-                                                        @PathVariable("chatId") Long chatId) {
-        return ResponseEntity.ok(chatMapper.leaveFromConversation(participantId, chatId));
+    public ResponseEntity<Void> addMessageWithTweet(@RequestBody MessageWithTweetRequest request) {
+        chatMapper.addMessageWithTweet(request)
+                .forEach((userId, message) -> messagingTemplate.convertAndSend("/topic/chat/" + userId, message));
+        return ResponseEntity.ok().build();
     }
 
     @GetMapping("/participant/{participantId}/{chatId}")
     public ResponseEntity<UserResponse> getParticipant(@PathVariable("participantId") Long participantId,
                                                        @PathVariable("chatId") Long chatId) {
         return ResponseEntity.ok(chatMapper.getParticipant(participantId, chatId));
+    }
+
+    @GetMapping("/leave/{participantId}/{chatId}")
+    public ResponseEntity<String> leaveFromConversation(@PathVariable("participantId") Long participantId,
+                                                        @PathVariable("chatId") Long chatId) {
+        return ResponseEntity.ok(chatMapper.leaveFromConversation(participantId, chatId));
     }
 
     @GetMapping("/search/{username}")

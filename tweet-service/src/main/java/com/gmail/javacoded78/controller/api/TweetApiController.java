@@ -1,6 +1,7 @@
 package com.gmail.javacoded78.controller.api;
 
 
+import com.gmail.javacoded78.dto.ChatTweetResponse;
 import com.gmail.javacoded78.dto.notification.NotificationTweetResponse;
 import com.gmail.javacoded78.mapper.BasicMapper;
 import com.gmail.javacoded78.mapper.TweetClientMapper;
@@ -87,5 +88,15 @@ public class TweetApiController {
     @GetMapping("/{tweetId}")
     public NotificationTweetResponse getNotificationTweet(@PathVariable("tweetId") Long tweetId) {
         return tweetClientService.getNotificationTweet(tweetId);
+    }
+
+    @GetMapping("/id/{tweetId}")
+    public Boolean isTweetExists(@PathVariable("tweetId") Long tweetId) {
+        return tweetClientService.isTweetExists(tweetId);
+    }
+
+    @GetMapping("/chat/{tweetId}")
+    public ChatTweetResponse getChatTweet(@PathVariable("tweetId") Long tweetId) {
+        return tweetClientService.getChatTweet(tweetId);
     }
 }

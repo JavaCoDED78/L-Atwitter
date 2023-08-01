@@ -1,7 +1,6 @@
 package com.gmail.javacoded78.repository;
 
-import com.gmail.javacoded78.common.models.ChatParticipant;
-import com.gmail.javacoded78.common.projection.UserProjection;
+import com.gmail.javacoded78.model.ChatParticipant;
 import com.gmail.javacoded78.repository.projection.ChatParticipantProjection;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -16,19 +15,22 @@ import java.util.Optional;
 @Repository
 public interface ChatParticipantRepository extends JpaRepository<ChatParticipant, Long> {
 
-    @Query("SELECT cp.id AS id, cp.leftChat AS leftChat, cp.chat AS chat, cp.user AS user " +
-            "FROM User u LEFT JOIN u.chats cp WHERE u.id = :userId")
-    List<ChatParticipantProjection> getChatParticipants(@Param("userId") Long userId);
-
-    @Query("SELECT user FROM User user " +
-            "LEFT JOIN user.chats participant " +
-            "LEFT JOIN participant.chat chat " +
-            "WHERE chat.id = :chatId " +
-            "AND participant.id = :participantId")
-    Optional<UserProjection> getChatParticipant(@Param("participantId") Long participantId, @Param("chatId") Long chatId);
+    @Query("SELECT chatParticipant.id FROM ChatParticipant chatParticipant WHERE chatParticipant.chat.id = :chatId")
+    List<Long> getChatParticipantIds(@Param("chatId") Long chatId);
 
     @Modifying
-    @Transactional
+    @Query("UPDATE ChatParticipant chatParticipant " +
+            "SET chatParticipant.leftChat = false " +
+            "WHERE chatParticipant.userId = :userId " +
+            "AND chatParticipant.chat.id = :chatId")
+    void updateParticipantWhoLeftChat(@Param("userId") Long userId, @Param("chatId") Long chatId);
+
+    @Query("SELECT chatParticipant.userId FROM ChatParticipant chatParticipant " +
+            "WHERE chatParticipant.id = :participantId " +
+            "AND chatParticipant.chat.id = :chatId")
+    Optional<Long> getParticipantUserId(@Param("participantId") Long participantId, @Param("chatId") Long chatId);
+
+    @Modifying
     @Query("UPDATE ChatParticipant chatParticipant " +
             "SET chatParticipant.leftChat = true " +
             "WHERE chatParticipant.id = :participantId " +

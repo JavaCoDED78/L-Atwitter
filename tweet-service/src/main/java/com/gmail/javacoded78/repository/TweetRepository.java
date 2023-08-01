@@ -1,6 +1,7 @@
 package com.gmail.javacoded78.repository;
 
 import com.gmail.javacoded78.model.Tweet;
+import com.gmail.javacoded78.repository.projection.ChatTweetProjection;
 import com.gmail.javacoded78.repository.projection.NotificationTweetProjection;
 import com.gmail.javacoded78.repository.projection.TweetAdditionalInfoProjection;
 import com.gmail.javacoded78.repository.projection.TweetProjection;
@@ -97,4 +98,10 @@ public interface TweetRepository extends JpaRepository<Tweet, Long> {
     // NEW
     @Query("SELECT tweet FROM Tweet tweet WHERE tweet.id = :tweetId")
     NotificationTweetProjection getNotificationTweet(@Param("tweetId") Long tweetId);
+
+    @Query("SELECT CASE WHEN count(tweet) > 0 THEN true ELSE false END FROM Tweet tweet WHERE tweet.id = :tweetId")
+    boolean isTweetExists(@Param("tweetId") Long tweetId);
+
+    @Query("SELECT tweet FROM Tweet tweet WHERE tweet.id = :tweetId")
+    ChatTweetProjection getChatTweet(@Param("tweetId") Long tweetId);
 }

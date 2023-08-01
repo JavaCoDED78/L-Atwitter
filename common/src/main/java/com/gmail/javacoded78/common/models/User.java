@@ -127,7 +127,7 @@ public class User {
     @JoinTable(name = "user_pinned_tweet",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "tweet_id"))
-    private Tweet pinnedTweet;
+    private Tweet pinnedTweet; // replace with: private Long pinnedTweetId;
 
     @Column(name = "pinned_tweet_id")
     private Long pinnedTweetId;
@@ -136,13 +136,13 @@ public class User {
     @JoinTable(name = "user_avatar",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "avatar_id"))
-    private Image avatar;
+    private Image avatar; // make private String avatar;
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinTable(name = "user_wallpaper",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "wallpaper_id"))
-    private Image wallpaper;
+    private Image wallpaper; // make private String wallpaper;
 
     @ManyToMany
     private List<Tweet> tweets; // TODO DELETE
@@ -178,7 +178,7 @@ public class User {
     @JoinTable(name = "unread_messages",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "chat_message_id"))
-    private List<ChatMessage> unreadMessages;
+    private List<ChatMessage> unreadMessages; // replace with: private Long unreadMessagesCount;
 
     @ManyToMany
     @JoinTable(name = "user_subscriptions",

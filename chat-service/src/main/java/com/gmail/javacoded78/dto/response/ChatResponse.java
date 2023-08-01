@@ -1,7 +1,7 @@
 package com.gmail.javacoded78.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.gmail.javacoded78.common.dto.ImageResponse;
+import com.gmail.javacoded78.dto.ChatUserParticipantResponse;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -11,7 +11,6 @@ import java.util.List;
 @Getter
 @Setter
 public class ChatResponse {
-
     private Long id;
     private LocalDateTime creationDate;
     private List<ParticipantResponse> participants;
@@ -21,28 +20,9 @@ public class ChatResponse {
     static class ParticipantResponse {
 
         private Long id;
-        private UserParticipantResponse user;
+        private ChatUserParticipantResponse user;
 
         @JsonProperty("isLeftChat")
         private boolean leftChat;
-
-        @Getter
-        @Setter
-        static class UserParticipantResponse {
-
-            private Long id;
-            private String fullName;
-            private String username;
-            private ImageResponse avatar;
-
-            @JsonProperty("isMutedDirectMessages")
-            private boolean isMutedDirectMessages;
-
-            @JsonProperty("isUserBlocked")
-            private boolean isUserBlocked;
-
-            @JsonProperty("isMyProfileBlocked")
-            private boolean isMyProfileBlocked;
-        }
     }
 }

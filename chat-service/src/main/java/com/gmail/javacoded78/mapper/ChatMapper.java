@@ -1,16 +1,13 @@
 package com.gmail.javacoded78.mapper;
 
-import com.gmail.javacoded78.common.dto.HeaderResponse;
-import com.gmail.javacoded78.common.dto.UserResponse;
-import com.gmail.javacoded78.common.mapper.BasicMapper;
-import com.gmail.javacoded78.common.models.ChatMessage;
-import com.gmail.javacoded78.common.projection.UserChatProjection;
-import com.gmail.javacoded78.common.projection.UserProjection;
+import com.gmail.javacoded78.dto.HeaderResponse;
+import com.gmail.javacoded78.dto.UserResponse;
 import com.gmail.javacoded78.dto.request.ChatMessageRequest;
 import com.gmail.javacoded78.dto.request.MessageWithTweetRequest;
 import com.gmail.javacoded78.dto.response.ChatMessageResponse;
 import com.gmail.javacoded78.dto.response.ChatResponse;
 import com.gmail.javacoded78.dto.response.UserChatResponse;
+import com.gmail.javacoded78.model.ChatMessage;
 import com.gmail.javacoded78.repository.projection.ChatMessageProjection;
 import com.gmail.javacoded78.repository.projection.ChatProjection;
 import com.gmail.javacoded78.service.ChatService;
@@ -19,6 +16,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -28,13 +26,6 @@ public class ChatMapper {
 
     private final BasicMapper basicMapper;
     private final ChatService chatService;
-
-    private ChatMessageResponse getChatMessageResponse(Map<String, Object> messageMap) {
-        ChatMessageProjection chatMessageProjection = (ChatMessageProjection) messageMap.get("message");
-        ChatMessageResponse message = basicMapper.convertToResponse(chatMessageProjection, ChatMessageResponse.class);
-        message.setChatParticipantsIds((List<Long>) messageMap.get("chatParticipantsIds"));
-        return message;
-    }
 
     public ChatResponse getChatById(Long chatId) {
         ChatProjection chat = chatService.getChatById(chatId);
@@ -56,19 +47,20 @@ public class ChatMapper {
         return basicMapper.convertToResponseList(chatMessages, ChatMessageResponse.class);
     }
 
-    public Integer readChatMessages(Long chatId) {
+    public Long readChatMessages(Long chatId) {
         return chatService.readChatMessages(chatId);
     }
 
-    public ChatMessageResponse addMessage(ChatMessageRequest chatMessageRequest) {
-        Map<String, Object> messageMap = chatService.addMessage(
-                basicMapper.convertToResponse(chatMessageRequest, ChatMessage.class), chatMessageRequest.getChatId());
-        return getChatMessageResponse(messageMap);
+    public Map<Long, ChatMessageResponse> addMessage(ChatMessageRequest request) {
+        Map<Long, ChatMessageProjection> messages = chatService.addMessage(
+                basicMapper.convertToResponse(request, ChatMessage.class), request.getChatId());
+        return getChatMessageResponse(messages);
     }
 
-    public ChatMessageResponse addMessageWithTweet(MessageWithTweetRequest request) {
-        Map<String, Object> messageMap = chatService.addMessageWithTweet(request.getText(), request.getTweetId(), request.getUsersIds());
-        return getChatMessageResponse(messageMap);
+    public Map<Long, ChatMessageResponse> addMessageWithTweet(MessageWithTweetRequest request) {
+        Map<Long, ChatMessageProjection> messages = chatService.addMessageWithTweet(
+                request.getText(), request.getTweetId(), request.getUsersIds());
+        return getChatMessageResponse(messages);
     }
 
     public String leaveFromConversation(Long participantId, Long chatId) {
@@ -76,12 +68,19 @@ public class ChatMapper {
     }
 
     public UserResponse getParticipant(Long participantId, Long chatId) {
-        UserProjection participant = chatService.getParticipant(participantId, chatId);
-        return basicMapper.convertToResponse(participant, UserResponse.class);
+        return chatService.getParticipant(participantId, chatId);
     }
 
     public HeaderResponse<UserChatResponse> searchParticipantsByUsername(String username, Pageable pageable) {
-        Page<UserChatProjection> participants = chatService.searchUsersByUsername(username, pageable);
-        return basicMapper.getHeaderResponse(participants, UserChatResponse.class);
+        return chatService.searchUsersByUsername(username, pageable);
+    }
+
+    private Map<Long, ChatMessageResponse> getChatMessageResponse(Map<Long, ChatMessageProjection> messages) {
+        Map<Long, ChatMessageResponse> messagesResponse = new HashMap<>();
+        messages.forEach((userId, messageProjection) -> {
+            ChatMessageResponse messageResponse = basicMapper.convertToResponse(messageProjection, ChatMessageResponse.class);
+            messagesResponse.put(userId, messageResponse);
+        });
+        return messagesResponse;
     }
 }
