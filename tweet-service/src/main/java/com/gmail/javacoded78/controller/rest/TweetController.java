@@ -9,7 +9,9 @@ import com.gmail.javacoded78.dto.request.TweetDeleteRequest;
 import com.gmail.javacoded78.dto.request.TweetRequest;
 import com.gmail.javacoded78.dto.request.VoteRequest;
 import com.gmail.javacoded78.dto.response.NotificationReplyResponse;
+import com.gmail.javacoded78.dto.response.ProfileTweetImageResponse;
 import com.gmail.javacoded78.dto.response.TweetAdditionalInfoResponse;
+import com.gmail.javacoded78.dto.response.TweetImageResponse;
 import com.gmail.javacoded78.dto.response.TweetUserResponse;
 import com.gmail.javacoded78.enums.ReplyType;
 import com.gmail.javacoded78.mapper.TweetMapper;
@@ -26,7 +28,9 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -58,13 +62,6 @@ public class TweetController {
         return ResponseEntity.ok().headers(response.getHeaders()).body(response.getItems());
     }
 
-    @GetMapping("/liked/user/{userId}") // TODO change endpoint in frontend
-    public ResponseEntity<List<TweetResponse>> getUserLikedTweets(@PathVariable Long userId,
-                                                                  @PageableDefault(size = 10) Pageable pageable) {
-        HeaderResponse<TweetResponse> response = tweetMapper.getUserLikedTweets(userId, pageable);
-        return ResponseEntity.ok().headers(response.getHeaders()).body(response.getItems());
-    }
-
     @GetMapping("/media/user/{userId}/") // TODO change endpoint in frontend
     public ResponseEntity<List<TweetResponse>> getUserMediaTweets(@PathVariable Long userId,
                                                                   @PageableDefault(size = 10) Pageable pageable) {
@@ -72,11 +69,15 @@ public class TweetController {
         return ResponseEntity.ok().headers(response.getHeaders()).body(response.getItems());
     }
 
-    @GetMapping("/replies/user/{userId}/") // TODO change endpoint in frontend
-    public ResponseEntity<List<TweetUserResponse>> getUserRetweetsAndReplies(@PathVariable Long userId,
-                                                                             @PageableDefault(size = 10) Pageable pageable) {
-        HeaderResponse<TweetUserResponse> response = tweetMapper.getUserRetweetsAndReplies(userId, pageable);
+    @GetMapping("/user/mentions") // TODO change endpoint in frontend
+    public ResponseEntity<List<TweetResponse>> getUserMentions(@PageableDefault(size = 10) Pageable pageable) {
+        HeaderResponse<TweetResponse> response = tweetMapper.getUserMentions(pageable);
         return ResponseEntity.ok().headers(response.getHeaders()).body(response.getItems());
+    }
+
+    @GetMapping("/images/{userId}") // TODO change endpoint in frontend
+    public ResponseEntity<List<ProfileTweetImageResponse>> getUserTweetImages(@PathVariable Long userId) {
+        return ResponseEntity.ok(tweetMapper.getUserTweetImages(userId));
     }
 
     @GetMapping("/{tweetId}/info")
@@ -93,20 +94,6 @@ public class TweetController {
     public ResponseEntity<List<TweetResponse>> getQuotesByTweetId(@PathVariable("tweetId") Long tweetId,
                                                                   @PageableDefault(size = 10) Pageable pageable) {
         HeaderResponse<TweetResponse> response = tweetMapper.getQuotesByTweetId(pageable, tweetId);
-        return ResponseEntity.ok().headers(response.getHeaders()).body(response.getItems());
-    }
-
-    @GetMapping("/{tweetId}/liked-users")
-    public ResponseEntity<List<UserResponse>> getLikedUsersByTweetId(@PathVariable("tweetId") Long tweetId,
-                                                                     @PageableDefault(size = 15) Pageable pageable) {
-        HeaderResponse<UserResponse> response = tweetMapper.getLikedUsersByTweetId(tweetId, pageable);
-        return ResponseEntity.ok().headers(response.getHeaders()).body(response.getItems());
-    }
-
-    @GetMapping("/{tweetId}/retweeted-users")
-    public ResponseEntity<List<UserResponse>> getRetweetedUsersByTweetId(@PathVariable("tweetId") Long tweetId,
-                                                                         @PageableDefault(size = 15) Pageable pageable) {
-        HeaderResponse<UserResponse> response = tweetMapper.getRetweetedUsersByTweetId(tweetId, pageable);
         return ResponseEntity.ok().headers(response.getHeaders()).body(response.getItems());
     }
 
@@ -134,17 +121,14 @@ public class TweetController {
         return ResponseEntity.ok().headers(response.getHeaders()).body(response.getItems());
     }
 
+    @PostMapping("/upload") // TODO add endpoint to frontend
+    public ResponseEntity<TweetImageResponse> uploadTweetImage(@RequestPart("file") MultipartFile file) {
+        return ResponseEntity.ok(tweetMapper.uploadTweetImage(file));
+    }
+
     @PostMapping
     public ResponseEntity<TweetResponse> createTweet(@RequestBody TweetRequest tweetRequest) {
         TweetResponse tweet = tweetMapper.createTweet(tweetRequest);
-        messagingTemplate.convertAndSend("/topic/feed/add", tweet);
-        messagingTemplate.convertAndSend("/topic/user/add/tweet/" + tweet.getUser().getId(), tweet);
-        return ResponseEntity.ok(tweet);
-    }
-
-    @PostMapping("/poll")
-    public ResponseEntity<TweetResponse> createPoll(@RequestBody TweetRequest tweetRequest) {
-        TweetResponse tweet = tweetMapper.createPoll(tweetRequest);
         messagingTemplate.convertAndSend("/topic/feed/add", tweet);
         messagingTemplate.convertAndSend("/topic/user/add/tweet/" + tweet.getUser().getId(), tweet);
         return ResponseEntity.ok(tweet);
@@ -175,22 +159,6 @@ public class TweetController {
                                                             @PageableDefault Pageable pageable) {
         HeaderResponse<TweetResponse> response = tweetMapper.searchTweets(text, pageable);
         return ResponseEntity.ok().headers(response.getHeaders()).body(response.getItems());
-    }
-
-    @GetMapping("/like/{userId}/{tweetId}")
-    public ResponseEntity<NotificationTweetResponse> likeTweet(@PathVariable("userId") Long userId,
-                                                               @PathVariable("tweetId") Long tweetId) {
-        NotificationResponse notification = tweetMapper.likeTweet(tweetId);
-        messagingTemplate.convertAndSend("/topic/user/update/tweet/" + userId, notification);
-        return ResponseEntity.ok(notification.getTweet());
-    }
-
-    @GetMapping("/retweet/{userId}/{tweetId}")
-    public ResponseEntity<NotificationTweetResponse> retweet(@PathVariable("userId") Long userId,
-                                                             @PathVariable("tweetId") Long tweetId) {
-        NotificationResponse notification = tweetMapper.retweet(tweetId);
-        messagingTemplate.convertAndSend("/topic/user/update/tweet/" + userId, notification);
-        return ResponseEntity.ok(notification.getTweet());
     }
 
     @PostMapping("/reply/{userId}/{tweetId}")
@@ -224,19 +192,5 @@ public class TweetController {
         messagingTemplate.convertAndSend("/topic/tweet/" + tweet.getId(), tweet);
         messagingTemplate.convertAndSend("/topic/user/update/tweet/" + userId, tweet);
         return ResponseEntity.ok(tweet);
-    }
-
-    @PostMapping("/vote") // TODO validate and fix
-    public ResponseEntity<TweetResponse> voteInPoll(@RequestBody VoteRequest voteRequest) {
-        TweetResponse tweet = tweetMapper.voteInPoll(voteRequest);
-        messagingTemplate.convertAndSend("/topic/feed", tweet);
-        messagingTemplate.convertAndSend("/topic/tweet/" + tweet.getId(), tweet);
-        messagingTemplate.convertAndSend("/topic/user/update/tweet/" + tweet.getUser().getId(), tweet);
-        return ResponseEntity.ok(tweet);
-    }
-
-    @GetMapping("/{tweetId}/bookmarked")
-    public ResponseEntity<Boolean> getIsTweetBookmarked(@PathVariable("tweetId") Long tweetId) {
-        return ResponseEntity.ok(tweetMapper.getIsTweetBookmarked(tweetId));
     }
 }

@@ -5,15 +5,17 @@ import com.gmail.javacoded78.dto.UserResponse;
 import com.gmail.javacoded78.dto.notification.NotificationResponse;
 import com.gmail.javacoded78.enums.ReplyType;
 import com.gmail.javacoded78.model.Tweet;
+import com.gmail.javacoded78.model.TweetImage;
 import com.gmail.javacoded78.repository.projection.LikeTweetProjection;
+import com.gmail.javacoded78.repository.projection.ProfileTweetImageProjection;
 import com.gmail.javacoded78.repository.projection.TweetAdditionalInfoProjection;
 import com.gmail.javacoded78.repository.projection.TweetProjection;
 import com.gmail.javacoded78.repository.projection.TweetUserProjection;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
-import java.util.Map;
 
 public interface TweetService {
 
@@ -23,21 +25,17 @@ public interface TweetService {
 
     Page<TweetUserProjection> getUserTweets(Long userId, Pageable pageable);
 
-    Page<LikeTweetProjection> getUserLikedTweets(Long userId, Pageable pageable);
-
     Page<TweetProjection> getUserMediaTweets(Long userId, Pageable pageable);
 
-    Page<TweetUserProjection> getUserRetweetsAndReplies(Long userId, Pageable pageable);
+    Page<TweetProjection> getUserMentions(Pageable pageable);
+
+    List<ProfileTweetImageProjection> getUserTweetImages(Long userId);
 
     TweetAdditionalInfoProjection getTweetAdditionalInfoById(Long tweetId);
 
     List<TweetProjection> getRepliesByTweetId(Long tweetId);
 
     Page<TweetProjection> getQuotesByTweetId(Pageable pageable, Long tweetId);
-
-    HeaderResponse<UserResponse> getLikedUsersByTweetId(Long tweetId, Pageable pageable);
-
-    HeaderResponse<UserResponse> getRetweetedUsersByTweetId(Long tweetId, Pageable pageable);
 
     Page<TweetProjection> getMediaTweets(Pageable pageable);
 
@@ -47,9 +45,9 @@ public interface TweetService {
 
     Page<TweetProjection> getScheduledTweets(Pageable pageable);
 
-    TweetProjection createNewTweet(Tweet tweet);
+    TweetImage uploadTweetImage(MultipartFile file);
 
-    TweetProjection createPoll(Long pollDateTime, List<String> choices, Tweet tweet);
+    TweetProjection createNewTweet(Tweet tweet);
 
     TweetProjection updateScheduledTweet(Tweet tweetInfo);
 
@@ -59,17 +57,9 @@ public interface TweetService {
 
     Page<TweetProjection> searchTweets(String text, Pageable pageable);
 
-    NotificationResponse likeTweet(Long tweetId);
-
-    NotificationResponse retweet(Long tweetId);
-
     TweetProjection replyTweet(Long tweetId, Tweet reply);
 
     TweetProjection quoteTweet(Long tweetId, Tweet quote);
 
     TweetProjection changeTweetReplyType(Long tweetId, ReplyType replyType);
-
-    TweetProjection voteInPoll(Long tweetId, Long pollId, Long pollChoiceId);
-
-    Boolean getIsTweetBookmarked(Long tweetId);
 }

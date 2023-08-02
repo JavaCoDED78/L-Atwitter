@@ -2,31 +2,23 @@ package com.gmail.javacoded78.repository.projection;
 
 import org.springframework.beans.factory.annotation.Value;
 
-import java.util.Map;
-
 public interface BaseUserProjection {
     Long getId();
     String getFullName();
     String getUsername();
     String getAbout();
+    String getAvatar();
     boolean getIsPrivateProfile();
 
-    @Value("#{T(com.gmail.javacoded78.repository.projection.BaseUserProjection).convertToAvatar(target.img_id, target.img_src)}")
-    Map<String, Object> getAvatar();
-
-    @Value("#{@userServiceImpl.isUserBlockedByMyProfile(target.id)}")
+    @Value("#{@userServiceHelper.isUserBlockedByMyProfile(target.id)}")
     boolean getIsUserBlocked();
 
-    @Value("#{@userServiceImpl.isMyProfileBlockedByUser(target.id)}")
+    @Value("#{@userServiceHelper.isMyProfileBlockedByUser(target.id)}")
     boolean getIsMyProfileBlocked();
 
-    @Value("#{@userServiceImpl.isMyProfileWaitingForApprove(target.id)}")
+    @Value("#{@userServiceHelper.isMyProfileWaitingForApprove(target.id)}")
     boolean getIsWaitingForApprove();
 
-    @Value("#{@userServiceImpl.isUserFollowByOtherUser(target.id)}")
+    @Value("#{@userServiceHelper.isUserFollowByOtherUser(target.id)}")
     boolean getIsFollower();
-
-    static Map<String, Object> convertToAvatar(Long id, String src) {
-        return Map.of("id", id,"src", src);
-    }
 }

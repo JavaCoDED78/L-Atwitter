@@ -3,7 +3,6 @@ package com.gmail.javacoded78.service;
 import com.gmail.javacoded78.dto.response.TopicsByCategoriesResponse;
 import com.gmail.javacoded78.enums.TopicCategory;
 import com.gmail.javacoded78.exception.ApiRequestException;
-import com.gmail.javacoded78.feign.AuthenticationClient;
 import com.gmail.javacoded78.model.TopicFollowers;
 import com.gmail.javacoded78.model.TopicNotInterested;
 import com.gmail.javacoded78.repository.TopicFollowersRepository;
@@ -12,6 +11,7 @@ import com.gmail.javacoded78.repository.TopicRepository;
 import com.gmail.javacoded78.repository.projetion.FollowedTopicProjection;
 import com.gmail.javacoded78.repository.projetion.NotInterestedTopicProjection;
 import com.gmail.javacoded78.repository.projetion.TopicProjection;
+import com.gmail.javacoded78.util.AuthUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -27,7 +27,6 @@ public class TopicServiceImpl implements TopicService {
     private final TopicRepository topicRepository;
     private final TopicFollowersRepository topicFollowersRepository;
     private final TopicNotInterestedRepository topicNotInterestedRepository;
-    private final AuthenticationClient authenticationClient;
 
     @Override
     public List<TopicProjection> getTopicsByIds(List<Long> topicsIds) {
@@ -48,7 +47,7 @@ public class TopicServiceImpl implements TopicService {
 
     @Override
     public List<FollowedTopicProjection> getFollowedTopics() {
-        Long userId = authenticationClient.getAuthenticatedUserId();
+        Long userId = AuthUtil.getAuthenticatedUserId();
         List<Long> followedTopicsIds = topicFollowersRepository.getFollowedTopics(userId);
         return topicRepository.getTopicsByIds(followedTopicsIds, FollowedTopicProjection.class);
     }
@@ -62,7 +61,7 @@ public class TopicServiceImpl implements TopicService {
 
     @Override
     public List<NotInterestedTopicProjection> getNotInterestedTopics() {
-        Long userId = authenticationClient.getAuthenticatedUserId();
+        Long userId = AuthUtil.getAuthenticatedUserId();
         List<Long> notInterestedTopicIds = topicNotInterestedRepository.getNotInterestedTopic(userId);
         return topicRepository.getTopicsByIds(notInterestedTopicIds, NotInterestedTopicProjection.class);
     }
@@ -71,7 +70,7 @@ public class TopicServiceImpl implements TopicService {
     @Transactional
     public Boolean processNotInterestedTopic(Long topicId) {
         checkIsTopicExist(topicId);
-        Long userId = authenticationClient.getAuthenticatedUserId();
+        Long userId = AuthUtil.getAuthenticatedUserId();
         TopicNotInterested topic = topicNotInterestedRepository.getNotInterestedByUserIdAndTopicId(userId, topicId);
 
         if (topic != null) {
@@ -89,7 +88,7 @@ public class TopicServiceImpl implements TopicService {
     @Transactional
     public Boolean processFollowTopic(Long topicId) {
         checkIsTopicExist(topicId);
-        Long userId = authenticationClient.getAuthenticatedUserId();
+        Long userId = AuthUtil.getAuthenticatedUserId();
         TopicFollowers follower = topicFollowersRepository.getFollowerByUserIdAndTopicId(userId, topicId);
 
         if (follower != null) {
@@ -112,12 +111,12 @@ public class TopicServiceImpl implements TopicService {
     }
 
     public boolean isTopicFollowed(Long topicId) {
-        Long userId = authenticationClient.getAuthenticatedUserId();
+        Long userId = AuthUtil.getAuthenticatedUserId();
         return topicFollowersRepository.isTopicFollowed(userId, topicId);
     }
 
     public boolean isTopicNotInterested(Long topicId) {
-        Long userId = authenticationClient.getAuthenticatedUserId();
+        Long userId = AuthUtil.getAuthenticatedUserId();
         return topicNotInterestedRepository.isTopicNotInterested(userId, topicId);
     }
 }

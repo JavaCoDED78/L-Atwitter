@@ -2,23 +2,19 @@ package com.gmail.javacoded78.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gmail.javacoded78.dto.ChatUserParticipantResponse;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
-@Getter
-@Setter
+@Data
 public class ChatResponse {
     private Long id;
     private LocalDateTime creationDate;
     private List<ParticipantResponse> participants;
 
-    @Getter
-    @Setter
+    @Data
     static class ParticipantResponse {
-
         private Long id;
         private ChatUserParticipantResponse user;
 

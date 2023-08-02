@@ -23,19 +23,4 @@ public class AuthenticationApiController {
     public UserPrincipalResponse getUserPrincipalByEmail(@PathVariable("email") String email) {
         return mapper.convertToResponse(authenticationService.getUserPrincipalByEmail(email), UserPrincipalResponse.class);
     }
-
-//    @GetMapping("/user/id")
-//    public Long getAuthenticatedUserId() {
-//        return authenticationService.getAuthenticatedUserId();
-//    }
-//
-//    @GetMapping("/user")
-//    public User getAuthenticatedUser() {
-//        return authenticationService.getAuthenticatedUser();
-//    }
-//
-//    @GetMapping("/users")
-//    public User getAuthUser() {
-//        return mapper.convertToResponse(authenticationService.getAuthenticatedUserProjection(), User.class);
-//    }
 }

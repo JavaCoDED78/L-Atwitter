@@ -3,7 +3,6 @@ package com.gmail.javacoded78.controller.api;
 import com.gmail.javacoded78.dto.NotificationRequest;
 import com.gmail.javacoded78.dto.notification.NotificationResponse;
 import com.gmail.javacoded78.mapper.NotificationClientMapper;
-import com.gmail.javacoded78.mapper.NotificationMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.GetMapping;

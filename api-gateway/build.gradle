@@ -36,7 +36,6 @@ dependencyManagement {
 
 dependencies {
     implementation project(':common')
-    implementation project(":client")
     implementation 'org.springframework.cloud:spring-cloud-starter-gateway'
     implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
     implementation 'org.springframework.cloud:spring-cloud-starter-sleuth'

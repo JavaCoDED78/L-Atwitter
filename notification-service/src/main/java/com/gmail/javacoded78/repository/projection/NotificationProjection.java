@@ -4,7 +4,6 @@ import com.gmail.javacoded78.dto.notification.NotificationListResponse;
 import com.gmail.javacoded78.dto.notification.NotificationTweetResponse;
 import com.gmail.javacoded78.dto.notification.NotificationUserResponse;
 import com.gmail.javacoded78.enums.NotificationType;
-import com.gmail.javacoded78.projection.ImageProjection;
 import org.springframework.beans.factory.annotation.Value;
 
 import java.time.LocalDateTime;

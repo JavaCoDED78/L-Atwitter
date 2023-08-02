@@ -10,6 +10,6 @@ public class UserRequest {
     private String about;
     private String location;
     private String website;
-    private ImageResponse avatar;
-    private ImageResponse wallpaper;
+    private String avatar;
+    private String wallpaper;
 }

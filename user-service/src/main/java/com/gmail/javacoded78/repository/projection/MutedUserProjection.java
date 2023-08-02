@@ -1,6 +1,5 @@
 package com.gmail.javacoded78.repository.projection;
-;
-import com.gmail.javacoded78.projection.ImageProjection;
+
 import org.springframework.beans.factory.annotation.Value;
 
 public interface MutedUserProjection {
@@ -9,9 +8,9 @@ public interface MutedUserProjection {
     String getFullName();
     String getUsername();
     String getAbout();
-    ImageProjection getAvatar();
+    String getAvatar();
     boolean getIsPrivateProfile();
 
-    @Value("#{@userServiceImpl.isUserMutedByMyProfile(target.id)}")
+    @Value("#{@userServiceHelper.isUserMutedByMyProfile(target.id)}")
     boolean getIsUserMuted();
 }

@@ -1,15 +1,12 @@
 package com.gmail.javacoded78.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.gmail.javacoded78.dto.ImageResponse;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
-@Getter
-@Setter
+@Data
 public class UserProfileResponse {
 
     private Long id;
@@ -25,11 +22,11 @@ public class UserProfileResponse {
     private Long mediaTweetCount;
     private Long likeCount;
     private Long notificationsCount;
-    private ImageResponse avatar;
-    private ImageResponse wallpaper;
-    private Integer pinnedTweetId;
-    private Integer followersSize;
-    private Integer followingSize;
+    private String avatar;
+    private String wallpaper;
+    private Long pinnedTweetId;
+    private Long followersSize;
+    private Long followingSize;
     private List<SameFollowerResponse> sameFollowers;
 
     @JsonProperty("isMutedDirectMessages")

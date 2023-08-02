@@ -2,10 +2,8 @@ package com.gmail.javacoded78.repository;
 
 import com.gmail.javacoded78.enums.TopicCategory;
 import com.gmail.javacoded78.model.Topic;
-import com.gmail.javacoded78.repository.projetion.NotInterestedTopicProjection;
 import com.gmail.javacoded78.repository.projetion.TopicProjection;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;

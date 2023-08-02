@@ -1,6 +1,5 @@
 package com.gmail.javacoded78.repository.projection;
 
-import com.gmail.javacoded78.projection.ImageProjection;
 import org.springframework.beans.factory.annotation.Value;
 
 import java.util.List;
@@ -11,27 +10,27 @@ public interface UserDetailProjection {
     String getFullName();
     String getUsername();
     String getAbout();
-    ImageProjection getAvatar();
+    String getAvatar();
     boolean getPrivateProfile();
 
     @Value("#{target.followers.size()}")
-    Integer getFollowersSize();
+    Long getFollowersSize();
 
     @Value("#{target.following.size()}")
-    Integer getFollowingSize();
+    Long getFollowingSize();
 
-    @Value("#{@userServiceImpl.isUserBlockedByMyProfile(target.id)}")
+    @Value("#{@userServiceHelper.isUserBlockedByMyProfile(target.id)}")
     boolean getIsUserBlocked();
 
-    @Value("#{@userServiceImpl.isMyProfileBlockedByUser(target.id)}")
+    @Value("#{@userServiceHelper.isMyProfileBlockedByUser(target.id)}")
     boolean getIsMyProfileBlocked();
 
-    @Value("#{@userServiceImpl.isMyProfileWaitingForApprove(target.id)}")
+    @Value("#{@userServiceHelper.isMyProfileWaitingForApprove(target.id)}")
     boolean getIsWaitingForApprove();
 
-    @Value("#{@userServiceImpl.isUserFollowByOtherUser(target.id)}")
+    @Value("#{@userServiceHelper.isUserFollowByOtherUser(target.id)}")
     boolean getIsFollower();
 
-    @Value("#{@userServiceImpl.getSameFollowers(target.id)}")
+    @Value("#{@userServiceHelper.getSameFollowers(target.id)}")
     List<SameFollower> getSameFollowers();
 }

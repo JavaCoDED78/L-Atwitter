@@ -80,7 +80,7 @@ public class ListsServiceImpl implements ListsService {
         validateListNameLength(list.getName());
         validateListOwner(list.getListOwnerId(), userId);
         listsRepository.save(list);
-        return listsRepository.getUserTweetListById(list.getId());
+        return listsRepository.getListById(list.getId(), ListUserProjection.class);
     }
 
     @Override
@@ -144,7 +144,7 @@ public class ListsServiceImpl implements ListsService {
             ListsFollowers bewFollower = new ListsFollowers(listId, userId);
             listsFollowersRepository.save(bewFollower);
         }
-        return listsRepository.getUserTweetListById(listId);
+        return listsRepository.getListById(listId, ListUserProjection.class);
     }
 
     @Override
@@ -162,7 +162,7 @@ public class ListsServiceImpl implements ListsService {
             PinnedLists newPinnedLists = new PinnedLists(list, userId);
             pinnedListsRepository.save(newPinnedLists);
         }
-        return listsRepository.getUserPinnedListById(listId);
+        return listsRepository.getListById(listId, PinnedListProjection.class);
         // TODO or return true/false if lists pinned
     }
 
@@ -195,8 +195,7 @@ public class ListsServiceImpl implements ListsService {
                 if (member == null) {
                     ListsMembers newMember = new ListsMembers(list.getListId(), listsRequest.getUserId());
                     listsMembersRepository.save(newMember);
-                    notificationClient.sendListNotification(new NotificationRequest(
-                            true, listsRequest.getUserId(), authUserId, list.getListId()));
+                    sendNotification(listsRequest.getUserId(), authUserId, list.getListId());
                 }
             }
         });
@@ -221,7 +220,7 @@ public class ListsServiceImpl implements ListsService {
             ListsMembers newMember = new ListsMembers(listId, userId);
             listsMembersRepository.save(newMember);
             isAddedToList = true;
-            notificationClient.sendListNotification(new NotificationRequest(true, userId, authUserId, listId));
+            sendNotification(userId, authUserId, listId);
         }
         return isAddedToList;
     }
@@ -335,6 +334,16 @@ public class ListsServiceImpl implements ListsService {
         if (!isListExist) {
             throw new ApiRequestException("List not found", HttpStatus.NOT_FOUND);
         }
+    }
+
+    private void sendNotification(Long notifiedUserId, Long userId, Long listId) {
+        NotificationRequest request = NotificationRequest.builder()
+                .notificationCondition(true)
+                .notifiedUserId(notifiedUserId)
+                .userId(userId)
+                .listId(listId)
+                .build();
+        notificationClient.sendListNotification(request);
     }
 
     public ListOwnerResponse getListOwnerById(Long userId) {

@@ -1,6 +1,6 @@
 package com.gmail.javacoded78.repository.projection;
 
-import com.gmail.javacoded78.projection.ListOwnerProjection;
+import com.gmail.javacoded78.dto.lists.ListOwnerResponse;
 import org.springframework.beans.factory.annotation.Value;
 
 public interface ListUserProjection {
@@ -14,5 +14,5 @@ public interface ListUserProjection {
     Long getListOwnerId();
 
     @Value("#{@listsServiceImpl.getListOwnerById(target.listOwnerId)}")
-    ListOwnerProjection getListOwner();
+    ListOwnerResponse getListOwner();
 }

@@ -1,6 +1,5 @@
 package com.gmail.javacoded78.repository.projection;
 
-import com.gmail.javacoded78.projection.ImageProjection;
 import org.springframework.beans.factory.annotation.Value;
 
 public interface UserChatProjection {
@@ -9,22 +8,22 @@ public interface UserChatProjection {
     String getFullName();
     String getUsername();
     String getAbout();
-    ImageProjection getAvatar();
+    String getAvatar();
     boolean getPrivateProfile();
     boolean getMutedDirectMessages();
 
-    @Value("#{@userServiceImpl.isUserBlockedByMyProfile(target.id)}")
+    @Value("#{@userServiceHelper.isUserBlockedByMyProfile(target.id)}")
     boolean getIsUserBlocked();
 
-    @Value("#{@userServiceImpl.isMyProfileBlockedByUser(target.id)}")
+    @Value("#{@userServiceHelper.isMyProfileBlockedByUser(target.id)}")
     boolean getIsMyProfileBlocked();
 
-    @Value("#{@userServiceImpl.isMyProfileWaitingForApprove(target.id)}")
+    @Value("#{@userServiceHelper.isMyProfileWaitingForApprove(target.id)}")
     boolean getIsWaitingForApprove();
 
-    @Value("#{@userServiceImpl.isUserFollowByOtherUser(target.id)}")
+    @Value("#{@userServiceHelper.isUserFollowByOtherUser(target.id)}")
     boolean getIsFollower();
 
-    @Value("#{@userServiceImpl.isUserChatParticipant(target.id)}")
+    @Value("#{false}")
     boolean getIsUserChatParticipant();
 }

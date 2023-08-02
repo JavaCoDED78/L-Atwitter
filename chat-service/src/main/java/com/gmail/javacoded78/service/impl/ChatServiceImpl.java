@@ -3,6 +3,7 @@ package com.gmail.javacoded78.service.impl;
 import com.gmail.javacoded78.dto.ChatTweetResponse;
 import com.gmail.javacoded78.dto.ChatUserParticipantResponse;
 import com.gmail.javacoded78.dto.HeaderResponse;
+import com.gmail.javacoded78.dto.IdsRequest;
 import com.gmail.javacoded78.dto.UserResponse;
 import com.gmail.javacoded78.dto.response.UserChatResponse;
 import com.gmail.javacoded78.exception.ApiRequestException;
@@ -185,11 +186,26 @@ public class ChatServiceImpl implements ChatService {
 
     @Override
     public HeaderResponse<UserChatResponse> searchUsersByUsername(String username, Pageable pageable) {
-        return userClient.searchUsersByUsername(username, pageable);
+        Long authUserId = AuthUtil.getAuthenticatedUserId();
+        HeaderResponse<UserChatResponse> users = userClient.searchUsersByUsername(username, pageable);
+        List<UserChatResponse> usersResponse = users.getItems().stream()
+                .peek(user -> {
+                    Chat chat = chatRepository.getChatByParticipants(authUserId, user.getId());
+
+                    if (chat != null) {
+                        user.setUserChatParticipant(true);
+                    }
+                }).toList();
+        users.setItems(usersResponse);
+        return users;
     }
 
     public ChatUserParticipantResponse getChatParticipant(Long userId) {
         return userClient.getChatParticipant(userId);
+    }
+
+    public ChatTweetResponse getChatTweet(Long tweetId) {
+        return tweetClient.getChatTweet(tweetId);
     }
 
     private void isParticipantBlocked(Long authUserId, Long userId) {
@@ -199,9 +215,5 @@ public class ChatServiceImpl implements ChatService {
         if (isUserBlockedByMyProfile || isMyProfileBlockedByUser) {
             throw new ApiRequestException("Participant is blocked", HttpStatus.BAD_REQUEST);
         }
-    }
-
-    public ChatTweetResponse getChatTweet(Long tweetId) {
-        return tweetClient.getChatTweet(tweetId);
     }
 }

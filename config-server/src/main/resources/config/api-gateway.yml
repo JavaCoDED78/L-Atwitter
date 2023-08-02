@@ -39,26 +39,34 @@ spring:
             filters:
               - AuthFilter
 
-        - id: lists-service
-          uri: lb://lists-service
-          predicates:
-            - Path=/ui/v1/lists/**
-          filters:
-            - AuthFilter
+        -   id: lists-service
+            uri: lb://lists-service
+            predicates:
+              - Path=/ui/v1/lists/**
+            filters:
+              - AuthFilter
 
-        - id: chat-service
-          uri: lb://chat-service
-          predicates:
-            - Path=/ui/v1/chat/**
-          filters:
-            - AuthFilter
+        -   id: chat-service
+            uri: lb://chat-service
+            predicates:
+              - Path=/ui/v1/chat/**
+            filters:
+              - AuthFilter
 
-        - id: notification-service
-          uri: lb://notification-service
-          predicates:
-            - Path=/ui/v1/notification/**
-          filters:
-            - AuthFilter
+        -   id: notification-service
+            uri: lb://notification-service
+            predicates:
+              - Path=/ui/v1/notification/**
+            filters:
+              - AuthFilter
+
+        -   id: image-service
+            uri: lb://image-service
+            predicates:
+              - Path=/api/v1/image/upload
+            filters:
+              - AuthFilter
+
   zipkin:
     base-url: http://localhost:9411
 

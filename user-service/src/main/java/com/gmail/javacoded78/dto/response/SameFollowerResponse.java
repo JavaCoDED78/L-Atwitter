@@ -1,16 +1,12 @@
 package com.gmail.javacoded78.dto.response;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
-import java.util.Map;
-
-@Getter
-@Setter
+@Data
 public class SameFollowerResponse {
 
     private Long id;
     private String fullName;
     private String username;
-    private Map<String, Object> avatar;
+    private String avatar;
 }

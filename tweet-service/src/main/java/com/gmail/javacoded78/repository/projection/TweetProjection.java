@@ -3,7 +3,6 @@ package com.gmail.javacoded78.repository.projection;
 import com.gmail.javacoded78.dto.TweetAuthorResponse;
 import com.gmail.javacoded78.enums.LinkCoverSize;
 import com.gmail.javacoded78.enums.ReplyType;
-import com.gmail.javacoded78.projection.ImageProjection;
 import org.springframework.beans.factory.annotation.Value;
 
 import java.time.LocalDateTime;
@@ -29,19 +28,19 @@ public interface TweetProjection {
     PollProjection getPoll();
     boolean isDeleted();
 
-    @Value("#{@tweetServiceImpl.getTweetAuthor(target.authorId)}")
+    @Value("#{@tweetServiceHelper.getTweetAuthor(target.authorId)}")
     TweetAuthorResponse getUser();
 
-    @Value("#{@tweetServiceImpl.isUserLikedTweet(target.id)}")
+    @Value("#{@tweetServiceHelper.isUserLikedTweet(target.id)}")
     boolean getIsTweetLiked();
 
-    @Value("#{@tweetServiceImpl.isUserRetweetedTweet(target.id)}")
+    @Value("#{@tweetServiceHelper.isUserRetweetedTweet(target.id)}")
     boolean getIsTweetRetweeted();
 
-    @Value("#{@tweetServiceImpl.isUserBookmarkedTweet(target.id)}")
+    @Value("#{@tweetServiceHelper.isUserBookmarkedTweet(target.id)}")
     boolean getIsTweetBookmarked();
 
-    @Value("#{@tweetServiceImpl.isUserFollowByOtherUser(target.authorId)}")
+    @Value("#{@tweetServiceHelper.isUserFollowByOtherUser(target.authorId)}")
     boolean getIsUserFollowByOtherUser();
 
     @Value("#{@retweetRepository.getRetweetSize(target.id)}")
@@ -84,8 +83,9 @@ public interface TweetProjection {
         @Value("#{target.isDeleted ? null : target.authorId}")
         Long getAuthorId();
 
-        @Value("#{target.isDeleted ? null : @tweetServiceImpl.getTweetAuthor(target.authorId)}")
+        @Value("#{target.isDeleted ? null : @tweetServiceHelper.getTweetAuthor(target.authorId)}")
         TweetAuthorResponse getUser();
+
         boolean isDeleted();
     }
 
