@@ -43,5 +43,5 @@ public class AuthUserResponse {
     private Long followersSize;
     private Long followingSize;
     private Long followerRequestsSize;
-    private Long unreadMessagesSize;
+    private Long unreadMessagesCount;
 }

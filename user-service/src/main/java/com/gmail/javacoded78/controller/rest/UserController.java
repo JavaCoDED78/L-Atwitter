@@ -1,11 +1,13 @@
 package com.gmail.javacoded78.controller.rest;
 
 import com.gmail.javacoded78.dto.HeaderResponse;
+import com.gmail.javacoded78.dto.response.AuthenticationResponse;
 import com.gmail.javacoded78.dto.response.user.UserResponse;
 import com.gmail.javacoded78.dto.request.UserRequest;
 import com.gmail.javacoded78.dto.response.AuthUserResponse;
 import com.gmail.javacoded78.dto.response.UserDetailResponse;
 import com.gmail.javacoded78.dto.response.UserProfileResponse;
+import com.gmail.javacoded78.mapper.AuthenticationMapper;
 import com.gmail.javacoded78.mapper.UserMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -28,6 +30,12 @@ import static com.gmail.javacoded78.constants.PathConstants.UI_V1_USER;
 public class UserController {
 
     private final UserMapper userMapper;
+    private final AuthenticationMapper authenticationMapper;
+
+    @GetMapping("/token")
+    public ResponseEntity<AuthenticationResponse> getUserByToken() {
+        return ResponseEntity.ok(authenticationMapper.getUserByToken());
+    }
 
     @GetMapping("/{userId}")
     public ResponseEntity<UserProfileResponse> getUserById(@PathVariable Long userId) {
