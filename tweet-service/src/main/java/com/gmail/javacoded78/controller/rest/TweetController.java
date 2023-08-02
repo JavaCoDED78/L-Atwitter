@@ -43,7 +43,7 @@ import static com.gmail.javacoded78.constants.WebsocketConstants.TOPIC_USER_UPDA
 public class TweetController {
 
     private final TweetMapper tweetMapper;
-    private final SimpMessagingTemplate messagingTemplate;
+    private final WebSocketClient webSocketClient;
 
     @GetMapping
     public ResponseEntity<List<TweetResponse>> getTweets(@PageableDefault(size = 10) Pageable pageable) {
@@ -130,8 +130,8 @@ public class TweetController {
     @PostMapping
     public ResponseEntity<TweetResponse> createTweet(@RequestBody TweetRequest tweetRequest) {
         TweetResponse tweet = tweetMapper.createTweet(tweetRequest);
-        messagingTemplate.convertAndSend(TOPIC_FEED_ADD, tweet);
-        messagingTemplate.convertAndSend(TOPIC_USER_ADD_TWEET + tweet.getUser().getId(), tweet);
+        webSocketClient.send(TOPIC_FEED_ADD, tweet);
+        webSocketClient.send(TOPIC_USER_ADD_TWEET + tweet.getUser().getId(), tweet);
         return ResponseEntity.ok(tweet);
     }
 
@@ -167,9 +167,9 @@ public class TweetController {
                                                                 @PathVariable("tweetId") Long tweetId,
                                                                 @RequestBody TweetRequest tweetRequest) {
         NotificationReplyResponse notification = tweetMapper.replyTweet(tweetId, tweetRequest);
-        messagingTemplate.convertAndSend(TOPIC_FEED, notification);
-        messagingTemplate.convertAndSend(TOPIC_TWEET + notification.getTweetId(), notification);
-        messagingTemplate.convertAndSend(TOPIC_USER_UPDATE_TWEET + userId, notification);
+        webSocketClient.send(TOPIC_FEED, notification);
+        webSocketClient.send(TOPIC_TWEET + notification.getTweetId(), notification);
+        webSocketClient.send(TOPIC_USER_UPDATE_TWEET + userId, notification);
         return ResponseEntity.ok(notification);
     }
 
@@ -178,9 +178,9 @@ public class TweetController {
                                                     @PathVariable("tweetId") Long tweetId,
                                                     @RequestBody TweetRequest tweetRequest) {
         TweetResponse tweet = tweetMapper.quoteTweet(tweetId, tweetRequest);
-        messagingTemplate.convertAndSend(TOPIC_FEED_ADD, tweet);
-        messagingTemplate.convertAndSend(TOPIC_TWEET + tweet.getId(), tweet);
-        messagingTemplate.convertAndSend(TOPIC_USER_ADD_TWEET + userId, tweet);
+        webSocketClient.send(TOPIC_FEED_ADD, tweet);
+        webSocketClient.send(TOPIC_TWEET + tweet.getId(), tweet);
+        webSocketClient.send(TOPIC_USER_ADD_TWEET + userId, tweet);
         return ResponseEntity.ok(tweet);
     }
 
@@ -189,9 +189,9 @@ public class TweetController {
                                                               @PathVariable("tweetId") Long tweetId,
                                                               @RequestParam ReplyType replyType) {
         TweetResponse tweet = tweetMapper.changeTweetReplyType(tweetId, replyType);
-        messagingTemplate.convertAndSend(TOPIC_FEED, tweet);
-        messagingTemplate.convertAndSend(TOPIC_TWEET + tweet.getId(), tweet);
-        messagingTemplate.convertAndSend(TOPIC_USER_UPDATE_TWEET + userId, tweet);
+        webSocketClient.send(TOPIC_FEED, tweet);
+        webSocketClient.send(TOPIC_TWEET + tweet.getId(), tweet);
+        webSocketClient.send(TOPIC_USER_UPDATE_TWEET + userId, tweet);
         return ResponseEntity.ok(tweet);
     }
 }

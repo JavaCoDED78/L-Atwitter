@@ -24,22 +24,22 @@ import static com.gmail.javacoded78.constants.WebsocketConstants.TOPIC_USER_UPDA
 public class PollController {
 
     private final PollMapper pollMapper;
-    private final SimpMessagingTemplate messagingTemplate;
+    private final WebSocketClient webSocketClient;
 
     @PostMapping("/poll")
     public ResponseEntity<TweetResponse> createPoll(@RequestBody TweetRequest tweetRequest) {
         TweetResponse tweet = pollMapper.createPoll(tweetRequest);
-        messagingTemplate.convertAndSend(TOPIC_FEED_ADD, tweet);
-        messagingTemplate.convertAndSend(TOPIC_USER_UPDATE_TWEET + tweet.getUser().getId(), tweet);
+        webSocketClient.send(TOPIC_FEED_ADD, tweet);
+        webSocketClient.send(TOPIC_USER_UPDATE_TWEET + tweet.getUser().getId(), tweet);
         return ResponseEntity.ok(tweet);
     }
 
     @PostMapping("/vote") // TODO validate and fix
     public ResponseEntity<TweetResponse> voteInPoll(@RequestBody VoteRequest voteRequest) {
         TweetResponse tweet = pollMapper.voteInPoll(voteRequest);
-        messagingTemplate.convertAndSend(TOPIC_FEED, tweet);
-        messagingTemplate.convertAndSend(TOPIC_TWEET + tweet.getId(), tweet);
-        messagingTemplate.convertAndSend(TOPIC_USER_UPDATE_TWEET + tweet.getUser().getId(), tweet);
+        webSocketClient.send(TOPIC_FEED, tweet);
+        webSocketClient.send(TOPIC_TWEET + tweet.getId(), tweet);
+        webSocketClient.send(TOPIC_USER_UPDATE_TWEET + tweet.getUser().getId(), tweet);
         return ResponseEntity.ok(tweet);
     }
 }

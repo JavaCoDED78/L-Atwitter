@@ -2,6 +2,7 @@ package com.gmail.javacoded78.controller.api;
 
 import com.gmail.javacoded78.dto.request.NotificationRequest;
 import com.gmail.javacoded78.dto.response.notification.NotificationResponse;
+import com.gmail.javacoded78.feign.WebSocketClient;
 import com.gmail.javacoded78.mapper.NotificationClientMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -23,14 +24,14 @@ import static com.gmail.javacoded78.constants.WebsocketConstants.TOPIC_TWEET;
 public class NotificationApiController {
 
     private final NotificationClientMapper notificationClientMapper;
-    private final SimpMessagingTemplate messagingTemplate;
+    private final WebSocketClient webSocketClient;
 
     @PostMapping("/list")
     public void sendListNotification(@RequestBody NotificationRequest request) {
         NotificationResponse notification = notificationClientMapper.sendListNotification(request);
 
         if (notification.getId() != null) {
-            messagingTemplate.convertAndSend(TOPIC_NOTIFICATIONS + notification.getUser().getId(), notification);
+            webSocketClient.send(TOPIC_NOTIFICATIONS + notification.getUser().getId(), notification);
         }
     }
 
@@ -39,7 +40,7 @@ public class NotificationApiController {
         NotificationResponse notification = notificationClientMapper.sendUserNotification(request);
 
         if (notification.getId() != null) {
-            messagingTemplate.convertAndSend(TOPIC_NOTIFICATIONS + notification.getUser().getId(), notification);
+            webSocketClient.send(TOPIC_NOTIFICATIONS + notification.getUser().getId(), notification);
         }
     }
 
@@ -48,10 +49,10 @@ public class NotificationApiController {
         NotificationResponse notification = notificationClientMapper.sendTweetNotification(request);
 
         if (notification.getId() != null) {
-            messagingTemplate.convertAndSend(TOPIC_NOTIFICATIONS + notification.getTweet().getAuthorId(), notification);
+            webSocketClient.send(TOPIC_NOTIFICATIONS + notification.getTweet().getAuthorId(), notification);
         }
-        messagingTemplate.convertAndSend(TOPIC_FEED, notification);
-        messagingTemplate.convertAndSend(TOPIC_TWEET + notification.getTweet().getId(), notification);
+        webSocketClient.send(TOPIC_FEED, notification);
+        webSocketClient.send(TOPIC_TWEET + notification.getTweet().getId(), notification);
         return notification;
     }
 

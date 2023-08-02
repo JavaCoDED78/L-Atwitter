@@ -27,7 +27,7 @@ import static com.gmail.javacoded78.constants.WebsocketConstants.TOPIC_USER_UPDA
 public class LikeTweetController {
 
     private final LikeTweetMapper likeTweetMapper;
-    private final SimpMessagingTemplate messagingTemplate;
+    private final WebSocketClient webSocketClient;
 
     @GetMapping("/liked/user/{userId}")
     public ResponseEntity<List<TweetResponse>> getUserLikedTweets(@PathVariable Long userId,
@@ -47,7 +47,7 @@ public class LikeTweetController {
     public ResponseEntity<NotificationTweetResponse> likeTweet(@PathVariable("userId") Long userId,
                                                                @PathVariable("tweetId") Long tweetId) {
         NotificationResponse notification = likeTweetMapper.likeTweet(tweetId);
-        messagingTemplate.convertAndSend(TOPIC_USER_UPDATE_TWEET + userId, notification);
+        webSocketClient.send(TOPIC_USER_UPDATE_TWEET + userId, notification);
         return ResponseEntity.ok(notification.getTweet());
     }
 }

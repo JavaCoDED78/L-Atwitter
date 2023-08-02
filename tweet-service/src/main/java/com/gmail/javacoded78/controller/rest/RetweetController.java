@@ -27,7 +27,7 @@ import static com.gmail.javacoded78.constants.WebsocketConstants.TOPIC_USER_UPDA
 public class RetweetController {
 
     private final RetweetMapper retweetMapper;
-    private final SimpMessagingTemplate messagingTemplate;
+    private final WebSocketClient webSocketClient;
 
     @GetMapping("/replies/user/{userId}")
     public ResponseEntity<List<TweetUserResponse>> getUserRetweetsAndReplies(@PathVariable Long userId,
@@ -47,7 +47,7 @@ public class RetweetController {
     public ResponseEntity<NotificationTweetResponse> retweet(@PathVariable("userId") Long userId,
                                                              @PathVariable("tweetId") Long tweetId) {
         NotificationResponse notification = retweetMapper.retweet(tweetId);
-        messagingTemplate.convertAndSend(TOPIC_USER_UPDATE_TWEET + userId, notification);
+        webSocketClient.send(TOPIC_USER_UPDATE_TWEET + userId, notification);
         return ResponseEntity.ok(notification.getTweet());
     }
 }
