@@ -1,10 +1,10 @@
 package com.gmail.javacoded78.util;
 
-import com.gmail.javacoded78.dto.ChatTweetUserResponse;
-import com.gmail.javacoded78.dto.NotificationRequest;
-import com.gmail.javacoded78.dto.TweetAdditionalInfoUserResponse;
-import com.gmail.javacoded78.dto.TweetAuthorResponse;
-import com.gmail.javacoded78.dto.notification.NotificationResponse;
+import com.gmail.javacoded78.dto.response.chat.ChatTweetUserResponse;
+import com.gmail.javacoded78.dto.request.NotificationRequest;
+import com.gmail.javacoded78.dto.response.tweet.TweetAdditionalInfoUserResponse;
+import com.gmail.javacoded78.dto.response.tweet.TweetAuthorResponse;
+import com.gmail.javacoded78.dto.response.notification.NotificationResponse;
 import com.gmail.javacoded78.enums.NotificationType;
 import com.gmail.javacoded78.exception.ApiRequestException;
 import com.gmail.javacoded78.feign.NotificationClient;
@@ -12,7 +12,9 @@ import com.gmail.javacoded78.feign.UserClient;
 import com.gmail.javacoded78.repository.BookmarkRepository;
 import com.gmail.javacoded78.repository.LikeTweetRepository;
 import com.gmail.javacoded78.repository.RetweetRepository;
+import com.gmail.javacoded78.repository.TweetRepository;
 import com.gmail.javacoded78.repository.projection.RetweetProjection;
+import com.gmail.javacoded78.repository.projection.TweetProjection;
 import com.gmail.javacoded78.repository.projection.TweetUserProjection;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.support.PagedListHolder;
@@ -29,11 +31,20 @@ import java.util.List;
 @RequiredArgsConstructor
 public class TweetServiceHelper {
 
+    private final TweetRepository tweetRepository;
     private final LikeTweetRepository likeTweetRepository;
     private final RetweetRepository retweetRepository;
     private final BookmarkRepository bookmarkRepository;
     private final NotificationClient notificationClient;
     private final UserClient userClient;
+
+    public TweetProjection getTweetProjection(Long tweetId) {
+        return tweetRepository.getTweetById(tweetId, TweetProjection.class).get();
+    }
+
+    public TweetUserProjection getTweetUserProjection(Long tweetId) {
+        return tweetRepository.getTweetById(tweetId, TweetUserProjection.class).get();
+    }
 
     public void checkIsUserExist(Long userId) {
         boolean isUserExist = userClient.isUserExists(userId);
@@ -79,7 +90,9 @@ public class TweetServiceHelper {
     }
 
     public void checkIsValidUserProfile(Long userId) {
-        if (isUserHavePrivateProfile(userId)) {
+        Long authUserId = AuthUtil.getAuthenticatedUserId();
+
+        if (isUserHavePrivateProfile(userId) && !userId.equals(authUserId)) {
             throw new ApiRequestException("User not found", HttpStatus.BAD_REQUEST);
         }
         if (isMyProfileBlockedByUser(userId)) {

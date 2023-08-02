@@ -9,7 +9,7 @@ public interface MutedUserProjection {
     String getUsername();
     String getAbout();
     String getAvatar();
-    boolean getIsPrivateProfile();
+    boolean getPrivateProfile();
 
     @Value("#{@userServiceHelper.isUserMutedByMyProfile(target.id)}")
     boolean getIsUserMuted();

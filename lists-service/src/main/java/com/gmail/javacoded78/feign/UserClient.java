@@ -1,9 +1,9 @@
 package com.gmail.javacoded78.feign;
 
 import com.gmail.javacoded78.configuration.FeignConfiguration;
-import com.gmail.javacoded78.dto.lists.ListMemberResponse;
-import com.gmail.javacoded78.dto.lists.ListOwnerResponse;
-import com.gmail.javacoded78.dto.IdsRequest;
+import com.gmail.javacoded78.dto.response.lists.ListMemberResponse;
+import com.gmail.javacoded78.dto.response.lists.ListOwnerResponse;
+import com.gmail.javacoded78.dto.request.IdsRequest;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -12,9 +12,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
 
-import static com.gmail.javacoded78.controller.PathConstants.API_V1_USER;
+import static com.gmail.javacoded78.constants.FeignConstants.USER_SERVICE;
+import static com.gmail.javacoded78.constants.PathConstants.API_V1_USER;
 
-@FeignClient(name = "user-service", contextId = "UserClient", configuration = FeignConfiguration.class)
+@FeignClient(name = USER_SERVICE, contextId = "UserClient", configuration = FeignConfiguration.class)
 public interface UserClient {
 
     @GetMapping(API_V1_USER + "/is_blocked/{userId}/{blockedUserId}")

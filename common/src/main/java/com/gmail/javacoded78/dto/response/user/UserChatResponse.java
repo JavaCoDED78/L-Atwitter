@@ -1,4 +1,4 @@
-package com.gmail.javacoded78.dto;
+package com.gmail.javacoded78.dto.response.user;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;

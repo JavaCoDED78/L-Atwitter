@@ -1,18 +1,18 @@
 package com.gmail.javacoded78.service.impl;
 
-import com.gmail.javacoded78.dto.ChatTweetUserResponse;
-import com.gmail.javacoded78.dto.ChatUserParticipantResponse;
+import com.gmail.javacoded78.dto.response.chat.ChatTweetUserResponse;
+import com.gmail.javacoded78.dto.response.chat.ChatUserParticipantResponse;
 import com.gmail.javacoded78.dto.HeaderResponse;
-import com.gmail.javacoded78.dto.IdsRequest;
-import com.gmail.javacoded78.dto.TweetAdditionalInfoUserResponse;
-import com.gmail.javacoded78.dto.TweetAuthorResponse;
-import com.gmail.javacoded78.dto.UserChatResponse;
-import com.gmail.javacoded78.dto.UserResponse;
-import com.gmail.javacoded78.dto.lists.ListMemberResponse;
-import com.gmail.javacoded78.dto.lists.ListOwnerResponse;
-import com.gmail.javacoded78.dto.notification.NotificationUserResponse;
+import com.gmail.javacoded78.dto.request.IdsRequest;
+import com.gmail.javacoded78.dto.response.notification.NotificationUserResponse;
+import com.gmail.javacoded78.dto.response.tweet.TweetAdditionalInfoUserResponse;
+import com.gmail.javacoded78.dto.response.tweet.TweetAuthorResponse;
+import com.gmail.javacoded78.dto.response.user.UserChatResponse;
+import com.gmail.javacoded78.dto.response.user.UserResponse;
+import com.gmail.javacoded78.dto.response.lists.ListMemberResponse;
+import com.gmail.javacoded78.dto.response.lists.ListOwnerResponse;
 import com.gmail.javacoded78.mapper.BasicMapper;
-import com.gmail.javacoded78.projection.ListOwnerProjection;
+import com.gmail.javacoded78.repository.projection.ListOwnerProjection;
 import com.gmail.javacoded78.repository.UserRepository;
 import com.gmail.javacoded78.repository.projection.ChatTweetUserProjection;
 import com.gmail.javacoded78.repository.projection.ChatUserParticipantProjection;
@@ -173,6 +173,11 @@ public class UserClientServiceImpl implements UserClientService {
         if (pinnedTweetId != null && pinnedTweetId.equals(tweetId)) {
             userRepository.updatePinnedTweetId(null, userId);
         }
+    }
+
+    @Override
+    public Long getUserPinnedTweetId(Long userId) {
+        return userRepository.getPinnedTweetId(userId);
     }
 
     @Override

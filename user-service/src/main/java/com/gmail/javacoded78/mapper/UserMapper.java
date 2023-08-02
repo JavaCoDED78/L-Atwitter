@@ -1,20 +1,13 @@
 package com.gmail.javacoded78.mapper;
 
 import com.gmail.javacoded78.dto.HeaderResponse;
-import com.gmail.javacoded78.dto.UserResponse;
+import com.gmail.javacoded78.dto.response.user.UserResponse;
 import com.gmail.javacoded78.dto.request.UserRequest;
 import com.gmail.javacoded78.dto.response.AuthUserResponse;
-import com.gmail.javacoded78.dto.response.BlockedUserResponse;
-import com.gmail.javacoded78.dto.response.FollowerUserResponse;
-import com.gmail.javacoded78.dto.response.MutedUserResponse;
 import com.gmail.javacoded78.dto.response.UserDetailResponse;
 import com.gmail.javacoded78.dto.response.UserProfileResponse;
 import com.gmail.javacoded78.model.User;
 import com.gmail.javacoded78.repository.projection.AuthUserProjection;
-import com.gmail.javacoded78.repository.projection.BaseUserProjection;
-import com.gmail.javacoded78.repository.projection.BlockedUserProjection;
-import com.gmail.javacoded78.repository.projection.FollowerUserProjection;
-import com.gmail.javacoded78.repository.projection.MutedUserProjection;
 import com.gmail.javacoded78.repository.projection.UserDetailProjection;
 import com.gmail.javacoded78.repository.projection.UserProfileProjection;
 import com.gmail.javacoded78.repository.projection.UserProjection;

@@ -1,18 +1,10 @@
 package com.gmail.javacoded78.service.impl;
 
-import com.gmail.javacoded78.dto.NotificationRequest;
-import com.gmail.javacoded78.enums.NotificationType;
 import com.gmail.javacoded78.exception.ApiRequestException;
-import com.gmail.javacoded78.feign.NotificationClient;
 import com.gmail.javacoded78.feign.TweetClient;
 import com.gmail.javacoded78.model.User;
 import com.gmail.javacoded78.repository.UserRepository;
 import com.gmail.javacoded78.repository.projection.AuthUserProjection;
-import com.gmail.javacoded78.repository.projection.BaseUserProjection;
-import com.gmail.javacoded78.repository.projection.BlockedUserProjection;
-import com.gmail.javacoded78.repository.projection.FollowerUserProjection;
-import com.gmail.javacoded78.repository.projection.MutedUserProjection;
-import com.gmail.javacoded78.repository.projection.SameFollower;
 import com.gmail.javacoded78.repository.projection.UserDetailProjection;
 import com.gmail.javacoded78.repository.projection.UserProfileProjection;
 import com.gmail.javacoded78.repository.projection.UserProjection;

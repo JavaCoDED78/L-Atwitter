@@ -2,12 +2,11 @@ package com.gmail.javacoded78.repository.projection;
 
 import com.gmail.javacoded78.enums.BackgroundColorType;
 import com.gmail.javacoded78.enums.ColorSchemeType;
-import com.gmail.javacoded78.projection.ImageProjection;
 import org.springframework.beans.factory.annotation.Value;
 
 import java.time.LocalDateTime;
 
-public interface AuthUserProjection {
+public interface AuthUserProjection { // TODO refactor
     Long getId();
     String getEmail();
     String getFullName();
@@ -33,22 +32,18 @@ public interface AuthUserProjection {
     boolean isPrivateProfile();
     BackgroundColorType getBackgroundColor();
     ColorSchemeType getColorScheme();
-    ImageProjection getAvatar();
-    ImageProjection getWallpaper();
-
-    @Value("#{target.pinnedTweet != null ? target.pinnedTweet.id : 0}")
-    Integer getPinnedTweetId();
+    String getAvatar();
+    String getWallpaper();
+    Long getPinnedTweetId();
+    Long getUnreadMessagesCount();
 
     @Value("#{target.followers.size()}")
-    Integer getFollowersSize();
+    Long getFollowersSize();
 
     @Value("#{target.following.size()}")
-    Integer getFollowingSize();
+    Long getFollowingSize();
 
     @Value("#{target.followerRequests.size()}")
-    Integer getFollowerRequestsSize();
-
-    @Value("#{target.unreadMessages.size()}")
-    Integer getUnreadMessagesSize();
+    Long getFollowerRequestsSize();
 }
 

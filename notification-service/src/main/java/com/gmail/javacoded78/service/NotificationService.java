@@ -2,8 +2,8 @@ package com.gmail.javacoded78.service;
 
 
 import com.gmail.javacoded78.dto.HeaderResponse;
-import com.gmail.javacoded78.dto.TweetResponse;
-import com.gmail.javacoded78.dto.notification.NotificationUserResponse;
+import com.gmail.javacoded78.dto.response.notification.NotificationUserResponse;
+import com.gmail.javacoded78.dto.response.tweet.TweetResponse;
 import com.gmail.javacoded78.repository.projection.NotificationInfoProjection;
 import com.gmail.javacoded78.repository.projection.NotificationProjection;
 import org.springframework.data.domain.Page;

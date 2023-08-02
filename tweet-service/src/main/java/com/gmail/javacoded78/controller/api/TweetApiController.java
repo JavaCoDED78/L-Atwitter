@@ -1,14 +1,12 @@
 package com.gmail.javacoded78.controller.api;
 
 
-import com.gmail.javacoded78.dto.ChatTweetResponse;
+import com.gmail.javacoded78.dto.response.chat.ChatTweetResponse;
 import com.gmail.javacoded78.dto.HeaderResponse;
-import com.gmail.javacoded78.dto.IdsRequest;
-import com.gmail.javacoded78.dto.TweetResponse;
-import com.gmail.javacoded78.dto.notification.NotificationTweetResponse;
-import com.gmail.javacoded78.mapper.BasicMapper;
+import com.gmail.javacoded78.dto.request.IdsRequest;
+import com.gmail.javacoded78.dto.response.tweet.TweetResponse;
+import com.gmail.javacoded78.dto.response.notification.NotificationTweetResponse;
 import com.gmail.javacoded78.mapper.TweetClientMapper;
-import com.gmail.javacoded78.service.TweetClientService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cloud.openfeign.SpringQueryMap;
 import org.springframework.data.domain.Pageable;
@@ -21,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-import static com.gmail.javacoded78.controller.PathConstants.API_V1_TWEETS;
+import static com.gmail.javacoded78.constants.PathConstants.API_V1_TWEETS;
 
 @RestController
 @RequiredArgsConstructor

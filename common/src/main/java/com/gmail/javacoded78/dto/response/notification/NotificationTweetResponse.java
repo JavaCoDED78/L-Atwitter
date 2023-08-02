@@ -1,4 +1,4 @@
-package com.gmail.javacoded78.dto.notification;
+package com.gmail.javacoded78.dto.response.notification;
 
 import lombok.Data;
 

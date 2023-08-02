@@ -1,14 +1,18 @@
-package com.gmail.javacoded78.dto;
+package com.gmail.javacoded78.dto.response.tweet;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 @Data
-public class TweetAdditionalInfoUserResponse {
-
+public class TweetAuthorResponse {
     private Long id;
+    private String email;
     private String fullName;
     private String username;
+    private String avatar;
+
+    @JsonProperty("isPrivateProfile")
+    private boolean isPrivateProfile;
 
     @JsonProperty("isFollower")
     private boolean isFollower;

@@ -1,6 +1,6 @@
 package com.gmail.javacoded78.filter;
 
-import com.gmail.javacoded78.dto.UserPrincipalResponse;
+import com.gmail.javacoded78.dto.response.user.UserPrincipalResponse;
 import com.gmail.javacoded78.security.JwtAuthenticationException;
 import com.gmail.javacoded78.security.JwtProvider;
 import org.springframework.cloud.gateway.filter.GatewayFilter;

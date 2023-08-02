@@ -1,6 +1,6 @@
 package com.gmail.javacoded78.repository.projection;
 
-import com.gmail.javacoded78.dto.TweetAuthorResponse;
+import com.gmail.javacoded78.dto.response.tweet.TweetAuthorResponse;
 import com.gmail.javacoded78.enums.LinkCoverSize;
 import com.gmail.javacoded78.enums.ReplyType;
 import org.springframework.beans.factory.annotation.Value;
@@ -44,7 +44,7 @@ public interface TweetUserProjection {
     @Value("#{@tweetServiceHelper.isUserBookmarkedTweet(target.id)}")
     boolean getIsTweetBookmarked();
 
-    @Value("#{@tweetServiceHelper.isUserFollowByOtherUser(target.user.id)}")
+    @Value("#{@tweetServiceHelper.isUserFollowByOtherUser(target.authorId)}")
     boolean getIsUserFollowByOtherUser();
 
     @Value("#{@retweetRepository.getRetweetSize(target.id)}")

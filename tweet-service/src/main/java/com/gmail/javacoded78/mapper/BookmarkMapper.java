@@ -1,7 +1,7 @@
 package com.gmail.javacoded78.mapper;
 
 import com.gmail.javacoded78.dto.HeaderResponse;
-import com.gmail.javacoded78.dto.TweetResponse;
+import com.gmail.javacoded78.dto.response.tweet.TweetResponse;
 import com.gmail.javacoded78.repository.projection.BookmarkProjection;
 import com.gmail.javacoded78.repository.projection.TweetProjection;
 import com.gmail.javacoded78.service.BookmarkService;

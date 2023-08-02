@@ -1,7 +1,7 @@
 package com.gmail.javacoded78.mapper;
 
 import com.gmail.javacoded78.dto.HeaderResponse;
-import com.gmail.javacoded78.dto.UserResponse;
+import com.gmail.javacoded78.dto.response.user.UserResponse;
 import com.gmail.javacoded78.dto.response.FollowerUserResponse;
 import com.gmail.javacoded78.dto.response.UserProfileResponse;
 import com.gmail.javacoded78.repository.projection.BaseUserProjection;

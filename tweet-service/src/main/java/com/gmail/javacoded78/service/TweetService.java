@@ -1,12 +1,8 @@
 package com.gmail.javacoded78.service;
 
-import com.gmail.javacoded78.dto.HeaderResponse;
-import com.gmail.javacoded78.dto.UserResponse;
-import com.gmail.javacoded78.dto.notification.NotificationResponse;
 import com.gmail.javacoded78.enums.ReplyType;
 import com.gmail.javacoded78.model.Tweet;
 import com.gmail.javacoded78.model.TweetImage;
-import com.gmail.javacoded78.repository.projection.LikeTweetProjection;
 import com.gmail.javacoded78.repository.projection.ProfileTweetImageProjection;
 import com.gmail.javacoded78.repository.projection.TweetAdditionalInfoProjection;
 import com.gmail.javacoded78.repository.projection.TweetProjection;

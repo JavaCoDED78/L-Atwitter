@@ -1,8 +1,8 @@
 package com.gmail.javacoded78.mapper;
 
 import com.gmail.javacoded78.dto.HeaderResponse;
-import com.gmail.javacoded78.dto.UserResponse;
-import com.gmail.javacoded78.dto.notification.NotificationResponse;
+import com.gmail.javacoded78.dto.response.user.UserResponse;
+import com.gmail.javacoded78.dto.response.notification.NotificationResponse;
 import com.gmail.javacoded78.dto.response.TweetUserResponse;
 import com.gmail.javacoded78.repository.projection.TweetUserProjection;
 import com.gmail.javacoded78.service.RetweetService;

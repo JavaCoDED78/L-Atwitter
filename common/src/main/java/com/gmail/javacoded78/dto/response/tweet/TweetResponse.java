@@ -1,6 +1,9 @@
-package com.gmail.javacoded78.dto;
+package com.gmail.javacoded78.dto.response.tweet;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.gmail.javacoded78.dto.ImageResponse;
+import com.gmail.javacoded78.dto.response.tweet.QuoteTweetResponse;
+import com.gmail.javacoded78.dto.response.tweet.TweetAuthorResponse;
 import com.gmail.javacoded78.enums.LinkCoverSize;
 import com.gmail.javacoded78.enums.ReplyType;
 import lombok.Data;

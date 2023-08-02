@@ -1,6 +1,7 @@
 package com.gmail.javacoded78.service.impl;
 
-import com.gmail.javacoded78.dto.IdsRequest;
+import com.gmail.javacoded78.dto.request.IdsRequest;
+import com.gmail.javacoded78.dto.request.TweetTextRequest;
 import com.gmail.javacoded78.enums.LinkCoverSize;
 import com.gmail.javacoded78.enums.ReplyType;
 import com.gmail.javacoded78.exception.ApiRequestException;
@@ -58,7 +59,7 @@ public class TweetServiceImpl implements TweetService {
     private final UserClient userClient;
     private final TagClient tagClient;
     private final ImageClient imageClient;
-    private final RestTemplate restTemplate;
+//    private final RestTemplate restTemplate;
 
     @Value("${google.api.url}")
     private String googleApiUrl;
@@ -196,7 +197,7 @@ public class TweetServiceImpl implements TweetService {
     @Transactional
     public String deleteTweet(Long tweetId) {
         Long userId = AuthUtil.getAuthenticatedUserId();
-        Tweet tweet = tweetRepository.getTweetByUserId(userId)
+        Tweet tweet = tweetRepository.getTweetByUserId(userId, tweetId)
                 .orElseThrow(() -> new ApiRequestException("Tweet not found", HttpStatus.NOT_FOUND));
         userClient.updatePinnedTweetId(tweetId);
         tagClient.deleteTagsByTweetId(tweetId);
@@ -275,7 +276,7 @@ public class TweetServiceImpl implements TweetService {
         } else {
             userClient.updateTweetCount(true);
         }
-        tagClient.parseHashtagsInText(tweet.getText(), tweet.getId());
+        tagClient.parseHashtagsInText(tweet.getId(), new TweetTextRequest(tweet.getText()));
         notificationClient.sendTweetNotificationToSubscribers(tweet.getId());
         return tweet;
     }
@@ -316,6 +317,7 @@ public class TweetServiceImpl implements TweetService {
                     youTubeVideoId = youTubeMatcher.group();
                 }
                 String youtubeUrl = String.format(googleApiUrl, youTubeVideoId, googleApiKey);
+                RestTemplate restTemplate = new RestTemplate();
                 String youTubeVideData = restTemplate.getForObject(youtubeUrl, String.class);
                 JSONObject jsonObject = new JSONObject(youTubeVideData);
                 JSONArray items = jsonObject.getJSONArray("items");

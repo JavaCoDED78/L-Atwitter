@@ -1,6 +1,6 @@
 package com.gmail.javacoded78.service.impl;
 
-import com.gmail.javacoded78.dto.notification.NotificationListResponse;
+import com.gmail.javacoded78.dto.response.notification.NotificationListResponse;
 import com.gmail.javacoded78.mapper.BasicMapper;
 import com.gmail.javacoded78.repository.ListsRepository;
 import com.gmail.javacoded78.repository.projection.NotificationListProjection;

@@ -1,7 +1,7 @@
 package com.gmail.javacoded78.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.gmail.javacoded78.dto.UserResponse;
+import com.gmail.javacoded78.dto.response.user.UserResponse;
 import lombok.Getter;
 import lombok.Setter;
 

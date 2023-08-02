@@ -1,8 +1,8 @@
 package com.gmail.javacoded78.repository;
 
+
 import com.gmail.javacoded78.enums.BackgroundColorType;
 import com.gmail.javacoded78.enums.ColorSchemeType;
-
 import com.gmail.javacoded78.model.User;
 import com.gmail.javacoded78.repository.projection.AuthUserProjection;
 import com.gmail.javacoded78.repository.projection.BlockedUserProjection;
@@ -73,8 +73,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Query("SELECT CASE WHEN count(user) > 0 THEN true ELSE false END FROM User user WHERE user.id = :userId")
     boolean isUserExist(@Param("userId") Long userId);
 
-    @Query("SELECT user FROM User user WHERE user.email = :email")
-    Optional<UserCommonProjection> findCommonUserByEmail(@Param("email") String email);
+    @Query("SELECT user.privateProfile FROM User user WHERE user.id = :userId")
+    boolean getUserPrivateProfile(@Param("userId") Long userId);
 
     @Query("SELECT follower.id FROM User user LEFT JOIN user.followers follower WHERE user.id = :userId")
     List<Long> getUserFollowersIds(@Param("userId") Long userId);
@@ -318,10 +318,14 @@ public interface UserRepository extends JpaRepository<User, Long> {
     void removeFollowerRequest(@Param("authUserId") Long authUserId, @Param("userId") Long userId);
 
     @Modifying
-    @Query(value = "INSERT INTO user_follower_requests (follower_id, user_id) VALUES (?1, ?2)", nativeQuery = true)
+    @Query(value = "INSERT INTO user_follower_requests (follower_id, user_id) " +
+            "SELECT * FROM (SELECT ?1, ?2) AS tmp " +
+            "WHERE NOT EXISTS ( " +
+            "   SELECT follower_id FROM user_follower_requests WHERE follower_id = ?1 " +
+            ") LIMIT 1", nativeQuery = true)
     void addFollowerRequest(@Param("authUserId") Long authUserId, @Param("userId") Long userId);
 
-    @Query(value = "SELECT * FROM users " + // TODO change *
+    @Query(value = "SELECT *, users.full_name as fullName, users.private_profile as privateProfile FROM users " +
             "LEFT JOIN user_blocked ON user_blocked.blocked_user_id = users.id " +
             "WHERE user_blocked.user_id = :userId", nativeQuery = true)
     Page<BlockedUserProjection> getUserBlockListById(@Param("userId") Long userId, Pageable pageable);
@@ -334,7 +338,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Query(value = "DELETE FROM user_blocked WHERE user_id = ?1 AND blocked_user_id = ?2", nativeQuery = true)
     void unblockUser(@Param("authUserId") Long authUserId, @Param("userId") Long userId);
 
-    @Query(value = "SELECT * FROM users " +
+    @Query(value = "SELECT *, users.full_name as fullName, users.private_profile as privateProfile FROM users " +
             "LEFT JOIN user_muted ON user_muted.muted_user_id = users.id " +
             "WHERE user_muted.user_id = :userId", nativeQuery = true)
     Page<MutedUserProjection> getUserMuteListById(@Param("userId") Long userId, Pageable pageable);

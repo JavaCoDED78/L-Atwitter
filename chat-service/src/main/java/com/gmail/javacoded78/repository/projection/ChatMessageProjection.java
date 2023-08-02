@@ -1,7 +1,6 @@
 package com.gmail.javacoded78.repository.projection;
 
-import com.gmail.javacoded78.dto.ChatTweetResponse;
-import com.gmail.javacoded78.projection.ImageProjection;
+import com.gmail.javacoded78.dto.response.chat.ChatTweetResponse;
 import org.springframework.beans.factory.annotation.Value;
 
 import java.time.LocalDateTime;

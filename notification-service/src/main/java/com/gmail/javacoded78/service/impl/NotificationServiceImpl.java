@@ -1,13 +1,12 @@
 package com.gmail.javacoded78.service.impl;
 
 import com.gmail.javacoded78.dto.HeaderResponse;
-import com.gmail.javacoded78.dto.IdsRequest;
-import com.gmail.javacoded78.dto.TweetResponse;
-import com.gmail.javacoded78.dto.UserResponse;
-import com.gmail.javacoded78.dto.notification.NotificationListResponse;
-import com.gmail.javacoded78.dto.notification.NotificationResponse;
-import com.gmail.javacoded78.dto.notification.NotificationTweetResponse;
-import com.gmail.javacoded78.dto.notification.NotificationUserResponse;
+import com.gmail.javacoded78.dto.request.IdsRequest;
+import com.gmail.javacoded78.dto.response.notification.NotificationUserResponse;
+import com.gmail.javacoded78.dto.response.tweet.TweetResponse;
+import com.gmail.javacoded78.dto.response.user.UserResponse;
+import com.gmail.javacoded78.dto.response.notification.NotificationListResponse;
+import com.gmail.javacoded78.dto.response.notification.NotificationTweetResponse;
 import com.gmail.javacoded78.exception.ApiRequestException;
 import com.gmail.javacoded78.feign.ListsClient;
 import com.gmail.javacoded78.feign.TweetClient;

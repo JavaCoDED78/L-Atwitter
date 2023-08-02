@@ -1,16 +1,16 @@
 package com.gmail.javacoded78.service;
 
-import com.gmail.javacoded78.dto.ChatTweetUserResponse;
-import com.gmail.javacoded78.dto.ChatUserParticipantResponse;
+import com.gmail.javacoded78.dto.response.chat.ChatTweetUserResponse;
+import com.gmail.javacoded78.dto.response.chat.ChatUserParticipantResponse;
 import com.gmail.javacoded78.dto.HeaderResponse;
-import com.gmail.javacoded78.dto.IdsRequest;
-import com.gmail.javacoded78.dto.TweetAdditionalInfoUserResponse;
-import com.gmail.javacoded78.dto.TweetAuthorResponse;
-import com.gmail.javacoded78.dto.UserChatResponse;
-import com.gmail.javacoded78.dto.UserResponse;
-import com.gmail.javacoded78.dto.lists.ListMemberResponse;
-import com.gmail.javacoded78.dto.lists.ListOwnerResponse;
-import com.gmail.javacoded78.dto.notification.NotificationUserResponse;
+import com.gmail.javacoded78.dto.request.IdsRequest;
+import com.gmail.javacoded78.dto.response.notification.NotificationUserResponse;
+import com.gmail.javacoded78.dto.response.tweet.TweetAdditionalInfoUserResponse;
+import com.gmail.javacoded78.dto.response.tweet.TweetAuthorResponse;
+import com.gmail.javacoded78.dto.response.user.UserChatResponse;
+import com.gmail.javacoded78.dto.response.user.UserResponse;
+import com.gmail.javacoded78.dto.response.lists.ListMemberResponse;
+import com.gmail.javacoded78.dto.response.lists.ListOwnerResponse;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
@@ -58,6 +58,8 @@ public interface UserClientService {
     HeaderResponse<UserResponse> getRetweetedUsersByTweetId(IdsRequest request, Pageable pageable);
 
     void updatePinnedTweetId(Long tweetId);
+
+    Long getUserPinnedTweetId(Long userId);
 
     List<Long> getValidUserIds(IdsRequest request, String text);
 

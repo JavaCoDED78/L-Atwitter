@@ -1,7 +1,7 @@
 package com.gmail.javacoded78.controller.rest;
 
 import com.gmail.javacoded78.dto.HeaderResponse;
-import com.gmail.javacoded78.dto.UserResponse;
+import com.gmail.javacoded78.dto.response.user.UserResponse;
 import com.gmail.javacoded78.dto.request.UserRequest;
 import com.gmail.javacoded78.dto.response.AuthUserResponse;
 import com.gmail.javacoded78.dto.response.UserDetailResponse;
@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-import static com.gmail.javacoded78.controller.PathConstants.UI_V1_USER;
+import static com.gmail.javacoded78.constants.PathConstants.UI_V1_USER;
 
 @RestController
 @RequiredArgsConstructor
@@ -46,7 +46,8 @@ public class UserController {
     }
 
     @GetMapping("/search/{username}")
-    public ResponseEntity<List<UserResponse>> searchUsersByUsername(@PathVariable String username, @PageableDefault(size = 15) Pageable pageable) {
+    public ResponseEntity<List<UserResponse>> searchUsersByUsername(@PathVariable String username,
+                                                                    @PageableDefault(size = 15) Pageable pageable) {
         HeaderResponse<UserResponse> response = userMapper.searchUsersByUsername(username, pageable);
         return ResponseEntity.ok().headers(response.getHeaders()).body(response.getItems());
     }

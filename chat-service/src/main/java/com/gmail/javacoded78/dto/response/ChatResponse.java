@@ -1,7 +1,7 @@
 package com.gmail.javacoded78.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.gmail.javacoded78.dto.ChatUserParticipantResponse;
+import com.gmail.javacoded78.dto.response.chat.ChatUserParticipantResponse;
 import lombok.Data;
 
 import java.time.LocalDateTime;

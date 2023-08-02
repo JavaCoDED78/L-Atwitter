@@ -1,10 +1,10 @@
 package com.gmail.javacoded78.service.impl;
 
-import com.gmail.javacoded78.dto.ChatTweetResponse;
-import com.gmail.javacoded78.dto.ChatUserParticipantResponse;
+import com.gmail.javacoded78.dto.response.chat.ChatTweetResponse;
+import com.gmail.javacoded78.dto.response.chat.ChatUserParticipantResponse;
 import com.gmail.javacoded78.dto.HeaderResponse;
-import com.gmail.javacoded78.dto.IdsRequest;
-import com.gmail.javacoded78.dto.UserResponse;
+import com.gmail.javacoded78.dto.request.IdsRequest;
+import com.gmail.javacoded78.dto.response.user.UserResponse;
 import com.gmail.javacoded78.dto.response.UserChatResponse;
 import com.gmail.javacoded78.exception.ApiRequestException;
 import com.gmail.javacoded78.feign.TweetClient;

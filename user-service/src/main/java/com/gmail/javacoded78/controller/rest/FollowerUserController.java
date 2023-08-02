@@ -1,7 +1,7 @@
 package com.gmail.javacoded78.controller.rest;
 
 import com.gmail.javacoded78.dto.HeaderResponse;
-import com.gmail.javacoded78.dto.UserResponse;
+import com.gmail.javacoded78.dto.response.user.UserResponse;
 import com.gmail.javacoded78.dto.response.FollowerUserResponse;
 import com.gmail.javacoded78.dto.response.UserProfileResponse;
 import com.gmail.javacoded78.mapper.FollowerUserMapper;
@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-import static com.gmail.javacoded78.controller.PathConstants.UI_V1_USER;
+import static com.gmail.javacoded78.constants.PathConstants.UI_V1_USER;
 
 @RestController
 @RequiredArgsConstructor

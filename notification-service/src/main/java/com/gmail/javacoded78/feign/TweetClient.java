@@ -2,9 +2,9 @@ package com.gmail.javacoded78.feign;
 
 import com.gmail.javacoded78.configuration.FeignConfiguration;
 import com.gmail.javacoded78.dto.HeaderResponse;
-import com.gmail.javacoded78.dto.IdsRequest;
-import com.gmail.javacoded78.dto.TweetResponse;
-import com.gmail.javacoded78.dto.notification.NotificationTweetResponse;
+import com.gmail.javacoded78.dto.request.IdsRequest;
+import com.gmail.javacoded78.dto.response.tweet.TweetResponse;
+import com.gmail.javacoded78.dto.response.notification.NotificationTweetResponse;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.cloud.openfeign.SpringQueryMap;
 import org.springframework.data.domain.Pageable;
@@ -13,9 +13,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
-import static com.gmail.javacoded78.controller.PathConstants.API_V1_TWEETS;
+import static com.gmail.javacoded78.constants.FeignConstants.TWEET_SERVICE;
+import static com.gmail.javacoded78.constants.PathConstants.API_V1_TWEETS;
 
-@FeignClient(name = "tweet-service", configuration = FeignConfiguration.class)
+@FeignClient(name = TWEET_SERVICE, configuration = FeignConfiguration.class)
 public interface TweetClient {
 
     @GetMapping(API_V1_TWEETS + "/{tweetId}")

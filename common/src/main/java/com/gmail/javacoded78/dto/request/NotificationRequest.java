@@ -1,4 +1,4 @@
-package com.gmail.javacoded78.dto;
+package com.gmail.javacoded78.dto.request;
 
 import com.gmail.javacoded78.enums.NotificationType;
 import lombok.AllArgsConstructor;

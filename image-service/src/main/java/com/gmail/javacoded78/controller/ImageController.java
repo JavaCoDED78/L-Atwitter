@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import static com.gmail.javacoded78.common.controller.PathConstants.API_V1_IMAGE;
+import static com.gmail.javacoded78.constants.PathConstants.API_V1_IMAGE;
 
 @RestController
 @RequiredArgsConstructor

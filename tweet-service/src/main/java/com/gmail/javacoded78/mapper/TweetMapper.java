@@ -1,12 +1,9 @@
 package com.gmail.javacoded78.mapper;
 
 import com.gmail.javacoded78.dto.HeaderResponse;
-import com.gmail.javacoded78.dto.TweetResponse;
-import com.gmail.javacoded78.dto.UserResponse;
-import com.gmail.javacoded78.dto.notification.NotificationResponse;
+import com.gmail.javacoded78.dto.response.tweet.TweetResponse;
 import com.gmail.javacoded78.dto.request.TweetDeleteRequest;
 import com.gmail.javacoded78.dto.request.TweetRequest;
-import com.gmail.javacoded78.dto.request.VoteRequest;
 import com.gmail.javacoded78.dto.response.NotificationReplyResponse;
 import com.gmail.javacoded78.dto.response.ProfileTweetImageResponse;
 import com.gmail.javacoded78.dto.response.TweetAdditionalInfoResponse;
@@ -16,7 +13,6 @@ import com.gmail.javacoded78.enums.NotificationType;
 import com.gmail.javacoded78.enums.ReplyType;
 import com.gmail.javacoded78.model.Tweet;
 import com.gmail.javacoded78.model.TweetImage;
-import com.gmail.javacoded78.repository.projection.LikeTweetProjection;
 import com.gmail.javacoded78.repository.projection.ProfileTweetImageProjection;
 import com.gmail.javacoded78.repository.projection.TweetAdditionalInfoProjection;
 import com.gmail.javacoded78.repository.projection.TweetProjection;
@@ -28,7 +24,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Component

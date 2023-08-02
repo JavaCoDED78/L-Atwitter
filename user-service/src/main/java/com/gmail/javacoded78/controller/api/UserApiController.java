@@ -1,17 +1,17 @@
 package com.gmail.javacoded78.controller.api;
 
 
-import com.gmail.javacoded78.dto.ChatTweetUserResponse;
-import com.gmail.javacoded78.dto.ChatUserParticipantResponse;
+import com.gmail.javacoded78.dto.response.chat.ChatTweetUserResponse;
+import com.gmail.javacoded78.dto.response.chat.ChatUserParticipantResponse;
 import com.gmail.javacoded78.dto.HeaderResponse;
-import com.gmail.javacoded78.dto.IdsRequest;
-import com.gmail.javacoded78.dto.TweetAdditionalInfoUserResponse;
-import com.gmail.javacoded78.dto.TweetAuthorResponse;
-import com.gmail.javacoded78.dto.UserChatResponse;
-import com.gmail.javacoded78.dto.UserResponse;
-import com.gmail.javacoded78.dto.lists.ListMemberResponse;
-import com.gmail.javacoded78.dto.lists.ListOwnerResponse;
-import com.gmail.javacoded78.dto.notification.NotificationUserResponse;
+import com.gmail.javacoded78.dto.request.IdsRequest;
+import com.gmail.javacoded78.dto.response.notification.NotificationUserResponse;
+import com.gmail.javacoded78.dto.response.tweet.TweetAdditionalInfoUserResponse;
+import com.gmail.javacoded78.dto.response.tweet.TweetAuthorResponse;
+import com.gmail.javacoded78.dto.response.user.UserChatResponse;
+import com.gmail.javacoded78.dto.response.user.UserResponse;
+import com.gmail.javacoded78.dto.response.lists.ListMemberResponse;
+import com.gmail.javacoded78.dto.response.lists.ListOwnerResponse;
 import com.gmail.javacoded78.service.UserClientService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cloud.openfeign.SpringQueryMap;
@@ -26,7 +26,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-import static com.gmail.javacoded78.controller.PathConstants.API_V1_USER;
+import static com.gmail.javacoded78.constants.PathConstants.API_V1_USER;
 
 @RestController
 @RequiredArgsConstructor

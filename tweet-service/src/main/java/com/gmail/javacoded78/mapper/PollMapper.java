@@ -1,6 +1,6 @@
 package com.gmail.javacoded78.mapper;
 
-import com.gmail.javacoded78.dto.TweetResponse;
+import com.gmail.javacoded78.dto.response.tweet.TweetResponse;
 import com.gmail.javacoded78.dto.request.TweetRequest;
 import com.gmail.javacoded78.dto.request.VoteRequest;
 import com.gmail.javacoded78.model.Tweet;

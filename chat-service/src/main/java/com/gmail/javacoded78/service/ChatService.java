@@ -1,12 +1,11 @@
 package com.gmail.javacoded78.service;
 
 import com.gmail.javacoded78.dto.HeaderResponse;
-import com.gmail.javacoded78.dto.UserResponse;
+import com.gmail.javacoded78.dto.response.user.UserResponse;
 import com.gmail.javacoded78.dto.response.UserChatResponse;
 import com.gmail.javacoded78.model.ChatMessage;
 import com.gmail.javacoded78.repository.projection.ChatMessageProjection;
 import com.gmail.javacoded78.repository.projection.ChatProjection;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;

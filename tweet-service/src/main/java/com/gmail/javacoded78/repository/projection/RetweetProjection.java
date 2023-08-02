@@ -10,6 +10,6 @@ public interface RetweetProjection {
     LocalDateTime getRetweetDate();
     Long getTweetId();
 
-    @Value("#{@tweetRepository.getTweetById(target.tweetId, TweetUserProjection.class).get()}")
+    @Value("#{@tweetServiceHelper.getTweetUserProjection(target.tweetId)}")
     TweetUserProjection getTweet();
 }

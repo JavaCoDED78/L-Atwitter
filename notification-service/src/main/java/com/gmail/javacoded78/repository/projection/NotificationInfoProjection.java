@@ -1,7 +1,7 @@
 package com.gmail.javacoded78.repository.projection;
 
-import com.gmail.javacoded78.dto.TweetResponse;
-import com.gmail.javacoded78.dto.UserResponse;
+import com.gmail.javacoded78.dto.response.tweet.TweetResponse;
+import com.gmail.javacoded78.dto.response.user.UserResponse;
 import com.gmail.javacoded78.enums.NotificationType;
 import org.springframework.beans.factory.annotation.Value;
 

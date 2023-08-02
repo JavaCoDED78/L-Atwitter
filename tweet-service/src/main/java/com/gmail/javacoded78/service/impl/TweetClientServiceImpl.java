@@ -1,6 +1,6 @@
 package com.gmail.javacoded78.service.impl;
 
-import com.gmail.javacoded78.dto.IdsRequest;
+import com.gmail.javacoded78.dto.request.IdsRequest;
 import com.gmail.javacoded78.repository.TweetRepository;
 import com.gmail.javacoded78.repository.projection.ChatTweetProjection;
 import com.gmail.javacoded78.repository.projection.NotificationTweetProjection;

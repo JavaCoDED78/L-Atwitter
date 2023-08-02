@@ -1,4 +1,4 @@
-package com.gmail.javacoded78.dto.lists;
+package com.gmail.javacoded78.dto.response.lists;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;

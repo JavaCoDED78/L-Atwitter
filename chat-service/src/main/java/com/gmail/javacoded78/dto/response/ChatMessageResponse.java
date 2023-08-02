@@ -1,15 +1,9 @@
 package com.gmail.javacoded78.dto.response;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.gmail.javacoded78.dto.ChatTweetResponse;
-import com.gmail.javacoded78.dto.ImageResponse;
+import com.gmail.javacoded78.dto.response.chat.ChatTweetResponse;
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Data
 public class ChatMessageResponse {

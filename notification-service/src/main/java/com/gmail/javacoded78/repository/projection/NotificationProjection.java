@@ -1,8 +1,8 @@
 package com.gmail.javacoded78.repository.projection;
 
-import com.gmail.javacoded78.dto.notification.NotificationListResponse;
-import com.gmail.javacoded78.dto.notification.NotificationTweetResponse;
-import com.gmail.javacoded78.dto.notification.NotificationUserResponse;
+import com.gmail.javacoded78.dto.response.notification.NotificationListResponse;
+import com.gmail.javacoded78.dto.response.notification.NotificationTweetResponse;
+import com.gmail.javacoded78.dto.response.notification.NotificationUserResponse;
 import com.gmail.javacoded78.enums.NotificationType;
 import org.springframework.beans.factory.annotation.Value;
 
