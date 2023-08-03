@@ -22,35 +22,35 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class LikeTweetServiceImpl implements LikeTweetService {
 
     private final LikeTweetRepository likeTweetRepository;
-    private final TweetRepository tweetRepository;
     private final TweetServiceHelper tweetServiceHelper;
     private final UserClient userClient;
 
     @Override
     public Page<LikeTweetProjection> getUserLikedTweets(Long userId, Pageable pageable) {
-        tweetServiceHelper.checkIsUserExist(userId);
+        tweetServiceHelper.validateUserProfile(userId);
         return likeTweetRepository.getUserLikedTweets(userId, pageable);
     }
 
     @Override
     public HeaderResponse<UserResponse> getLikedUsersByTweetId(Long tweetId, Pageable pageable) {
-        Page<Long> likedUserIds = likeTweetRepository.getLikedUserIds(tweetId, pageable);
-        return userClient.getTweetLikedUsersByIds(new IdsRequest(likedUserIds.getContent()), pageable);
+        tweetServiceHelper.checkValidTweet(tweetId);
+        List<Long> likedUserIds = likeTweetRepository.getLikedUserIds(tweetId);
+        return userClient.getTweetLikedUsersByIds(new IdsRequest(likedUserIds), pageable);
     }
 
     @Override
     @Transactional
     public NotificationResponse likeTweet(Long tweetId) {
-        Long userId = AuthUtil.getAuthenticatedUserId();
-        Tweet tweet = tweetRepository.findById(tweetId)
-                .orElseThrow(() -> new ApiRequestException("Tweet not found", HttpStatus.NOT_FOUND));
-        tweetServiceHelper.checkIsValidUserProfile(tweet.getAuthorId());
-        LikeTweet likedTweet = likeTweetRepository.getLikedTweet(userId, tweetId);
+        Tweet tweet = tweetServiceHelper.checkValidTweet(tweetId);
+        Long authUserId = AuthUtil.getAuthenticatedUserId();
+        LikeTweet likedTweet = likeTweetRepository.getLikedTweet(authUserId, tweetId);
         boolean isTweetLiked;
 
         if (likedTweet != null) {
@@ -58,11 +58,11 @@ public class LikeTweetServiceImpl implements LikeTweetService {
             userClient.updateLikeCount(false);
             isTweetLiked = false;
         } else {
-            LikeTweet newLikeTweet = new LikeTweet(userId, tweetId);
+            LikeTweet newLikeTweet = new LikeTweet(authUserId, tweetId);
             likeTweetRepository.save(newLikeTweet);
             userClient.updateLikeCount(true);
             isTweetLiked = true;
         }
-        return tweetServiceHelper.sendNotification(NotificationType.LIKE, isTweetLiked, tweet.getAuthorId(), userId, tweetId);
+        return tweetServiceHelper.sendNotification(NotificationType.LIKE, isTweetLiked, tweet.getAuthorId(), authUserId, tweetId);
     }
 }

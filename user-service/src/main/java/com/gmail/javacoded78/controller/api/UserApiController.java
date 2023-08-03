@@ -143,9 +143,19 @@ public class UserApiController {
         userService.updatePinnedTweetId(tweetId);
     }
 
+    @GetMapping("/tweet/pinned/{userId}")
+    public Long getUserPinnedTweetId(@PathVariable("userId") Long userId) {
+        return userService.getUserPinnedTweetId(userId);
+    }
+
     @PostMapping("/tweet/valid/ids/{text}")
-    public List<Long> getValidUserIds(@RequestBody IdsRequest request, @PathVariable("text") String text) {
-        return userService.getValidUserIds(request, text);
+    public List<Long> getValidTweetUserIds(@RequestBody IdsRequest request, @PathVariable("text") String text) {
+        return userService.getValidTweetUserIds(request, text);
+    }
+
+    @PostMapping("/valid/ids")
+    public List<Long> getValidUserIds(@RequestBody IdsRequest request) {
+        return userService.getValidUserIds(request);
     }
 
     @GetMapping("/chat/participant/{userId}")

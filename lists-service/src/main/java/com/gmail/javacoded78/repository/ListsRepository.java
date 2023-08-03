@@ -4,7 +4,6 @@ import com.gmail.javacoded78.model.Lists;
 import com.gmail.javacoded78.repository.projection.BaseListProjection;
 import com.gmail.javacoded78.repository.projection.ListProjection;
 import com.gmail.javacoded78.repository.projection.ListUserProjection;
-import com.gmail.javacoded78.repository.projection.NotificationListProjection;
 import com.gmail.javacoded78.repository.projection.PinnedListProjection;
 import com.gmail.javacoded78.repository.projection.SimpleListProjection;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -21,8 +20,11 @@ public interface ListsRepository extends JpaRepository<Lists, Long> {
     @Query("SELECT list FROM Lists list WHERE list.id = :listId")
     <T> T getListById(@Param("listId") Long listId, Class<T> type);
 
-    @Query("SELECT list FROM Lists list WHERE list.isPrivate = false")
-    List<ListProjection> getAllTweetLists();
+    @Query("SELECT list FROM Lists list WHERE list.listOwnerId IN :listOwnerIds")
+    List<ListProjection> getAllTweetLists(@Param("listOwnerIds") List<Long> listOwnerIds);
+
+    @Query("SELECT DISTINCT list.listOwnerId FROM Lists list")
+    List<Long> getListOwnerIds();
 
     @Query("SELECT list FROM Lists list WHERE list.id IN :listIds")
     List<ListProjection> getTweetListsByIds(@Param("listIds") List<Long> listIds);

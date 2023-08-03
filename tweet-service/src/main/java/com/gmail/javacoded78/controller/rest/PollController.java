@@ -3,6 +3,7 @@ package com.gmail.javacoded78.controller.rest;
 import com.gmail.javacoded78.dto.response.tweet.TweetResponse;
 import com.gmail.javacoded78.dto.request.TweetRequest;
 import com.gmail.javacoded78.dto.request.VoteRequest;
+import com.gmail.javacoded78.feign.WebSocketClient;
 import com.gmail.javacoded78.mapper.PollMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

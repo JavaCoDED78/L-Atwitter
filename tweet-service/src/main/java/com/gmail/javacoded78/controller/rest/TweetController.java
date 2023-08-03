@@ -10,6 +10,7 @@ import com.gmail.javacoded78.dto.response.TweetAdditionalInfoResponse;
 import com.gmail.javacoded78.dto.response.TweetImageResponse;
 import com.gmail.javacoded78.dto.response.TweetUserResponse;
 import com.gmail.javacoded78.enums.ReplyType;
+import com.gmail.javacoded78.feign.WebSocketClient;
 import com.gmail.javacoded78.mapper.TweetMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;

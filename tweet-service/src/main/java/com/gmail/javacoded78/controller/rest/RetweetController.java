@@ -5,6 +5,7 @@ import com.gmail.javacoded78.dto.response.user.UserResponse;
 import com.gmail.javacoded78.dto.response.notification.NotificationResponse;
 import com.gmail.javacoded78.dto.response.notification.NotificationTweetResponse;
 import com.gmail.javacoded78.dto.response.TweetUserResponse;
+import com.gmail.javacoded78.feign.WebSocketClient;
 import com.gmail.javacoded78.mapper.RetweetMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;

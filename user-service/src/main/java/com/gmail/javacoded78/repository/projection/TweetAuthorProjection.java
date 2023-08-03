@@ -9,6 +9,7 @@ public interface TweetAuthorProjection {
     String getFullName();
     String getUsername();
     String getAvatar();
+    boolean getPrivateProfile();
 
     @Value("#{@userServiceHelper.isUserMutedByMyProfile(target.id)}")
     boolean getIsUserMuted();

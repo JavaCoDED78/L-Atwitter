@@ -50,7 +50,9 @@ public class ListsServiceImpl implements ListsService {
 
     @Override
     public List<ListProjection> getAllTweetLists() {
-        return listsRepository.getAllTweetLists();
+        List<Long> listOwnerIds = listsRepository.getListOwnerIds();
+        List<Long> validListUserIds = userClient.getValidUserIds(new IdsRequest(listOwnerIds));
+        return listsRepository.getAllTweetLists(validListUserIds);
     }
 
     @Override
@@ -86,7 +88,17 @@ public class ListsServiceImpl implements ListsService {
 
     @Override
     public List<ListProjection> getUserTweetListsById(Long userId) {
-        // TODO check isMyProfileBlocked
+        Long authUserId = AuthUtil.getAuthenticatedUserId();
+
+        if (authUserId.equals(userId)) {
+            return listsRepository.getUserTweetListsById(userId);
+        }
+        boolean isUserBlocked = userClient.isUserBlocked(authUserId, userId);
+        boolean isPrivateUserProfile = userClient.isUserHavePrivateProfile(userId);
+
+        if (isUserBlocked || isPrivateUserProfile) {
+            return new ArrayList<>();
+        }
         return listsRepository.getUserTweetListsById(userId);
     }
 
@@ -303,17 +315,17 @@ public class ListsServiceImpl implements ListsService {
         return listsRepository.isListIncludeUser(listIds, listId, authUserId);
     }
 
+    public boolean isListPinned(Long listId) {
+        Long authUserId = AuthUtil.getAuthenticatedUserId();
+        return pinnedListsRepository.isListPinned(listId, authUserId);
+    }
+
     private void checkUserIsBlocked(Long userId, Long supposedBlockedUserId) {
         boolean isPresent = userClient.isUserBlocked(userId, supposedBlockedUserId);
 
         if (isPresent) {
             throw new ApiRequestException("User with ID:" + supposedBlockedUserId + " is blocked", HttpStatus.BAD_REQUEST);
         }
-    }
-
-    public boolean isListPinned(Long listId) {
-        Long authUserId = AuthUtil.getAuthenticatedUserId();
-        return pinnedListsRepository.isListPinned(listId, authUserId);
     }
 
     private void checkIsPrivateUserProfile(Long userId) {
