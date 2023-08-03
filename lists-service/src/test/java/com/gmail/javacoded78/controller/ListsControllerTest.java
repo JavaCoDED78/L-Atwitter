@@ -1,10 +1,9 @@
 package com.gmail.javacoded78.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.gmail.javacoded78.common.dto.UserResponse;
-import com.gmail.javacoded78.common.enums.ReplyType;
 import com.gmail.javacoded78.dto.request.ListsRequest;
 import com.gmail.javacoded78.dto.request.UserToListsRequest;
+import com.gmail.javacoded78.enums.ReplyType;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -18,19 +17,18 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.Arrays;
 
-import static com.gmail.javacoded78.common.controller.PathConstants.UI_V1_LISTS;
-import static com.gmail.javacoded78.common.util.TestConstants.ABOUT;
-import static com.gmail.javacoded78.common.util.TestConstants.ABOUT2;
-import static com.gmail.javacoded78.common.util.TestConstants.AVATAR_ID;
-import static com.gmail.javacoded78.common.util.TestConstants.LINK_DESCRIPTION;
-import static com.gmail.javacoded78.common.util.TestConstants.LIST_ALT_WALLPAPER;
-import static com.gmail.javacoded78.common.util.TestConstants.LIST_DESCRIPTION;
-import static com.gmail.javacoded78.common.util.TestConstants.LIST_NAME;
-import static com.gmail.javacoded78.common.util.TestConstants.LIST_PINNED_DATE;
-import static com.gmail.javacoded78.common.util.TestConstants.LIST_USER_ID;
-import static com.gmail.javacoded78.common.util.TestConstants.USERNAME;
-import static com.gmail.javacoded78.common.util.TestConstants.USERNAME2;
-import static com.gmail.javacoded78.common.util.TestConstants.USER_ID;
+import static com.gmail.javacoded78.constants.PathConstants.UI_V1_LISTS;
+import static com.gmail.javacoded78.util.TestConstants.ABOUT;
+import static com.gmail.javacoded78.util.TestConstants.ABOUT2;
+import static com.gmail.javacoded78.util.TestConstants.AVATAR_ID;
+import static com.gmail.javacoded78.util.TestConstants.LINK_DESCRIPTION;
+import static com.gmail.javacoded78.util.TestConstants.LIST_ALT_WALLPAPER;
+import static com.gmail.javacoded78.util.TestConstants.LIST_DESCRIPTION;
+import static com.gmail.javacoded78.util.TestConstants.LIST_NAME;
+import static com.gmail.javacoded78.util.TestConstants.LIST_USER_ID;
+import static com.gmail.javacoded78.util.TestConstants.USERNAME;
+import static com.gmail.javacoded78.util.TestConstants.USERNAME2;
+import static com.gmail.javacoded78.util.TestConstants.USER_ID;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.*;
@@ -218,11 +216,9 @@ public class ListsControllerTest {
     @Test
     @DisplayName("[200] POST /ui/v1/lists - Create Tweet List")
     public void createTweetList() throws Exception {
-        UserResponse userResponse = new UserResponse();
-        userResponse.setId(USER_ID);
         ListsRequest listsRequest = new ListsRequest();
         listsRequest.setName(LIST_NAME);
-        listsRequest.setListOwner(userResponse);
+        listsRequest.setListOwnerId(USER_ID);
         listsRequest.setDescription(LIST_DESCRIPTION);
         listsRequest.setAltWallpaper(LIST_ALT_WALLPAPER);
 
@@ -331,10 +327,8 @@ public class ListsControllerTest {
     @Test
     @DisplayName("[404] PUT /ui/v1/lists - Should list Not Found")
     public void editTweetList_ShouldListNotFound() throws Exception {
-        UserResponse userResponse = new UserResponse();
-        userResponse.setId(USER_ID);
         ListsRequest listsRequest = new ListsRequest();
-        listsRequest.setListOwner(userResponse);
+        listsRequest.setListOwnerId(USER_ID);
         listsRequest.setId(99L);
         listsRequest.setName(LIST_DESCRIPTION);
         listsRequest.setDescription("edited description");
@@ -350,10 +344,8 @@ public class ListsControllerTest {
     @Test
     @DisplayName("[404] PUT /ui/v1/lists - Should list owner Not Found")
     public void editTweetList_ShouldListOwnerNotFound() throws Exception {
-        UserResponse userResponse = new UserResponse();
-        userResponse.setId(3L);
         ListsRequest listsRequest = new ListsRequest();
-        listsRequest.setListOwner(userResponse);
+        listsRequest.setListOwnerId(3L);
         listsRequest.setId(5L);
         listsRequest.setName(LIST_DESCRIPTION);
         listsRequest.setDescription("edited description");

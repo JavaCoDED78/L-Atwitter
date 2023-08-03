@@ -4,6 +4,10 @@ plugins {
     id 'io.spring.dependency-management' version '1.1.2'
 }
 
+group 'com.gmail.javacoded78'
+version '0.0.1-SNAPSHOT'
+java.sourceCompatibility = JavaVersion.VERSION_17
+
 bootJar {
     enabled = false
 }
@@ -19,12 +23,15 @@ repositories {
 
 apply from: "$rootProject.projectDir/versions-script.gradle"
 
-description = 'Clone Twitter'
-sourceCompatibility = '17'
-
 configurations {
     compileOnly {
         extendsFrom annotationProcessor
+    }
+}
+
+dependencyManagement {
+    imports {
+        mavenBom "org.springframework.cloud:spring-cloud-dependencies:${versions.springCloudVersion}"
     }
 }
 
