@@ -8,13 +8,6 @@ group 'com.gmail.javacoded78'
 version '0.0.1-SNAPSHOT'
 java.sourceCompatibility = JavaVersion.VERSION_17
 
-bootJar {
-    enabled = false
-}
-jar {
-    enabled = true
-}
-
 repositories {
     mavenCentral()
     maven { url 'https://repo.spring.io/milestone' }
@@ -36,8 +29,6 @@ dependencyManagement {
 }
 
 dependencies {
-    implementation 'org.springframework.boot:spring-boot-starter-web'
-    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-server'
     implementation 'org.springframework.cloud:spring-cloud-starter-sleuth'
     implementation 'org.springframework.cloud:spring-cloud-sleuth-zipkin'

@@ -8,13 +8,6 @@ group 'com.gmail.javacoded78'
 version '0.0.1-SNAPSHOT'
 java.sourceCompatibility = JavaVersion.VERSION_17
 
-bootJar {
-    enabled = false
-}
-jar {
-    enabled = true
-}
-
 repositories {
     mavenCentral()
     maven { url 'https://repo.spring.io/milestone' }

@@ -47,8 +47,7 @@ services:
       - spring
 
   eureka-server:
-    image: javacoded78/l-atwitter:eureka-server
-    container_name: eureka-server
+    image: javacoded/l-atwitter:eureka-server
     hostname: eureka-server
     environment:
       EUREKA_HOST: eureka-server
@@ -61,7 +60,7 @@ services:
       - zipkin
 
   config-server:
-    image: javacoded78/l-atwitter:config-server
+    image: javacoded/l-atwitter:config-server
     container_name: config-server
     hostname: config-server
     environment:
@@ -76,7 +75,7 @@ services:
         - eureka-server
 
   api-gateway:
-    image: javacoded78/l-atwitter:api-gateway
+    image: javacoded/l-atwitter:api-gateway
     container_name: api-gateway
     hostname: api-gateway
     environment:
@@ -93,7 +92,7 @@ services:
       - config-server
 
   user-service:
-    image: javacoded78/l-atwitter:user-service
+    image: javacoded/l-atwitter:user-service
     container_name: user-service
     hostname: user-service
     environment:
@@ -116,7 +115,7 @@ services:
       - api-gateway
 
   tweet-service:
-    image: javacoded78/l-atwitter:tweet-service
+    image: javacoded/l-atwitter:tweet-service
     container_name: tweet-service
     hostname: tweet-service
     environment:
@@ -138,7 +137,7 @@ services:
       - config-server
 
   topic-service:
-    image: javacoded78/l-atwitter:topic-service
+    image: javacoded/l-atwitter:topic-service
     container_name: topic-service
     hostname: topic-service
     environment:
@@ -161,7 +160,7 @@ services:
         - api-gateway
 
   tag-service:
-    image: javacoded78/l-atwitter:tag-service
+    image: javacoded/l-atwitter:tag-service
     container_name: tag-service
     hostname: tag-service
     environment:
@@ -183,7 +182,7 @@ services:
       - config-server
 
   lists-service:
-    image: javacoded78/l-atwitter:lists-service
+    image: javacoded/l-atwitter:lists-service
     container_name: lists-service
     hostname: lists-service
     environment:
@@ -205,7 +204,7 @@ services:
       - config-server
 
   chat-service:
-    image: javacoded78/l-atwitter:chat-service
+    image: javacoded/l-atwitter:chat-service
     container_name: chat-service
     hostname: chat-service
     environment:
@@ -227,7 +226,7 @@ services:
       - config-server
 
   notification-service:
-    image: javacoded78/l-atwitter:notification-service
+    image: javacoded/l-atwitter:notification-service
     container_name: notification-service
     hostname: notification-service
     environment:
@@ -249,7 +248,7 @@ services:
       - config-server
 
   email-service:
-    image: javacoded78/l-atwitter:email-service
+    image: javacoded/l-atwitter:email-service
     container_name: email-service
     hostname: email-service
     environment:
@@ -266,7 +265,7 @@ services:
       - config-server
 
   image-service:
-    image: javacoded78/l-atwitter:image-service
+    image: javacoded/l-atwitter:image-service
     container_name: image-service
     hostname: image-service
     environment:
@@ -283,7 +282,7 @@ services:
       - config-server
 
   websocket-service:
-    image: javacoded78/l-atwitter:websocket-service
+    image: javacoded/l-atwitter:websocket-service
     container_name: websocket-service
     hostname: websocket-service
     environment:
@@ -301,6 +300,8 @@ services:
 
 networks:
   postgres:
+    driver: bridge
+  spring:
     driver: bridge
 
 volumes:
