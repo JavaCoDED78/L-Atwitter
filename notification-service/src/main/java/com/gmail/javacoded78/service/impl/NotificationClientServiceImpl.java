@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+
 @Service
 @RequiredArgsConstructor
 public class NotificationClientServiceImpl implements NotificationClientService {
@@ -29,54 +30,25 @@ public class NotificationClientServiceImpl implements NotificationClientService 
     private final BasicMapper basicMapper;
 
     @Override
-    public NotificationResponse sendListNotification(Notification notification, boolean isAddedToList) {
+    public NotificationResponse sendNotification(Notification notification, boolean notificationCondition) {
         Long authUserId = AuthUtil.getAuthenticatedUserId();
 
         if (!notification.getNotifiedUserId().equals(authUserId)) {
-            boolean isNotificationExists = notificationRepository.isListNotificationExists(
-                    notification.getNotifiedUserId(), notification.getListId(), authUserId, notification.getNotificationType());
-
+            boolean isNotificationExists = switch (notification.getNotificationType()) {
+                case LISTS -> notificationRepository.isListNotificationExists(
+                        notification.getNotifiedUserId(), notification.getListId(), authUserId, notification.getNotificationType());
+                case FOLLOW -> notificationRepository.isUserNotificationExists(
+                        notification.getNotifiedUserId(), notification.getUserToFollowId(), authUserId, notification.getNotificationType());
+                default -> notificationRepository.isTweetNotificationExists(
+                        notification.getNotifiedUserId(), notification.getTweetId(), authUserId, notification.getNotificationType());
+            };
             if (!isNotificationExists) {
                 notificationRepository.save(notification);
                 userClient.increaseNotificationsCount(notification.getNotifiedUserId());
-                return convertToNotificationListResponse(notification, isAddedToList);
+                return convertToNotificationResponse(notification, notificationCondition);
             }
         }
-        return convertToNotificationListResponse(notification, isAddedToList);
-    }
-
-    @Override
-    public NotificationResponse sendUserNotification(Notification notification, boolean isFollowed) {
-        Long authUserId = AuthUtil.getAuthenticatedUserId();
-
-        if (!notification.getNotifiedUserId().equals(authUserId)) {
-            boolean isNotificationExists = notificationRepository.isUserNotificationExists(
-                    notification.getNotifiedUserId(), notification.getUserToFollowId(), authUserId, notification.getNotificationType());
-
-            if (!isNotificationExists) {
-                notificationRepository.save(notification);
-                userClient.increaseNotificationsCount(notification.getNotifiedUserId());
-                return convertToNotificationUserResponse(notification, isFollowed);
-            }
-        }
-        return convertToNotificationUserResponse(notification, isFollowed);
-    }
-
-    @Override
-    public NotificationResponse sendTweetNotification(Notification notification, boolean isTweetLiked) {
-        Long authUserId = AuthUtil.getAuthenticatedUserId();
-
-        if (!notification.getNotifiedUserId().equals(authUserId)) {
-            boolean isNotificationExists = notificationRepository.isTweetNotificationExists(
-                    notification.getNotifiedUserId(), notification.getTweetId(), authUserId, notification.getNotificationType());
-
-            if (!isNotificationExists) {
-                notificationRepository.save(notification);
-                userClient.increaseNotificationsCount(notification.getNotifiedUserId());
-                return convertToNotificationTweetResponse(notification, isTweetLiked);
-            }
-        }
-        return convertToNotificationTweetResponse(notification, isTweetLiked);
+        return convertToNotificationResponse(notification, notificationCondition);
     }
 
     @Override
@@ -95,6 +67,14 @@ public class NotificationClientServiceImpl implements NotificationClientService 
                 userClient.increaseNotificationsCount(subscriberId);
             });
         }
+    }
+
+    private NotificationResponse convertToNotificationResponse(Notification notification, boolean notificationCondition) {
+        return switch (notification.getNotificationType()) {
+            case LISTS -> convertToNotificationListResponse(notification, notificationCondition);
+            case FOLLOW -> convertToNotificationUserResponse(notification, notificationCondition);
+            default -> convertToNotificationTweetResponse(notification, notificationCondition);
+        };
     }
 
     private NotificationResponse convertToNotificationListResponse(Notification notification, boolean isAddedToList) {

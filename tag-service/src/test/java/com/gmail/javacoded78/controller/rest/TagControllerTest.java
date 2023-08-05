@@ -10,6 +10,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 
+import static com.gmail.javacoded78.constants.PathConstants.AUTH_USER_ID_HEADER;
 import static com.gmail.javacoded78.constants.PathConstants.UI_V1_TAGS;
 import static com.gmail.javacoded78.util.TestConstants.LINK;
 import static com.gmail.javacoded78.util.TestConstants.LINK_COVER;
@@ -17,6 +18,7 @@ import static com.gmail.javacoded78.util.TestConstants.LINK_DESCRIPTION;
 import static com.gmail.javacoded78.util.TestConstants.LINK_TITLE;
 import static com.gmail.javacoded78.util.TestConstants.TWEET_DATETIME;
 import static com.gmail.javacoded78.util.TestConstants.TWEET_TEXT;
+import static com.gmail.javacoded78.util.TestConstants.USER_ID;
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.context.jdbc.Sql.ExecutionPhase.AFTER_TEST_METHOD;
@@ -39,7 +41,7 @@ public class TagControllerTest {
     @DisplayName("[200] GET /ui/v1/tags - Get all tags")
     public void getTags() throws Exception {
         mockMvc.perform(get(UI_V1_TAGS)
-                        .header("X-auth-user-id", 2L))
+                        .header(AUTH_USER_ID_HEADER, USER_ID))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[*]", hasSize(2)))
                 .andExpect(jsonPath("$[*].id").isNotEmpty())
@@ -51,7 +53,7 @@ public class TagControllerTest {
     @DisplayName("[200] GET /ui/v1/tags/trends - Get trends")
     public void getTrends() throws Exception {
         mockMvc.perform(get(UI_V1_TAGS + "/trends")
-                        .header("X-auth-user-id", 2L))
+                        .header(AUTH_USER_ID_HEADER, USER_ID))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[*]", hasSize(2)))
                 .andExpect(jsonPath("$[*].id").isNotEmpty())
@@ -64,7 +66,7 @@ public class TagControllerTest {
     public void getTweetsByTag() throws Exception {
         mockMvc.perform(get(UI_V1_TAGS + "/search")
                         .param("tagName", "#JetBrains")
-                        .header("X-auth-user-id", 2L))
+                        .header(AUTH_USER_ID_HEADER, USER_ID))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[*]", hasSize(1)))
                 .andExpect(jsonPath("$[0].id").value(43L))

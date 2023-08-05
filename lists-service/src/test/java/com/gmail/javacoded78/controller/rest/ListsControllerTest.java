@@ -18,6 +18,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.Arrays;
 
+import static com.gmail.javacoded78.constants.PathConstants.AUTH_USER_ID_HEADER;
 import static com.gmail.javacoded78.constants.PathConstants.UI_V1_LISTS;
 import static com.gmail.javacoded78.util.TestConstants.ABOUT;
 import static com.gmail.javacoded78.util.TestConstants.ABOUT2;
@@ -71,7 +72,7 @@ public class ListsControllerTest {
     @DisplayName("[200] GET /ui/v1/lists - Get all tweet lists")
     public void getAllTweetLists() throws Exception {
         mockMvc.perform(get(UI_V1_LISTS)
-                        .header("X-auth-user-id", 2L))
+                        .header(AUTH_USER_ID_HEADER, USER_ID))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[*]", hasSize(6)))
                 .andExpect(jsonPath("$[0].id").value(4L))
@@ -87,7 +88,7 @@ public class ListsControllerTest {
     @DisplayName("[200] GET /ui/v1/lists/user - Get user tweet lists")
     public void getUserTweetLists() throws Exception {
         mockMvc.perform(get(UI_V1_LISTS + "/user")
-                        .header("X-auth-user-id", 2L))
+                        .header(AUTH_USER_ID_HEADER, USER_ID))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[*]", hasSize(3)))
                 .andExpect(jsonPath("$[0].id").isNotEmpty())
@@ -103,7 +104,7 @@ public class ListsControllerTest {
     @DisplayName("[200] GET /ui/v1/lists/user/2 - Get user tweet lists by id")
     public void getUserTweetListsById() throws Exception {
         mockMvc.perform(get(UI_V1_LISTS + "/user/2")
-                        .header("X-auth-user-id", 2L))
+                        .header(AUTH_USER_ID_HEADER, USER_ID))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[*]", hasSize(1)))
                 .andExpect(jsonPath("$[0].id").value(4L))
@@ -119,7 +120,7 @@ public class ListsControllerTest {
     @DisplayName("[200] GET /ui/v1/lists/user/consist - Get tweet lists which user in")
     public void getTweetListsWhichUserIn() throws Exception {
         mockMvc.perform(get(UI_V1_LISTS + "/user/consist")
-                        .header("X-auth-user-id", 2L))
+                        .header(AUTH_USER_ID_HEADER, USER_ID))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[*]", hasSize(1)))
                 .andExpect(jsonPath("$[0].id").value(7L))
@@ -135,7 +136,7 @@ public class ListsControllerTest {
     @DisplayName("[200] GET /ui/v1/lists/pined - Get user pinned tweet lists")
     public void getUserPinnedLists() throws Exception {
         mockMvc.perform(get(UI_V1_LISTS + "/pined")
-                        .header("X-auth-user-id", 2L))
+                        .header(AUTH_USER_ID_HEADER, USER_ID))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[*]", hasSize(2)))
                 .andExpect(jsonPath("$[0].id").value(4L))
@@ -149,7 +150,7 @@ public class ListsControllerTest {
     @DisplayName("[200] GET /ui/v1/lists/4 - Get list by id")
     public void getListById() throws Exception {
         mockMvc.perform(get(UI_V1_LISTS + "/4")
-                        .header("X-auth-user-id", 2L))
+                        .header(AUTH_USER_ID_HEADER, USER_ID))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(4))
                 .andExpect(jsonPath("$.name").value(LIST_NAME))
@@ -167,7 +168,7 @@ public class ListsControllerTest {
     @DisplayName("[200] GET /ui/v1/lists/6 - Get owner private list by id")
     public void getOwnerPrivateListById() throws Exception {
         mockMvc.perform(get(UI_V1_LISTS + "/6")
-                        .header("X-auth-user-id", 2L))
+                        .header(AUTH_USER_ID_HEADER, USER_ID))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(6))
                 .andExpect(jsonPath("$.name").value(LIST_NAME))
@@ -185,7 +186,7 @@ public class ListsControllerTest {
     @DisplayName("[200] GET /ui/v1/lists/7 - Get followed private list by id")
     public void getFollowedPrivateListById() throws Exception {
         mockMvc.perform(get(UI_V1_LISTS + "/7")
-                        .header("X-auth-user-id", 2L))
+                        .header(AUTH_USER_ID_HEADER, USER_ID))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(7))
                 .andExpect(jsonPath("$.name").value(LIST_NAME))
@@ -203,7 +204,7 @@ public class ListsControllerTest {
     @DisplayName("[404] GET /ui/v1/lists/8 - Not found existing private list by id")
     public void getPrivateListById_NotFound() throws Exception {
         mockMvc.perform(get(UI_V1_LISTS + "/8")
-                        .header("X-auth-user-id", 2L))
+                        .header(AUTH_USER_ID_HEADER, USER_ID))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$", is("List not found")));
     }
@@ -212,7 +213,7 @@ public class ListsControllerTest {
     @DisplayName("[404] GET /ui/v1/lists/99 - Not found list by id")
     public void getListById_NotFound() throws Exception {
         mockMvc.perform(get(UI_V1_LISTS + "/99")
-                        .header("X-auth-user-id", 2L))
+                        .header(AUTH_USER_ID_HEADER, USER_ID))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$", is("List not found")));
     }
@@ -221,7 +222,7 @@ public class ListsControllerTest {
     @DisplayName("[400] GET /ui/v1/lists/10 - Should validate is list author blocked my profile")
     public void getBlockedUserByListId() throws Exception {
         mockMvc.perform(get(UI_V1_LISTS + "/10")
-                        .header("X-auth-user-id", 2L))
+                        .header(AUTH_USER_ID_HEADER, USER_ID))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$", is("User with ID:2 is blocked")));
     }
@@ -230,7 +231,7 @@ public class ListsControllerTest {
     @DisplayName("[404] GET /ui/v1/lists/11 - Should validate is list author have private profile")
     public void getPrivateUserProfileByListId() throws Exception {
         mockMvc.perform(get(UI_V1_LISTS + "/11")
-                        .header("X-auth-user-id", 2L))
+                        .header(AUTH_USER_ID_HEADER, USER_ID))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$", is("User not found")));
     }
@@ -245,7 +246,7 @@ public class ListsControllerTest {
         listsRequest.setAltWallpaper(LIST_ALT_WALLPAPER);
 
         mockMvc.perform(post(UI_V1_LISTS)
-                        .header("X-auth-user-id", 2L)
+                        .header(AUTH_USER_ID_HEADER, USER_ID)
                         .content(mapper.writeValueAsString(listsRequest))
                         .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isOk())
@@ -266,7 +267,7 @@ public class ListsControllerTest {
         listsRequest.setAltWallpaper(LIST_ALT_WALLPAPER);
 
         mockMvc.perform(post(UI_V1_LISTS)
-                        .header("X-auth-user-id", 2L)
+                        .header(AUTH_USER_ID_HEADER, USER_ID)
                         .content(mapper.writeValueAsString(listsRequest))
                         .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isBadRequest())
@@ -282,7 +283,7 @@ public class ListsControllerTest {
         listsRequest.setAltWallpaper(LIST_ALT_WALLPAPER);
 
         mockMvc.perform(post(UI_V1_LISTS)
-                        .header("X-auth-user-id", 2L)
+                        .header(AUTH_USER_ID_HEADER, USER_ID)
                         .content(mapper.writeValueAsString(listsRequest))
                         .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isBadRequest())
@@ -299,7 +300,7 @@ public class ListsControllerTest {
         listsRequest.setAltWallpaper(LIST_ALT_WALLPAPER);
 
         mockMvc.perform(post(UI_V1_LISTS)
-                        .header("X-auth-user-id", 2L)
+                        .header(AUTH_USER_ID_HEADER, USER_ID)
                         .content(mapper.writeValueAsString(listsRequest))
                         .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isNotFound())
@@ -316,7 +317,7 @@ public class ListsControllerTest {
         listsRequest.setDescription("edited description");
 
         mockMvc.perform(put(UI_V1_LISTS)
-                        .header("X-auth-user-id", 2L)
+                        .header(AUTH_USER_ID_HEADER, USER_ID)
                         .content(mapper.writeValueAsString(listsRequest))
                         .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isOk())
@@ -341,7 +342,7 @@ public class ListsControllerTest {
         listsRequest.setDescription("edited description");
 
         mockMvc.perform(put(UI_V1_LISTS)
-                        .header("X-auth-user-id", 2L)
+                        .header(AUTH_USER_ID_HEADER, USER_ID)
                         .content(mapper.writeValueAsString(listsRequest))
                         .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isBadRequest())
@@ -357,7 +358,7 @@ public class ListsControllerTest {
         listsRequest.setDescription("edited description");
 
         mockMvc.perform(put(UI_V1_LISTS)
-                        .header("X-auth-user-id", 2L)
+                        .header(AUTH_USER_ID_HEADER, USER_ID)
                         .content(mapper.writeValueAsString(listsRequest))
                         .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isBadRequest())
@@ -374,7 +375,7 @@ public class ListsControllerTest {
         listsRequest.setDescription("edited description");
 
         mockMvc.perform(put(UI_V1_LISTS)
-                        .header("X-auth-user-id", 2L)
+                        .header(AUTH_USER_ID_HEADER, USER_ID)
                         .content(mapper.writeValueAsString(listsRequest))
                         .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isNotFound())
@@ -391,7 +392,7 @@ public class ListsControllerTest {
         listsRequest.setDescription("edited description");
 
         mockMvc.perform(put(UI_V1_LISTS)
-                        .header("X-auth-user-id", 2L)
+                        .header(AUTH_USER_ID_HEADER, USER_ID)
                         .content(mapper.writeValueAsString(listsRequest))
                         .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isNotFound())
@@ -402,7 +403,7 @@ public class ListsControllerTest {
     @DisplayName("[200] DELETE /ui/v1/lists/4 - Delete list")
     public void deleteList() throws Exception {
         mockMvc.perform(delete(UI_V1_LISTS + "/4")
-                        .header("X-auth-user-id", 2L))
+                        .header(AUTH_USER_ID_HEADER, USER_ID))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", is("List id:4 deleted.")));
     }
@@ -411,7 +412,7 @@ public class ListsControllerTest {
     @DisplayName("[404] DELETE /ui/v1/lists/99 - Delete list Should Not found")
     public void deleteList_ShouldNotFound() throws Exception {
         mockMvc.perform(delete(UI_V1_LISTS + "/99")
-                        .header("X-auth-user-id", 2L))
+                        .header(AUTH_USER_ID_HEADER, USER_ID))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$", is("List not found")));
     }
@@ -420,7 +421,7 @@ public class ListsControllerTest {
     @DisplayName("[400] DELETE /ui/v1/lists/5 - Delete another user list Should Not found")
     public void deleteAnotherUserList_ShouldNotFound() throws Exception {
         mockMvc.perform(delete(UI_V1_LISTS + "/5")
-                        .header("X-auth-user-id", 2L))
+                        .header(AUTH_USER_ID_HEADER, USER_ID))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$", is("List owner not found")));
     }
@@ -429,7 +430,7 @@ public class ListsControllerTest {
     @DisplayName("[200] GET /ui/v1/lists/follow/9 - Follow list")
     public void followList() throws Exception {
         mockMvc.perform(get(UI_V1_LISTS + "/follow/9")
-                        .header("X-auth-user-id", 2L))
+                        .header(AUTH_USER_ID_HEADER, USER_ID))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(9))
                 .andExpect(jsonPath("$.name").value(LIST_NAME))
@@ -444,7 +445,7 @@ public class ListsControllerTest {
     @DisplayName("[404] GET /ui/v1/lists/follow/99 - Should List Not Found by id")
     public void followList_ShouldListNotFound() throws Exception {
         mockMvc.perform(get(UI_V1_LISTS + "/follow/99")
-                        .header("X-auth-user-id", 2L))
+                        .header(AUTH_USER_ID_HEADER, USER_ID))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$", is("List not found")));
     }
@@ -453,7 +454,7 @@ public class ListsControllerTest {
     @DisplayName("[404] GET /ui/v1/lists/follow/8 - Should follow to private List Not Found by id")
     public void followList_ShouldFollowToPrivateListNotFound() throws Exception {
         mockMvc.perform(get(UI_V1_LISTS + "/follow/8")
-                        .header("X-auth-user-id", 2L))
+                        .header(AUTH_USER_ID_HEADER, USER_ID))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$", is("List not found")));
     }
@@ -462,7 +463,7 @@ public class ListsControllerTest {
     @DisplayName("[200] GET /ui/v1/lists/follow/4 - Unfollow list")
     public void unfollowList() throws Exception {
         mockMvc.perform(get(UI_V1_LISTS + "/follow/4")
-                        .header("X-auth-user-id", 2L))
+                        .header(AUTH_USER_ID_HEADER, USER_ID))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(4))
                 .andExpect(jsonPath("$.name").value(LIST_NAME))
@@ -477,7 +478,7 @@ public class ListsControllerTest {
     @DisplayName("[200] GET /ui/v1/lists/pin/6 - Pin list")
     public void pinList() throws Exception {
         mockMvc.perform(get(UI_V1_LISTS + "/pin/6")
-                        .header("X-auth-user-id", 2L))
+                        .header(AUTH_USER_ID_HEADER, USER_ID))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(6))
                 .andExpect(jsonPath("$.name").value(LIST_NAME))
@@ -490,7 +491,7 @@ public class ListsControllerTest {
     @DisplayName("[200] GET /ui/v1/lists/pin/4 - Unpin list")
     public void unpinList() throws Exception {
         mockMvc.perform(get(UI_V1_LISTS + "/pin/4")
-                        .header("X-auth-user-id", 2L))
+                        .header(AUTH_USER_ID_HEADER, USER_ID))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(4))
                 .andExpect(jsonPath("$.name").value(LIST_NAME))
@@ -503,7 +504,7 @@ public class ListsControllerTest {
     @DisplayName("[404] GET /ui/v1/lists/pin/8 - Should pinned list Not Found by id")
     public void pinList_ShouldPinnedListNotFound() throws Exception {
         mockMvc.perform(get(UI_V1_LISTS + "/pin/8")
-                        .header("X-auth-user-id", 2L))
+                        .header(AUTH_USER_ID_HEADER, USER_ID))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$", is("List not found")));
     }
@@ -512,7 +513,7 @@ public class ListsControllerTest {
     @DisplayName("[200] GET /ui/v1/lists/add/user/1 - Get lists to add user")
     public void getListsToAddUser() throws Exception {
         mockMvc.perform(get(UI_V1_LISTS + "/add/user/1")
-                        .header("X-auth-user-id", 2L))
+                        .header(AUTH_USER_ID_HEADER, USER_ID))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[*]", hasSize(2)))
                 .andExpect(jsonPath("$[0].id", Matchers.oneOf(4, 6)))
@@ -529,7 +530,7 @@ public class ListsControllerTest {
         createUserToList(1L);
 
         mockMvc.perform(post(UI_V1_LISTS + "/add/user")
-                        .header("X-auth-user-id", 2L)
+                        .header(AUTH_USER_ID_HEADER, USER_ID)
                         .content(mapper.writeValueAsString(userToListsRequest))
                         .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isOk())
@@ -542,7 +543,7 @@ public class ListsControllerTest {
         createUserToList(4L);
 
         mockMvc.perform(post(UI_V1_LISTS + "/add/user")
-                        .header("X-auth-user-id", 2L)
+                        .header(AUTH_USER_ID_HEADER, USER_ID)
                         .content(mapper.writeValueAsString(userToListsRequest))
                         .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isBadRequest())
@@ -555,7 +556,7 @@ public class ListsControllerTest {
         createUserToList(3L);
 
         mockMvc.perform(post(UI_V1_LISTS + "/add/user")
-                        .header("X-auth-user-id", 2L)
+                        .header(AUTH_USER_ID_HEADER, USER_ID)
                         .content(mapper.writeValueAsString(userToListsRequest))
                         .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isNotFound())
@@ -568,7 +569,7 @@ public class ListsControllerTest {
         createUserToList(6L);
 
         mockMvc.perform(post(UI_V1_LISTS + "/add/user")
-                        .header("X-auth-user-id", 2L)
+                        .header(AUTH_USER_ID_HEADER, USER_ID)
                         .content(mapper.writeValueAsString(userToListsRequest))
                         .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isBadRequest())
@@ -579,7 +580,7 @@ public class ListsControllerTest {
     @DisplayName("[200] POST /ui/v1/lists/add/user/1/6 - Add user to list")
     public void addUserToList() throws Exception {
         mockMvc.perform(get(UI_V1_LISTS + "/add/user/1/6")
-                        .header("X-auth-user-id", 2L))
+                        .header(AUTH_USER_ID_HEADER, USER_ID))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").value(true));
     }
@@ -588,7 +589,7 @@ public class ListsControllerTest {
     @DisplayName("[400] POST /ui/v1/lists/add/user/4/6 - Should user is blocked Add users to list")
     public void addUserToList_ShouldUserIsBlocked() throws Exception {
         mockMvc.perform(get(UI_V1_LISTS + "/add/user/4/6")
-                        .header("X-auth-user-id", 2L))
+                        .header(AUTH_USER_ID_HEADER, USER_ID))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$", is("User with ID:4 is blocked")));
     }
@@ -597,7 +598,7 @@ public class ListsControllerTest {
     @DisplayName("[404] POST /ui/v1/lists/add/user/3/6 - Should user have a private profile")
     public void addUserToList_ShouldUserHavePrivateProfile() throws Exception {
         mockMvc.perform(get(UI_V1_LISTS + "/add/user/3/6")
-                        .header("X-auth-user-id", 2L))
+                        .header(AUTH_USER_ID_HEADER, USER_ID))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$", is("User not found")));
     }
@@ -606,7 +607,7 @@ public class ListsControllerTest {
     @DisplayName("[400] POST /ui/v1/lists/add/user/6/6 - Should user blocked my profile")
     public void addUserToList_ShouldUserBlockedMyProfile() throws Exception {
         mockMvc.perform(get(UI_V1_LISTS + "/add/user/6/6")
-                        .header("X-auth-user-id", 2L))
+                        .header(AUTH_USER_ID_HEADER, USER_ID))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$", is("User with ID:2 is blocked")));
     }
@@ -615,7 +616,7 @@ public class ListsControllerTest {
     @DisplayName("[404] POST /ui/v1/lists/add/user/7/99 - Should list Not Found")
     public void addUserToList_ShouldListNotFound() throws Exception {
         mockMvc.perform(get(UI_V1_LISTS + "/add/user/7/99")
-                        .header("X-auth-user-id", 2L))
+                        .header(AUTH_USER_ID_HEADER, USER_ID))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$", is("List not found")));
     }
@@ -624,7 +625,7 @@ public class ListsControllerTest {
     @DisplayName("[200] GET /ui/v1/lists/add/user/1/4 - Remove user from list")
     public void removeUserFromList() throws Exception {
         mockMvc.perform(get(UI_V1_LISTS + "/add/user/1/4")
-                        .header("X-auth-user-id", 2L))
+                        .header(AUTH_USER_ID_HEADER, USER_ID))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").value(false));
     }
@@ -633,7 +634,7 @@ public class ListsControllerTest {
     @DisplayName("[200] GET /ui/v1/lists/4/tweets - Get tweets by list id")
     public void getTweetsByListId() throws Exception {
         mockMvc.perform(get(UI_V1_LISTS + "/4/tweets")
-                        .header("X-auth-user-id", 2L))
+                        .header(AUTH_USER_ID_HEADER, USER_ID))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[*]", hasSize(1)))
                 .andExpect(jsonPath("$[0].id").value(45L))
@@ -667,7 +668,7 @@ public class ListsControllerTest {
     @DisplayName("[404] GET /ui/v1/lists/5/tweets - Get tweets by other user private list id")
     public void getTweetsByUserPrivateListId() throws Exception {
         mockMvc.perform(get(UI_V1_LISTS + "/5/tweets")
-                        .header("X-auth-user-id", 2L))
+                        .header(AUTH_USER_ID_HEADER, USER_ID))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$", is("List not found")));
     }
@@ -676,7 +677,7 @@ public class ListsControllerTest {
     @DisplayName("[200] GET /ui/v1/lists/4/details - Get list details")
     public void getListDetails() throws Exception {
         mockMvc.perform(get(UI_V1_LISTS + "/4/details")
-                        .header("X-auth-user-id", 2L))
+                        .header(AUTH_USER_ID_HEADER, USER_ID))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(4))
                 .andExpect(jsonPath("$.name").value(LIST_NAME))
@@ -694,7 +695,7 @@ public class ListsControllerTest {
     @DisplayName("[404] GET /ui/v1/lists/5/details - Get list details by other user private list")
     public void getListDetailsByUserPrivateList() throws Exception {
         mockMvc.perform(get(UI_V1_LISTS + "/5/details")
-                        .header("X-auth-user-id", 2L))
+                        .header(AUTH_USER_ID_HEADER, USER_ID))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$", is("List not found")));
     }
@@ -703,7 +704,7 @@ public class ListsControllerTest {
     @DisplayName("[200] GET /ui/v1/lists/4/2/followers - Get list followers")
     public void getListFollowers() throws Exception {
         mockMvc.perform(get(UI_V1_LISTS + "/4/2/followers")
-                        .header("X-auth-user-id", 2L))
+                        .header(AUTH_USER_ID_HEADER, USER_ID))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[*]", hasSize(1)))
                 .andExpect(jsonPath("$[0].id").value(1L))
@@ -718,7 +719,7 @@ public class ListsControllerTest {
     @DisplayName("[404] GET /ui/v1/lists/99/2/followers - Get list followers should list Not Found")
     public void getListFollowers_ShouldListNotFound() throws Exception {
         mockMvc.perform(get(UI_V1_LISTS + "/99/2/followers")
-                        .header("X-auth-user-id", 2L))
+                        .header(AUTH_USER_ID_HEADER, USER_ID))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$", is("List not found")));
     }
@@ -727,7 +728,7 @@ public class ListsControllerTest {
     @DisplayName("[404] GET /ui/v1/lists/5/1/followers - Get list followers by private list should list Not Found")
     public void getListFollowers_ByPrivateListShouldListNotFound() throws Exception {
         mockMvc.perform(get(UI_V1_LISTS + "/5/1/followers")
-                        .header("X-auth-user-id", 2L))
+                        .header(AUTH_USER_ID_HEADER, USER_ID))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$", is("List not found")));
     }
@@ -736,7 +737,7 @@ public class ListsControllerTest {
     @DisplayName("[400] GET /ui/v1/lists/10/5/followers - Get list followers by blocked user")
     public void getListFollowers_ByBlockedUserAndListNotFound() throws Exception {
         mockMvc.perform(get(UI_V1_LISTS + "/10/5/followers")
-                        .header("X-auth-user-id", 2L))
+                        .header(AUTH_USER_ID_HEADER, USER_ID))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$", is("User with ID:2 is blocked")));
     }
@@ -745,7 +746,7 @@ public class ListsControllerTest {
     @DisplayName("[200] GET /ui/v1/lists/4/2/members - Get list members")
     public void getListMembers() throws Exception {
         mockMvc.perform(get(UI_V1_LISTS + "/4/2/members")
-                        .header("X-auth-user-id", 2L))
+                        .header(AUTH_USER_ID_HEADER, USER_ID))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[*]", hasSize(1)))
                 .andExpect(jsonPath("$[0].id").value(1L))
@@ -761,7 +762,7 @@ public class ListsControllerTest {
     @DisplayName("[200] GET /ui/v1/lists/9/1/members - Get list members by another user")
     public void getListMembersByAnotherUser() throws Exception {
         mockMvc.perform(get(UI_V1_LISTS + "/9/1/members")
-                        .header("X-auth-user-id", 2L))
+                        .header(AUTH_USER_ID_HEADER, USER_ID))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[*]", hasSize(1)))
                 .andExpect(jsonPath("$[0].id").value(1L))
@@ -776,7 +777,7 @@ public class ListsControllerTest {
     @DisplayName("[404] GET /ui/v1/lists/99/2/members - Get list members should list Not Found")
     public void getListMembers_ShouldListNotFound() throws Exception {
         mockMvc.perform(get(UI_V1_LISTS + "/99/2/members")
-                        .header("X-auth-user-id", 2L))
+                        .header(AUTH_USER_ID_HEADER, USER_ID))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$", is("List not found")));
     }
@@ -785,7 +786,7 @@ public class ListsControllerTest {
     @DisplayName("[404] GET /ui/v1/lists/5/1/members - Get list members by private list should list Not Found")
     public void getListMembers_ByPrivateListShouldListNotFound() throws Exception {
         mockMvc.perform(get(UI_V1_LISTS + "/5/1/members")
-                        .header("X-auth-user-id", 2L))
+                        .header(AUTH_USER_ID_HEADER, USER_ID))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$", is("List not found")));
     }
@@ -794,7 +795,7 @@ public class ListsControllerTest {
     @DisplayName("[400] GET /ui/v1/lists/10/5/members - Get list members by blocked user")
     public void getListMembers_ByBlockedUserAndListNotFound() throws Exception {
         mockMvc.perform(get(UI_V1_LISTS + "/10/5/members")
-                        .header("X-auth-user-id", 2L))
+                        .header(AUTH_USER_ID_HEADER, USER_ID))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$", is("User with ID:2 is blocked")));
     }
@@ -803,7 +804,7 @@ public class ListsControllerTest {
     @DisplayName("[200] GET /ui/v1/lists/search/2/MrCat - Search list members by username")
     public void searchListMembersByUsername() throws Exception {
         mockMvc.perform(get(UI_V1_LISTS + "/search/2/MrCat")
-                        .header("X-auth-user-id", 2L))
+                        .header(AUTH_USER_ID_HEADER, USER_ID))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[*]", hasSize(6)))
                 .andExpect(jsonPath("$[0].id").value(USER_ID))

@@ -16,6 +16,8 @@ import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static com.gmail.javacoded78.constants.PathConstants.API_V1_TAGS;
+import static com.gmail.javacoded78.constants.PathConstants.AUTH_USER_ID_HEADER;
+import static com.gmail.javacoded78.util.TestConstants.USER_ID;
 import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.context.jdbc.Sql.ExecutionPhase.AFTER_TEST_METHOD;
 import static org.springframework.test.context.jdbc.Sql.ExecutionPhase.BEFORE_TEST_METHOD;
@@ -46,7 +48,7 @@ public class TagApiControllerTest {
     public void parseHashtagsInText_addNewHashtag() throws Exception {
         String hashtag = "#test_tag";
         mockMvc.perform(post(API_V1_TAGS + "/parse/99")
-                        .header("X-auth-user-id", 2L)
+                        .header(AUTH_USER_ID_HEADER, USER_ID)
                         .content(mapper.writeValueAsString(new TweetTextRequest(hashtag)))
                         .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isOk());
@@ -58,7 +60,7 @@ public class TagApiControllerTest {
     public void parseHashtagsInText_addExistingHashtag() throws Exception {
         String hashtag = "#test";
         mockMvc.perform(post(API_V1_TAGS + "/parse/99")
-                        .header("X-auth-user-id", 2L)
+                        .header(AUTH_USER_ID_HEADER, USER_ID)
                         .content(mapper.writeValueAsString(new TweetTextRequest(hashtag)))
                         .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isOk());
@@ -69,7 +71,7 @@ public class TagApiControllerTest {
     @DisplayName("[200] GET /api/v1/tags/delete/40 - Delete hashtag")
     public void deleteTagsByTweetId() throws Exception {
         mockMvc.perform(delete(API_V1_TAGS + "/delete/40")
-                        .header("X-auth-user-id", 2L))
+                        .header(AUTH_USER_ID_HEADER, USER_ID))
                 .andExpect(status().isOk());
     }
 
@@ -77,7 +79,7 @@ public class TagApiControllerTest {
     @DisplayName("[200] GET /api/v1/tags/delete/43 - Delete hashtag and update Tag Quantity")
     public void deleteTagsByTweetId_updateTweetQuantity() throws Exception {
         mockMvc.perform(delete(API_V1_TAGS + "/delete/43")
-                        .header("X-auth-user-id", 2L))
+                        .header(AUTH_USER_ID_HEADER, USER_ID))
                 .andExpect(status().isOk());
     }
 

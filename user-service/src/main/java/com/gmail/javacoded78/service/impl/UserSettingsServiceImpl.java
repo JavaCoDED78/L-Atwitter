@@ -5,6 +5,7 @@ import com.gmail.javacoded78.enums.ColorSchemeType;
 import com.gmail.javacoded78.exception.ApiRequestException;
 import com.gmail.javacoded78.model.User;
 import com.gmail.javacoded78.repository.UserRepository;
+import com.gmail.javacoded78.repository.projection.AuthUserProjection;
 import com.gmail.javacoded78.repository.projection.UserCommonProjection;
 
 import com.gmail.javacoded78.security.JwtProvider;
@@ -41,12 +42,11 @@ public class UserSettingsServiceImpl implements UserSettingsService {
     @Override
     @Transactional
     public Map<String, Object> updateEmail(String email) {
-        Optional<UserCommonProjection> userByEmail = userRepository.getUserByEmail(email, UserCommonProjection.class);
-
-        if (userByEmail.isEmpty()) {
-            User user = authenticationService.getAuthenticatedUser();
-            userRepository.updateEmail(email, user.getId());
+        if (!userRepository.isEmailExist(email)) {
+            Long authUserId = authenticationService.getAuthenticatedUserId();
+            userRepository.updateEmail(email, authUserId);
             String token = jwtProvider.createToken(email, "USER");
+            AuthUserProjection user = userRepository.getUserById(authUserId, AuthUserProjection.class).get();
             Map<String, Object> response = new HashMap<>();
             response.put("user", user);
             response.put("token", token);

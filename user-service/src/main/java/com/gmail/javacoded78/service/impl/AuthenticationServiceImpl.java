@@ -30,6 +30,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
+import static com.gmail.javacoded78.constants.PathConstants.AUTH_USER_ID_HEADER;
+
 @Service
 @RequiredArgsConstructor
 public class AuthenticationServiceImpl implements AuthenticationService {
@@ -71,6 +73,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     @Override
     @Transactional
     public String registration(RegistrationRequest request, BindingResult bindingResult) {
+        processInputErrors(bindingResult);
         Optional<User> existingUser = userRepository.getUserByEmail(request.getEmail(), User.class);
 
         if (existingUser.isEmpty()) {
@@ -206,7 +209,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private Long getUserId() {
         RequestAttributes attribs = RequestContextHolder.getRequestAttributes();
         HttpServletRequest request = ((ServletRequestAttributes) attribs).getRequest();
-        return Long.parseLong(request.getHeader("X-auth-user-id"));
+        return Long.parseLong(request.getHeader(AUTH_USER_ID_HEADER));
     }
 
     private void processInputErrors(BindingResult bindingResult) {
