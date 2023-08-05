@@ -36,6 +36,8 @@ dependencies {
     implementation 'org.springframework.cloud:spring-cloud-sleuth-zipkin'
     implementation 'org.springframework.cloud:spring-cloud-starter-config'
     implementation 'org.springframework.cloud:spring-cloud-starter-bootstrap'
+
+
     implementation "io.jsonwebtoken:jjwt-api:${versions.jjwt}"
     implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
 
