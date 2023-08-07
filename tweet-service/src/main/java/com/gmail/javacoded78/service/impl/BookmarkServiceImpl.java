@@ -1,9 +1,7 @@
 package com.gmail.javacoded78.service.impl;
 
-import com.gmail.javacoded78.exception.ApiRequestException;
 import com.gmail.javacoded78.model.Bookmark;
 import com.gmail.javacoded78.repository.BookmarkRepository;
-import com.gmail.javacoded78.repository.TweetRepository;
 import com.gmail.javacoded78.repository.projection.BookmarkProjection;
 import com.gmail.javacoded78.service.BookmarkService;
 import com.gmail.javacoded78.util.AuthUtil;
@@ -11,8 +9,8 @@ import com.gmail.javacoded78.util.TweetServiceHelper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -28,6 +26,7 @@ public class BookmarkServiceImpl implements BookmarkService {
     }
 
     @Override
+    @Transactional
     public Boolean processUserBookmarks(Long tweetId) {
         tweetServiceHelper.checkValidTweet(tweetId);
         Long authUserId = AuthUtil.getAuthenticatedUserId();
