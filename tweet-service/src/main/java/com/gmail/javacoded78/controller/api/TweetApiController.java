@@ -67,7 +67,7 @@ public class TweetApiController {
         return tweetClientMapper.isTweetExists(tweetId);
     }
 
-    @GetMapping(COUNT_TEXT) // TODO add tests
+    @GetMapping(COUNT_TEXT)
     public Long getTweetCountByText(@PathVariable("text") String text) {
         return tweetClientMapper.getTweetCountByText(text);
     }
