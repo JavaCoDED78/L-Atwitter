@@ -34,16 +34,16 @@ public class User {
     @SequenceGenerator(name = "users_seq", sequenceName = "users_seq", initialValue = 100, allocationSize = 1)
     private Long id;
 
-    @Column(name = "email")
+    @Column(name = "email", unique = true, nullable = false)
     private String email;
 
-    @Column(name = "password")
+    @Column(name = "password", nullable = false)
     private String password;
 
-    @Column(name = "full_name")
+    @Column(name = "full_name", nullable = false)
     private String fullName;
 
-    @Column(name = "username")
+    @Column(name = "username", nullable = false)
     private String username;
 
     @Column(name = "location")
@@ -73,8 +73,8 @@ public class User {
     @Column(name = "birthday")
     private String birthday;
 
-    @Column(name = "registration_date")
-    private LocalDateTime registrationDate;
+    @Column(name = "registration_date", columnDefinition = "timestamp default current_timestamp")
+    private LocalDateTime registrationDate = LocalDateTime.now();
 
     @Column(name = "activation_code")
     private String activationCode;
@@ -82,8 +82,8 @@ public class User {
     @Column(name = "password_reset_code")
     private String passwordResetCode;
 
-    @Column(name = "role")
-    private String role;
+    @Column(name = "role", columnDefinition = "varchar(255) default 'USER'")
+    private String role = "USER";
 
     @Column(name = "tweet_count", columnDefinition = "int8 default 0")
     private Long tweetCount = 0L;
@@ -98,27 +98,27 @@ public class User {
     private Long notificationsCount = 0L;
 
     @Column(name = "active", columnDefinition = "boolean default false")
-    private boolean active;
+    private boolean active = false;
 
     @Column(name = "profile_customized", columnDefinition = "boolean default false")
-    private boolean profileCustomized;
+    private boolean profileCustomized = false;
 
     @Column(name = "profile_started", columnDefinition = "boolean default false")
-    private boolean profileStarted;
+    private boolean profileStarted = false;
 
     @Column(name = "muted_direct_messages", columnDefinition = "boolean default false")
-    private boolean mutedDirectMessages;
+    private boolean mutedDirectMessages = false;
 
     @Column(name = "private_profile", columnDefinition = "boolean default false")
-    private boolean privateProfile;
+    private boolean privateProfile = false;
 
-    @Column(name = "background_color")
+    @Column(name = "background_color", columnDefinition = "varchar(255) default 'DEFAULT'")
     @Enumerated(EnumType.STRING)
-    private BackgroundColorType backgroundColor;
+    private BackgroundColorType backgroundColor= BackgroundColorType.DEFAULT;
 
-    @Column(name = "color_scheme")
+    @Column(name = "color_scheme", columnDefinition = "varchar(255) default 'BLUE'")
     @Enumerated(EnumType.STRING)
-    private ColorSchemeType colorScheme;
+    private ColorSchemeType colorScheme = ColorSchemeType.BLUE;
 
     @Column(name = "pinned_tweet_id")
     private Long pinnedTweetId;
@@ -166,12 +166,5 @@ public class User {
     @JoinTable(name = "subscribers",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "subscriber_id"))
-    private List<User> subscribers;
-
-    public User() {
-        this.registrationDate = LocalDateTime.now().withNano(0);
-        this.subscribers = new ArrayList<>();
-        this.backgroundColor = BackgroundColorType.DEFAULT;
-        this.colorScheme = ColorSchemeType.BLUE;
-    }
+    private List<User> subscribers = new ArrayList<>();
 }

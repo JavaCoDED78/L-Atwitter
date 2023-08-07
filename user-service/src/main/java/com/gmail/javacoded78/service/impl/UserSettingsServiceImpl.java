@@ -5,6 +5,7 @@ import com.gmail.javacoded78.enums.ColorSchemeType;
 import com.gmail.javacoded78.exception.ApiRequestException;
 import com.gmail.javacoded78.model.User;
 import com.gmail.javacoded78.repository.UserRepository;
+import com.gmail.javacoded78.repository.UserSettingsRepository;
 import com.gmail.javacoded78.repository.projection.AuthUserProjection;
 import com.gmail.javacoded78.repository.projection.UserCommonProjection;
 
@@ -26,6 +27,7 @@ public class UserSettingsServiceImpl implements UserSettingsService {
 
     private final AuthenticationService authenticationService;
     private final UserRepository userRepository;
+    private final UserSettingsRepository userSettingsRepository;
     private final JwtProvider jwtProvider;
 
     @Override
@@ -35,16 +37,16 @@ public class UserSettingsServiceImpl implements UserSettingsService {
             throw new ApiRequestException("Incorrect username length", HttpStatus.BAD_REQUEST);
         }
         Long authUserId = authenticationService.getAuthenticatedUserId();
-        userRepository.updateUsername(username, authUserId);
+        userSettingsRepository.updateUsername(username, authUserId);
         return username;
     }
 
     @Override
     @Transactional
     public Map<String, Object> updateEmail(String email) {
-        if (!userRepository.isEmailExist(email)) {
+        if (!userSettingsRepository.isEmailExist(email)) {
             Long authUserId = authenticationService.getAuthenticatedUserId();
-            userRepository.updateEmail(email, authUserId);
+            userSettingsRepository.updateEmail(email, authUserId);
             String token = jwtProvider.createToken(email, "USER");
             AuthUserProjection user = userRepository.getUserById(authUserId, AuthUserProjection.class).get();
             Map<String, Object> response = new HashMap<>();
@@ -64,7 +66,7 @@ public class UserSettingsServiceImpl implements UserSettingsService {
             throw new ApiRequestException("Not valid phone number", HttpStatus.BAD_REQUEST);
         }
         Long authUserId = authenticationService.getAuthenticatedUserId();
-        userRepository.updatePhone(countryCode, phone, authUserId);
+        userSettingsRepository.updatePhone(countryCode, phone, authUserId);
         return Map.of("countryCode", countryCode, "phone", phone);
     }
 
@@ -72,7 +74,7 @@ public class UserSettingsServiceImpl implements UserSettingsService {
     @Transactional
     public String updateCountry(String country) {
         Long authUserId = authenticationService.getAuthenticatedUserId();
-        userRepository.updateCountry(country, authUserId);
+        userSettingsRepository.updateCountry(country, authUserId);
         return country;
     }
 
@@ -83,7 +85,7 @@ public class UserSettingsServiceImpl implements UserSettingsService {
             throw new ApiRequestException("Incorrect gender length", HttpStatus.BAD_REQUEST);
         }
         Long authUserId = authenticationService.getAuthenticatedUserId();
-        userRepository.updateGender(gender, authUserId);
+        userSettingsRepository.updateGender(gender, authUserId);
         return gender;
     }
 
@@ -91,7 +93,7 @@ public class UserSettingsServiceImpl implements UserSettingsService {
     @Transactional
     public String updateLanguage(String language) {
         Long authUserId = authenticationService.getAuthenticatedUserId();
-        userRepository.updateLanguage(language, authUserId);
+        userSettingsRepository.updateLanguage(language, authUserId);
         return language;
     }
 
@@ -99,7 +101,7 @@ public class UserSettingsServiceImpl implements UserSettingsService {
     @Transactional
     public boolean updateDirectMessageRequests(boolean mutedDirectMessages) {
         Long authUserId = authenticationService.getAuthenticatedUserId();
-        userRepository.updateDirectMessageRequests(mutedDirectMessages, authUserId);
+        userSettingsRepository.updateDirectMessageRequests(mutedDirectMessages, authUserId);
         return mutedDirectMessages;
     }
 
@@ -107,7 +109,7 @@ public class UserSettingsServiceImpl implements UserSettingsService {
     @Transactional
     public boolean updatePrivateProfile(boolean privateProfile) {
         Long authUserId = authenticationService.getAuthenticatedUserId();
-        userRepository.updatePrivateProfile(privateProfile, authUserId);
+        userSettingsRepository.updatePrivateProfile(privateProfile, authUserId);
         return privateProfile;
     }
 
@@ -115,7 +117,7 @@ public class UserSettingsServiceImpl implements UserSettingsService {
     @Transactional
     public ColorSchemeType updateColorScheme(ColorSchemeType colorSchemeType) {
         Long authUserId = authenticationService.getAuthenticatedUserId();
-        userRepository.updateColorScheme(colorSchemeType, authUserId);
+        userSettingsRepository.updateColorScheme(colorSchemeType, authUserId);
         return colorSchemeType;
     }
 
@@ -123,7 +125,7 @@ public class UserSettingsServiceImpl implements UserSettingsService {
     @Transactional
     public BackgroundColorType updateBackgroundColor(BackgroundColorType backgroundColorType) {
         Long authUserId = authenticationService.getAuthenticatedUserId();
-        userRepository.updateBackgroundColor(backgroundColorType, authUserId);
+        userSettingsRepository.updateBackgroundColor(backgroundColorType, authUserId);
         return backgroundColorType;
     }
 }

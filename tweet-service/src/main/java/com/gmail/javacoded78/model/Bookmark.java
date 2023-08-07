@@ -12,6 +12,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Index;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import java.time.LocalDateTime;
@@ -22,7 +23,12 @@ import java.time.LocalDateTime;
 @EqualsAndHashCode
 @NoArgsConstructor
 @RequiredArgsConstructor
-@Table(name = "bookmarks")
+@Table(
+        name = "bookmarks",
+        indexes = {
+                @Index(name = "bookmarks_user_id_idx", columnList = "user_id"),
+                @Index(name = "bookmarks_tweet_id_idx", columnList = "tweet_id"),
+        })
 public class Bookmark {
 
     @Id
@@ -30,7 +36,7 @@ public class Bookmark {
     @SequenceGenerator(name = "bookmarks_seq", sequenceName = "bookmarks_seq", initialValue = 100, allocationSize = 1)
     private Long id;
 
-    @Column(name = "bookmark_date")
+    @Column(name = "bookmark_date", columnDefinition = "timestamp default current_timestamp")
     private LocalDateTime bookmarkDate = LocalDateTime.now();
 
     @NonNull

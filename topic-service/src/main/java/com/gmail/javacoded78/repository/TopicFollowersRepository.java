@@ -12,9 +12,6 @@ import java.util.List;
 @Repository
 public interface TopicFollowersRepository extends JpaRepository<TopicFollowers, Long> {
 
-    @Query("SELECT follower.topicId FROM TopicFollowers follower WHERE follower.userId = :userId")
-    List<Long> getFollowedTopics(@Param("userId") Long userId);
-
     @Query("SELECT follower FROM TopicFollowers follower " +
             "WHERE follower.userId = :userId " +
             "AND follower.topicId = :topicId")

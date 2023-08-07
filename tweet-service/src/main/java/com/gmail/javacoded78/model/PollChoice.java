@@ -2,7 +2,9 @@ package com.gmail.javacoded78.model;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.Column;
@@ -17,6 +19,8 @@ import javax.persistence.Table;
 @Getter
 @Setter
 @EqualsAndHashCode
+@NoArgsConstructor
+@RequiredArgsConstructor
 @Table(name = "poll_choices")
 public class PollChoice {
 
@@ -25,6 +29,7 @@ public class PollChoice {
     @SequenceGenerator(name = "poll_choices_seq", sequenceName = "poll_choices_seq", initialValue = 100, allocationSize = 1)
     private Long id;
 
-    @Column(name = "choice")
+    @NonNull
+    @Column(name = "choice", nullable = false)
     private String choice;
 }

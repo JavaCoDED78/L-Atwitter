@@ -12,6 +12,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
@@ -24,7 +25,12 @@ import java.time.LocalDateTime;
 @EqualsAndHashCode
 @NoArgsConstructor
 @RequiredArgsConstructor
-@Table(name = "pinned_lists")
+@Table(
+        name = "pinned_lists",
+        indexes = {
+                @Index(name = "pinned_lists_list_id_idx", columnList = "list_id"),
+                @Index(name = "pinned_lists_pinned_user_id_idx", columnList = "pinned_user_id")
+        })
 public class PinnedLists {
 
     @Id

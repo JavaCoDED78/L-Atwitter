@@ -4,18 +4,17 @@ import com.gmail.javacoded78.dto.response.lists.ListOwnerResponse;
 import org.springframework.beans.factory.annotation.Value;
 
 public interface ListUserProjection {
-
     Long getId();
     String getName();
     String getDescription();
     String getAltWallpaper();
     String getWallpaper();
-    boolean getIsPrivate();
     Long getListOwnerId();
+    boolean getIsPrivate();
 
-    @Value("#{@listsServiceImpl.getListOwnerById(target.listOwnerId)}")
+    @Value("#{@listsServiceHelper.getListOwnerById(target.listOwnerId)}")
     ListOwnerResponse getListOwner();
 
-    @Value("#{@listsServiceImpl.isListPinned(target.id)}")
+    @Value("#{@listsServiceHelper.isListPinned(target.id)}")
     boolean getIsListPinned();
 }

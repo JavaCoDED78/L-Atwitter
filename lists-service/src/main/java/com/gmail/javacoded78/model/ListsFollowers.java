@@ -12,6 +12,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Index;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
@@ -21,7 +22,12 @@ import javax.persistence.Table;
 @EqualsAndHashCode
 @NoArgsConstructor
 @RequiredArgsConstructor
-@Table(name = "lists_followers")
+@Table(
+        name = "lists_followers",
+        indexes = {
+                @Index(name = "lists_followers_list_id_idx", columnList = "list_id"),
+                @Index(name = "lists_followers_follower_id_idx", columnList = "follower_id")
+        })
 public class ListsFollowers {
 
     @Id

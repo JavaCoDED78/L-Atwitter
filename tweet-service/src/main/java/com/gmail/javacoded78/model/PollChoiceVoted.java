@@ -12,6 +12,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Index;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
@@ -21,7 +22,12 @@ import javax.persistence.Table;
 @EqualsAndHashCode
 @NoArgsConstructor
 @RequiredArgsConstructor
-@Table(name = "poll_choice_voted")
+@Table(
+        name = "poll_choice_voted",
+        indexes = {
+                @Index(name = "poll_choice_voted_voted_user_id_idx", columnList = "voted_user_id"),
+                @Index(name = "poll_choice_voted_poll_choice_id_idx", columnList = "poll_choice_id"),
+        })
 public class PollChoiceVoted {
 
     @Id

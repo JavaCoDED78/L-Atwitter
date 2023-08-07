@@ -1,7 +1,7 @@
 package com.gmail.javacoded78.service;
 
 import com.gmail.javacoded78.dto.response.tweet.TweetResponse;
-import com.gmail.javacoded78.repository.projection.TagProjection;
+import com.gmail.javacoded78.model.Tag;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -9,9 +9,9 @@ import java.util.List;
 
 public interface TagService {
 
-    List<TagProjection> getTags();
+    List<Tag> getTags();
 
-    Page<TagProjection> getTrends(Pageable pageable);
+    Page<Tag> getTrends(Pageable pageable);
 
     List<TweetResponse> getTweetsByTag(String tagName);
 }
