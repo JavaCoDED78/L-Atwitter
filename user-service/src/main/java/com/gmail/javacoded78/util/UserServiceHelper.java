@@ -13,6 +13,10 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 
+import static com.gmail.javacoded78.constants.ErrorMessage.USER_ID_NOT_FOUND;
+import static com.gmail.javacoded78.constants.ErrorMessage.USER_NOT_FOUND;
+import static com.gmail.javacoded78.constants.ErrorMessage.USER_PROFILE_BLOCKED;
+
 @Component
 @RequiredArgsConstructor
 public class UserServiceHelper {
@@ -42,7 +46,7 @@ public class UserServiceHelper {
         boolean userExist = userRepository.isUserExist(userId);
 
         if (!userExist) {
-            throw new ApiRequestException("User (id:" + userId + ") not found", HttpStatus.NOT_FOUND);
+            throw new ApiRequestException(String.format(USER_ID_NOT_FOUND, userId), HttpStatus.NOT_FOUND);
         }
     }
 
@@ -51,7 +55,7 @@ public class UserServiceHelper {
         boolean userBlocked = blockUserRepository.isUserBlocked(userId, authUserId);
 
         if (userBlocked) {
-            throw new ApiRequestException("User profile blocked", HttpStatus.BAD_REQUEST);
+            throw new ApiRequestException(USER_PROFILE_BLOCKED, HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -59,7 +63,7 @@ public class UserServiceHelper {
         Long authUserId = authenticationService.getAuthenticatedUserId();
 
         if (!userRepository.isUserHavePrivateProfile(userId, authUserId)) {
-            throw new ApiRequestException("User not found", HttpStatus.NOT_FOUND);
+            throw new ApiRequestException(USER_NOT_FOUND, HttpStatus.NOT_FOUND);
         }
     }
 

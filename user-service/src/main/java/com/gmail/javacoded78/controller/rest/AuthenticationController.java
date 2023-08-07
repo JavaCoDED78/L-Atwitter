@@ -21,6 +21,16 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 
+import static com.gmail.javacoded78.constants.PathConstants.FORGOT;
+import static com.gmail.javacoded78.constants.PathConstants.FORGOT_EMAIL;
+import static com.gmail.javacoded78.constants.PathConstants.LOGIN;
+import static com.gmail.javacoded78.constants.PathConstants.REGISTRATION_ACTIVATE_CODE;
+import static com.gmail.javacoded78.constants.PathConstants.REGISTRATION_CHECK;
+import static com.gmail.javacoded78.constants.PathConstants.REGISTRATION_CODE;
+import static com.gmail.javacoded78.constants.PathConstants.REGISTRATION_CONFIRM;
+import static com.gmail.javacoded78.constants.PathConstants.RESET;
+import static com.gmail.javacoded78.constants.PathConstants.RESET_CODE;
+import static com.gmail.javacoded78.constants.PathConstants.RESET_CURRENT;
 import static com.gmail.javacoded78.constants.PathConstants.UI_V1_AUTH;
 
 @RestController
@@ -30,52 +40,52 @@ public class AuthenticationController {
 
     private final AuthenticationMapper authenticationMapper;
 
-    @PostMapping("/login")
+    @PostMapping(LOGIN)
     public ResponseEntity<AuthenticationResponse> login(@Valid @RequestBody AuthenticationRequest request, BindingResult bindingResult) {
         return ResponseEntity.ok(authenticationMapper.login(request, bindingResult));
     }
 
-    @PostMapping("/registration/check")
+    @PostMapping(REGISTRATION_CHECK)
     public ResponseEntity<String> registration(@Valid @RequestBody RegistrationRequest request, BindingResult bindingResult) {
         return ResponseEntity.ok(authenticationMapper.registration(request, bindingResult));
     }
 
-    @PostMapping("/registration/code")
+    @PostMapping(REGISTRATION_CODE)
     public ResponseEntity<String> sendRegistrationCode(@Valid @RequestBody ProcessEmailRequest request, BindingResult bindingResult) {
         return ResponseEntity.ok(authenticationMapper.sendRegistrationCode(request.getEmail(), bindingResult));
     }
 
-    @GetMapping("/registration/activate/{code}")
+    @GetMapping(REGISTRATION_ACTIVATE_CODE)
     public ResponseEntity<String> checkRegistrationCode(@PathVariable("code") String code) {
         return ResponseEntity.ok(authenticationMapper.checkRegistrationCode(code));
     }
 
-    @PostMapping("/registration/confirm")
+    @PostMapping(REGISTRATION_CONFIRM)
     public ResponseEntity<AuthenticationResponse> endRegistration(@Valid @RequestBody EndRegistrationRequest request, BindingResult bindingResult) {
         return ResponseEntity.ok(authenticationMapper.endRegistration(request, bindingResult));
     }
 
-    @PostMapping("/forgot/email")
+    @PostMapping(FORGOT_EMAIL)
     public ResponseEntity<String> getExistingEmail(@Valid @RequestBody ProcessEmailRequest request, BindingResult bindingResult) {
         return ResponseEntity.ok(authenticationMapper.getExistingEmail(request.getEmail(), bindingResult));
     }
 
-    @PostMapping("/forgot")
+    @PostMapping(FORGOT)
     public ResponseEntity<String> sendPasswordResetCode(@Valid @RequestBody ProcessEmailRequest request, BindingResult bindingResult) {
         return ResponseEntity.ok(authenticationMapper.sendPasswordResetCode(request.getEmail(), bindingResult));
     }
 
-    @GetMapping("/reset/{code}")
+    @GetMapping(RESET_CODE)
     public ResponseEntity<AuthUserResponse> getUserByPasswordResetCode(@PathVariable("code") String code) {
         return ResponseEntity.ok(authenticationMapper.getUserByPasswordResetCode(code));
     }
 
-    @PostMapping("/reset")
+    @PostMapping(RESET)
     public ResponseEntity<String> passwordReset(@Valid @RequestBody PasswordResetRequest request, BindingResult bindingResult) {
         return ResponseEntity.ok(authenticationMapper.passwordReset(request, bindingResult));
     }
 
-    @PostMapping("/reset/current")
+    @PostMapping(RESET_CURRENT)
     public ResponseEntity<String> currentPasswordReset(@Valid @RequestBody CurrentPasswordResetRequest request, BindingResult bindingResult) {
         return ResponseEntity.ok(authenticationMapper.currentPasswordReset(request, bindingResult));
     }

@@ -22,6 +22,11 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.gmail.javacoded78.constants.ErrorMessage.TOPIC_NOT_FOUND;
+import static com.gmail.javacoded78.constants.ErrorMessage.USER_ID_NOT_FOUND;
+import static com.gmail.javacoded78.constants.ErrorMessage.USER_NOT_FOUND;
+import static com.gmail.javacoded78.constants.ErrorMessage.USER_PROFILE_BLOCKED;
+
 @Service
 @RequiredArgsConstructor
 public class TopicServiceImpl implements TopicService {
@@ -102,22 +107,22 @@ public class TopicServiceImpl implements TopicService {
 
     private void checkIsTopicExist(Long topicId) {
         if (!topicRepository.isTopicExist(topicId)) {
-            throw new ApiRequestException("Topic not found", HttpStatus.NOT_FOUND);
+            throw new ApiRequestException(TOPIC_NOT_FOUND, HttpStatus.NOT_FOUND);
         }
     }
 
     private void validateUserProfile(Long userId) {
         if (!userClient.isUserExists(userId)) {
-            throw new ApiRequestException("User (id:" + userId + ") not found", HttpStatus.NOT_FOUND);
+            throw new ApiRequestException(String.format(USER_ID_NOT_FOUND, userId), HttpStatus.NOT_FOUND);
         }
         Long authUserId = AuthUtil.getAuthenticatedUserId();
 
         if (!userId.equals(authUserId)) {
             if (userClient.isMyProfileBlockedByUser(userId)) {
-                throw new ApiRequestException("User profile blocked", HttpStatus.BAD_REQUEST);
+                throw new ApiRequestException(USER_PROFILE_BLOCKED, HttpStatus.BAD_REQUEST);
             }
             if (userClient.isUserHavePrivateProfile(userId)) {
-                throw new ApiRequestException("User not found", HttpStatus.NOT_FOUND);
+                throw new ApiRequestException(USER_NOT_FOUND, HttpStatus.NOT_FOUND);
             }
         }
     }

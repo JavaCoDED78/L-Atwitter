@@ -11,14 +11,16 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 import static com.gmail.javacoded78.constants.FeignConstants.TAG_SERVICE;
 import static com.gmail.javacoded78.constants.PathConstants.API_V1_TAGS;
+import static com.gmail.javacoded78.constants.PathConstants.DELETE_TWEET_ID;
+import static com.gmail.javacoded78.constants.PathConstants.PARSE_TWEET_ID;
 
 @CircuitBreaker(name = TAG_SERVICE)
-@FeignClient(value = TAG_SERVICE, configuration = FeignConfiguration.class)
+@FeignClient(value = TAG_SERVICE, path = API_V1_TAGS, configuration = FeignConfiguration.class)
 public interface TagClient {
 
-    @PostMapping(API_V1_TAGS + "/parse/{tweetId}")
+    @PostMapping(PARSE_TWEET_ID)
     void parseHashtagsInText(@PathVariable("tweetId") Long tweetId, @RequestBody TweetTextRequest request);
 
-    @DeleteMapping(API_V1_TAGS + "/delete/{tweetId}")
+    @DeleteMapping(DELETE_TWEET_ID)
     void deleteTagsByTweetId(@PathVariable("tweetId") Long tweetId);
 }

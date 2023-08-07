@@ -22,7 +22,16 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+import static com.gmail.javacoded78.constants.PathConstants.ALL;
+import static com.gmail.javacoded78.constants.PathConstants.DETAILS_USER_ID;
+import static com.gmail.javacoded78.constants.PathConstants.PIN_TWEET_ID;
+import static com.gmail.javacoded78.constants.PathConstants.RELEVANT;
+import static com.gmail.javacoded78.constants.PathConstants.SEARCH_USERNAME;
+import static com.gmail.javacoded78.constants.PathConstants.START;
+import static com.gmail.javacoded78.constants.PathConstants.SUBSCRIBE_USER_ID;
+import static com.gmail.javacoded78.constants.PathConstants.TOKEN;
 import static com.gmail.javacoded78.constants.PathConstants.UI_V1_USER;
+import static com.gmail.javacoded78.constants.PathConstants.USER_ID;
 
 @RestController
 @RequiredArgsConstructor
@@ -32,35 +41,35 @@ public class UserController {
     private final UserMapper userMapper;
     private final AuthenticationMapper authenticationMapper;
 
-    @GetMapping("/token")
+    @GetMapping(TOKEN)
     public ResponseEntity<AuthenticationResponse> getUserByToken() {
         return ResponseEntity.ok(authenticationMapper.getUserByToken());
     }
 
-    @GetMapping("/{userId}")
+    @GetMapping(USER_ID)
     public ResponseEntity<UserProfileResponse> getUserById(@PathVariable Long userId) {
         return ResponseEntity.ok(userMapper.getUserById(userId));
     }
 
-    @GetMapping("/all")
+    @GetMapping(ALL)
     public ResponseEntity<List<UserResponse>> getUsers(@PageableDefault(size = 15) Pageable pageable) {
         HeaderResponse<UserResponse> response = userMapper.getUsers(pageable);
         return ResponseEntity.ok().headers(response.getHeaders()).body(response.getItems());
     }
 
-    @GetMapping("/relevant")
+    @GetMapping(RELEVANT)
     public ResponseEntity<List<UserResponse>> getRelevantUsers() {
         return ResponseEntity.ok(userMapper.getRelevantUsers());
     }
 
-    @GetMapping("/search/{username}")
+    @GetMapping(SEARCH_USERNAME)
     public ResponseEntity<List<UserResponse>> searchUsersByUsername(@PathVariable String username,
                                                                     @PageableDefault(size = 15) Pageable pageable) {
         HeaderResponse<UserResponse> response = userMapper.searchUsersByUsername(username, pageable);
         return ResponseEntity.ok().headers(response.getHeaders()).body(response.getItems());
     }
 
-    @GetMapping("/start")
+    @GetMapping(START)
     public ResponseEntity<Boolean> startUseTwitter() {
         return ResponseEntity.ok(userMapper.startUseTwitter());
     }
@@ -70,17 +79,17 @@ public class UserController {
         return ResponseEntity.ok(userMapper.updateUserProfile(userRequest));
     }
 
-    @GetMapping("/subscribe/{userId}")
+    @GetMapping(SUBSCRIBE_USER_ID)
     public ResponseEntity<Boolean> processSubscribeToNotifications(@PathVariable Long userId) {
         return ResponseEntity.ok(userMapper.processSubscribeToNotifications(userId));
     }
 
-    @GetMapping("/pin/tweet/{tweetId}")
+    @GetMapping(PIN_TWEET_ID)
     public ResponseEntity<Long> processPinTweet(@PathVariable Long tweetId) {
         return ResponseEntity.ok(userMapper.processPinTweet(tweetId));
     }
 
-    @GetMapping("/details/{userId}")
+    @GetMapping(DETAILS_USER_ID)
     public ResponseEntity<UserDetailResponse> getUserDetails(@PathVariable Long userId) {
         return ResponseEntity.ok(userMapper.getUserDetails(userId));
     }

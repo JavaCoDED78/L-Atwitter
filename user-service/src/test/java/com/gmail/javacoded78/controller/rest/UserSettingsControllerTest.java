@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gmail.javacoded78.dto.request.SettingsRequest;
 import com.gmail.javacoded78.enums.BackgroundColorType;
 import com.gmail.javacoded78.enums.ColorSchemeType;
+import com.gmail.javacoded78.util.TestConstants;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +15,15 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 
+import static com.gmail.javacoded78.constants.ErrorMessage.EMAIL_HAS_ALREADY_BEEN_TAKEN;
+import static com.gmail.javacoded78.constants.ErrorMessage.INCORRECT_USERNAME_LENGTH;
+import static com.gmail.javacoded78.constants.ErrorMessage.INVALID_GENDER_LENGTH;
+import static com.gmail.javacoded78.constants.ErrorMessage.INVALID_PHONE_NUMBER;
 import static com.gmail.javacoded78.constants.PathConstants.AUTH_USER_ID_HEADER;
+import static com.gmail.javacoded78.constants.PathConstants.DIRECT;
+import static com.gmail.javacoded78.constants.PathConstants.EMAIL;
+import static com.gmail.javacoded78.constants.PathConstants.LANGUAGE;
+import static com.gmail.javacoded78.constants.PathConstants.PRIVATE;
 import static com.gmail.javacoded78.constants.PathConstants.UI_V1_USER_SETTINGS_UPDATE;
 import static com.gmail.javacoded78.util.TestConstants.ABOUT;
 import static com.gmail.javacoded78.util.TestConstants.AVATAR_SRC_1;
@@ -62,10 +71,10 @@ public class UserSettingsControllerTest {
     public void updateUsername() throws Exception {
         SettingsRequest request = new SettingsRequest();
         request.setUsername("test");
-        mockMvc.perform(put(UI_V1_USER_SETTINGS_UPDATE + "/username")
+        mockMvc.perform(put(UI_V1_USER_SETTINGS_UPDATE + USERNAME)
                         .content(mapper.writeValueAsString(request))
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
-                        .header(AUTH_USER_ID_HEADER, USER_ID))
+                        .header(AUTH_USER_ID_HEADER, TestConstants.USER_ID))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", is("test")));
     }
@@ -75,25 +84,25 @@ public class UserSettingsControllerTest {
     public void updateUsername_ShouldUsernameLengthIs0() throws Exception {
         SettingsRequest request = new SettingsRequest();
         request.setUsername("");
-        mockMvc.perform(put(UI_V1_USER_SETTINGS_UPDATE + "/username")
+        mockMvc.perform(put(UI_V1_USER_SETTINGS_UPDATE + USERNAME)
                         .content(mapper.writeValueAsString(request))
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
-                        .header(AUTH_USER_ID_HEADER, USER_ID))
+                        .header(AUTH_USER_ID_HEADER, TestConstants.USER_ID))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$", is("Incorrect username length")));
+                .andExpect(jsonPath("$", is(INCORRECT_USERNAME_LENGTH)));
     }
 
     @Test
     @DisplayName("[400] PUT /ui/v1/settings/update/username - Should username length more than 50")
     public void updateUsername_ShouldUsernameLengthMoreThan50() throws Exception {
         SettingsRequest request = new SettingsRequest();
-        request.setUsername(LINK_DESCRIPTION);
-        mockMvc.perform(put(UI_V1_USER_SETTINGS_UPDATE + "/username")
+        request.setUsername(TestConstants.LINK_DESCRIPTION);
+        mockMvc.perform(put(UI_V1_USER_SETTINGS_UPDATE + USERNAME)
                         .content(mapper.writeValueAsString(request))
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
-                        .header(AUTH_USER_ID_HEADER, USER_ID))
+                        .header(AUTH_USER_ID_HEADER, TestConstants.USER_ID))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$", is("Incorrect username length")));
+                .andExpect(jsonPath("$", is(INCORRECT_USERNAME_LENGTH)));
     }
 
     @Test
@@ -101,36 +110,36 @@ public class UserSettingsControllerTest {
     public void updateEmail() throws Exception {
         SettingsRequest request = new SettingsRequest();
         request.setEmail("test2013@test.test");
-        mockMvc.perform(put(UI_V1_USER_SETTINGS_UPDATE + "/email")
+        mockMvc.perform(put(UI_V1_USER_SETTINGS_UPDATE + EMAIL)
                         .content(mapper.writeValueAsString(request))
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
-                        .header(AUTH_USER_ID_HEADER, USER_ID))
+                        .header(AUTH_USER_ID_HEADER, TestConstants.USER_ID))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.user.id").value(USER_ID))
+                .andExpect(jsonPath("$.user.id").value(TestConstants.USER_ID))
                 .andExpect(jsonPath("$.user.email").value("test2013@test.test"))
-                .andExpect(jsonPath("$.user.fullName").value(FULL_NAME))
-                .andExpect(jsonPath("$.user.username").value(USERNAME))
-                .andExpect(jsonPath("$.user.location").value(LOCATION))
-                .andExpect(jsonPath("$.user.about").value(ABOUT))
-                .andExpect(jsonPath("$.user.website").value(WEBSITE))
-                .andExpect(jsonPath("$.user.countryCode").value(COUNTRY))
-                .andExpect(jsonPath("$.user.phone").value(PHONE))
-                .andExpect(jsonPath("$.user.country").value(COUNTRY))
-                .andExpect(jsonPath("$.user.gender").value(GENDER))
-                .andExpect(jsonPath("$.user.birthday").value(BIRTHDAY))
-                .andExpect(jsonPath("$.user.registrationDate").value(REGISTRATION_DATE))
-                .andExpect(jsonPath("$.user.tweetCount").value(TWEET_COUNT))
-                .andExpect(jsonPath("$.user.mediaTweetCount").value(MEDIA_TWEET_COUNT))
-                .andExpect(jsonPath("$.user.likeCount").value(LIKE_TWEET_COUNT))
+                .andExpect(jsonPath("$.user.fullName").value(TestConstants.FULL_NAME))
+                .andExpect(jsonPath("$.user.username").value(TestConstants.USERNAME))
+                .andExpect(jsonPath("$.user.location").value(TestConstants.LOCATION))
+                .andExpect(jsonPath("$.user.about").value(TestConstants.ABOUT))
+                .andExpect(jsonPath("$.user.website").value(TestConstants.WEBSITE))
+                .andExpect(jsonPath("$.user.countryCode").value(TestConstants.COUNTRY))
+                .andExpect(jsonPath("$.user.phone").value(TestConstants.PHONE))
+                .andExpect(jsonPath("$.user.country").value(TestConstants.COUNTRY))
+                .andExpect(jsonPath("$.user.gender").value(TestConstants.GENDER))
+                .andExpect(jsonPath("$.user.birthday").value(TestConstants.BIRTHDAY))
+                .andExpect(jsonPath("$.user.registrationDate").value(TestConstants.REGISTRATION_DATE))
+                .andExpect(jsonPath("$.user.tweetCount").value(TestConstants.TWEET_COUNT))
+                .andExpect(jsonPath("$.user.mediaTweetCount").value(TestConstants.MEDIA_TWEET_COUNT))
+                .andExpect(jsonPath("$.user.likeCount").value(TestConstants.LIKE_TWEET_COUNT))
                 .andExpect(jsonPath("$.user.notificationsCount").value(3))
                 .andExpect(jsonPath("$.user.active").value(true))
                 .andExpect(jsonPath("$.user.profileCustomized").value(true))
                 .andExpect(jsonPath("$.user.profileStarted").value(true))
-                .andExpect(jsonPath("$.user.backgroundColor").value(BACKGROUND_COLOR))
-                .andExpect(jsonPath("$.user.colorScheme").value(COLOR_SCHEME))
-                .andExpect(jsonPath("$.user.avatar").value(AVATAR_SRC_1))
-                .andExpect(jsonPath("$.user.wallpaper").value(WALLPAPER_SRC))
-                .andExpect(jsonPath("$.user.pinnedTweetId").value(PINNED_TWEET_ID))
+                .andExpect(jsonPath("$.user.backgroundColor").value(TestConstants.BACKGROUND_COLOR))
+                .andExpect(jsonPath("$.user.colorScheme").value(TestConstants.COLOR_SCHEME))
+                .andExpect(jsonPath("$.user.avatar").value(TestConstants.AVATAR_SRC_1))
+                .andExpect(jsonPath("$.user.wallpaper").value(TestConstants.WALLPAPER_SRC))
+                .andExpect(jsonPath("$.user.pinnedTweetId").value(TestConstants.PINNED_TWEET_ID))
                 .andExpect(jsonPath("$.user.followersSize").value(2L))
                 .andExpect(jsonPath("$.user.followingSize").value(1L))
                 .andExpect(jsonPath("$.user.followerRequestsSize").value(1L))
@@ -144,12 +153,12 @@ public class UserSettingsControllerTest {
     public void updateEmail_ShouldUserEmailIsExist() throws Exception {
         SettingsRequest request = new SettingsRequest();
         request.setEmail("test2015@test.test");
-        mockMvc.perform(put(UI_V1_USER_SETTINGS_UPDATE + "/email")
+        mockMvc.perform(put(UI_V1_USER_SETTINGS_UPDATE + EMAIL)
                         .content(mapper.writeValueAsString(request))
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
-                        .header(AUTH_USER_ID_HEADER, USER_ID))
+                        .header(AUTH_USER_ID_HEADER, TestConstants.USER_ID))
                 .andExpect(status().isForbidden())
-                .andExpect(jsonPath("$", is("Email has already been taken.")));
+                .andExpect(jsonPath("$", is(EMAIL_HAS_ALREADY_BEEN_TAKEN)));
     }
 
     @Test
@@ -158,10 +167,10 @@ public class UserSettingsControllerTest {
         SettingsRequest request = new SettingsRequest();
         request.setCountryCode("UK");
         request.setPhone(123456789L);
-        mockMvc.perform(put(UI_V1_USER_SETTINGS_UPDATE + "/phone")
+        mockMvc.perform(put(UI_V1_USER_SETTINGS_UPDATE + PHONE)
                         .content(mapper.writeValueAsString(request))
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
-                        .header(AUTH_USER_ID_HEADER, USER_ID))
+                        .header(AUTH_USER_ID_HEADER, TestConstants.USER_ID))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.countryCode").value("UK"))
                 .andExpect(jsonPath("$.phone").value(123456789L));
@@ -173,12 +182,12 @@ public class UserSettingsControllerTest {
         SettingsRequest request = new SettingsRequest();
         request.setCountryCode("UK");
         request.setPhone(123L);
-        mockMvc.perform(put(UI_V1_USER_SETTINGS_UPDATE + "/phone")
+        mockMvc.perform(put(UI_V1_USER_SETTINGS_UPDATE + PHONE)
                         .content(mapper.writeValueAsString(request))
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
-                        .header(AUTH_USER_ID_HEADER, USER_ID))
+                        .header(AUTH_USER_ID_HEADER, TestConstants.USER_ID))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$", is("Not valid phone number")));
+                .andExpect(jsonPath("$", is(INVALID_PHONE_NUMBER)));
     }
 
     @Test
@@ -187,12 +196,12 @@ public class UserSettingsControllerTest {
         SettingsRequest request = new SettingsRequest();
         request.setCountryCode("UK");
         request.setPhone(12345678900L);
-        mockMvc.perform(put(UI_V1_USER_SETTINGS_UPDATE + "/phone")
+        mockMvc.perform(put(UI_V1_USER_SETTINGS_UPDATE + PHONE)
                         .content(mapper.writeValueAsString(request))
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
-                        .header(AUTH_USER_ID_HEADER, USER_ID))
+                        .header(AUTH_USER_ID_HEADER, TestConstants.USER_ID))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$", is("Not valid phone number")));
+                .andExpect(jsonPath("$", is(INVALID_PHONE_NUMBER)));
     }
 
     @Test
@@ -200,10 +209,10 @@ public class UserSettingsControllerTest {
     public void updateCountry() throws Exception {
         SettingsRequest request = new SettingsRequest();
         request.setCountry("UK");
-        mockMvc.perform(put(UI_V1_USER_SETTINGS_UPDATE + "/country")
+        mockMvc.perform(put(UI_V1_USER_SETTINGS_UPDATE + COUNTRY)
                         .content(mapper.writeValueAsString(request))
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
-                        .header(AUTH_USER_ID_HEADER, USER_ID))
+                        .header(AUTH_USER_ID_HEADER, TestConstants.USER_ID))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", is("UK")));
     }
@@ -213,10 +222,10 @@ public class UserSettingsControllerTest {
     public void updateGender() throws Exception {
         SettingsRequest request = new SettingsRequest();
         request.setGender("Male");
-        mockMvc.perform(put(UI_V1_USER_SETTINGS_UPDATE + "/gender")
+        mockMvc.perform(put(UI_V1_USER_SETTINGS_UPDATE + GENDER)
                         .content(mapper.writeValueAsString(request))
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
-                        .header(AUTH_USER_ID_HEADER, USER_ID))
+                        .header(AUTH_USER_ID_HEADER, TestConstants.USER_ID))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", is("Male")));
     }
@@ -226,25 +235,25 @@ public class UserSettingsControllerTest {
     public void updateGender_ShouldGenderLengthIs0() throws Exception {
         SettingsRequest request = new SettingsRequest();
         request.setGender("");
-        mockMvc.perform(put(UI_V1_USER_SETTINGS_UPDATE + "/gender")
+        mockMvc.perform(put(UI_V1_USER_SETTINGS_UPDATE + GENDER)
                         .content(mapper.writeValueAsString(request))
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
-                        .header(AUTH_USER_ID_HEADER, USER_ID))
+                        .header(AUTH_USER_ID_HEADER, TestConstants.USER_ID))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$", is("Incorrect gender length")));
+                .andExpect(jsonPath("$", is(INVALID_GENDER_LENGTH)));
     }
 
     @Test
     @DisplayName("[400] PUT /ui/v1/settings/update/gender - Should gender length more than 30 characters")
     public void updateGender_ShouldGenderLengthMoreThan30() throws Exception {
         SettingsRequest request = new SettingsRequest();
-        request.setGender(LINK_DESCRIPTION);
-        mockMvc.perform(put(UI_V1_USER_SETTINGS_UPDATE + "/gender")
+        request.setGender(TestConstants.LINK_DESCRIPTION);
+        mockMvc.perform(put(UI_V1_USER_SETTINGS_UPDATE + GENDER)
                         .content(mapper.writeValueAsString(request))
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
-                        .header(AUTH_USER_ID_HEADER, USER_ID))
+                        .header(AUTH_USER_ID_HEADER, TestConstants.USER_ID))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$", is("Incorrect gender length")));
+                .andExpect(jsonPath("$", is(INVALID_GENDER_LENGTH)));
     }
 
     @Test
@@ -252,10 +261,10 @@ public class UserSettingsControllerTest {
     public void updateLanguage() throws Exception {
         SettingsRequest request = new SettingsRequest();
         request.setLanguage("English");
-        mockMvc.perform(put(UI_V1_USER_SETTINGS_UPDATE + "/language")
+        mockMvc.perform(put(UI_V1_USER_SETTINGS_UPDATE + LANGUAGE)
                         .content(mapper.writeValueAsString(request))
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
-                        .header(AUTH_USER_ID_HEADER, USER_ID))
+                        .header(AUTH_USER_ID_HEADER, TestConstants.USER_ID))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", is("English")));
     }
@@ -265,10 +274,10 @@ public class UserSettingsControllerTest {
     public void updateDirectMessageRequests() throws Exception {
         SettingsRequest request = new SettingsRequest();
         request.setMutedDirectMessages(false);
-        mockMvc.perform(put(UI_V1_USER_SETTINGS_UPDATE + "/direct")
+        mockMvc.perform(put(UI_V1_USER_SETTINGS_UPDATE + DIRECT)
                         .content(mapper.writeValueAsString(request))
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
-                        .header(AUTH_USER_ID_HEADER, USER_ID))
+                        .header(AUTH_USER_ID_HEADER, TestConstants.USER_ID))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", is(false)));
     }
@@ -278,10 +287,10 @@ public class UserSettingsControllerTest {
     public void updatePrivateProfile() throws Exception {
         SettingsRequest request = new SettingsRequest();
         request.setPrivateProfile(true);
-        mockMvc.perform(put(UI_V1_USER_SETTINGS_UPDATE + "/private")
+        mockMvc.perform(put(UI_V1_USER_SETTINGS_UPDATE + PRIVATE)
                         .content(mapper.writeValueAsString(request))
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
-                        .header(AUTH_USER_ID_HEADER, USER_ID))
+                        .header(AUTH_USER_ID_HEADER, TestConstants.USER_ID))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", is(true)));
     }
@@ -291,10 +300,10 @@ public class UserSettingsControllerTest {
     public void updateColorScheme() throws Exception {
         SettingsRequest request = new SettingsRequest();
         request.setColorScheme(ColorSchemeType.GREEN);
-        mockMvc.perform(put(UI_V1_USER_SETTINGS_UPDATE + "/color_scheme")
+        mockMvc.perform(put(UI_V1_USER_SETTINGS_UPDATE + COLOR_SCHEME)
                         .content(mapper.writeValueAsString(request))
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
-                        .header(AUTH_USER_ID_HEADER, USER_ID))
+                        .header(AUTH_USER_ID_HEADER, TestConstants.USER_ID))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", is("GREEN")));
     }
@@ -304,10 +313,10 @@ public class UserSettingsControllerTest {
     public void updateBackgroundColor() throws Exception {
         SettingsRequest request = new SettingsRequest();
         request.setBackgroundColor(BackgroundColorType.DIM);
-        mockMvc.perform(put(UI_V1_USER_SETTINGS_UPDATE + "/background_color")
+        mockMvc.perform(put(UI_V1_USER_SETTINGS_UPDATE + BACKGROUND_COLOR)
                         .content(mapper.writeValueAsString(request))
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
-                        .header(AUTH_USER_ID_HEADER, USER_ID))
+                        .header(AUTH_USER_ID_HEADER, TestConstants.USER_ID))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", is("DIM")));
     }

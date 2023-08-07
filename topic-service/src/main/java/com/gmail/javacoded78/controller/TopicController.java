@@ -16,6 +16,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+import static com.gmail.javacoded78.constants.PathConstants.CATEGORY;
+import static com.gmail.javacoded78.constants.PathConstants.FOLLOWED;
+import static com.gmail.javacoded78.constants.PathConstants.FOLLOWED_USER_ID;
+import static com.gmail.javacoded78.constants.PathConstants.FOLLOW_TOPIC_ID;
+import static com.gmail.javacoded78.constants.PathConstants.NOT_INTERESTED;
+import static com.gmail.javacoded78.constants.PathConstants.NOT_INTERESTED_TOPIC_ID;
+import static com.gmail.javacoded78.constants.PathConstants.SUGGESTED;
 import static com.gmail.javacoded78.constants.PathConstants.UI_V1_TOPICS;
 
 @RestController
@@ -25,37 +32,37 @@ public class TopicController {
 
     private final TopicMapper topicMapper;
 
-    @PostMapping("/suggested")
+    @PostMapping(SUGGESTED)
     public ResponseEntity<List<TopicResponse>> getTopicsByIds(@RequestBody SuggestedTopicsRequest request) {
         return ResponseEntity.ok(topicMapper.getTopicsByIds(request.getTopicsIds()));
     }
 
-    @PostMapping("/category")
+    @PostMapping(CATEGORY)
     public ResponseEntity<List<TopicsByCategoriesResponse>> getTopicsByCategories(@RequestBody TopicsCategoriesRequest request) {
         return ResponseEntity.ok(topicMapper.getTopicsByCategories(request.getCategories()));
     }
 
-    @GetMapping("/followed")
+    @GetMapping(FOLLOWED)
     public ResponseEntity<List<TopicResponse>> getFollowedTopics() {
         return ResponseEntity.ok(topicMapper.getFollowedTopics());
     }
 
-    @GetMapping("/followed/{userId}")
+    @GetMapping(FOLLOWED_USER_ID)
     public ResponseEntity<List<TopicResponse>> getFollowedTopicsByUserId(@PathVariable("userId") Long userId) {
         return ResponseEntity.ok(topicMapper.getFollowedTopicsByUserId(userId));
     }
 
-    @GetMapping("/not_interested")
+    @GetMapping(NOT_INTERESTED)
     public ResponseEntity<List<TopicResponse>> getNotInterestedTopics() {
         return ResponseEntity.ok(topicMapper.getNotInterestedTopics());
     }
 
-    @GetMapping("/not_interested/{topicId}")
+    @GetMapping(NOT_INTERESTED_TOPIC_ID)
     public ResponseEntity<Boolean> processNotInterestedTopic(@PathVariable("topicId") Long topicId) {
         return ResponseEntity.ok(topicMapper.processNotInterestedTopic(topicId));
     }
 
-    @GetMapping("/follow/{topicId}")
+    @GetMapping(FOLLOW_TOPIC_ID)
     public ResponseEntity<Boolean> processFollowTopic(@PathVariable("topicId") Long topicId) {
         return ResponseEntity.ok(topicMapper.processFollowTopic(topicId));
     }

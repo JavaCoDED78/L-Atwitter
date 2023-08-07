@@ -13,7 +13,17 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import static com.gmail.javacoded78.constants.PathConstants.BACKGROUND_COLOR;
+import static com.gmail.javacoded78.constants.PathConstants.COLOR_SCHEME;
+import static com.gmail.javacoded78.constants.PathConstants.COUNTRY;
+import static com.gmail.javacoded78.constants.PathConstants.DIRECT;
+import static com.gmail.javacoded78.constants.PathConstants.EMAIL;
+import static com.gmail.javacoded78.constants.PathConstants.GENDER;
+import static com.gmail.javacoded78.constants.PathConstants.LANGUAGE;
+import static com.gmail.javacoded78.constants.PathConstants.PHONE;
+import static com.gmail.javacoded78.constants.PathConstants.PRIVATE;
 import static com.gmail.javacoded78.constants.PathConstants.UI_V1_USER_SETTINGS_UPDATE;
+import static com.gmail.javacoded78.constants.PathConstants.USERNAME;
 
 @RestController
 @RequiredArgsConstructor
@@ -22,52 +32,52 @@ public class UserSettingsController {
 
     private final UserSettingsMapper userSettingsMapper;
 
-    @PutMapping("/username")
+    @PutMapping(USERNAME)
     public ResponseEntity<String> updateUsername(@RequestBody SettingsRequest request) {
         return ResponseEntity.ok(userSettingsMapper.updateUsername(request));
     }
 
-    @PutMapping("/email")
+    @PutMapping(EMAIL)
     public ResponseEntity<AuthenticationResponse> updateEmail(@RequestBody SettingsRequest request) {
         return ResponseEntity.ok(userSettingsMapper.updateEmail(request));
     }
 
-    @PutMapping("/phone")
+    @PutMapping(PHONE)
     public ResponseEntity<UserPhoneResponse> updatePhone(@RequestBody SettingsRequest request) {
         return ResponseEntity.ok(userSettingsMapper.updatePhone(request));
     }
 
-    @PutMapping("/country")
+    @PutMapping(COUNTRY)
     public ResponseEntity<String> updateCountry(@RequestBody SettingsRequest request) {
         return ResponseEntity.ok(userSettingsMapper.updateCountry(request));
     }
 
-    @PutMapping("/gender")
+    @PutMapping(GENDER)
     public ResponseEntity<String> updateGender(@RequestBody SettingsRequest request) {
         return ResponseEntity.ok(userSettingsMapper.updateGender(request));
     }
 
-    @PutMapping("/language")
+    @PutMapping(LANGUAGE)
     public ResponseEntity<String> updateLanguage(@RequestBody SettingsRequest request) {
         return ResponseEntity.ok(userSettingsMapper.updateLanguage(request));
     }
 
-    @PutMapping("/direct")
+    @PutMapping(DIRECT)
     public ResponseEntity<Boolean> updateDirectMessageRequests(@RequestBody SettingsRequest request) {
         return ResponseEntity.ok(userSettingsMapper.updateDirectMessageRequests(request));
     }
 
-    @PutMapping("/private")
+    @PutMapping(PRIVATE)
     public ResponseEntity<Boolean> updatePrivateProfile(@RequestBody SettingsRequest request) {
         return ResponseEntity.ok(userSettingsMapper.updatePrivateProfile(request));
     }
 
-    @PutMapping("/color_scheme")
+    @PutMapping(COLOR_SCHEME)
     public ResponseEntity<ColorSchemeType> updateColorScheme(@RequestBody SettingsRequest request) {
         return ResponseEntity.ok(userSettingsMapper.updateColorScheme(request));
     }
 
-    @PutMapping("/background_color")
+    @PutMapping(BACKGROUND_COLOR)
     public ResponseEntity<BackgroundColorType> updateBackgroundColor(@RequestBody SettingsRequest request) {
         return ResponseEntity.ok(userSettingsMapper.updateBackgroundColor(request));
     }

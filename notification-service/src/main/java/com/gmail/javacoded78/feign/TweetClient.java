@@ -16,17 +16,20 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 import static com.gmail.javacoded78.constants.FeignConstants.TWEET_SERVICE;
 import static com.gmail.javacoded78.constants.PathConstants.API_V1_TWEETS;
+import static com.gmail.javacoded78.constants.PathConstants.IDS;
+import static com.gmail.javacoded78.constants.PathConstants.NOTIFICATION_TWEET_ID;
+import static com.gmail.javacoded78.constants.PathConstants.TWEET_ID;
 
 @CircuitBreaker(name = TWEET_SERVICE)
-@FeignClient(name = TWEET_SERVICE, configuration = FeignConfiguration.class)
+@FeignClient(name = TWEET_SERVICE, path = API_V1_TWEETS, configuration = FeignConfiguration.class)
 public interface TweetClient {
 
-    @GetMapping(API_V1_TWEETS + "/{tweetId}")
+    @GetMapping(TWEET_ID)
     TweetResponse getTweetById(@PathVariable("tweetId") Long tweetId);
 
-    @GetMapping(API_V1_TWEETS + "/notification/{tweetId}")
+    @GetMapping(NOTIFICATION_TWEET_ID)
     NotificationTweetResponse getNotificationTweet(@PathVariable("tweetId") Long tweetId);
 
-    @PostMapping(API_V1_TWEETS + "/ids")
+    @PostMapping(IDS)
     HeaderResponse<TweetResponse> getTweetsByIds(@RequestBody IdsRequest idsRequest, @SpringQueryMap Pageable pageable);
 }

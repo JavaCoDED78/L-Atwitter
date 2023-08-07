@@ -13,7 +13,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import static com.gmail.javacoded78.constants.PathConstants.POLL;
 import static com.gmail.javacoded78.constants.PathConstants.UI_V1_TWEETS;
+import static com.gmail.javacoded78.constants.PathConstants.VOTE;
 import static com.gmail.javacoded78.constants.WebsocketConstants.TOPIC_FEED;
 import static com.gmail.javacoded78.constants.WebsocketConstants.TOPIC_FEED_ADD;
 import static com.gmail.javacoded78.constants.WebsocketConstants.TOPIC_TWEET;
@@ -27,7 +29,7 @@ public class PollController {
     private final PollMapper pollMapper;
     private final WebSocketClient webSocketClient;
 
-    @PostMapping("/poll")
+    @PostMapping(POLL)
     public ResponseEntity<TweetResponse> createPoll(@RequestBody TweetRequest tweetRequest) {
         TweetResponse tweet = pollMapper.createPoll(tweetRequest);
         webSocketClient.send(TOPIC_FEED_ADD, tweet);
@@ -35,7 +37,7 @@ public class PollController {
         return ResponseEntity.ok(tweet);
     }
 
-    @PostMapping("/vote") // TODO validate and fix
+    @PostMapping(VOTE) // TODO validate and fix
     public ResponseEntity<TweetResponse> voteInPoll(@RequestBody VoteRequest voteRequest) {
         TweetResponse tweet = pollMapper.voteInPoll(voteRequest);
         webSocketClient.send(TOPIC_FEED, tweet);

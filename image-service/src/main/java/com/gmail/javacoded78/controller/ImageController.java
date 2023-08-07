@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import static com.gmail.javacoded78.constants.PathConstants.API_V1_IMAGE;
+import static com.gmail.javacoded78.constants.PathConstants.UPLOAD;
 
 @RestController
 @RequiredArgsConstructor
@@ -17,7 +18,7 @@ public class ImageController {
 
     private final ImageService imageService;
 
-    @PostMapping("/upload")
+    @PostMapping(UPLOAD)
     public String uploadImage(@RequestPart("file") MultipartFile file) {
         return imageService.uploadImage(file);
     }

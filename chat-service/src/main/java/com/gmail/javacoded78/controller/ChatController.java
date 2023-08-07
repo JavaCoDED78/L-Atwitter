@@ -23,7 +23,17 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+import static com.gmail.javacoded78.constants.PathConstants.ADD_MESSAGE;
+import static com.gmail.javacoded78.constants.PathConstants.ADD_MESSAGE_TWEET;
+import static com.gmail.javacoded78.constants.PathConstants.CHAT_ID;
+import static com.gmail.javacoded78.constants.PathConstants.CHAT_ID_MESSAGES;
+import static com.gmail.javacoded78.constants.PathConstants.CHAT_ID_READ_MESSAGES;
+import static com.gmail.javacoded78.constants.PathConstants.CREATE_USER_ID;
+import static com.gmail.javacoded78.constants.PathConstants.LEAVE_CHAT_ID;
+import static com.gmail.javacoded78.constants.PathConstants.PARTICIPANT_CHAT_ID;
+import static com.gmail.javacoded78.constants.PathConstants.SEARCH_USERNAME;
 import static com.gmail.javacoded78.constants.PathConstants.UI_V1_CHAT;
+import static com.gmail.javacoded78.constants.PathConstants.USERS;
 import static com.gmail.javacoded78.constants.WebsocketConstants.TOPIC_CHAT;
 
 @RestController
@@ -32,63 +42,19 @@ import static com.gmail.javacoded78.constants.WebsocketConstants.TOPIC_CHAT;
 public class ChatController {
 
     private final ChatMapper chatMapper;
-    private final WebSocketClient webSocketClient;
 
-    @GetMapping("/{chatId}")
+    @GetMapping(CHAT_ID)
     public ResponseEntity<ChatResponse> getChatById(@PathVariable("chatId") Long chatId) {
         return ResponseEntity.ok(chatMapper.getChatById(chatId));
     }
 
-    @GetMapping("/users")
+    @GetMapping(USERS)
     public ResponseEntity<List<ChatResponse>> getUserChats() {
         return ResponseEntity.ok(chatMapper.getUserChats());
     }
 
-    @GetMapping("/create/{userId}")
+    @GetMapping(CREATE_USER_ID)
     public ResponseEntity<ChatResponse> createChat(@PathVariable("userId") Long userId) {
         return ResponseEntity.ok(chatMapper.createChat(userId));
-    }
-
-    @GetMapping("/{chatId}/messages")
-    public ResponseEntity<List<ChatMessageResponse>> getChatMessages(@PathVariable("chatId") Long chatId) {
-        return ResponseEntity.ok(chatMapper.getChatMessages(chatId));
-    }
-
-    @GetMapping("/{chatId}/read/messages")
-    public ResponseEntity<Long> readChatMessages(@PathVariable("chatId") Long chatId) {
-        return ResponseEntity.ok(chatMapper.readChatMessages(chatId));
-    }
-
-    @PostMapping("/add/message")
-    public ResponseEntity<Void> addMessage(@RequestBody ChatMessageRequest request) {
-        chatMapper.addMessage(request)
-                .forEach((userId, message) -> webSocketClient.send(TOPIC_CHAT + userId, message));
-        return ResponseEntity.ok().build();
-    }
-
-    @PostMapping("/add/message/tweet")
-    public ResponseEntity<Void> addMessageWithTweet(@RequestBody MessageWithTweetRequest request) {
-        chatMapper.addMessageWithTweet(request)
-                .forEach((userId, message) -> webSocketClient.send(TOPIC_CHAT + userId, message));
-        return ResponseEntity.ok().build();
-    }
-
-    @GetMapping("/participant/{participantId}/{chatId}")
-    public ResponseEntity<UserResponse> getParticipant(@PathVariable("participantId") Long participantId,
-                                                       @PathVariable("chatId") Long chatId) {
-        return ResponseEntity.ok(chatMapper.getParticipant(participantId, chatId));
-    }
-
-    @GetMapping("/leave/{participantId}/{chatId}")
-    public ResponseEntity<String> leaveFromConversation(@PathVariable("participantId") Long participantId,
-                                                        @PathVariable("chatId") Long chatId) {
-        return ResponseEntity.ok(chatMapper.leaveFromConversation(participantId, chatId));
-    }
-
-    @GetMapping("/search/{username}")
-    public ResponseEntity<List<UserChatResponse>> searchParticipantsByUsername(@PathVariable("username") String username,
-                                                                               @PageableDefault(size = 15) Pageable pageable) {
-        HeaderResponse<UserChatResponse> response = chatMapper.searchParticipantsByUsername(username, pageable);
-        return ResponseEntity.ok().headers(response.getHeaders()).body(response.getItems());
     }
 }

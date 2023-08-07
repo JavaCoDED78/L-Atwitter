@@ -14,6 +14,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import static com.gmail.javacoded78.constants.PathConstants.API_V1_NOTIFICATION;
+import static com.gmail.javacoded78.constants.PathConstants.LIST;
+import static com.gmail.javacoded78.constants.PathConstants.TWEET;
+import static com.gmail.javacoded78.constants.PathConstants.TWEET_TWEET_ID;
+import static com.gmail.javacoded78.constants.PathConstants.USER;
 import static com.gmail.javacoded78.constants.WebsocketConstants.TOPIC_FEED;
 import static com.gmail.javacoded78.constants.WebsocketConstants.TOPIC_NOTIFICATIONS;
 import static com.gmail.javacoded78.constants.WebsocketConstants.TOPIC_TWEET;
@@ -26,7 +30,7 @@ public class NotificationApiController {
     private final NotificationClientMapper notificationClientMapper;
     private final WebSocketClient webSocketClient;
 
-    @PostMapping("/list")
+    @PostMapping(LIST)
     public void sendListNotification(@RequestBody NotificationRequest request) {
         NotificationResponse notification = notificationClientMapper.sendNotification(request);
 
@@ -35,7 +39,7 @@ public class NotificationApiController {
         }
     }
 
-    @PostMapping("/user")
+    @PostMapping(USER)
     public void sendUserNotification(@RequestBody NotificationRequest request) {
         NotificationResponse notification = notificationClientMapper.sendNotification(request);
 
@@ -44,7 +48,7 @@ public class NotificationApiController {
         }
     }
 
-    @PostMapping("/tweet")
+    @PostMapping(TWEET)
     public NotificationResponse sendTweetNotification(@RequestBody NotificationRequest request) {
         NotificationResponse notification = notificationClientMapper.sendNotification(request);
 
@@ -56,7 +60,7 @@ public class NotificationApiController {
         return notification;
     }
 
-    @GetMapping("/tweet/{tweetId}")
+    @GetMapping(TWEET_TWEET_ID)
     public void sendTweetNotificationToSubscribers(@PathVariable("tweetId") Long tweetId) {
         notificationClientMapper.sendTweetNotificationToSubscribers(tweetId);
     }

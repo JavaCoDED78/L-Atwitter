@@ -1,6 +1,7 @@
 package com.gmail.javacoded78.controller.rest;
 
 import com.gmail.javacoded78.enums.ReplyType;
+import com.gmail.javacoded78.util.TestConstants;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +12,8 @@ import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static com.gmail.javacoded78.constants.PathConstants.AUTH_USER_ID_HEADER;
+import static com.gmail.javacoded78.constants.PathConstants.SEARCH;
+import static com.gmail.javacoded78.constants.PathConstants.TRENDS;
 import static com.gmail.javacoded78.constants.PathConstants.UI_V1_TAGS;
 import static com.gmail.javacoded78.util.TestConstants.LINK;
 import static com.gmail.javacoded78.util.TestConstants.LINK_COVER;
@@ -41,7 +44,7 @@ public class TagControllerTest {
     @DisplayName("[200] GET /ui/v1/tags - Get all tags")
     public void getTags() throws Exception {
         mockMvc.perform(get(UI_V1_TAGS)
-                        .header(AUTH_USER_ID_HEADER, USER_ID))
+                        .header(AUTH_USER_ID_HEADER, TestConstants.USER_ID))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[*]", hasSize(2)))
                 .andExpect(jsonPath("$[*].id").isNotEmpty())
@@ -52,8 +55,8 @@ public class TagControllerTest {
     @Test
     @DisplayName("[200] GET /ui/v1/tags/trends - Get trends")
     public void getTrends() throws Exception {
-        mockMvc.perform(get(UI_V1_TAGS + "/trends")
-                        .header(AUTH_USER_ID_HEADER, USER_ID))
+        mockMvc.perform(get(UI_V1_TAGS + TRENDS)
+                        .header(AUTH_USER_ID_HEADER, TestConstants.USER_ID))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[*]", hasSize(2)))
                 .andExpect(jsonPath("$[*].id").isNotEmpty())
@@ -64,23 +67,23 @@ public class TagControllerTest {
     @Test
     @DisplayName("[200] GET /ui/v1/tags/search?tagName=#JetBrains - Get tweets by hashtag")
     public void getTweetsByTag() throws Exception {
-        mockMvc.perform(get(UI_V1_TAGS + "/search")
+        mockMvc.perform(get(UI_V1_TAGS + SEARCH)
                         .param("tagName", "#JetBrains")
-                        .header(AUTH_USER_ID_HEADER, USER_ID))
+                        .header(AUTH_USER_ID_HEADER, TestConstants.USER_ID))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[*]", hasSize(1)))
                 .andExpect(jsonPath("$[0].id").value(43L))
-                .andExpect(jsonPath("$[0].text").value(TWEET_TEXT))
-                .andExpect(jsonPath("$[0].dateTime").value(TWEET_DATETIME))
+                .andExpect(jsonPath("$[0].text").value(TestConstants.TWEET_TEXT))
+                .andExpect(jsonPath("$[0].dateTime").value(TestConstants.TWEET_DATETIME))
                 .andExpect(jsonPath("$[0].scheduledDate").isEmpty())
                 .andExpect(jsonPath("$[0].addressedUsername").isEmpty())
                 .andExpect(jsonPath("$[0].addressedId").isEmpty())
                 .andExpect(jsonPath("$[0].addressedTweetId").isEmpty())
                 .andExpect(jsonPath("$[0].replyType").value(ReplyType.EVERYONE.toString()))
-                .andExpect(jsonPath("$[0].link").value(LINK))
-                .andExpect(jsonPath("$[0].linkTitle").value(LINK_TITLE))
-                .andExpect(jsonPath("$[0].linkDescription").value(LINK_DESCRIPTION))
-                .andExpect(jsonPath("$[0].linkCover").value(LINK_COVER))
+                .andExpect(jsonPath("$[0].link").value(TestConstants.LINK))
+                .andExpect(jsonPath("$[0].linkTitle").value(TestConstants.LINK_TITLE))
+                .andExpect(jsonPath("$[0].linkDescription").value(TestConstants.LINK_DESCRIPTION))
+                .andExpect(jsonPath("$[0].linkCover").value(TestConstants.LINK_COVER))
                 .andExpect(jsonPath("$[0].linkCoverSize").value("LARGE"))
                 .andExpect(jsonPath("$[0].user.id").value(2L))
                 .andExpect(jsonPath("$[0].images").isEmpty())

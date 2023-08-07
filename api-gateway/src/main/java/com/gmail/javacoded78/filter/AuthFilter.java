@@ -8,7 +8,11 @@ import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFac
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
+import static com.gmail.javacoded78.constants.ErrorMessage.JWT_TOKEN_EXPIRED;
+import static com.gmail.javacoded78.constants.FeignConstants.USER_SERVICE;
+import static com.gmail.javacoded78.constants.PathConstants.API_V1_AUTH;
 import static com.gmail.javacoded78.constants.PathConstants.AUTH_USER_ID_HEADER;
+import static com.gmail.javacoded78.constants.PathConstants.USER_EMAIL;
 
 @Component
 public class AuthFilter extends AbstractGatewayFilterFactory<AuthFilter.Config> {
@@ -31,7 +35,7 @@ public class AuthFilter extends AbstractGatewayFilterFactory<AuthFilter.Config> 
             if (token != null && isTokenValid) {
                 String email = jwtProvider.parseToken(token);
                 UserPrincipalResponse user = restTemplate.getForObject(
-                        "http://user-service:8001/api/v1/auth/user/{email}",
+                        String.format("http://%s:8001%s", USER_SERVICE, API_V1_AUTH + USER_EMAIL),
                         UserPrincipalResponse.class,
                         email
                 );
@@ -45,7 +49,7 @@ public class AuthFilter extends AbstractGatewayFilterFactory<AuthFilter.Config> 
                         .build();
                 return chain.filter(exchange);
             } else {
-                throw new JwtAuthenticationException("JWT token is expired or invalid");
+                throw new JwtAuthenticationException(JWT_TOKEN_EXPIRED);
             }
         };
     }

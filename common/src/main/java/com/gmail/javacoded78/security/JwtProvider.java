@@ -15,6 +15,8 @@ import javax.annotation.PostConstruct;
 import java.util.Base64;
 import java.util.Date;
 
+import static com.gmail.javacoded78.constants.ErrorMessage.JWT_TOKEN_EXPIRED;
+
 @Component
 @RequiredArgsConstructor
 public class JwtProvider {
@@ -22,7 +24,7 @@ public class JwtProvider {
     @Value("${jwt.header:Authorization}")
     private String authorizationHeader;
 
-    @Value("${jwt.secret:dejavudejavudejavudejavudejavudejavudejavudejavudejavudejavu}")
+    @Value("${jwt.secret:dejavu}")
     private String secretKey;
 
     @Value("${jwt.expiration:6048000}")
@@ -56,7 +58,7 @@ public class JwtProvider {
             Jws<Claims> claimsJws = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
             return !claimsJws.getBody().getExpiration().before(new Date());
         } catch (JwtException | IllegalArgumentException exception) {
-            throw new JwtAuthenticationException("JWT token is expired or invalid", HttpStatus.UNAUTHORIZED);
+            throw new JwtAuthenticationException(JWT_TOKEN_EXPIRED, HttpStatus.UNAUTHORIZED);
         }
     }
 

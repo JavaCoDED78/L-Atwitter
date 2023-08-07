@@ -20,6 +20,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+import static com.gmail.javacoded78.constants.ErrorMessage.INCORRECT_USERNAME_LENGTH;
+import static com.gmail.javacoded78.constants.ErrorMessage.TWEET_NOT_FOUND;
+import static com.gmail.javacoded78.constants.ErrorMessage.USER_NOT_FOUND;
+
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
@@ -32,7 +36,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserProfileProjection getUserById(Long userId) {
         return userRepository.getUserById(userId, UserProfileProjection.class)
-                .orElseThrow(() -> new ApiRequestException("User not found", HttpStatus.NOT_FOUND));
+                .orElseThrow(() -> new ApiRequestException(USER_NOT_FOUND, HttpStatus.NOT_FOUND));
     }
 
     @Override
@@ -63,7 +67,7 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public AuthUserProjection updateUserProfile(User userInfo) {
         if (userInfo.getFullName().length() == 0 || userInfo.getFullName().length() > 50) {
-            throw new ApiRequestException("Incorrect username length", HttpStatus.BAD_REQUEST);
+            throw new ApiRequestException(INCORRECT_USERNAME_LENGTH, HttpStatus.BAD_REQUEST);
         }
         User user = authenticationService.getAuthenticatedUser();
 
@@ -101,7 +105,7 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public Long processPinTweet(Long tweetId) {
         if (!tweetClient.isTweetExists(tweetId)) {
-            throw new ApiRequestException("Tweet not found", HttpStatus.NOT_FOUND);
+            throw new ApiRequestException(TWEET_NOT_FOUND, HttpStatus.NOT_FOUND);
         }
         Long authUserId = authenticationService.getAuthenticatedUserId();
         Long pinnedTweetId = userRepository.getPinnedTweetId(authUserId);
@@ -119,6 +123,6 @@ public class UserServiceImpl implements UserService {
     public UserDetailProjection getUserDetails(Long userId) {
         userServiceHelper.checkIsUserExistOrMyProfileBlocked(userId);
         return userRepository.getUserById(userId, UserDetailProjection.class)
-                .orElseThrow(() -> new ApiRequestException("User not found", HttpStatus.NOT_FOUND));
+                .orElseThrow(() -> new ApiRequestException(USER_NOT_FOUND, HttpStatus.NOT_FOUND));
     }
 }
