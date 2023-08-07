@@ -19,7 +19,6 @@ import java.util.List;
 public class TweetClientServiceImpl implements TweetClientService {
 
     private final TweetRepository tweetRepository;
-    private final TweetServiceHelper tweetServiceHelper;
 
     @Override
     public List<TweetProjection> getTweetsByIds(IdsRequest requests) {

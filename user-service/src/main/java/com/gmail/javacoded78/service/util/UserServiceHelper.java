@@ -1,6 +1,7 @@
-package com.gmail.javacoded78.util;
+package com.gmail.javacoded78.service.util;
 
 import com.gmail.javacoded78.exception.ApiRequestException;
+import com.gmail.javacoded78.exception.InputFieldException;
 import com.gmail.javacoded78.repository.BlockUserRepository;
 import com.gmail.javacoded78.repository.FollowerUserRepository;
 import com.gmail.javacoded78.repository.MuteUserRepository;
@@ -8,8 +9,10 @@ import com.gmail.javacoded78.repository.UserRepository;
 import com.gmail.javacoded78.repository.projection.SameFollower;
 import com.gmail.javacoded78.service.AuthenticationService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
+import org.springframework.validation.BindingResult;
 
 import java.util.List;
 
@@ -21,11 +24,18 @@ import static com.gmail.javacoded78.constants.ErrorMessage.USER_PROFILE_BLOCKED;
 @RequiredArgsConstructor
 public class UserServiceHelper {
 
+    @Lazy
     private final AuthenticationService authenticationService;
     private final UserRepository userRepository;
     private final FollowerUserRepository followerUserRepository;
     private final BlockUserRepository blockUserRepository;
     private final MuteUserRepository muteUserRepository;
+
+    public void processInputErrors(BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            throw new InputFieldException(bindingResult);
+        }
+    }
 
     public void validateUserProfile(Long userId) {
         checkIsUserExist(userId);

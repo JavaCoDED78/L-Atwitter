@@ -13,6 +13,7 @@ import com.gmail.javacoded78.repository.projection.UserCommonProjection;
 import com.gmail.javacoded78.repository.projection.UserPrincipalProjection;
 import com.gmail.javacoded78.security.JwtProvider;
 import com.gmail.javacoded78.service.AuthenticationService;
+import com.gmail.javacoded78.service.util.UserServiceHelper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -45,6 +46,7 @@ import static com.gmail.javacoded78.constants.PathConstants.AUTH_USER_ID_HEADER;
 public class AuthenticationServiceImpl implements AuthenticationService {
 
     private final UserRepository userRepository;
+    private final UserServiceHelper userServiceHelper;
     private final PasswordEncoder passwordEncoder;
     private final JwtProvider jwtProvider;
     private final EmailClient emailClient;
@@ -68,80 +70,11 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     @Override
     public Map<String, Object> login(AuthenticationRequest request, BindingResult bindingResult) {
-        processInputErrors(bindingResult);
+        userServiceHelper.processInputErrors(bindingResult);
         AuthUserProjection user = userRepository.getUserByEmail(request.getEmail(), AuthUserProjection.class)
                 .orElseThrow(() -> new ApiRequestException(USER_NOT_FOUND, HttpStatus.NOT_FOUND));
         String token = jwtProvider.createToken(request.getEmail(), "USER");
-        Map<String, Object> response = new HashMap<>();
-        response.put("user", user);
-        response.put("token", token);
-        return response;
-    }
-
-    @Override
-    @Transactional
-    public String registration(RegistrationRequest request, BindingResult bindingResult) {
-        processInputErrors(bindingResult);
-        Optional<User> existingUser = userRepository.getUserByEmail(request.getEmail(), User.class);
-
-        if (existingUser.isEmpty()) {
-            User user = new User();
-            user.setEmail(request.getEmail());
-            user.setUsername(request.getUsername());
-            user.setFullName(request.getUsername());
-            user.setBirthday(request.getBirthday());
-            userRepository.save(user);
-            return "User data checked.";
-        }
-        if (!existingUser.get().isActive()) {
-            existingUser.get().setUsername(request.getUsername());
-            existingUser.get().setFullName(request.getUsername());
-            existingUser.get().setBirthday(request.getBirthday());
-            userRepository.save(existingUser.get());
-            return "User data checked.";
-        }
-        throw new ApiRequestException(EMAIL_HAS_ALREADY_BEEN_TAKEN, HttpStatus.FORBIDDEN);
-    }
-
-    @Override
-    @Transactional
-    public String sendRegistrationCode(String email, BindingResult bindingResult) {
-        processInputErrors(bindingResult);
-        UserCommonProjection user = userRepository.getUserByEmail(email, UserCommonProjection.class)
-                .orElseThrow(() -> new ApiRequestException(USER_NOT_FOUND, HttpStatus.NOT_FOUND));
-        userRepository.updateActivationCode(UUID.randomUUID().toString().substring(0, 7), user.getId());
-        Map<String, Object> attributes = new HashMap<>();
-        attributes.put("fullName", user.getFullName());
-        attributes.put("registrationCode", user.getActivationCode());
-        emailClient.sendEmail(new EmailRequest(user.getEmail(), "Registration code", "registration-template", attributes));
-        return "Registration code sent successfully";
-    }
-
-    @Override
-    @Transactional
-    public String checkRegistrationCode(String code) {
-        UserCommonProjection user = userRepository.getCommonUserByActivationCode(code)
-                .orElseThrow(() -> new ApiRequestException(ACTIVATION_CODE_NOT_FOUND, HttpStatus.NOT_FOUND));
-        userRepository.updateActivationCode(null, user.getId());
-        return "User successfully activated.";
-    }
-
-    @Override
-    @Transactional
-    public Map<String, Object> endRegistration(String email, String password, BindingResult bindingResult) {
-        processInputErrors(bindingResult);
-        if (password.length() < 8) {
-            throw new ApiRequestException(PASSWORD_LENGTH_ERROR, HttpStatus.BAD_REQUEST);
-        }
-        AuthUserProjection user = userRepository.getUserByEmail(email, AuthUserProjection.class)
-                .orElseThrow(() -> new ApiRequestException(USER_NOT_FOUND, HttpStatus.NOT_FOUND));
-        userRepository.updatePassword(passwordEncoder.encode(password), user.getId());
-        userRepository.updateActiveUserProfile(user.getId());
-        String token = jwtProvider.createToken(email, "USER");
-        Map<String, Object> response = new HashMap<>();
-        response.put("user", user);
-        response.put("token", token);
-        return response;
+        return Map.of("user", user, "token", token);
     }
 
     @Override
@@ -149,15 +82,12 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         AuthUserProjection user = userRepository.getUserById(getUserId(), AuthUserProjection.class)
                 .orElseThrow(() -> new ApiRequestException(USER_NOT_FOUND, HttpStatus.NOT_FOUND));
         String token = jwtProvider.createToken(user.getEmail(), "USER");
-        Map<String, Object> response = new HashMap<>();
-        response.put("user", user);
-        response.put("token", token);
-        return response;
+        return Map.of("user", user, "token", token);
     }
 
     @Override
     public String getExistingEmail(String email, BindingResult bindingResult) {
-        processInputErrors(bindingResult);
+        userServiceHelper.processInputErrors(bindingResult);
         userRepository.getUserByEmail(email, UserCommonProjection.class)
                 .orElseThrow(() -> new ApiRequestException(EMAIL_NOT_FOUND, HttpStatus.NOT_FOUND));
         return "Reset password code is send to your E-mail";
@@ -166,13 +96,13 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     @Override
     @Transactional
     public String sendPasswordResetCode(String email, BindingResult bindingResult) {
-        processInputErrors(bindingResult);
+        userServiceHelper.processInputErrors(bindingResult);
         UserCommonProjection user = userRepository.getUserByEmail(email, UserCommonProjection.class)
                 .orElseThrow(() -> new ApiRequestException(EMAIL_NOT_FOUND, HttpStatus.NOT_FOUND));
         userRepository.updatePasswordResetCode(UUID.randomUUID().toString().substring(0, 7), user.getId());
-        Map<String, Object> attributes = new HashMap<>();
-        attributes.put("fullName", user.getFullName());
-        attributes.put("passwordResetCode", user.getPasswordResetCode());
+        Map<String, Object> attributes = Map.of(
+                "fullName", user.getFullName(),
+                "passwordResetCode", user.getPasswordResetCode());
         emailClient.sendEmail(new EmailRequest(user.getEmail(), "Password reset", "password-reset-template", attributes));
         return "Reset password code is send to your E-mail";
     }
@@ -186,7 +116,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     @Override
     @Transactional
     public String passwordReset(String email, String password, String password2, BindingResult bindingResult) {
-        processInputErrors(bindingResult);
+        userServiceHelper.processInputErrors(bindingResult);
         checkMatchPasswords(password, password2);
         UserCommonProjection user = userRepository.getUserByEmail(email, UserCommonProjection.class)
                 .orElseThrow(() -> new InputFieldException(HttpStatus.NOT_FOUND, Map.of("email", EMAIL_NOT_FOUND)));
@@ -198,7 +128,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     @Override
     @Transactional
     public String currentPasswordReset(String currentPassword, String password, String password2, BindingResult bindingResult) {
-        processInputErrors(bindingResult);
+        userServiceHelper.processInputErrors(bindingResult);
         Long authUserId = getAuthenticatedUserId();
         String userPassword = userRepository.getUserPasswordById(authUserId);
 
@@ -214,12 +144,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         RequestAttributes attribs = RequestContextHolder.getRequestAttributes();
         HttpServletRequest request = ((ServletRequestAttributes) attribs).getRequest();
         return Long.parseLong(request.getHeader(AUTH_USER_ID_HEADER));
-    }
-
-    private void processInputErrors(BindingResult bindingResult) {
-        if (bindingResult.hasErrors()) {
-            throw new InputFieldException(bindingResult);
-        }
     }
 
     private void checkMatchPasswords(String password, String password2) {

@@ -21,7 +21,7 @@ import javax.persistence.Table;
 @Setter
 @NoArgsConstructor
 @RequiredArgsConstructor
-@EqualsAndHashCode
+@EqualsAndHashCode(of = "id")
 @Table(name = "tags", indexes = @Index(name = "tags_tag_name_idx", columnList = "tag_name"))
 public class Tag {
 

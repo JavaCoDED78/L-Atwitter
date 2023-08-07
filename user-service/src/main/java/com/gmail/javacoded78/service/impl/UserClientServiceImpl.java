@@ -27,7 +27,7 @@ import com.gmail.javacoded78.repository.projection.UserProjection;
 import com.gmail.javacoded78.service.AuthenticationService;
 import com.gmail.javacoded78.service.UserClientService;
 import com.gmail.javacoded78.util.AuthUtil;
-import com.gmail.javacoded78.util.UserServiceHelper;
+import com.gmail.javacoded78.service.util.UserServiceHelper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

@@ -2,9 +2,9 @@ package com.gmail.javacoded78.model;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -19,7 +19,8 @@ import java.util.List;
 @Entity
 @Getter
 @Setter
-@EqualsAndHashCode
+@NoArgsConstructor
+@EqualsAndHashCode(of = "id")
 @Table(name = "chats")
 public class Chat {
 

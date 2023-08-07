@@ -3,6 +3,7 @@ package com.gmail.javacoded78.model;
 import com.gmail.javacoded78.enums.TopicCategory;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.Column;
@@ -17,7 +18,8 @@ import javax.persistence.Table;
 @Entity
 @Getter
 @Setter
-@EqualsAndHashCode
+@NoArgsConstructor
+@EqualsAndHashCode(of = {"id", "topicName"})
 @Table(name = "topics")
 public class Topic {
 

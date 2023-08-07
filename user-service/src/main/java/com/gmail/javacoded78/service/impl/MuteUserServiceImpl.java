@@ -1,11 +1,10 @@
 package com.gmail.javacoded78.service.impl;
 
 import com.gmail.javacoded78.repository.MuteUserRepository;
-import com.gmail.javacoded78.repository.UserRepository;
 import com.gmail.javacoded78.repository.projection.MutedUserProjection;
 import com.gmail.javacoded78.service.AuthenticationService;
 import com.gmail.javacoded78.service.MuteUserService;
-import com.gmail.javacoded78.util.UserServiceHelper;
+import com.gmail.javacoded78.service.util.UserServiceHelper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

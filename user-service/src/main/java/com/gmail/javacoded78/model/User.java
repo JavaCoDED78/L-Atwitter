@@ -4,6 +4,7 @@ import com.gmail.javacoded78.enums.BackgroundColorType;
 import com.gmail.javacoded78.enums.ColorSchemeType;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.Column;
@@ -25,7 +26,8 @@ import java.util.List;
 @Entity
 @Getter
 @Setter
-@EqualsAndHashCode
+@NoArgsConstructor
+@EqualsAndHashCode(of = {"id", "email"})
 @Table(name = "users")
 public class User {
 

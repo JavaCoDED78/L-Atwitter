@@ -1,10 +1,10 @@
 server:
-  port: 8002
+  port: 8006
 spring:
   application:
-    name: tweet-service
+    name: chat-service
   datasource:
-    url: jdbc:postgresql://localhost:5432/tweet-test
+    url: jdbc:postgresql://localhost:5432/chat-test
     username: postgres
     password: root
     driverClassName: org.postgresql.Driver
@@ -17,11 +17,7 @@ spring:
   sql:
     init:
       mode: always
-      data-locations: classpath:sql-test/clear-tweet-db.sql, classpath:sql-test/populate-tweet-db.sql
-google:
-  api:
-    url: https://www.googleapis.com/youtube/v3/videos?id=%s&key=%s&part=snippet,contentDetails,statistics,status
-    key: AIzaSyBtQYzGSmcCzqOztibg1BgSTqv0xwg1D-M
+      data-locations: classpath:sql-test/clear-chat-db.sql, classpath:sql-test/populate-chat-db.sql
 eureka:
   client:
     service-url:

@@ -31,15 +31,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
-@Sql(value = {"/sql-test/populate-notification-db.sql"}, executionPhase = BEFORE_TEST_METHOD)
+@Sql(value = {"/sql-test/clear-notification-db.sql", "/sql-test/populate-notification-db.sql"}, executionPhase = BEFORE_TEST_METHOD)
 @Sql(value = {"/sql-test/clear-notification-db.sql"}, executionPhase = AFTER_TEST_METHOD)
 public class NotificationControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
-
-    @Autowired
-    private ObjectMapper mapper;
 
     @Test
     @DisplayName("[200] GET /ui/v1/notification/user - Get user notifications")

@@ -4,6 +4,7 @@ import com.gmail.javacoded78.enums.LinkCoverSize;
 import com.gmail.javacoded78.enums.ReplyType;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.Column;
@@ -27,7 +28,8 @@ import java.util.List;
 @Entity
 @Getter
 @Setter
-@EqualsAndHashCode(exclude = {"poll"})
+@NoArgsConstructor
+@EqualsAndHashCode(of = {"id", "authorId"})
 @Table(name = "tweets", indexes = @Index(name = "tweets_author_id_idx", columnList = "author_id"))
 public class Tweet {
 

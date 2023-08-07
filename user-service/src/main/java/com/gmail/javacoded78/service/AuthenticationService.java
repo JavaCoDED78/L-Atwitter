@@ -20,14 +20,6 @@ public interface AuthenticationService {
 
     Map<String, Object> login(AuthenticationRequest request, BindingResult bindingResult);
 
-    String registration(RegistrationRequest request, BindingResult bindingResult);
-
-    String sendRegistrationCode(String email, BindingResult bindingResult);
-
-    String checkRegistrationCode(String code);
-
-    Map<String, Object> endRegistration(String email, String password, BindingResult bindingResult);
-
     Map<String, Object> getUserByToken();
 
     String getExistingEmail(String email, BindingResult bindingResult);

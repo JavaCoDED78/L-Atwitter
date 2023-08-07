@@ -18,7 +18,7 @@ import javax.persistence.Table;
 @Entity
 @Getter
 @Setter
-@EqualsAndHashCode
+@EqualsAndHashCode(of = "id")
 @NoArgsConstructor
 @RequiredArgsConstructor
 @Table(name = "topic_not_interested")
