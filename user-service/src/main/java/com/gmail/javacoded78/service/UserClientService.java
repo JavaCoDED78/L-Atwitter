@@ -10,7 +10,7 @@ import com.gmail.javacoded78.dto.response.tweet.TweetAuthorResponse;
 import com.gmail.javacoded78.dto.response.user.UserChatResponse;
 import com.gmail.javacoded78.dto.response.user.UserResponse;
 import com.gmail.javacoded78.dto.response.lists.ListMemberResponse;
-import com.gmail.javacoded78.dto.response.lists.ListOwnerResponse;
+import com.gmail.javacoded78.dto.response.lists.CommonUserResponse;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
@@ -41,7 +41,7 @@ public interface UserClientService {
 
     void updateMediaTweetCount(boolean increaseCount);
 
-    ListOwnerResponse getListOwnerById(Long userId);
+    CommonUserResponse getListOwnerById(Long userId);
 
     List<ListMemberResponse> getListParticipantsByIds(IdsRequest request);
 

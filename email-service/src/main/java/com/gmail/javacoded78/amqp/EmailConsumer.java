@@ -1,8 +1,10 @@
-package com.gmail.javacoded78.service;
+package com.gmail.javacoded78.amqp;
 
 import com.gmail.javacoded78.dto.request.EmailRequest;
+import com.gmail.javacoded78.service.EmailService;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
+import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -15,7 +17,7 @@ import javax.mail.internet.MimeMessage;
 
 @Service
 @RequiredArgsConstructor
-public class EmailServiceImpl implements EmailService {
+public class EmailConsumer {
 
     private final JavaMailSender mailSender;
     private final SpringTemplateEngine thymeleafTemplateEngine;
@@ -23,9 +25,9 @@ public class EmailServiceImpl implements EmailService {
     @Value("${spring.mail.username}")
     private String username;
 
-    @Override
     @SneakyThrows
-    public void sendMessageHtml(EmailRequest emailRequest) throws MessagingException {
+    @RabbitListener(queues = "${rabbitmq.queues.mail}")
+    public void sendMessageHtml(EmailRequest emailRequest) {
         Context thymeleafContext = new Context();
         thymeleafContext.setVariables(emailRequest.getAttributes());
         String htmlBody = thymeleafTemplateEngine.process(emailRequest.getTemplate(), thymeleafContext);

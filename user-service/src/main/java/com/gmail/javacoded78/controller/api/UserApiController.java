@@ -11,7 +11,7 @@ import com.gmail.javacoded78.dto.response.tweet.TweetAuthorResponse;
 import com.gmail.javacoded78.dto.response.user.UserChatResponse;
 import com.gmail.javacoded78.dto.response.user.UserResponse;
 import com.gmail.javacoded78.dto.response.lists.ListMemberResponse;
-import com.gmail.javacoded78.dto.response.lists.ListOwnerResponse;
+import com.gmail.javacoded78.dto.response.lists.CommonUserResponse;
 import com.gmail.javacoded78.service.UserClientService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cloud.openfeign.SpringQueryMap;
@@ -129,7 +129,7 @@ public class UserApiController {
     }
 
     @GetMapping(LIST_OWNER_USER_ID)
-    public ListOwnerResponse getListOwnerById(@PathVariable("userId") Long userId) {
+    public CommonUserResponse getListOwnerById(@PathVariable("userId") Long userId) {
         return userService.getListOwnerById(userId);
     }
 

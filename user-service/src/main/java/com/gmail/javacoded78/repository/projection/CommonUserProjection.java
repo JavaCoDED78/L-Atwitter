@@ -1,6 +1,6 @@
 package com.gmail.javacoded78.repository.projection;
 
-public interface ListOwnerProjection {
+public interface CommonUserProjection {
 
     Long getId();
 

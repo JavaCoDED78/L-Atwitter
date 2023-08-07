@@ -21,6 +21,7 @@ import java.util.List;
 
 import static com.gmail.javacoded78.constants.PathConstants.API_V1_TWEETS;
 import static com.gmail.javacoded78.constants.PathConstants.CHAT_TWEET_ID;
+import static com.gmail.javacoded78.constants.PathConstants.COUNT_TEXT;
 import static com.gmail.javacoded78.constants.PathConstants.IDS;
 import static com.gmail.javacoded78.constants.PathConstants.ID_TWEET_ID;
 import static com.gmail.javacoded78.constants.PathConstants.NOTIFICATION_TWEET_ID;
@@ -64,6 +65,11 @@ public class TweetApiController {
     @GetMapping(ID_TWEET_ID)
     public Boolean isTweetExists(@PathVariable("tweetId") Long tweetId) {
         return tweetClientMapper.isTweetExists(tweetId);
+    }
+
+    @GetMapping(COUNT_TEXT) // TODO add tests
+    public Long getTweetCountByText(@PathVariable("text") String text) {
+        return tweetClientMapper.getTweetCountByText(text);
     }
 
     @GetMapping(CHAT_TWEET_ID)

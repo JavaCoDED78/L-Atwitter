@@ -2,6 +2,7 @@ package com.gmail.javacoded78.controller.rest;
 
 import com.gmail.javacoded78.dto.HeaderResponse;
 import com.gmail.javacoded78.dto.response.AuthenticationResponse;
+import com.gmail.javacoded78.dto.response.SearchResultResponse;
 import com.gmail.javacoded78.dto.response.user.UserResponse;
 import com.gmail.javacoded78.dto.request.UserRequest;
 import com.gmail.javacoded78.dto.response.AuthUserResponse;
@@ -26,6 +27,7 @@ import static com.gmail.javacoded78.constants.PathConstants.ALL;
 import static com.gmail.javacoded78.constants.PathConstants.DETAILS_USER_ID;
 import static com.gmail.javacoded78.constants.PathConstants.PIN_TWEET_ID;
 import static com.gmail.javacoded78.constants.PathConstants.RELEVANT;
+import static com.gmail.javacoded78.constants.PathConstants.SEARCH_TEXT;
 import static com.gmail.javacoded78.constants.PathConstants.SEARCH_USERNAME;
 import static com.gmail.javacoded78.constants.PathConstants.START;
 import static com.gmail.javacoded78.constants.PathConstants.SUBSCRIBE_USER_ID;
@@ -55,6 +57,11 @@ public class UserController {
     public ResponseEntity<List<UserResponse>> getUsers(@PageableDefault(size = 15) Pageable pageable) {
         HeaderResponse<UserResponse> response = userMapper.getUsers(pageable);
         return ResponseEntity.ok().headers(response.getHeaders()).body(response.getItems());
+    }
+
+    @GetMapping(SEARCH_TEXT) // TODO add tests
+    public ResponseEntity<SearchResultResponse> searchByText(@PathVariable String text) {
+        return ResponseEntity.ok(userMapper.searchByText(text));
     }
 
     @GetMapping(RELEVANT)

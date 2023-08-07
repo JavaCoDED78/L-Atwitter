@@ -2,7 +2,7 @@ package com.gmail.javacoded78.feign;
 
 import com.gmail.javacoded78.configuration.FeignConfiguration;
 import com.gmail.javacoded78.dto.response.lists.ListMemberResponse;
-import com.gmail.javacoded78.dto.response.lists.ListOwnerResponse;
+import com.gmail.javacoded78.dto.response.lists.CommonUserResponse;
 import com.gmail.javacoded78.dto.request.IdsRequest;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -33,7 +33,7 @@ public interface UserClient {
 
     @CircuitBreaker(name = USER_SERVICE)
     @GetMapping(LIST_OWNER_USER_ID)
-    ListOwnerResponse getListOwnerById(@PathVariable("userId") Long userId);
+    CommonUserResponse getListOwnerById(@PathVariable("userId") Long userId);
 
     @CircuitBreaker(name = USER_SERVICE)
     @GetMapping(IS_PRIVATE_USER_ID)

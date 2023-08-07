@@ -20,6 +20,7 @@ import static com.gmail.javacoded78.constants.PathConstants.API_V1_TAGS;
 import static com.gmail.javacoded78.constants.PathConstants.AUTH_USER_ID_HEADER;
 import static com.gmail.javacoded78.constants.PathConstants.DELETE_TWEET_ID;
 import static com.gmail.javacoded78.constants.PathConstants.PARSE_TWEET_ID;
+import static com.gmail.javacoded78.constants.PathConstants.SEARCH_TEXT;
 import static com.gmail.javacoded78.util.TestConstants.USER_ID;
 import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.context.jdbc.Sql.ExecutionPhase.AFTER_TEST_METHOD;
@@ -45,6 +46,16 @@ public class TagApiControllerTest {
 
     @Autowired
     private TagRepository tagRepository;
+
+    @Test
+    @DisplayName("[200] GET /api/v1/tags/search/test - Get tags by text")
+    public void getTagsByText() throws Exception {
+        mockMvc.perform(get(API_V1_TAGS + SEARCH_TEXT, "test")
+                        .header(AUTH_USER_ID_HEADER, TestConstants.USER_ID))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[*]", hasSize(1)))
+                .andExpect(jsonPath("$[0]").value("#test"));
+    }
 
     @Test
     @DisplayName("[200] GET /api/v1/tags/parse/99 - Parse new hashtag in text")

@@ -19,6 +19,7 @@ import java.util.List;
 import static com.gmail.javacoded78.constants.PathConstants.API_V1_TWEETS;
 import static com.gmail.javacoded78.constants.PathConstants.AUTH_USER_ID_HEADER;
 import static com.gmail.javacoded78.constants.PathConstants.CHAT_TWEET_ID;
+import static com.gmail.javacoded78.constants.PathConstants.COUNT_TEXT;
 import static com.gmail.javacoded78.constants.PathConstants.IDS;
 import static com.gmail.javacoded78.constants.PathConstants.ID_TWEET_ID;
 import static com.gmail.javacoded78.constants.PathConstants.NOTIFICATION_TWEET_ID;
@@ -132,6 +133,15 @@ public class TweetApiControllerTest {
                         .header(AUTH_USER_ID_HEADER, TestConstants.USER_ID))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").value(true));
+    }
+
+    @Test
+    @DisplayName("[200] GET /api/v1/tweets/count/test - Get tweet count by text")
+    public void getTweetCountByText() throws Exception {
+        mockMvc.perform(get(API_V1_TWEETS + COUNT_TEXT, "test")
+                        .header(AUTH_USER_ID_HEADER, TestConstants.USER_ID))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$").value(4));
     }
 
     @Test

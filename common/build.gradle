@@ -39,6 +39,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
+    implementation 'org.springframework.boot:spring-boot-starter-amqp'
     implementation "org.modelmapper:modelmapper:${versions.modelMapper}"
     implementation "io.jsonwebtoken:jjwt-api:${versions.jjwt}"
     runtimeOnly "io.jsonwebtoken:jjwt-impl:${versions.jjwt}",

@@ -1,11 +1,10 @@
 package com.gmail.javacoded78.service.impl;
 
+import com.gmail.javacoded78.amqp.AmqpProducer;
 import com.gmail.javacoded78.dto.request.EmailRequest;
 import com.gmail.javacoded78.dto.request.AuthenticationRequest;
-import com.gmail.javacoded78.dto.request.RegistrationRequest;
 import com.gmail.javacoded78.exception.ApiRequestException;
 import com.gmail.javacoded78.exception.InputFieldException;
-import com.gmail.javacoded78.feign.EmailClient;
 import com.gmail.javacoded78.model.User;
 import com.gmail.javacoded78.repository.UserRepository;
 import com.gmail.javacoded78.repository.projection.AuthUserProjection;
@@ -25,19 +24,13 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
-import java.time.LocalDateTime;
-import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 import java.util.UUID;
 
-import static com.gmail.javacoded78.constants.ErrorMessage.ACTIVATION_CODE_NOT_FOUND;
-import static com.gmail.javacoded78.constants.ErrorMessage.EMAIL_HAS_ALREADY_BEEN_TAKEN;
 import static com.gmail.javacoded78.constants.ErrorMessage.EMAIL_NOT_FOUND;
 import static com.gmail.javacoded78.constants.ErrorMessage.INCORRECT_PASSWORD;
 import static com.gmail.javacoded78.constants.ErrorMessage.INVALID_PASSWORD_RESET_CODE;
 import static com.gmail.javacoded78.constants.ErrorMessage.PASSWORDS_NOT_MATCH;
-import static com.gmail.javacoded78.constants.ErrorMessage.PASSWORD_LENGTH_ERROR;
 import static com.gmail.javacoded78.constants.ErrorMessage.USER_NOT_FOUND;
 import static com.gmail.javacoded78.constants.PathConstants.AUTH_USER_ID_HEADER;
 
@@ -49,7 +42,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private final UserServiceHelper userServiceHelper;
     private final PasswordEncoder passwordEncoder;
     private final JwtProvider jwtProvider;
-    private final EmailClient emailClient;
+    private final AmqpProducer amqpProducer;
 
     @Override
     public Long getAuthenticatedUserId() {
@@ -100,10 +93,15 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         UserCommonProjection user = userRepository.getUserByEmail(email, UserCommonProjection.class)
                 .orElseThrow(() -> new ApiRequestException(EMAIL_NOT_FOUND, HttpStatus.NOT_FOUND));
         userRepository.updatePasswordResetCode(UUID.randomUUID().toString().substring(0, 7), user.getId());
-        Map<String, Object> attributes = Map.of(
-                "fullName", user.getFullName(),
-                "passwordResetCode", user.getPasswordResetCode());
-        emailClient.sendEmail(new EmailRequest(user.getEmail(), "Password reset", "password-reset-template", attributes));
+        EmailRequest request = EmailRequest.builder()
+                .to(user.getEmail())
+                .subject("Password reset")
+                .template("password-reset-template")
+                .attributes(Map.of(
+                        "fullName", user.getFullName(),
+                        "passwordResetCode", user.getPasswordResetCode()))
+                .build();
+        amqpProducer.sendEmail(request);
         return "Reset password code is send to your E-mail";
     }
 

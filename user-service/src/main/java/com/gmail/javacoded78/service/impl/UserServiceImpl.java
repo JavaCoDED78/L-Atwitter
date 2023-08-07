@@ -1,10 +1,12 @@
 package com.gmail.javacoded78.service.impl;
 
 import com.gmail.javacoded78.exception.ApiRequestException;
+import com.gmail.javacoded78.feign.TagClient;
 import com.gmail.javacoded78.feign.TweetClient;
 import com.gmail.javacoded78.model.User;
 import com.gmail.javacoded78.repository.UserRepository;
 import com.gmail.javacoded78.repository.projection.AuthUserProjection;
+import com.gmail.javacoded78.repository.projection.CommonUserProjection;
 import com.gmail.javacoded78.repository.projection.UserDetailProjection;
 import com.gmail.javacoded78.repository.projection.UserProfileProjection;
 import com.gmail.javacoded78.repository.projection.UserProjection;
@@ -19,6 +21,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
 
 import static com.gmail.javacoded78.constants.ErrorMessage.INCORRECT_USERNAME_LENGTH;
 import static com.gmail.javacoded78.constants.ErrorMessage.TWEET_NOT_FOUND;
@@ -32,6 +35,7 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final UserServiceHelper userServiceHelper;
     private final TweetClient tweetClient;
+    private final TagClient tagClient;
 
     @Override
     public UserProfileProjection getUserById(Long userId) {
@@ -53,6 +57,14 @@ public class UserServiceImpl implements UserService {
     @Override
     public <T> Page<T> searchUsersByUsername(String text, Pageable pageable, Class<T> type) {
         return userRepository.searchUsersByUsername(text, pageable, type);
+    }
+
+    @Override
+    public Map<String, Object> searchByText(String text) {
+        Long tweetCount = tweetClient.getTweetCountByText(text);
+        List<String> tags = tagClient.getTagsByText(text);
+        List<CommonUserProjection> users = userRepository.searchUserByText(text);
+        return Map.of("tweetCount", tweetCount, "tags", tags, "users", users);
     }
 
     @Override

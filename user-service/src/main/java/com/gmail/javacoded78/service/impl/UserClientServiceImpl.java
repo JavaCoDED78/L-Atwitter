@@ -10,11 +10,11 @@ import com.gmail.javacoded78.dto.response.tweet.TweetAuthorResponse;
 import com.gmail.javacoded78.dto.response.user.UserChatResponse;
 import com.gmail.javacoded78.dto.response.user.UserResponse;
 import com.gmail.javacoded78.dto.response.lists.ListMemberResponse;
-import com.gmail.javacoded78.dto.response.lists.ListOwnerResponse;
+import com.gmail.javacoded78.dto.response.lists.CommonUserResponse;
 import com.gmail.javacoded78.mapper.BasicMapper;
 import com.gmail.javacoded78.repository.BlockUserRepository;
 import com.gmail.javacoded78.repository.FollowerUserRepository;
-import com.gmail.javacoded78.repository.projection.ListOwnerProjection;
+import com.gmail.javacoded78.repository.projection.CommonUserProjection;
 import com.gmail.javacoded78.repository.UserRepository;
 import com.gmail.javacoded78.repository.projection.ChatTweetUserProjection;
 import com.gmail.javacoded78.repository.projection.ChatUserParticipantProjection;
@@ -120,9 +120,9 @@ public class UserClientServiceImpl implements UserClientService {
     }
 
     @Override
-    public ListOwnerResponse getListOwnerById(Long userId) {
-        ListOwnerProjection user = userRepository.getUserById(userId, ListOwnerProjection.class).get();
-        return basicMapper.convertToResponse(user, ListOwnerResponse.class);
+    public CommonUserResponse getListOwnerById(Long userId) {
+        CommonUserProjection user = userRepository.getUserById(userId, CommonUserProjection.class).get();
+        return basicMapper.convertToResponse(user, CommonUserResponse.class);
     }
 
     @Override

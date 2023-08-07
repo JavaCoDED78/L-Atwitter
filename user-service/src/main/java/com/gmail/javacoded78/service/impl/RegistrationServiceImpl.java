@@ -1,9 +1,9 @@
 package com.gmail.javacoded78.service.impl;
 
+import com.gmail.javacoded78.amqp.AmqpProducer;
 import com.gmail.javacoded78.dto.request.EmailRequest;
 import com.gmail.javacoded78.dto.request.RegistrationRequest;
 import com.gmail.javacoded78.exception.ApiRequestException;
-import com.gmail.javacoded78.feign.EmailClient;
 import com.gmail.javacoded78.model.User;
 import com.gmail.javacoded78.repository.UserRepository;
 import com.gmail.javacoded78.repository.projection.AuthUserProjection;
@@ -35,7 +35,7 @@ public class RegistrationServiceImpl implements RegistrationService {
     private final UserServiceHelper userServiceHelper;
     private final PasswordEncoder passwordEncoder;
     private final JwtProvider jwtProvider;
-    private final EmailClient emailClient;
+    private final AmqpProducer amqpProducer;
 
     @Override
     @Transactional
@@ -69,10 +69,15 @@ public class RegistrationServiceImpl implements RegistrationService {
         UserCommonProjection user = userRepository.getUserByEmail(email, UserCommonProjection.class)
                 .orElseThrow(() -> new ApiRequestException(USER_NOT_FOUND, HttpStatus.NOT_FOUND));
         userRepository.updateActivationCode(UUID.randomUUID().toString().substring(0, 7), user.getId());
-        Map<String, Object> attributes = Map.of(
-                "fullName", user.getFullName(),
-                "registrationCode", user.getActivationCode());
-        emailClient.sendEmail(new EmailRequest(user.getEmail(), "Registration code", "registration-template", attributes));
+        EmailRequest request = EmailRequest.builder()
+                .to(user.getEmail())
+                .subject("Registration code")
+                .template("registration-template")
+                .attributes(Map.of(
+                        "fullName", user.getFullName(),
+                        "registrationCode", user.getActivationCode()))
+                .build();
+        amqpProducer.sendEmail(request);
         return "Registration code sent successfully";
     }
 
