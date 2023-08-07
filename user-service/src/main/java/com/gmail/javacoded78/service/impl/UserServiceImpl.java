@@ -1,5 +1,6 @@
 package com.gmail.javacoded78.service.impl;
 
+import com.gmail.javacoded78.dto.request.SearchTermsRequest;
 import com.gmail.javacoded78.exception.ApiRequestException;
 import com.gmail.javacoded78.feign.TagClient;
 import com.gmail.javacoded78.feign.TweetClient;
@@ -62,11 +63,15 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Map<String, Object> searchByText(String text) {
-        Long authUserId = AuthUtil.getAuthenticatedUserId();
         Long tweetCount = tweetClient.getTweetCountByText(text);
         List<String> tags = tagClient.getTagsByText(text);
-        List<CommonUserProjection> users = userRepository.searchUserByText(text, authUserId);
+        List<CommonUserProjection> users = userRepository.searchUserByText(text);
         return Map.of("tweetCount", tweetCount, "tags", tags, "users", users);
+    }
+
+    @Override
+    public List<CommonUserProjection> getSearchResults(SearchTermsRequest request) {
+        return userRepository.getUsersByIds(request.getUsers(), CommonUserProjection.class);
     }
 
     @Override

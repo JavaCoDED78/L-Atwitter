@@ -1,8 +1,10 @@
 package com.gmail.javacoded78.controller.rest;
 
 import com.gmail.javacoded78.dto.HeaderResponse;
+import com.gmail.javacoded78.dto.request.SearchTermsRequest;
 import com.gmail.javacoded78.dto.response.AuthenticationResponse;
 import com.gmail.javacoded78.dto.response.SearchResultResponse;
+import com.gmail.javacoded78.dto.response.lists.CommonUserResponse;
 import com.gmail.javacoded78.dto.response.user.UserResponse;
 import com.gmail.javacoded78.dto.request.UserRequest;
 import com.gmail.javacoded78.dto.response.AuthUserResponse;
@@ -16,6 +18,7 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,6 +30,7 @@ import static com.gmail.javacoded78.constants.PathConstants.ALL;
 import static com.gmail.javacoded78.constants.PathConstants.DETAILS_USER_ID;
 import static com.gmail.javacoded78.constants.PathConstants.PIN_TWEET_ID;
 import static com.gmail.javacoded78.constants.PathConstants.RELEVANT;
+import static com.gmail.javacoded78.constants.PathConstants.SEARCH_RESULTS;
 import static com.gmail.javacoded78.constants.PathConstants.SEARCH_TEXT;
 import static com.gmail.javacoded78.constants.PathConstants.SEARCH_USERNAME;
 import static com.gmail.javacoded78.constants.PathConstants.START;
@@ -59,9 +63,14 @@ public class UserController {
         return ResponseEntity.ok().headers(response.getHeaders()).body(response.getItems());
     }
 
-    @GetMapping(SEARCH_TEXT) // TODO add tests
+    @GetMapping(SEARCH_TEXT)
     public ResponseEntity<SearchResultResponse> searchByText(@PathVariable String text) {
         return ResponseEntity.ok(userMapper.searchByText(text));
+    }
+
+    @PostMapping(SEARCH_RESULTS)
+    public ResponseEntity<List<CommonUserResponse>> getSearchResults(@RequestBody SearchTermsRequest request) {
+        return ResponseEntity.ok(userMapper.getSearchResults(request));
     }
 
     @GetMapping(RELEVANT)

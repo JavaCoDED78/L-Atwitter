@@ -1,6 +1,7 @@
 package com.gmail.javacoded78.controller.rest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.gmail.javacoded78.dto.request.SearchTermsRequest;
 import com.gmail.javacoded78.dto.request.UserRequest;
 import com.gmail.javacoded78.util.TestConstants;
 import org.junit.jupiter.api.DisplayName;
@@ -13,6 +14,8 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.List;
+
 import static com.gmail.javacoded78.constants.ErrorMessage.INCORRECT_USERNAME_LENGTH;
 import static com.gmail.javacoded78.constants.ErrorMessage.TWEET_NOT_FOUND;
 import static com.gmail.javacoded78.constants.ErrorMessage.USER_ID_NOT_FOUND;
@@ -23,42 +26,20 @@ import static com.gmail.javacoded78.constants.PathConstants.AUTH_USER_ID_HEADER;
 import static com.gmail.javacoded78.constants.PathConstants.DETAILS_USER_ID;
 import static com.gmail.javacoded78.constants.PathConstants.PIN_TWEET_ID;
 import static com.gmail.javacoded78.constants.PathConstants.RELEVANT;
+import static com.gmail.javacoded78.constants.PathConstants.SEARCH_RESULTS;
 import static com.gmail.javacoded78.constants.PathConstants.SEARCH_TEXT;
 import static com.gmail.javacoded78.constants.PathConstants.SEARCH_USERNAME;
 import static com.gmail.javacoded78.constants.PathConstants.START;
 import static com.gmail.javacoded78.constants.PathConstants.SUBSCRIBE_USER_ID;
 import static com.gmail.javacoded78.constants.PathConstants.TOKEN;
 import static com.gmail.javacoded78.constants.PathConstants.UI_V1_USER;
-import static com.gmail.javacoded78.util.TestConstants.ABOUT;
-import static com.gmail.javacoded78.util.TestConstants.ABOUT2;
-import static com.gmail.javacoded78.util.TestConstants.AVATAR_SRC_1;
-import static com.gmail.javacoded78.util.TestConstants.AVATAR_SRC_2;
-import static com.gmail.javacoded78.util.TestConstants.BACKGROUND_COLOR;
-import static com.gmail.javacoded78.util.TestConstants.BIRTHDAY;
-import static com.gmail.javacoded78.util.TestConstants.COLOR_SCHEME;
-import static com.gmail.javacoded78.util.TestConstants.COUNTRY;
-import static com.gmail.javacoded78.util.TestConstants.FULL_NAME;
-import static com.gmail.javacoded78.util.TestConstants.GENDER;
-import static com.gmail.javacoded78.util.TestConstants.LIKE_TWEET_COUNT;
-import static com.gmail.javacoded78.util.TestConstants.LINK_DESCRIPTION;
-import static com.gmail.javacoded78.util.TestConstants.LOCATION;
-import static com.gmail.javacoded78.util.TestConstants.MEDIA_TWEET_COUNT;
-import static com.gmail.javacoded78.util.TestConstants.PHONE;
-import static com.gmail.javacoded78.util.TestConstants.PINNED_TWEET_ID;
-import static com.gmail.javacoded78.util.TestConstants.REGISTRATION_DATE;
-import static com.gmail.javacoded78.util.TestConstants.TWEET_COUNT;
-import static com.gmail.javacoded78.util.TestConstants.USERNAME;
-import static com.gmail.javacoded78.util.TestConstants.USERNAME2;
-import static com.gmail.javacoded78.util.TestConstants.USER_EMAIL;
 import static com.gmail.javacoded78.util.TestConstants.USER_ID;
-import static com.gmail.javacoded78.util.TestConstants.WALLPAPER_SRC;
-import static com.gmail.javacoded78.util.TestConstants.WEBSITE;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.context.jdbc.Sql.ExecutionPhase.AFTER_TEST_METHOD;
 import static org.springframework.test.context.jdbc.Sql.ExecutionPhase.BEFORE_TEST_METHOD;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -215,7 +196,25 @@ public class UserControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.tweetCount").value(0L))
                 .andExpect(jsonPath("$.tags[*]", hasSize(0)))
-                .andExpect(jsonPath("$.users[*]", hasSize(6)));
+                .andExpect(jsonPath("$.users[*]", hasSize(7)));
+    }
+
+    @Test
+    @DisplayName("[200] POST /ui/v1/user/search/results - Get Search Results")
+    public void getSearchResults() throws Exception {
+        SearchTermsRequest request = new SearchTermsRequest();
+        request.setUsers(List.of(1L, 2L));
+        mockMvc.perform(post(UI_V1_USER + SEARCH_RESULTS)
+                        .content(mapper.writeValueAsString(request))
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .header(AUTH_USER_ID_HEADER, TestConstants.USER_ID))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[*]", hasSize(2)))
+                .andExpect(jsonPath("$[1].id").value(TestConstants.USER_ID))
+                .andExpect(jsonPath("$[1].fullName").value(TestConstants.USERNAME))
+                .andExpect(jsonPath("$[1].username").value(TestConstants.USERNAME))
+                .andExpect(jsonPath("$[1].avatar").value(TestConstants.AVATAR_SRC_1))
+                .andExpect(jsonPath("$[1].isPrivateProfile").value(false));
     }
 
     @Test

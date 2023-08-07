@@ -1,6 +1,7 @@
 package com.gmail.javacoded78.mapper;
 
 import com.gmail.javacoded78.dto.HeaderResponse;
+import com.gmail.javacoded78.dto.request.SearchTermsRequest;
 import com.gmail.javacoded78.dto.response.SearchResultResponse;
 import com.gmail.javacoded78.dto.response.lists.CommonUserResponse;
 import com.gmail.javacoded78.dto.response.user.UserResponse;
@@ -60,6 +61,11 @@ public class UserMapper {
                 (List<CommonUserProjection>) searchResult.get("users"), CommonUserResponse.class);
         searchResultResponse.setUsers(users);
         return searchResultResponse;
+    }
+
+    public List<CommonUserResponse> getSearchResults(SearchTermsRequest request) {
+        List<CommonUserProjection> users = userService.getSearchResults(request);
+        return basicMapper.convertToResponseList(users, CommonUserResponse.class);
     }
 
     public Boolean startUseTwitter() {

@@ -1,8 +1,10 @@
 package com.gmail.javacoded78.service;
+import com.gmail.javacoded78.dto.request.SearchTermsRequest;
 import com.gmail.javacoded78.model.User;
 import com.gmail.javacoded78.repository.projection.AuthUserProjection;
 import com.gmail.javacoded78.repository.projection.BaseUserProjection;
 import com.gmail.javacoded78.repository.projection.BlockedUserProjection;
+import com.gmail.javacoded78.repository.projection.CommonUserProjection;
 import com.gmail.javacoded78.repository.projection.FollowerUserProjection;
 import com.gmail.javacoded78.repository.projection.MutedUserProjection;
 import com.gmail.javacoded78.repository.projection.UserDetailProjection;
@@ -25,6 +27,8 @@ public interface UserService {
     <T> Page<T> searchUsersByUsername(String username, Pageable pageable, Class<T> type);
 
     Map<String, Object> searchByText(String text);
+
+    List<CommonUserProjection> getSearchResults(SearchTermsRequest request);
 
     Boolean startUseTwitter();
 
