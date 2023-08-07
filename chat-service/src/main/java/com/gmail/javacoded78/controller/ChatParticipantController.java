@@ -1,7 +1,7 @@
 package com.gmail.javacoded78.controller;
 
 import com.gmail.javacoded78.dto.HeaderResponse;
-import com.gmail.javacoded78.dto.response.user.UserChatResponse;
+import com.gmail.javacoded78.dto.response.UserChatResponse;
 import com.gmail.javacoded78.dto.response.user.UserResponse;
 import com.gmail.javacoded78.mapper.ChatParticipantMapper;
 import lombok.RequiredArgsConstructor;
