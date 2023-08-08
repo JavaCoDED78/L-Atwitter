@@ -100,6 +100,12 @@ public class UserClientServiceImpl implements UserClientService {
 
     @Override
     @Transactional
+    public void increaseMentionsCount(Long userId) {
+        userRepository.increaseMentionsCount(userId);
+    }
+
+    @Override
+    @Transactional
     public void updateLikeCount(boolean increaseCount) {
         Long userId = AuthUtil.getAuthenticatedUserId();
         userRepository.updateLikeCount(increaseCount, userId);
@@ -254,5 +260,12 @@ public class UserClientServiceImpl implements UserClientService {
     public void resetNotificationCount() {
         Long authUserId = AuthUtil.getAuthenticatedUserId();
         userRepository.resetNotificationCount(authUserId);
+    }
+
+    @Override
+    @Transactional
+    public void resetMentionCount() {
+        Long authUserId = AuthUtil.getAuthenticatedUserId();
+        userRepository.resetMentionCount(authUserId);
     }
 }

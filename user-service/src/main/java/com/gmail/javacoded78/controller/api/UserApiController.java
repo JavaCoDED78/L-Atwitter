@@ -42,6 +42,8 @@ import static com.gmail.javacoded78.constants.PathConstants.LIST_OWNER_USER_ID;
 import static com.gmail.javacoded78.constants.PathConstants.LIST_PARTICIPANTS;
 import static com.gmail.javacoded78.constants.PathConstants.LIST_PARTICIPANTS_USERNAME;
 import static com.gmail.javacoded78.constants.PathConstants.MEDIA_COUNT;
+import static com.gmail.javacoded78.constants.PathConstants.MENTION_RESET;
+import static com.gmail.javacoded78.constants.PathConstants.MENTION_USER_ID;
 import static com.gmail.javacoded78.constants.PathConstants.NOTIFICATION_RESET;
 import static com.gmail.javacoded78.constants.PathConstants.NOTIFICATION_USER_ID;
 import static com.gmail.javacoded78.constants.PathConstants.NOTIFICATION_USER_USER_ID;
@@ -112,6 +114,11 @@ public class UserApiController {
     @GetMapping(NOTIFICATION_USER_ID)
     public void increaseNotificationsCount(@PathVariable("userId") Long userId) {
         userService.increaseNotificationsCount(userId);
+    }
+
+    @GetMapping(MENTION_USER_ID)
+    public void increaseMentionsCount(@PathVariable("userId") Long userId) {
+        userService.increaseMentionsCount(userId);
     }
 
     @PutMapping(LIKE_COUNT)
@@ -234,5 +241,10 @@ public class UserApiController {
     @GetMapping(NOTIFICATION_RESET)
     public void resetNotificationCount() {
         userService.resetNotificationCount();
+    }
+
+    @GetMapping(MENTION_RESET)
+    public void resetMentionCount() {
+        userService.resetMentionCount();
     }
 }

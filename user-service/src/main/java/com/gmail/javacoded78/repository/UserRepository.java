@@ -31,13 +31,19 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Query("SELECT user FROM User user WHERE user.activationCode = :code")
     Optional<UserCommonProjection> getCommonUserByActivationCode(@Param("code") String code);
 
+    @Query("SELECT user.activationCode FROM User user WHERE user.id = :userId")
+    String getActivationCode(@Param("userId") Long userId);
+
     @Query("SELECT user FROM User user WHERE user.passwordResetCode = :code")
     Optional<AuthUserProjection> getByPasswordResetCode(@Param("code") String code);
+
+    @Query("SELECT user.passwordResetCode FROM User user WHERE user.id = :userId")
+    String getPasswordResetCode(@Param("userId") Long userId);
 
     @Query("SELECT user.password FROM User user WHERE user.id = :userId")
     String getUserPasswordById(@Param("userId") Long userId);
 
-    @Query("SELECT user.id FROM User user WHERE UPPER(user.username) LIKE UPPER(CONCAT('%',:username,'%'))")
+    @Query("SELECT user.id FROM User user WHERE UPPER(user.username) = UPPER(:username)")
     Long getUserIdByUsername(@Param("username") String username);
 
     @Modifying
@@ -101,6 +107,10 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Modifying
     @Query("UPDATE User user SET user.notificationsCount = user.notificationsCount + 1 WHERE user.id = :userId")
     void increaseNotificationsCount(@Param("userId") Long userId);
+
+    @Modifying
+    @Query("UPDATE User user SET user.mentionsCount = user.mentionsCount + 1 WHERE user.id = :userId")
+    void increaseMentionsCount(@Param("userId") Long userId);
 
     @Modifying
     @Query("UPDATE User user SET user.likeCount = " +
@@ -189,6 +199,10 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Modifying
     @Query("UPDATE User user SET user.notificationsCount = 0 WHERE user.id = :userId")
     void resetNotificationCount(@Param("userId") Long userId);
+
+    @Modifying
+    @Query("UPDATE User user SET user.mentionsCount = 0 WHERE user.id = :userId")
+    void resetMentionCount(@Param("userId") Long userId);
 
     @Query("SELECT CASE WHEN count(user) > 0 THEN true ELSE false END FROM User user " +
             "LEFT JOIN user.subscribers subscriber " +
