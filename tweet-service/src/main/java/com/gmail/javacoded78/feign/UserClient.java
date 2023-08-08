@@ -24,6 +24,7 @@ import java.util.List;
 import static com.gmail.javacoded78.constants.FeignConstants.USER_SERVICE;
 import static com.gmail.javacoded78.constants.PathConstants.API_V1_USER;
 import static com.gmail.javacoded78.constants.PathConstants.CHAT_USER_ID;
+import static com.gmail.javacoded78.constants.PathConstants.FOLLOWERS_IDS;
 import static com.gmail.javacoded78.constants.PathConstants.IDS;
 import static com.gmail.javacoded78.constants.PathConstants.IS_EXISTS_USER_ID;
 import static com.gmail.javacoded78.constants.PathConstants.IS_FOLLOWED_USER_ID;
@@ -34,10 +35,8 @@ import static com.gmail.javacoded78.constants.PathConstants.MEDIA_COUNT;
 import static com.gmail.javacoded78.constants.PathConstants.TWEET_ADDITIONAL_INFO_USER_ID;
 import static com.gmail.javacoded78.constants.PathConstants.TWEET_AUTHOR_USER_ID;
 import static com.gmail.javacoded78.constants.PathConstants.TWEET_COUNT;
-import static com.gmail.javacoded78.constants.PathConstants.TWEET_LIKED;
 import static com.gmail.javacoded78.constants.PathConstants.TWEET_PINNED_TWEET_ID;
 import static com.gmail.javacoded78.constants.PathConstants.TWEET_PINNED_USER_ID;
-import static com.gmail.javacoded78.constants.PathConstants.TWEET_RETWEETED;
 import static com.gmail.javacoded78.constants.PathConstants.TWEET_VALID_IDS;
 import static com.gmail.javacoded78.constants.PathConstants.USER_ID_USERNAME;
 import static com.gmail.javacoded78.constants.PathConstants.VALID_IDS;
@@ -66,17 +65,11 @@ public interface UserClient {
     TweetAdditionalInfoUserResponse getTweetAdditionalInfoUser(@PathVariable("userId") Long userId);
 
     @CircuitBreaker(name = USER_SERVICE, fallbackMethod = "defaultEmptyUserResponse")
-    @PostMapping(TWEET_LIKED)
-    HeaderResponse<UserResponse> getTweetLikedUsersByIds(@RequestBody IdsRequest request,
-                                                         @SpringQueryMap Pageable pageable);
-
-    @CircuitBreaker(name = USER_SERVICE, fallbackMethod = "defaultEmptyUserResponse")
-    @PostMapping(TWEET_RETWEETED)
-    HeaderResponse<UserResponse> getRetweetedUsersByIds(@RequestBody IdsRequest request,
-                                                        @SpringQueryMap Pageable pageable);
+    @PostMapping(IDS)
+    HeaderResponse<UserResponse> getUsersByIds(@RequestBody IdsRequest request, @SpringQueryMap Pageable pageable);
 
     @CircuitBreaker(name = USER_SERVICE, fallbackMethod = "defaultEmptyIdsList")
-    @GetMapping(IDS)
+    @GetMapping(FOLLOWERS_IDS)
     List<Long> getUserFollowersIds();
 
     @CircuitBreaker(name = USER_SERVICE)

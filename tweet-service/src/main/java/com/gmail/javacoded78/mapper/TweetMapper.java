@@ -8,6 +8,7 @@ import com.gmail.javacoded78.dto.response.ProfileTweetImageResponse;
 import com.gmail.javacoded78.dto.response.TweetAdditionalInfoResponse;
 import com.gmail.javacoded78.dto.response.TweetImageResponse;
 import com.gmail.javacoded78.dto.response.TweetUserResponse;
+import com.gmail.javacoded78.dto.response.user.UserResponse;
 import com.gmail.javacoded78.enums.NotificationType;
 import com.gmail.javacoded78.enums.ReplyType;
 import com.gmail.javacoded78.model.Tweet;
@@ -90,6 +91,10 @@ public class TweetMapper {
     public TweetImageResponse uploadTweetImage(MultipartFile file) {
         TweetImage tweetImage = tweetService.uploadTweetImage(file);
         return basicMapper.convertToResponse(tweetImage, TweetImageResponse.class);
+    }
+
+    public HeaderResponse<UserResponse> getTaggedImageUsers(Long tweetId, Pageable pageable) {
+        return tweetService.getTaggedImageUsers(tweetId, pageable);
     }
 
     public TweetResponse createTweet(TweetRequest tweetRequest) {

@@ -1,6 +1,8 @@
 package com.gmail.javacoded78.service;
 
+import com.gmail.javacoded78.dto.HeaderResponse;
 import com.gmail.javacoded78.dto.response.tweet.TweetResponse;
+import com.gmail.javacoded78.dto.response.user.UserResponse;
 import com.gmail.javacoded78.enums.ReplyType;
 import com.gmail.javacoded78.model.Tweet;
 import com.gmail.javacoded78.model.TweetImage;
@@ -39,6 +41,8 @@ public interface TweetService {
     Page<TweetProjection> getFollowersTweets(Pageable pageable);
 
     TweetImage uploadTweetImage(MultipartFile file);
+
+    HeaderResponse<UserResponse> getTaggedImageUsers(Long tweetId, Pageable pageable);
 
     TweetResponse createNewTweet(Tweet tweet);
 

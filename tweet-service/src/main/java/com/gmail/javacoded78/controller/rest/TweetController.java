@@ -9,6 +9,7 @@ import com.gmail.javacoded78.dto.response.ProfileTweetImageResponse;
 import com.gmail.javacoded78.dto.response.TweetAdditionalInfoResponse;
 import com.gmail.javacoded78.dto.response.TweetImageResponse;
 import com.gmail.javacoded78.dto.response.TweetUserResponse;
+import com.gmail.javacoded78.dto.response.user.UserResponse;
 import com.gmail.javacoded78.enums.ReplyType;
 import com.gmail.javacoded78.feign.WebSocketClient;
 import com.gmail.javacoded78.mapper.TweetMapper;
@@ -33,6 +34,7 @@ import java.util.List;
 
 import static com.gmail.javacoded78.constants.PathConstants.FOLLOWER;
 import static com.gmail.javacoded78.constants.PathConstants.IMAGES_USER_ID;
+import static com.gmail.javacoded78.constants.PathConstants.IMAGE_TAGGED;
 import static com.gmail.javacoded78.constants.PathConstants.MEDIA;
 import static com.gmail.javacoded78.constants.PathConstants.MEDIA_USER_USER_ID;
 import static com.gmail.javacoded78.constants.PathConstants.MENTIONS;
@@ -131,6 +133,13 @@ public class TweetController {
     @PostMapping(UPLOAD)
     public ResponseEntity<TweetImageResponse> uploadTweetImage(@RequestPart("file") MultipartFile file) {
         return ResponseEntity.ok(tweetMapper.uploadTweetImage(file));
+    }
+
+    @GetMapping(IMAGE_TAGGED)
+    public ResponseEntity<List<UserResponse>> getTaggedImageUsers(@PathVariable("tweetId") Long tweetId,
+                                                                  @PageableDefault(size = 10) Pageable pageable) {
+        HeaderResponse<UserResponse> response = tweetMapper.getTaggedImageUsers(tweetId, pageable);
+        return ResponseEntity.ok().headers(response.getHeaders()).body(response.getItems());
     }
 
     @PostMapping

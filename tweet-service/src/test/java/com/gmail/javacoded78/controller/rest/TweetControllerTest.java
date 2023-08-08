@@ -23,6 +23,7 @@ import static com.gmail.javacoded78.constants.ErrorMessage.USER_PROFILE_BLOCKED;
 import static com.gmail.javacoded78.constants.PathConstants.AUTH_USER_ID_HEADER;
 import static com.gmail.javacoded78.constants.PathConstants.FOLLOWER;
 import static com.gmail.javacoded78.constants.PathConstants.IMAGES_USER_ID;
+import static com.gmail.javacoded78.constants.PathConstants.IMAGE_TAGGED;
 import static com.gmail.javacoded78.constants.PathConstants.MEDIA;
 import static com.gmail.javacoded78.constants.PathConstants.MEDIA_USER_USER_ID;
 import static com.gmail.javacoded78.constants.PathConstants.MENTIONS;
@@ -616,6 +617,25 @@ public class TweetControllerTest {
                 .andExpect(jsonPath("$[6].isUserFollowByOtherUser").value(false))
                 .andExpect(jsonPath("$[6].isTweetDeleted").value(false))
                 .andExpect(jsonPath("$[6].isTweetBookmarked").value(false));
+    }
+
+    @Test
+    @DisplayName("[200] GET /ui/v1/tweets/image/tagged/45 - Get tagged image users")
+    public void getTaggedImageUsers() throws Exception {
+        mockMvc.perform(get(UI_V1_TWEETS + IMAGE_TAGGED, 45)
+                        .header(AUTH_USER_ID_HEADER, TestConstants.USER_ID))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[*]", hasSize(2)))
+                .andExpect(jsonPath("$[0].id").value(1L))
+                .andExpect(jsonPath("$[0].fullName").value(TestConstants.USERNAME2))
+                .andExpect(jsonPath("$[0].username").value(TestConstants.USERNAME2))
+                .andExpect(jsonPath("$[0].about").value(TestConstants.ABOUT2))
+                .andExpect(jsonPath("$[0].isPrivateProfile").value(false))
+                .andExpect(jsonPath("$[0].isMutedDirectMessages").value(true))
+                .andExpect(jsonPath("$[0].isUserBlocked").value(false))
+                .andExpect(jsonPath("$[0].isMyProfileBlocked").value(false))
+                .andExpect(jsonPath("$[0].isWaitingForApprove").value(false))
+                .andExpect(jsonPath("$[0].isFollower").value(true));
     }
 
     @Test

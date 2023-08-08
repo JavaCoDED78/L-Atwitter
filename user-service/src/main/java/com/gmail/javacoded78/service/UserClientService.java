@@ -55,9 +55,7 @@ public interface UserClientService {
 
     TweetAdditionalInfoUserResponse getTweetAdditionalInfoUser(Long userId);
 
-    HeaderResponse<UserResponse> getTweetLikedUsersByIds(IdsRequest request, Pageable pageable);
-
-    HeaderResponse<UserResponse> getRetweetedUsersByTweetId(IdsRequest request, Pageable pageable);
+    HeaderResponse<UserResponse> getUsersByIds(IdsRequest request, Pageable pageable);
 
     void updatePinnedTweetId(Long tweetId);
 
@@ -73,9 +71,9 @@ public interface UserClientService {
 
     UserResponse getUserResponseById(Long userId);
 
-    ChatTweetUserResponse getChatTweetUser(Long userId);
-
     Long getUserIdByUsername(String username);
+
+    ChatTweetUserResponse getChatTweetUser(Long userId);
 
     List<Long> validateChatUsersIds(IdsRequest request);
 

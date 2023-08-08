@@ -30,6 +30,7 @@ import static com.gmail.javacoded78.constants.PathConstants.API_V1_USER;
 import static com.gmail.javacoded78.constants.PathConstants.CHAT_PARTICIPANT_USER_ID;
 import static com.gmail.javacoded78.constants.PathConstants.CHAT_USER_ID;
 import static com.gmail.javacoded78.constants.PathConstants.CHAT_VALID_IDS;
+import static com.gmail.javacoded78.constants.PathConstants.FOLLOWERS_IDS;
 import static com.gmail.javacoded78.constants.PathConstants.IDS;
 import static com.gmail.javacoded78.constants.PathConstants.IS_BLOCKED_USER_ID;
 import static com.gmail.javacoded78.constants.PathConstants.IS_EXISTS_USER_ID;
@@ -54,10 +55,8 @@ import static com.gmail.javacoded78.constants.PathConstants.SUBSCRIBERS_USER_ID;
 import static com.gmail.javacoded78.constants.PathConstants.TWEET_ADDITIONAL_INFO_USER_ID;
 import static com.gmail.javacoded78.constants.PathConstants.TWEET_AUTHOR_USER_ID;
 import static com.gmail.javacoded78.constants.PathConstants.TWEET_COUNT;
-import static com.gmail.javacoded78.constants.PathConstants.TWEET_LIKED;
 import static com.gmail.javacoded78.constants.PathConstants.TWEET_PINNED_TWEET_ID;
 import static com.gmail.javacoded78.constants.PathConstants.TWEET_PINNED_USER_ID;
-import static com.gmail.javacoded78.constants.PathConstants.TWEET_RETWEETED;
 import static com.gmail.javacoded78.constants.PathConstants.TWEET_VALID_IDS;
 import static com.gmail.javacoded78.constants.PathConstants.USER_ID;
 import static com.gmail.javacoded78.constants.PathConstants.USER_ID_USERNAME;
@@ -70,7 +69,7 @@ public class UserApiController {
 
     private final UserClientService userService;
 
-    @GetMapping(IDS)
+    @GetMapping(FOLLOWERS_IDS)
     public List<Long> getUserFollowersIds() {
         return userService.getUserFollowersIds();
     }
@@ -166,16 +165,10 @@ public class UserApiController {
         return userService.getTweetAdditionalInfoUser(userId);
     }
 
-    @PostMapping(TWEET_LIKED)
-    public HeaderResponse<UserResponse> getTweetLikedUsersByIds(@RequestBody IdsRequest request,
-                                                                @SpringQueryMap Pageable pageable) {
-        return userService.getTweetLikedUsersByIds(request, pageable);
-    }
-
-    @PostMapping(TWEET_RETWEETED)
-    public HeaderResponse<UserResponse> getRetweetedUsersByTweetId(@RequestBody IdsRequest request,
-                                                                   @SpringQueryMap Pageable pageable) {
-        return userService.getRetweetedUsersByTweetId(request, pageable);
+    @PostMapping(IDS)
+    public HeaderResponse<UserResponse> getUsersByIds(@RequestBody IdsRequest request,
+                                                      @SpringQueryMap Pageable pageable) {
+        return userService.getUsersByIds(request, pageable);
     }
 
     @PutMapping(TWEET_PINNED_TWEET_ID)

@@ -1,7 +1,9 @@
 package com.gmail.javacoded78.service.impl;
 
+import com.gmail.javacoded78.dto.HeaderResponse;
 import com.gmail.javacoded78.dto.request.IdsRequest;
 import com.gmail.javacoded78.dto.response.tweet.TweetResponse;
+import com.gmail.javacoded78.dto.response.user.UserResponse;
 import com.gmail.javacoded78.enums.ReplyType;
 import com.gmail.javacoded78.exception.ApiRequestException;
 import com.gmail.javacoded78.feign.ImageClient;
@@ -135,6 +137,13 @@ public class TweetServiceImpl implements TweetService {
     public TweetImage uploadTweetImage(MultipartFile file) {
         String imageSrc = imageClient.uploadImage(file);
         return tweetImageRepository.save(new TweetImage(imageSrc));
+    }
+
+    @Override
+    public HeaderResponse<UserResponse> getTaggedImageUsers(Long tweetId, Pageable pageable) {
+        tweetValidationHelper.checkValidTweet(tweetId);
+        List<Long> taggedImageUserIds = tweetRepository.getTaggedImageUserIds(tweetId);
+        return userClient.getUsersByIds(new IdsRequest(taggedImageUserIds), pageable);
     }
 
     @Override

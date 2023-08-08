@@ -7,7 +7,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import javax.persistence.CollectionTable;
 import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -85,6 +87,14 @@ public class Tweet {
 
     @OneToMany
     private List<TweetImage> images = new ArrayList<>();
+
+    @Column(name = "image_description")
+    private String imageDescription;
+
+    @ElementCollection
+    @CollectionTable(name = "tagged_image_users", joinColumns = @JoinColumn(name = "tweet_id"))
+    @Column(name = "tagged_image_user_id")
+    private List<Long> taggedImageUsers;
 
     @OneToOne
     @JoinTable(name = "tweet_quote",
