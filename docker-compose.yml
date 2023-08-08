@@ -46,6 +46,34 @@ services:
     networks:
       - spring
 
+  grafana:
+    container_name: grafana
+    build: 'dashboard/grafana'
+    ports:
+      - "3001:3000"
+    volumes:
+      - ./grafana:/var/lib/grafana
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+    networks:
+      monitoring:
+        aliases:
+          - grafana
+
+  prometheus:
+    image: prom/prometheus
+    container_name: prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./dashboard/prometheus.yml:/etc/prometheus/prometheus.yml
+      - ./prometheus:/prometheus
+    networks:
+      monitoring:
+        aliases:
+          - prometheus
+
   eureka-server:
     image: javacoded/l-atwitter:eureka-server
     hostname: eureka-server
@@ -303,6 +331,7 @@ networks:
     driver: bridge
   spring:
     driver: bridge
+  monitoring:
 
 volumes:
   postgres:
