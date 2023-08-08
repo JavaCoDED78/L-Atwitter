@@ -25,7 +25,6 @@ import static com.gmail.javacoded78.constants.PathConstants.COUNT_TEXT;
 import static com.gmail.javacoded78.constants.PathConstants.IDS;
 import static com.gmail.javacoded78.constants.PathConstants.ID_TWEET_ID;
 import static com.gmail.javacoded78.constants.PathConstants.NOTIFICATION_TWEET_ID;
-import static com.gmail.javacoded78.constants.PathConstants.TAG_IDS;
 import static com.gmail.javacoded78.constants.PathConstants.TWEET_ID;
 import static com.gmail.javacoded78.constants.PathConstants.USER_IDS;
 
@@ -36,7 +35,7 @@ public class TweetApiController {
 
     private final TweetClientMapper tweetClientMapper;
 
-    @PostMapping(TAG_IDS)
+    @PostMapping(IDS)
     public List<TweetResponse> getTweetsByIds(@RequestBody IdsRequest requests) {
         return tweetClientMapper.getTweetsByIds(requests);
     }

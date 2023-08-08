@@ -13,13 +13,14 @@ import java.util.List;
 
 import static com.gmail.javacoded78.constants.FeignConstants.TWEET_SERVICE;
 import static com.gmail.javacoded78.constants.PathConstants.API_V1_TWEETS;
-import static com.gmail.javacoded78.constants.PathConstants.TAG_IDS;
+import static com.gmail.javacoded78.constants.PathConstants.IDS;
+
 
 @CircuitBreaker(name = TWEET_SERVICE, fallbackMethod = "defaultEmptyTweetList")
 @FeignClient(value = TWEET_SERVICE, path = API_V1_TWEETS, configuration = FeignConfiguration.class)
 public interface TweetClient {
 
-    @PostMapping(TAG_IDS)
+    @PostMapping(IDS)
     List<TweetResponse> getTweetsByIds(@RequestBody IdsRequest request);
 
     default ArrayList<TweetResponse> defaultEmptyTweetList(Throwable throwable) {

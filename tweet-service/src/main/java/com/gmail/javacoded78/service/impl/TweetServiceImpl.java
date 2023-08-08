@@ -1,8 +1,10 @@
 package com.gmail.javacoded78.service.impl;
 
 import com.gmail.javacoded78.dto.request.IdsRequest;
+import com.gmail.javacoded78.dto.request.NotificationRequest;
 import com.gmail.javacoded78.dto.request.TweetTextRequest;
 import com.gmail.javacoded78.enums.LinkCoverSize;
+import com.gmail.javacoded78.enums.NotificationType;
 import com.gmail.javacoded78.enums.ReplyType;
 import com.gmail.javacoded78.exception.ApiRequestException;
 import com.gmail.javacoded78.feign.ImageClient;
@@ -43,6 +45,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -108,12 +111,6 @@ public class TweetServiceImpl implements TweetService {
     }
 
     @Override
-    public Page<TweetProjection> getUserMentions(Pageable pageable) {
-        Long authUserId = AuthUtil.getAuthenticatedUserId();
-        return tweetRepository.getUserMentions(authUserId, pageable);
-    }
-
-    @Override
     public List<ProfileTweetImageProjection> getUserTweetImages(Long userId) {
         tweetServiceHelper.validateUserProfile(userId);
         return tweetRepository.getUserTweetImages(userId, PageRequest.of(0, 6));
@@ -167,8 +164,8 @@ public class TweetServiceImpl implements TweetService {
     @Override
     @Transactional
     public TweetProjection createNewTweet(Tweet tweet) {
-        Tweet createdTweet = createTweet(tweet);
-        return getTweetById(createdTweet.getId());
+        Tweet newTweet = createTweet(tweet);
+        return getTweetById(newTweet.getId());
     }
 
     @Override
@@ -195,9 +192,9 @@ public class TweetServiceImpl implements TweetService {
     public TweetProjection replyTweet(Long tweetId, Tweet reply) {
         tweetServiceHelper.checkValidTweet(tweetId);
         reply.setAddressedTweetId(tweetId);
-        Tweet replyTweet = createTweet(reply);
-        tweetRepository.addReply(tweetId, replyTweet.getId());
-        return tweetRepository.getTweetById(replyTweet.getId(), TweetProjection.class).get();
+        Tweet newTweet = createTweet(reply);
+        tweetRepository.addReply(tweetId, newTweet.getId());
+        return tweetRepository.getTweetById(newTweet.getId(), TweetProjection.class).get();
     }
 
     @Override
@@ -206,9 +203,9 @@ public class TweetServiceImpl implements TweetService {
         Tweet tweet = tweetServiceHelper.checkValidTweet(tweetId);
         userClient.updateTweetCount(true);
         quote.setQuoteTweet(tweet);
-        Tweet createdTweet = createTweet(quote);
-        tweet.getQuotes().add(createdTweet);
-        return getTweetById(createdTweet.getId());
+        Tweet newTweet = createTweet(quote);
+        tweet.getQuotes().add(newTweet);
+        return tweetRepository.getTweetById(newTweet.getId(), TweetProjection.class).get();
     }
 
     @Override
@@ -238,6 +235,7 @@ public class TweetServiceImpl implements TweetService {
         } else {
             userClient.updateTweetCount(true);
         }
+        parseUserMentionFromText(tweet);
         tagClient.parseHashtagsInText(tweet.getId(), new TweetTextRequest(tweet.getText()));
         notificationClient.sendTweetNotificationToSubscribers(tweet.getId());
         return tweet;
@@ -306,5 +304,32 @@ public class TweetServiceImpl implements TweetService {
 
     private String getContent(Element element) {
         return element == null ? "" : element.attr("content");
+    }
+
+    private void parseUserMentionFromText(Tweet tweet) {
+        Pattern pattern = Pattern.compile("(@\\w+)\\b");
+        Matcher match = pattern.matcher(tweet.getText());
+        List<String> usernames = new ArrayList<>();
+
+        while (match.find()) {
+            usernames.add(match.group(1));
+        }
+
+        if (!usernames.isEmpty()) {
+            usernames.forEach(username -> {
+                Long userId = userClient.getUserIdByUsername(username);
+
+                if (userId != null) {
+                    Long authUserId = AuthUtil.getAuthenticatedUserId();
+                    NotificationRequest request = NotificationRequest.builder()
+                            .tweetId(tweet.getAddressedTweetId() != null ? tweet.getAddressedTweetId() : tweet.getId())
+                            .notificationType(NotificationType.MENTION)
+                            .notifiedUserId(userId)
+                            .userId(authUserId)
+                            .build();
+                    notificationClient.sendTweetMentionNotification(request);
+                }
+            });
+        }
     }
 }

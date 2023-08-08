@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 import static com.gmail.javacoded78.constants.FeignConstants.NOTIFICATION_SERVICE;
 import static com.gmail.javacoded78.constants.PathConstants.API_V1_NOTIFICATION;
+import static com.gmail.javacoded78.constants.PathConstants.MENTION;
 import static com.gmail.javacoded78.constants.PathConstants.TWEET;
 import static com.gmail.javacoded78.constants.PathConstants.TWEET_TWEET_ID;
 
@@ -21,6 +22,9 @@ public interface NotificationClient {
 
     @PostMapping(TWEET)
     NotificationResponse sendTweetNotification(@RequestBody NotificationRequest request);
+
+    @PostMapping(MENTION)
+    void sendTweetMentionNotification(@RequestBody NotificationRequest request);
 
     @GetMapping(TWEET_TWEET_ID)
     void sendTweetNotificationToSubscribers(@PathVariable("tweetId") Long tweetId);

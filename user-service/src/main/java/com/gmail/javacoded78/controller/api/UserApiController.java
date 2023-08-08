@@ -58,6 +58,7 @@ import static com.gmail.javacoded78.constants.PathConstants.TWEET_PINNED_USER_ID
 import static com.gmail.javacoded78.constants.PathConstants.TWEET_RETWEETED;
 import static com.gmail.javacoded78.constants.PathConstants.TWEET_VALID_IDS;
 import static com.gmail.javacoded78.constants.PathConstants.USER_ID;
+import static com.gmail.javacoded78.constants.PathConstants.USER_ID_USERNAME;
 import static com.gmail.javacoded78.constants.PathConstants.VALID_IDS;
 
 @RestController
@@ -203,6 +204,11 @@ public class UserApiController {
     @GetMapping(USER_ID)
     public UserResponse getUserById(@PathVariable("userId") Long userId) {
         return userService.getUserResponseById(userId);
+    }
+
+    @GetMapping(USER_ID_USERNAME)
+    public Long getUserIdByUsername(@PathVariable("username") String username) {
+        return userService.getUserIdByUsername(username);
     }
 
     @GetMapping(CHAT_USER_ID)

@@ -17,6 +17,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import static com.gmail.javacoded78.constants.PathConstants.API_V1_NOTIFICATION;
 import static com.gmail.javacoded78.constants.PathConstants.AUTH_USER_ID_HEADER;
 import static com.gmail.javacoded78.constants.PathConstants.LIST;
+import static com.gmail.javacoded78.constants.PathConstants.MENTION;
 import static com.gmail.javacoded78.constants.PathConstants.TWEET;
 import static com.gmail.javacoded78.constants.PathConstants.USER;
 import static com.gmail.javacoded78.util.TestConstants.USER_ID;
@@ -40,7 +41,7 @@ public class NotificationApiControllerTest {
     private ObjectMapper mapper;
 
     @Test
-    @DisplayName("[200] POST /api/v1/notification/list - Send list notification")
+    @DisplayName("[200] POST /api/v1/notification - Send list notification")
     public void sendListNotification() throws Exception {
         NotificationRequest notificationRequest = NotificationRequest.builder()
                 .notificationType(NotificationType.LISTS)
@@ -49,7 +50,7 @@ public class NotificationApiControllerTest {
                 .notifiedUserId(1L)
                 .listId(4L)
                 .build();
-        mockMvc.perform(post(API_V1_NOTIFICATION + LIST)
+        mockMvc.perform(post(API_V1_NOTIFICATION)
                         .header(AUTH_USER_ID_HEADER, TestConstants.USER_ID)
                         .content(mapper.writeValueAsString(notificationRequest))
                         .contentType(MediaType.APPLICATION_JSON_VALUE))
@@ -57,7 +58,7 @@ public class NotificationApiControllerTest {
     }
 
     @Test
-    @DisplayName("[200] POST /api/v1/notification/user - Send user notification")
+    @DisplayName("[200] POST /api/v1/notification - Send user notification")
     public void sendUserNotification() throws Exception {
         NotificationRequest notificationRequest = NotificationRequest.builder()
                 .notificationType(NotificationType.FOLLOW)
@@ -65,7 +66,7 @@ public class NotificationApiControllerTest {
                 .notifiedUserId(1L)
                 .userToFollowId(1L)
                 .build();
-        mockMvc.perform(post(API_V1_NOTIFICATION + USER)
+        mockMvc.perform(post(API_V1_NOTIFICATION)
                         .header(AUTH_USER_ID_HEADER, TestConstants.USER_ID)
                         .content(mapper.writeValueAsString(notificationRequest))
                         .contentType(MediaType.APPLICATION_JSON_VALUE))
@@ -83,6 +84,22 @@ public class NotificationApiControllerTest {
                 .tweetId(45L)
                 .build();
         mockMvc.perform(post(API_V1_NOTIFICATION + TWEET)
+                        .header(AUTH_USER_ID_HEADER, TestConstants.USER_ID)
+                        .content(mapper.writeValueAsString(notificationRequest))
+                        .contentType(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    @DisplayName("[200] POST /api/v1/notification/mention - Send tweet mention notification")
+    public void sendTweetMentionNotification() throws Exception {
+        NotificationRequest notificationRequest = NotificationRequest.builder()
+                .notificationType(NotificationType.MENTION)
+                .notifiedUserId(1L)
+                .userId(2L)
+                .tweetId(45L)
+                .build();
+        mockMvc.perform(post(API_V1_NOTIFICATION + MENTION)
                         .header(AUTH_USER_ID_HEADER, TestConstants.USER_ID)
                         .content(mapper.writeValueAsString(notificationRequest))
                         .contentType(MediaType.APPLICATION_JSON_VALUE))

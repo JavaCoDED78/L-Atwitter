@@ -39,6 +39,7 @@ import static com.gmail.javacoded78.constants.PathConstants.TWEET_PINNED_TWEET_I
 import static com.gmail.javacoded78.constants.PathConstants.TWEET_PINNED_USER_ID;
 import static com.gmail.javacoded78.constants.PathConstants.TWEET_RETWEETED;
 import static com.gmail.javacoded78.constants.PathConstants.TWEET_VALID_IDS;
+import static com.gmail.javacoded78.constants.PathConstants.USER_ID_USERNAME;
 import static com.gmail.javacoded78.constants.PathConstants.VALID_IDS;
 
 @FeignClient(name = USER_SERVICE, path = API_V1_USER, contextId = "UserClient", configuration = FeignConfiguration.class)
@@ -113,6 +114,10 @@ public interface UserClient {
     @CircuitBreaker(name = USER_SERVICE, fallbackMethod = "defaultEmptyPinnedTweetId")
     @GetMapping(TWEET_PINNED_USER_ID)
     Long getUserPinnedTweetId(@PathVariable("userId") Long userId);
+
+    @CircuitBreaker(name = USER_SERVICE)
+    @GetMapping(USER_ID_USERNAME)
+    Long getUserIdByUsername(@PathVariable("username") String username);
 
     default HeaderResponse<UserResponse> defaultEmptyUserResponse(Throwable throwable) {
         return new HeaderResponse<>(new ArrayList<>(), HttpHeaders.EMPTY);

@@ -73,6 +73,8 @@ public interface UserClientService {
 
     ChatTweetUserResponse getChatTweetUser(Long userId);
 
+    Long getUserIdByUsername(String username);
+
     List<Long> validateChatUsersIds(IdsRequest request);
 
     List<NotificationUserResponse> getUsersWhichUserSubscribed();

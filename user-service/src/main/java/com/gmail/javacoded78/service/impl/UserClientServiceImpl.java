@@ -218,6 +218,11 @@ public class UserClientServiceImpl implements UserClientService {
     }
 
     @Override
+    public Long getUserIdByUsername(String username) {
+        return userRepository.getUserIdByUsername(username.substring(1));
+    }
+
+    @Override
     public ChatTweetUserResponse getChatTweetUser(Long userId) {
         ChatTweetUserProjection user = userRepository.getUserById(userId, ChatTweetUserProjection.class).get();
         return basicMapper.convertToResponse(user, ChatTweetUserResponse.class);

@@ -1,7 +1,5 @@
 package com.gmail.javacoded78.service;
 
-
-import com.gmail.javacoded78.dto.HeaderResponse;
 import com.gmail.javacoded78.dto.response.notification.NotificationUserResponse;
 import com.gmail.javacoded78.dto.response.tweet.TweetResponse;
 import com.gmail.javacoded78.repository.projection.NotificationInfoProjection;
@@ -15,9 +13,11 @@ public interface NotificationService {
 
     Page<NotificationProjection> getUserNotifications(Pageable pageable);
 
+    Page<TweetResponse> getUserMentionsNotifications(Pageable pageable);
+
     List<NotificationUserResponse> getTweetAuthorsNotifications();
 
     NotificationInfoProjection getUserNotificationById(Long notificationId);
 
-    HeaderResponse<TweetResponse> getNotificationsFromTweetAuthors(Pageable pageable);
+    Page<TweetResponse> getNotificationsFromTweetAuthors(Pageable pageable);
 }

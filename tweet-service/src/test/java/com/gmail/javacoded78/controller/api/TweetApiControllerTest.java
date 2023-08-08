@@ -23,11 +23,9 @@ import static com.gmail.javacoded78.constants.PathConstants.COUNT_TEXT;
 import static com.gmail.javacoded78.constants.PathConstants.IDS;
 import static com.gmail.javacoded78.constants.PathConstants.ID_TWEET_ID;
 import static com.gmail.javacoded78.constants.PathConstants.NOTIFICATION_TWEET_ID;
-import static com.gmail.javacoded78.constants.PathConstants.TAG_IDS;
 import static com.gmail.javacoded78.constants.PathConstants.TWEET_ID;
 import static com.gmail.javacoded78.constants.PathConstants.USER_IDS;
-import static org.hamcrest.Matchers.hasSize;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.hamcrest.Matchers.hasSize;;
 import static org.springframework.test.context.jdbc.Sql.ExecutionPhase.AFTER_TEST_METHOD;
 import static org.springframework.test.context.jdbc.Sql.ExecutionPhase.BEFORE_TEST_METHOD;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -51,7 +49,7 @@ public class TweetApiControllerTest {
     @Test
     @DisplayName("[200] POST /api/v1/tweets/tag/ids - Get tweets by ids")
     public void getTweetsByIds() throws Exception {
-        mockMvc.perform(post(API_V1_TWEETS + TAG_IDS)
+        mockMvc.perform(post(API_V1_TWEETS + IDS)
                         .content(mapper.writeValueAsString(new IdsRequest(List.of(40L, 41L, 42L))))
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .header(AUTH_USER_ID_HEADER, TestConstants.USER_ID))

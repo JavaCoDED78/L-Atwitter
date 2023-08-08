@@ -4,6 +4,7 @@ public class WebsocketConstants {
 
     public static final String TOPIC = "/topic";
     public static final String TOPIC_NOTIFICATIONS = TOPIC + "/notifications/";
+    public static final String TOPIC_MENTIONS = TOPIC + "/mentions/";
     public static final String TOPIC_FEED = TOPIC + "/feed";
     public static final String TOPIC_FEED_ADD = TOPIC + "/feed/add";
     public static final String TOPIC_CHAT = TOPIC + "/chat/";

@@ -13,6 +13,7 @@ import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static com.gmail.javacoded78.constants.PathConstants.AUTH_USER_ID_HEADER;
+import static com.gmail.javacoded78.constants.PathConstants.MENTIONS;
 import static com.gmail.javacoded78.constants.PathConstants.NOTIFICATION_ID;
 import static com.gmail.javacoded78.constants.PathConstants.SUBSCRIBES;
 import static com.gmail.javacoded78.constants.PathConstants.TIMELINE;
@@ -45,6 +46,15 @@ public class NotificationControllerTest {
                         .header(AUTH_USER_ID_HEADER, TestConstants.USER_ID))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[*]", hasSize(3)));
+    }
+
+    @Test
+    @DisplayName("[200] GET /ui/v1/notification/mentions - Get user mentions notifications")
+    public void getUserMentionsNotifications() throws Exception {
+        mockMvc.perform(get(UI_V1_NOTIFICATION + MENTIONS)
+                        .header(AUTH_USER_ID_HEADER, TestConstants.USER_ID))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[*]", hasSize(1)));
     }
 
     @Test

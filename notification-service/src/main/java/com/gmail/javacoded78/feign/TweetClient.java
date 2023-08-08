@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import java.util.List;
+
 import static com.gmail.javacoded78.constants.FeignConstants.TWEET_SERVICE;
 import static com.gmail.javacoded78.constants.PathConstants.API_V1_TWEETS;
 import static com.gmail.javacoded78.constants.PathConstants.IDS;
@@ -31,5 +33,5 @@ public interface TweetClient {
     NotificationTweetResponse getNotificationTweet(@PathVariable("tweetId") Long tweetId);
 
     @PostMapping(IDS)
-    HeaderResponse<TweetResponse> getTweetsByIds(@RequestBody IdsRequest idsRequest, @SpringQueryMap Pageable pageable);
+    List<TweetResponse> getTweetsByIds(@RequestBody IdsRequest idsRequest);
 }

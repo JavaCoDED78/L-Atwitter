@@ -35,6 +35,7 @@ import static com.gmail.javacoded78.constants.PathConstants.FOLLOWER;
 import static com.gmail.javacoded78.constants.PathConstants.IMAGES_USER_ID;
 import static com.gmail.javacoded78.constants.PathConstants.MEDIA;
 import static com.gmail.javacoded78.constants.PathConstants.MEDIA_USER_USER_ID;
+import static com.gmail.javacoded78.constants.PathConstants.MENTIONS;
 import static com.gmail.javacoded78.constants.PathConstants.QUOTE_USER_ID_TWEET_ID;
 import static com.gmail.javacoded78.constants.PathConstants.REPLY_CHANGE_USER_ID_TWEET_ID;
 import static com.gmail.javacoded78.constants.PathConstants.REPLY_USER_ID_TWEET_ID;
@@ -46,7 +47,6 @@ import static com.gmail.javacoded78.constants.PathConstants.TWEET_ID_QUOTES;
 import static com.gmail.javacoded78.constants.PathConstants.TWEET_ID_REPLIES;
 import static com.gmail.javacoded78.constants.PathConstants.UI_V1_TWEETS;
 import static com.gmail.javacoded78.constants.PathConstants.UPLOAD;
-import static com.gmail.javacoded78.constants.PathConstants.USER_MENTIONS;
 import static com.gmail.javacoded78.constants.PathConstants.USER_USER_ID;
 import static com.gmail.javacoded78.constants.PathConstants.VIDEO;
 import static com.gmail.javacoded78.constants.WebsocketConstants.TOPIC_FEED;
@@ -75,27 +75,21 @@ public class TweetController {
     }
 
     @GetMapping(USER_USER_ID)
-    public ResponseEntity<List<TweetUserResponse>> getUserTweets(@PathVariable Long userId,
+    public ResponseEntity<List<TweetUserResponse>> getUserTweets(@PathVariable("userId") Long userId,
                                                                  @PageableDefault(size = 10) Pageable pageable) {
         HeaderResponse<TweetUserResponse> response = tweetMapper.getUserTweets(userId, pageable);
         return ResponseEntity.ok().headers(response.getHeaders()).body(response.getItems());
     }
 
     @GetMapping(MEDIA_USER_USER_ID)
-    public ResponseEntity<List<TweetResponse>> getUserMediaTweets(@PathVariable Long userId,
+    public ResponseEntity<List<TweetResponse>> getUserMediaTweets(@PathVariable("userId") Long userId,
                                                                   @PageableDefault(size = 10) Pageable pageable) {
         HeaderResponse<TweetResponse> response = tweetMapper.getUserMediaTweets(userId, pageable);
         return ResponseEntity.ok().headers(response.getHeaders()).body(response.getItems());
     }
 
-    @GetMapping(USER_MENTIONS)
-    public ResponseEntity<List<TweetResponse>> getUserMentions(@PageableDefault(size = 10) Pageable pageable) {
-        HeaderResponse<TweetResponse> response = tweetMapper.getUserMentions(pageable);
-        return ResponseEntity.ok().headers(response.getHeaders()).body(response.getItems());
-    }
-
     @GetMapping(IMAGES_USER_ID)
-    public ResponseEntity<List<ProfileTweetImageResponse>> getUserTweetImages(@PathVariable Long userId) {
+    public ResponseEntity<List<ProfileTweetImageResponse>> getUserTweetImages(@PathVariable("userId") Long userId) {
         return ResponseEntity.ok(tweetMapper.getUserTweetImages(userId));
     }
 
@@ -134,7 +128,7 @@ public class TweetController {
         return ResponseEntity.ok().headers(response.getHeaders()).body(response.getItems());
     }
 
-    @PostMapping(UPLOAD) // TODO add endpoint to frontend
+    @PostMapping(UPLOAD)
     public ResponseEntity<TweetImageResponse> uploadTweetImage(@RequestPart("file") MultipartFile file) {
         return ResponseEntity.ok(tweetMapper.uploadTweetImage(file));
     }

@@ -15,6 +15,6 @@ import static com.gmail.javacoded78.constants.PathConstants.USER;
 @FeignClient(value = NOTIFICATION_SERVICE, path = API_V1_NOTIFICATION, configuration = FeignConfiguration.class)
 public interface NotificationClient {
 
-    @PostMapping(USER)
-    void sendUserNotification(@RequestBody NotificationRequest request);
+    @PostMapping
+    void sendNotification(@RequestBody NotificationRequest request);
 }

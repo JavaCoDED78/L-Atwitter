@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+import static com.gmail.javacoded78.constants.PathConstants.MENTIONS;
 import static com.gmail.javacoded78.constants.PathConstants.NOTIFICATION_ID;
 import static com.gmail.javacoded78.constants.PathConstants.SUBSCRIBES;
 import static com.gmail.javacoded78.constants.PathConstants.TIMELINE;
@@ -33,6 +34,12 @@ public class NotificationController {
     @GetMapping(USER)
     public ResponseEntity<List<NotificationResponse>> getUserNotifications(@PageableDefault(size = 10) Pageable pageable) {
         HeaderResponse<NotificationResponse> response = notificationMapper.getUserNotifications(pageable);
+        return ResponseEntity.ok().headers(response.getHeaders()).body(response.getItems());
+    }
+
+    @GetMapping(MENTIONS)
+    public ResponseEntity<List<TweetResponse>> getUserMentionsNotifications(@PageableDefault(size = 10) Pageable pageable) {
+        HeaderResponse<TweetResponse> response = notificationMapper.getUserMentionsNotifications(pageable);
         return ResponseEntity.ok().headers(response.getHeaders()).body(response.getItems());
     }
 

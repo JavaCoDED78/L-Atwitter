@@ -25,6 +25,7 @@ import static com.gmail.javacoded78.constants.PathConstants.FOLLOWER;
 import static com.gmail.javacoded78.constants.PathConstants.IMAGES_USER_ID;
 import static com.gmail.javacoded78.constants.PathConstants.MEDIA;
 import static com.gmail.javacoded78.constants.PathConstants.MEDIA_USER_USER_ID;
+import static com.gmail.javacoded78.constants.PathConstants.MENTIONS;
 import static com.gmail.javacoded78.constants.PathConstants.QUOTE_USER_ID_TWEET_ID;
 import static com.gmail.javacoded78.constants.PathConstants.REPLY_CHANGE_USER_ID_TWEET_ID;
 import static com.gmail.javacoded78.constants.PathConstants.REPLY_USER_ID_TWEET_ID;
@@ -34,7 +35,6 @@ import static com.gmail.javacoded78.constants.PathConstants.TWEET_ID_INFO;
 import static com.gmail.javacoded78.constants.PathConstants.TWEET_ID_QUOTES;
 import static com.gmail.javacoded78.constants.PathConstants.TWEET_ID_REPLIES;
 import static com.gmail.javacoded78.constants.PathConstants.UI_V1_TWEETS;
-import static com.gmail.javacoded78.constants.PathConstants.USER_MENTIONS;
 import static com.gmail.javacoded78.constants.PathConstants.USER_USER_ID;
 import static com.gmail.javacoded78.constants.PathConstants.VIDEO;
 import static org.hamcrest.Matchers.hasSize;
@@ -282,40 +282,6 @@ public class TweetControllerTest {
                         .header(AUTH_USER_ID_HEADER, TestConstants.USER_ID))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$", is(USER_PROFILE_BLOCKED)));
-    }
-
-    @Test
-    @DisplayName("[200] GET /ui/v1/tweets/user/mentions - Get user mentions")
-    public void getUserMentions() throws Exception {
-        mockMvc.perform(get(UI_V1_TWEETS + USER_MENTIONS)
-                        .header(AUTH_USER_ID_HEADER, TestConstants.USER_ID))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$[*]", hasSize(1)))
-                .andExpect(jsonPath("$[0].id").value(41L))
-                .andExpect(jsonPath("$[0].text").value("test reply"))
-                .andExpect(jsonPath("$[0].dateTime").value("2021-10-03T20:31:55"))
-                .andExpect(jsonPath("$[0].scheduledDate").isEmpty())
-                .andExpect(jsonPath("$[0].addressedUsername").value("MrCat"))
-                .andExpect(jsonPath("$[0].addressedId").value(2L))
-                .andExpect(jsonPath("$[0].addressedTweetId").value(40L))
-                .andExpect(jsonPath("$[0].replyType").value(ReplyType.EVERYONE.toString()))
-                .andExpect(jsonPath("$[0].link").isEmpty())
-                .andExpect(jsonPath("$[0].linkTitle").isEmpty())
-                .andExpect(jsonPath("$[0].linkDescription").isEmpty())
-                .andExpect(jsonPath("$[0].linkCover").isEmpty())
-                .andExpect(jsonPath("$[0].linkCoverSize").isEmpty())
-                .andExpect(jsonPath("$[0].quoteTweet").isEmpty())
-                .andExpect(jsonPath("$[0].user.id").value(1L))
-                .andExpect(jsonPath("$[0].poll").isEmpty())
-                .andExpect(jsonPath("$[0].images").isEmpty())
-                .andExpect(jsonPath("$[0].retweetsCount").value(0L))
-                .andExpect(jsonPath("$[0].likedTweetsCount").value(0L))
-                .andExpect(jsonPath("$[0].repliesCount").value(0L))
-                .andExpect(jsonPath("$[0].isTweetLiked").value(false))
-                .andExpect(jsonPath("$[0].isTweetRetweeted").value(false))
-                .andExpect(jsonPath("$[0].isUserFollowByOtherUser").value(true))
-                .andExpect(jsonPath("$[0].isTweetDeleted").value(false))
-                .andExpect(jsonPath("$[0].isTweetBookmarked").value(false));
     }
 
     @Test
