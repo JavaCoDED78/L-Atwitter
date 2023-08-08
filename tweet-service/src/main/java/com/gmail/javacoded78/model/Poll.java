@@ -3,6 +3,8 @@ package com.gmail.javacoded78.model;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.Column;
@@ -21,6 +23,7 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
+@RequiredArgsConstructor
 @EqualsAndHashCode(of = "id")
 @Table(name = "polls")
 public class Poll {
@@ -30,12 +33,15 @@ public class Poll {
     @SequenceGenerator(name = "polls_seq", sequenceName = "polls_seq", initialValue = 100, allocationSize = 1)
     private Long id;
 
+    @NonNull
     @Column(name = "date_time")
     private LocalDateTime dateTime;
 
-    @OneToOne
+    @NonNull
+    @OneToOne(mappedBy = "poll")
     private Tweet tweet;
 
+    @NonNull
     @OneToMany
     private List<PollChoice> pollChoices;
 }
