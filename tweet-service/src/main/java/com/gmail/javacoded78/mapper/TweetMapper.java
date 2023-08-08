@@ -2,7 +2,6 @@ package com.gmail.javacoded78.mapper;
 
 import com.gmail.javacoded78.dto.HeaderResponse;
 import com.gmail.javacoded78.dto.response.tweet.TweetResponse;
-import com.gmail.javacoded78.dto.request.TweetDeleteRequest;
 import com.gmail.javacoded78.dto.request.TweetRequest;
 import com.gmail.javacoded78.dto.response.NotificationReplyResponse;
 import com.gmail.javacoded78.dto.response.ProfileTweetImageResponse;
@@ -94,8 +93,7 @@ public class TweetMapper {
     }
 
     public TweetResponse createTweet(TweetRequest tweetRequest) {
-        TweetProjection tweet = tweetService.createNewTweet(basicMapper.convertToResponse(tweetRequest, Tweet.class));
-        return basicMapper.convertToResponse(tweet, TweetResponse.class);
+        return tweetService.createNewTweet(basicMapper.convertToResponse(tweetRequest, Tweet.class));
     }
 
     public String deleteTweet(Long tweetId) {
@@ -108,14 +106,12 @@ public class TweetMapper {
     }
 
     public NotificationReplyResponse replyTweet(Long tweetId, TweetRequest tweetRequest) {
-        TweetProjection tweet = tweetService.replyTweet(tweetId, basicMapper.convertToResponse(tweetRequest, Tweet.class));
-        TweetResponse replyTweet = basicMapper.convertToResponse(tweet, TweetResponse.class);
+        TweetResponse replyTweet = tweetService.replyTweet(tweetId, basicMapper.convertToResponse(tweetRequest, Tweet.class));
         return new NotificationReplyResponse(tweetId, NotificationType.REPLY, replyTweet);
     }
 
     public TweetResponse quoteTweet(Long tweetId, TweetRequest tweetRequest) {
-        TweetProjection tweet = tweetService.quoteTweet(tweetId, basicMapper.convertToResponse(tweetRequest, Tweet.class));
-        return basicMapper.convertToResponse(tweet, TweetResponse.class);
+        return tweetService.quoteTweet(tweetId, basicMapper.convertToResponse(tweetRequest, Tweet.class));
     }
 
     public TweetResponse changeTweetReplyType(Long tweetId, ReplyType replyType) {

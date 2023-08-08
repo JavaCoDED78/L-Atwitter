@@ -1,5 +1,6 @@
 package com.gmail.javacoded78.service.impl;
 
+import com.gmail.javacoded78.dto.response.tweet.TweetResponse;
 import com.gmail.javacoded78.exception.ApiRequestException;
 import com.gmail.javacoded78.model.Poll;
 import com.gmail.javacoded78.model.PollChoice;
@@ -11,8 +12,9 @@ import com.gmail.javacoded78.repository.PollRepository;
 import com.gmail.javacoded78.repository.TweetRepository;
 import com.gmail.javacoded78.repository.projection.TweetProjection;
 import com.gmail.javacoded78.service.PollService;
+import com.gmail.javacoded78.service.util.TweetServiceHelper;
+import com.gmail.javacoded78.service.util.TweetValidationHelper;
 import com.gmail.javacoded78.util.AuthUtil;
-import com.gmail.javacoded78.util.TweetServiceHelper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -38,17 +40,18 @@ public class PollServiceImpl implements PollService {
     private final PollChoiceVotedRepository pollChoiceVotedRepository;
     private final TweetServiceImpl tweetService;
     private final TweetServiceHelper tweetServiceHelper;
+    private final TweetValidationHelper tweetValidationHelper;
     private final TweetRepository tweetRepository;
 
     @Override
     @Transactional
-    public TweetProjection createPoll(Long pollDateTime, List<String> choices, Tweet tweet) {
+    public TweetResponse createPoll(Long pollDateTime, List<String> choices, Tweet tweet) {
         if (choices.size() < 2 || choices.size() > 4) {
             throw new ApiRequestException(INCORRECT_POLL_CHOICES, HttpStatus.BAD_REQUEST);
         }
-        Tweet createdTweet = tweetService.createTweet(tweet);
+        TweetResponse tweetResponse = tweetServiceHelper.createTweet(tweet);
         Poll poll = new Poll();
-        poll.setTweet(createdTweet);
+        poll.setTweet(tweet);
         poll.setDateTime(LocalDateTime.now().plusMinutes(pollDateTime));
         List<PollChoice> pollChoices = new ArrayList<>();
         choices.forEach(choice -> {
@@ -61,8 +64,8 @@ public class PollServiceImpl implements PollService {
         });
         poll.setPollChoices(pollChoices);
         pollRepository.save(poll);
-        createdTweet.setPoll(poll);
-        return tweetService.getTweetById(createdTweet.getId());
+        tweet.setPoll(poll);
+        return tweetResponse;
     }
 
     @Override
@@ -70,7 +73,7 @@ public class PollServiceImpl implements PollService {
     public TweetProjection voteInPoll(Long tweetId, Long pollId, Long pollChoiceId) {
         Tweet tweet = tweetRepository.getTweetByPollIdAndTweetId(tweetId, pollId)
                 .orElseThrow(() -> new ApiRequestException(POLL_NOT_FOUND, HttpStatus.NOT_FOUND));
-        tweetServiceHelper.checkIsValidUserProfile(tweet.getAuthorId());
+        tweetValidationHelper.checkIsValidUserProfile(tweet.getAuthorId());
         Poll poll = pollRepository.getPollByPollChoiceId(pollId, pollChoiceId)
                 .orElseThrow(() -> new ApiRequestException(POLL_CHOICE_NOT_FOUND, HttpStatus.NOT_FOUND));
 

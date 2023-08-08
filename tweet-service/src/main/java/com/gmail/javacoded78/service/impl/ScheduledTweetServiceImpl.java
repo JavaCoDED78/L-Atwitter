@@ -1,12 +1,14 @@
 package com.gmail.javacoded78.service.impl;
 
+import com.gmail.javacoded78.dto.response.tweet.TweetResponse;
 import com.gmail.javacoded78.exception.ApiRequestException;
 import com.gmail.javacoded78.model.Tweet;
 import com.gmail.javacoded78.repository.TweetRepository;
 import com.gmail.javacoded78.repository.projection.TweetProjection;
 import com.gmail.javacoded78.service.ScheduledTweetService;
+import com.gmail.javacoded78.service.util.TweetServiceHelper;
+import com.gmail.javacoded78.service.util.TweetValidationHelper;
 import com.gmail.javacoded78.util.AuthUtil;
-import com.gmail.javacoded78.util.TweetServiceHelper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -25,6 +27,7 @@ public class ScheduledTweetServiceImpl implements ScheduledTweetService {
     private final TweetRepository tweetRepository;
     private final TweetServiceImpl tweetService;
     private final TweetServiceHelper tweetServiceHelper;
+    private final TweetValidationHelper tweetValidationHelper;
 
     @Override
     public Page<TweetProjection> getScheduledTweets(Pageable pageable) {
@@ -35,7 +38,12 @@ public class ScheduledTweetServiceImpl implements ScheduledTweetService {
     @Override
     @Transactional
     public TweetProjection createScheduledTweet(Tweet tweet) {
-        return tweetService.createNewTweet(tweet);
+        tweetValidationHelper.checkTweetTextLength(tweet.getText());
+        Long authUserId = AuthUtil.getAuthenticatedUserId();
+        tweet.setAuthorId(authUserId);
+        tweetServiceHelper.parseMetadataFromURL(tweet);
+        tweetRepository.save(tweet);
+        return tweetService.getTweetById(tweet.getId());
     }
 
     @Override
@@ -43,7 +51,7 @@ public class ScheduledTweetServiceImpl implements ScheduledTweetService {
     public TweetProjection updateScheduledTweet(Tweet tweetInfo) {
         Tweet tweet = tweetRepository.findById(tweetInfo.getId())
                 .orElseThrow(() -> new ApiRequestException(TWEET_NOT_FOUND, HttpStatus.NOT_FOUND));
-        tweetServiceHelper.checkTweetTextLength(tweetInfo.getText());
+        tweetValidationHelper.checkTweetTextLength(tweetInfo.getText());
         tweet.setText(tweetInfo.getText());
         tweet.setImages(tweetInfo.getImages());
         return tweetService.getTweetById(tweet.getId());

@@ -1,5 +1,6 @@
 package com.gmail.javacoded78.service;
 
+import com.gmail.javacoded78.dto.response.tweet.TweetResponse;
 import com.gmail.javacoded78.model.Tweet;
 import com.gmail.javacoded78.repository.projection.TweetProjection;
 import org.springframework.data.domain.Page;

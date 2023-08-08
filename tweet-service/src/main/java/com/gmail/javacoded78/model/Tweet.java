@@ -23,6 +23,7 @@ import javax.persistence.OneToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -83,7 +84,7 @@ public class Tweet {
     private Long authorId;
 
     @OneToMany
-    private List<TweetImage> images;
+    private List<TweetImage> images = new ArrayList<>();
 
     @OneToOne
     @JoinTable(name = "tweet_quote",

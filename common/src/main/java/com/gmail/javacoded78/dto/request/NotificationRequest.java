@@ -1,5 +1,6 @@
 package com.gmail.javacoded78.dto.request;
 
+import com.gmail.javacoded78.dto.response.tweet.TweetResponse;
 import com.gmail.javacoded78.enums.NotificationType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -18,4 +19,5 @@ public class NotificationRequest {
     private Long tweetId;
     private Long listId;
     private boolean notificationCondition;
+    private TweetResponse tweet;
 }

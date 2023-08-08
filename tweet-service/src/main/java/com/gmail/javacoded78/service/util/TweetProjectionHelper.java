@@ -1,4 +1,4 @@
-package com.gmail.javacoded78.util;
+package com.gmail.javacoded78.service.util;
 
 import com.gmail.javacoded78.dto.response.chat.ChatTweetUserResponse;
 import com.gmail.javacoded78.dto.response.tweet.TweetAdditionalInfoUserResponse;
@@ -10,6 +10,7 @@ import com.gmail.javacoded78.repository.RetweetRepository;
 import com.gmail.javacoded78.repository.TweetRepository;
 import com.gmail.javacoded78.repository.projection.TweetProjection;
 import com.gmail.javacoded78.repository.projection.TweetUserProjection;
+import com.gmail.javacoded78.util.AuthUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
