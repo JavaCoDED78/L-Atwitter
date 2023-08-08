@@ -15,6 +15,7 @@ public class TweetRequest {
     private String text;
     private String addressedUsername;
     private Long addressedId;
+    private Long listId;
     private ReplyType replyType;
     private LinkCoverSize linkCoverSize;
     private List<TweetImageResponse> images;

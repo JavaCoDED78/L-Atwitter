@@ -4,7 +4,9 @@ import com.gmail.javacoded78.dto.request.IdsRequest;
 import com.gmail.javacoded78.dto.response.chat.ChatTweetUserResponse;
 import com.gmail.javacoded78.dto.response.tweet.TweetAdditionalInfoUserResponse;
 import com.gmail.javacoded78.dto.response.tweet.TweetAuthorResponse;
+import com.gmail.javacoded78.dto.response.tweet.TweetListResponse;
 import com.gmail.javacoded78.dto.response.user.TaggedUserResponse;
+import com.gmail.javacoded78.feign.ListsClient;
 import com.gmail.javacoded78.feign.UserClient;
 import com.gmail.javacoded78.repository.BookmarkRepository;
 import com.gmail.javacoded78.repository.LikeTweetRepository;
@@ -27,6 +29,7 @@ public class TweetProjectionHelper {
     private final RetweetRepository retweetRepository;
     private final BookmarkRepository bookmarkRepository;
     private final UserClient userClient;
+    private final ListsClient listsClient;
 
     public TweetProjection getTweetProjection(Long tweetId) {
         return tweetRepository.getTweetById(tweetId, TweetProjection.class).get();
@@ -62,6 +65,16 @@ public class TweetProjectionHelper {
 
     public TweetAuthorResponse getTweetAuthor(Long userId) {
         return userClient.getTweetAuthor(userId);
+    }
+
+    public TweetListResponse getTweetList(Long listId) {
+        TweetListResponse tweetList = listsClient.getTweetList(listId);
+
+        if (tweetList.getId() != null) {
+            return tweetList;
+        } else {
+            return null;
+        }
     }
 
     public TweetAdditionalInfoUserResponse getTweetAdditionalInfoUser(Long userId) {

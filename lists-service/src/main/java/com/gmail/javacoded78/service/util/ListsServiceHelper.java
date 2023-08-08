@@ -1,9 +1,9 @@
-package com.gmail.javacoded78.util;
+package com.gmail.javacoded78.service.util;
 
 import com.gmail.javacoded78.dto.request.IdsRequest;
 import com.gmail.javacoded78.dto.request.NotificationRequest;
 import com.gmail.javacoded78.dto.response.lists.ListMemberResponse;
-import com.gmail.javacoded78.dto.response.lists.CommonUserResponse;
+import com.gmail.javacoded78.dto.response.user.CommonUserResponse;
 import com.gmail.javacoded78.enums.NotificationType;
 import com.gmail.javacoded78.exception.ApiRequestException;
 import com.gmail.javacoded78.feign.NotificationClient;
@@ -12,6 +12,7 @@ import com.gmail.javacoded78.repository.ListsFollowersRepository;
 import com.gmail.javacoded78.repository.ListsMembersRepository;
 import com.gmail.javacoded78.repository.ListsRepository;
 import com.gmail.javacoded78.repository.PinnedListsRepository;
+import com.gmail.javacoded78.util.AuthUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -28,12 +29,12 @@ import static com.gmail.javacoded78.constants.ErrorMessage.USER_NOT_FOUND;
 @RequiredArgsConstructor
 public class ListsServiceHelper {
 
-    public final ListsRepository listsRepository;
-    public final ListsFollowersRepository listsFollowersRepository;
-    public final ListsMembersRepository listsMembersRepository;
-    public final PinnedListsRepository pinnedListsRepository;
-    public final NotificationClient notificationClient;
-    public final UserClient userClient;
+    private final ListsRepository listsRepository;
+    private final ListsFollowersRepository listsFollowersRepository;
+    private final ListsMembersRepository listsMembersRepository;
+    private final PinnedListsRepository pinnedListsRepository;
+    private final NotificationClient notificationClient;
+    private final UserClient userClient;
 
     public List<ListMemberResponse> getListMemberResponses(Long listId) {
         List<Long> membersIds = listsMembersRepository.getMembersIds(listId);

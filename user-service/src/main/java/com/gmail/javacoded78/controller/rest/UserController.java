@@ -4,7 +4,7 @@ import com.gmail.javacoded78.dto.HeaderResponse;
 import com.gmail.javacoded78.dto.request.SearchTermsRequest;
 import com.gmail.javacoded78.dto.response.AuthenticationResponse;
 import com.gmail.javacoded78.dto.response.SearchResultResponse;
-import com.gmail.javacoded78.dto.response.lists.CommonUserResponse;
+import com.gmail.javacoded78.dto.response.user.CommonUserResponse;
 import com.gmail.javacoded78.dto.response.user.UserResponse;
 import com.gmail.javacoded78.dto.request.UserRequest;
 import com.gmail.javacoded78.dto.response.AuthUserResponse;

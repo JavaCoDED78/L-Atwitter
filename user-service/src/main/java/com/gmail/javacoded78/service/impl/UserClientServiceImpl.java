@@ -11,7 +11,7 @@ import com.gmail.javacoded78.dto.response.user.TaggedUserResponse;
 import com.gmail.javacoded78.dto.response.user.UserChatResponse;
 import com.gmail.javacoded78.dto.response.user.UserResponse;
 import com.gmail.javacoded78.dto.response.lists.ListMemberResponse;
-import com.gmail.javacoded78.dto.response.lists.CommonUserResponse;
+import com.gmail.javacoded78.dto.response.user.CommonUserResponse;
 import com.gmail.javacoded78.mapper.BasicMapper;
 import com.gmail.javacoded78.repository.BlockUserRepository;
 import com.gmail.javacoded78.repository.FollowerUserRepository;

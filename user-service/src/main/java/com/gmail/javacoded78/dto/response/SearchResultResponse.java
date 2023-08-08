@@ -1,6 +1,6 @@
 package com.gmail.javacoded78.dto.response;
 
-import com.gmail.javacoded78.dto.response.lists.CommonUserResponse;
+import com.gmail.javacoded78.dto.response.user.CommonUserResponse;
 import lombok.Data;
 
 import java.util.List;

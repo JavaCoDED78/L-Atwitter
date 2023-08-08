@@ -1,6 +1,6 @@
 package com.gmail.javacoded78.repository.projection;
 
-import com.gmail.javacoded78.dto.response.lists.CommonUserResponse;
+import com.gmail.javacoded78.dto.response.user.CommonUserResponse;
 import org.springframework.beans.factory.annotation.Value;
 
 public interface ListProjection {

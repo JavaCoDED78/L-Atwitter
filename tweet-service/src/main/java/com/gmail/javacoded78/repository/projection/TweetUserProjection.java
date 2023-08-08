@@ -1,6 +1,7 @@
 package com.gmail.javacoded78.repository.projection;
 
 import com.gmail.javacoded78.dto.response.tweet.TweetAuthorResponse;
+import com.gmail.javacoded78.dto.response.tweet.TweetListResponse;
 import com.gmail.javacoded78.enums.LinkCoverSize;
 import com.gmail.javacoded78.enums.ReplyType;
 import org.springframework.beans.factory.annotation.Value;
@@ -9,7 +10,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public interface TweetUserProjection {
-
     Long getId();
     String getText();
     LocalDateTime getDateTime();
@@ -24,6 +24,7 @@ public interface TweetUserProjection {
     String getLinkCover();
     LinkCoverSize getLinkCoverSize();
     Long getAuthorId();
+    Long getListId();
     List<TweetImageProjection> getImages();
     QuoteTweetProjection getQuoteTweet();
     PollProjection getPoll();
@@ -31,6 +32,9 @@ public interface TweetUserProjection {
 
     @Value("#{@tweetProjectionHelper.getTweetAuthor(target.authorId)}")
     TweetAuthorResponse getUser();
+
+    @Value("#{target.listId == null ? null : @tweetProjectionHelper.getTweetList(target.listId)}")
+    TweetListResponse getTweetList();
 
     @Value("#{@retweetRepository.getRetweetsUserIds(target.id)}")
     List<Long> getRetweetsUserIds();

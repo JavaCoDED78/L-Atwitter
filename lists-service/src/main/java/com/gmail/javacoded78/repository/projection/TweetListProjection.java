@@ -3,10 +3,10 @@ package com.gmail.javacoded78.repository.projection;
 import com.gmail.javacoded78.dto.response.user.CommonUserResponse;
 import org.springframework.beans.factory.annotation.Value;
 
-public interface ListUserProjection {
+public interface TweetListProjection {
+
     Long getId();
     String getName();
-    String getDescription();
     String getAltWallpaper();
     String getWallpaper();
     Long getListOwnerId();
@@ -15,6 +15,6 @@ public interface ListUserProjection {
     @Value("#{@listsServiceHelper.getListOwnerById(target.listOwnerId)}")
     CommonUserResponse getListOwner();
 
-    @Value("#{@listsServiceHelper.isListPinned(target.id)}")
-    boolean getIsListPinned();
+    @Value("#{@listsMembersRepository.getMembersSize(target.id)}")
+    Long getMembersSize();
 }

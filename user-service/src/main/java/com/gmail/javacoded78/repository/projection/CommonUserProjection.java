@@ -10,5 +10,5 @@ public interface CommonUserProjection {
 
     String getAvatar();
 
-    boolean getIsPrivateProfile();
+    boolean isPrivateProfile();
 }

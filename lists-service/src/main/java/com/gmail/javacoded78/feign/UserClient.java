@@ -2,7 +2,7 @@ package com.gmail.javacoded78.feign;
 
 import com.gmail.javacoded78.configuration.FeignConfiguration;
 import com.gmail.javacoded78.dto.response.lists.ListMemberResponse;
-import com.gmail.javacoded78.dto.response.lists.CommonUserResponse;
+import com.gmail.javacoded78.dto.response.user.CommonUserResponse;
 import com.gmail.javacoded78.dto.request.IdsRequest;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import org.springframework.cloud.openfeign.FeignClient;
