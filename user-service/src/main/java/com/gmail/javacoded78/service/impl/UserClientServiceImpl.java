@@ -7,6 +7,7 @@ import com.gmail.javacoded78.dto.request.IdsRequest;
 import com.gmail.javacoded78.dto.response.notification.NotificationUserResponse;
 import com.gmail.javacoded78.dto.response.tweet.TweetAdditionalInfoUserResponse;
 import com.gmail.javacoded78.dto.response.tweet.TweetAuthorResponse;
+import com.gmail.javacoded78.dto.response.user.TaggedUserResponse;
 import com.gmail.javacoded78.dto.response.user.UserChatResponse;
 import com.gmail.javacoded78.dto.response.user.UserResponse;
 import com.gmail.javacoded78.dto.response.lists.ListMemberResponse;
@@ -20,6 +21,7 @@ import com.gmail.javacoded78.repository.projection.ChatTweetUserProjection;
 import com.gmail.javacoded78.repository.projection.ChatUserParticipantProjection;
 import com.gmail.javacoded78.repository.projection.ListMemberProjection;
 import com.gmail.javacoded78.repository.projection.NotificationUserProjection;
+import com.gmail.javacoded78.repository.projection.TaggedUserProjection;
 import com.gmail.javacoded78.repository.projection.TweetAdditionalInfoUserProjection;
 import com.gmail.javacoded78.repository.projection.TweetAuthorProjection;
 import com.gmail.javacoded78.repository.projection.UserChatProjection;
@@ -166,6 +168,12 @@ public class UserClientServiceImpl implements UserClientService {
     public HeaderResponse<UserResponse> getUsersByIds(IdsRequest request, Pageable pageable) {
         Page<UserProjection> users = userRepository.getUsersByIds(request.getIds(), pageable);
         return basicMapper.getHeaderResponse(users, UserResponse.class);
+    }
+
+    @Override
+    public List<TaggedUserResponse> getTaggedImageUsers(IdsRequest request) {
+        List<TaggedUserProjection> users = userRepository.getTaggedImageUsers(request.getIds());
+        return basicMapper.convertToResponseList(users, TaggedUserResponse.class);
     }
 
     @Override

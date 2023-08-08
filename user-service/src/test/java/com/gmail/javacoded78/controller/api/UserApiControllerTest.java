@@ -42,6 +42,7 @@ import static com.gmail.javacoded78.constants.PathConstants.SEARCH_USERNAME;
 import static com.gmail.javacoded78.constants.PathConstants.SUBSCRIBERS;
 import static com.gmail.javacoded78.constants.PathConstants.SUBSCRIBERS_IDS;
 import static com.gmail.javacoded78.constants.PathConstants.SUBSCRIBERS_USER_ID;
+import static com.gmail.javacoded78.constants.PathConstants.TAGGED_IMAGE;
 import static com.gmail.javacoded78.constants.PathConstants.TWEET_ADDITIONAL_INFO_USER_ID;
 import static com.gmail.javacoded78.constants.PathConstants.TWEET_AUTHOR_USER_ID;
 import static com.gmail.javacoded78.constants.PathConstants.TWEET_COUNT;
@@ -308,6 +309,19 @@ public class UserApiControllerTest {
                 .andExpect(jsonPath("$.items[0].isMyProfileBlocked").value(false))
                 .andExpect(jsonPath("$.items[0].isWaitingForApprove").value(false))
                 .andExpect(jsonPath("$.items[0].isFollower").value(false));
+    }
+
+    @Test
+    @DisplayName("[200] POST /api/v1/user/tagged/image - Get tagged image users")
+    public void getTaggedImageUsers() throws Exception {
+        mockMvc.perform(post(API_V1_USER + TAGGED_IMAGE)
+                        .content(mapper.writeValueAsString(new IdsRequest(List.of(2L, 3L))))
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .header(AUTH_USER_ID_HEADER, TestConstants.USER_ID))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[*]", hasSize(2)))
+                .andExpect(jsonPath("$[0].id").value(TestConstants.USER_ID))
+                .andExpect(jsonPath("$[0].fullName").value(TestConstants.USERNAME));
     }
 
     @Test

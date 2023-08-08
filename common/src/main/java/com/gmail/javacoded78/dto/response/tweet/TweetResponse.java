@@ -2,8 +2,7 @@ package com.gmail.javacoded78.dto.response.tweet;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gmail.javacoded78.dto.ImageResponse;
-import com.gmail.javacoded78.dto.response.tweet.QuoteTweetResponse;
-import com.gmail.javacoded78.dto.response.tweet.TweetAuthorResponse;
+import com.gmail.javacoded78.dto.response.user.TaggedUserResponse;
 import com.gmail.javacoded78.enums.LinkCoverSize;
 import com.gmail.javacoded78.enums.ReplyType;
 import lombok.Data;
@@ -28,6 +27,8 @@ public class TweetResponse {
     private LinkCoverSize linkCoverSize;
     private TweetAuthorResponse user;
     private List<ImageResponse> images;
+    private String imageDescription;
+    private List<TaggedUserResponse> taggedImageUsers;
     private QuoteTweetResponse quoteTweet;
     private PollResponse poll;
     private Long retweetsCount;

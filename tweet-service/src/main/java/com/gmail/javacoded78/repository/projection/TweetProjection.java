@@ -1,6 +1,7 @@
 package com.gmail.javacoded78.repository.projection;
 
 import com.gmail.javacoded78.dto.response.tweet.TweetAuthorResponse;
+import com.gmail.javacoded78.dto.response.user.TaggedUserResponse;
 import com.gmail.javacoded78.enums.LinkCoverSize;
 import com.gmail.javacoded78.enums.ReplyType;
 import org.springframework.beans.factory.annotation.Value;
@@ -30,6 +31,9 @@ public interface TweetProjection {
 
     @Value("#{@tweetProjectionHelper.getTweetAuthor(target.authorId)}")
     TweetAuthorResponse getUser();
+
+    @Value("#{target.images.size() != 0 ? @tweetProjectionHelper.getTaggedImageUsers(target.id) : T(java.util.Collections).emptyList()}")
+    List<TaggedUserResponse> getTaggedImageUsers();
 
     @Value("#{@tweetProjectionHelper.isUserLikedTweet(target.id)}")
     boolean getIsTweetLiked();

@@ -6,6 +6,7 @@ import com.gmail.javacoded78.repository.projection.AuthUserProjection;
 import com.gmail.javacoded78.repository.projection.CommonUserProjection;
 import com.gmail.javacoded78.repository.projection.ListMemberProjection;
 import com.gmail.javacoded78.repository.projection.NotificationUserProjection;
+import com.gmail.javacoded78.repository.projection.TaggedUserProjection;
 import com.gmail.javacoded78.repository.projection.UserCommonProjection;
 import com.gmail.javacoded78.repository.projection.UserProjection;
 import org.springframework.data.domain.Page;
@@ -214,4 +215,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Modifying
     @Query(value = "DELETE FROM subscribers WHERE subscriber_id = ?1 AND user_id = ?2", nativeQuery = true)
     void unsubscribe(@Param("authUserId") Long authUserId, @Param("userId") Long userId);
+
+    @Query("SELECT user FROM User user WHERE user.id IN :userIds")
+    List<TaggedUserProjection> getTaggedImageUsers(@Param("userIds") List<Long> userIds);
 }

@@ -7,6 +7,7 @@ import com.gmail.javacoded78.dto.request.IdsRequest;
 import com.gmail.javacoded78.dto.response.notification.NotificationUserResponse;
 import com.gmail.javacoded78.dto.response.tweet.TweetAdditionalInfoUserResponse;
 import com.gmail.javacoded78.dto.response.tweet.TweetAuthorResponse;
+import com.gmail.javacoded78.dto.response.user.TaggedUserResponse;
 import com.gmail.javacoded78.dto.response.user.UserChatResponse;
 import com.gmail.javacoded78.dto.response.user.UserResponse;
 import com.gmail.javacoded78.dto.response.lists.ListMemberResponse;
@@ -56,6 +57,8 @@ public interface UserClientService {
     TweetAdditionalInfoUserResponse getTweetAdditionalInfoUser(Long userId);
 
     HeaderResponse<UserResponse> getUsersByIds(IdsRequest request, Pageable pageable);
+
+    List<TaggedUserResponse> getTaggedImageUsers(IdsRequest request);
 
     void updatePinnedTweetId(Long tweetId);
 

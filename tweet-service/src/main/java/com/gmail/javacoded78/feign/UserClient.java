@@ -5,6 +5,7 @@ import com.gmail.javacoded78.dto.response.chat.ChatTweetUserResponse;
 import com.gmail.javacoded78.dto.HeaderResponse;
 import com.gmail.javacoded78.dto.response.tweet.TweetAdditionalInfoUserResponse;
 import com.gmail.javacoded78.dto.response.tweet.TweetAuthorResponse;
+import com.gmail.javacoded78.dto.response.user.TaggedUserResponse;
 import com.gmail.javacoded78.dto.response.user.UserResponse;
 import com.gmail.javacoded78.dto.request.IdsRequest;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
@@ -32,6 +33,7 @@ import static com.gmail.javacoded78.constants.PathConstants.IS_MY_PROFILE_BLOCKE
 import static com.gmail.javacoded78.constants.PathConstants.IS_PRIVATE_USER_ID;
 import static com.gmail.javacoded78.constants.PathConstants.LIKE_COUNT;
 import static com.gmail.javacoded78.constants.PathConstants.MEDIA_COUNT;
+import static com.gmail.javacoded78.constants.PathConstants.TAGGED_IMAGE;
 import static com.gmail.javacoded78.constants.PathConstants.TWEET_ADDITIONAL_INFO_USER_ID;
 import static com.gmail.javacoded78.constants.PathConstants.TWEET_AUTHOR_USER_ID;
 import static com.gmail.javacoded78.constants.PathConstants.TWEET_COUNT;
@@ -96,6 +98,10 @@ public interface UserClient {
     @PostMapping(VALID_IDS)
     List<Long> getValidUserIds(@RequestBody IdsRequest request);
 
+    @CircuitBreaker(name = USER_SERVICE, fallbackMethod = "defaultEmptyUsersList")
+    @PostMapping(TAGGED_IMAGE)
+    List<TaggedUserResponse> getTaggedImageUsers(@RequestBody IdsRequest idsRequest);
+
     @CircuitBreaker(name = USER_SERVICE)
     @GetMapping(CHAT_USER_ID)
     ChatTweetUserResponse getChatTweetUser(@PathVariable("userId") Long userId);
@@ -117,6 +123,10 @@ public interface UserClient {
     }
 
     default ArrayList<Long> defaultEmptyIdsList(Throwable throwable) {
+        return new ArrayList<>();
+    }
+
+    default ArrayList<TaggedUserResponse> defaultEmptyUsersList(Throwable throwable) {
         return new ArrayList<>();
     }
 

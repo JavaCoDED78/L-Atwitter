@@ -8,6 +8,7 @@ import com.gmail.javacoded78.dto.request.IdsRequest;
 import com.gmail.javacoded78.dto.response.notification.NotificationUserResponse;
 import com.gmail.javacoded78.dto.response.tweet.TweetAdditionalInfoUserResponse;
 import com.gmail.javacoded78.dto.response.tweet.TweetAuthorResponse;
+import com.gmail.javacoded78.dto.response.user.TaggedUserResponse;
 import com.gmail.javacoded78.dto.response.user.UserChatResponse;
 import com.gmail.javacoded78.dto.response.user.UserResponse;
 import com.gmail.javacoded78.dto.response.lists.ListMemberResponse;
@@ -52,6 +53,7 @@ import static com.gmail.javacoded78.constants.PathConstants.SEARCH_USERNAME;
 import static com.gmail.javacoded78.constants.PathConstants.SUBSCRIBERS;
 import static com.gmail.javacoded78.constants.PathConstants.SUBSCRIBERS_IDS;
 import static com.gmail.javacoded78.constants.PathConstants.SUBSCRIBERS_USER_ID;
+import static com.gmail.javacoded78.constants.PathConstants.TAGGED_IMAGE;
 import static com.gmail.javacoded78.constants.PathConstants.TWEET_ADDITIONAL_INFO_USER_ID;
 import static com.gmail.javacoded78.constants.PathConstants.TWEET_AUTHOR_USER_ID;
 import static com.gmail.javacoded78.constants.PathConstants.TWEET_COUNT;
@@ -169,6 +171,11 @@ public class UserApiController {
     public HeaderResponse<UserResponse> getUsersByIds(@RequestBody IdsRequest request,
                                                       @SpringQueryMap Pageable pageable) {
         return userService.getUsersByIds(request, pageable);
+    }
+
+    @PostMapping(TAGGED_IMAGE)
+    public List<TaggedUserResponse> getTaggedImageUsers(@RequestBody IdsRequest request) {
+        return userService.getTaggedImageUsers(request);
     }
 
     @PutMapping(TWEET_PINNED_TWEET_ID)
