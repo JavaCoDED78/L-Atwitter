@@ -6,13 +6,13 @@ import { RegistrationInputField } from "../RegistrationInput/RegistrationInputFi
 import Spinner from "../../../components/Spinner/Spinner";
 import { useGlobalStyles } from "../../../util/globalClasses";
 import { TWITTER_COOKIES, TWITTER_PRIVACY, TWITTER_TOS_NEW } from "../../../constants/url-constants";
-import { RegistrationInfo } from "../../../types/auth";
+import { RegistrationRequest } from "../../../types/auth";
 import { RegistrationApi } from "../../../services/api/user-service/registrationApi";
 
 interface CustomizeModalProps {
     open: boolean;
     onClose: () => void;
-    registrationInfo: RegistrationInfo;
+    registrationInfo: RegistrationRequest;
     onOpenEmailVerification: (value: boolean | ((prevVar: boolean) => boolean)) => void;
 }
 
@@ -48,7 +48,6 @@ const CreateAccountModal: FC<CustomizeModalProps> = (
             transitionDuration={0}
             open={open}
             onClose={onClose}
-            aria-labelledby="form-dialog-title"
             hideBackdrop
         >
             <DialogContent style={{ paddingTop: 0, paddingBottom: 0 }} className={classes.container}>
