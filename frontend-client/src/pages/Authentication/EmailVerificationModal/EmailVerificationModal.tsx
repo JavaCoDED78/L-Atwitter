@@ -1,59 +1,53 @@
-import React, { FC, ReactElement, useState } from "react";
+import React, { ChangeEvent, FC, ReactElement, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { Link as MuiLink, Typography } from "@material-ui/core";
 
 import { useEmailVerificationModalStyles } from "./EmailVerificationModalStyles";
 import { RegistrationInputField } from "../RegistrationInput/RegistrationInputField";
-import { RegistrationApi } from "../../../services/api/user-service/registrationApi";
 import DialogWrapper from "../DialogWrapper/DialogWrapper";
+import {
+    selectErrorMessage,
+    selectRegistrationInfo,
+    selectRegistrationStep4
+} from "../../../store/ducks/authentication/selector";
+import { fetchCheckRegistrationCode } from "../../../store/ducks/authentication/actionCreators";
 
-interface CustomizeModalProps {
-    email: string;
-    isOpen: boolean;
-    onClose: () => void;
-    onOpenSetPassword: () => void;
-}
-
-const EmailVerificationModal: FC<CustomizeModalProps> = (
-    {
-        email,
-        isOpen,
-        onClose,
-        onOpenSetPassword
-    }
-): ReactElement => {
+const EmailVerificationModal: FC = (): ReactElement => {
     const classes = useEmailVerificationModalStyles();
+    const dispatch = useDispatch();
+    const registrationInfo = useSelector(selectRegistrationInfo);
+    const registrationStep4 = useSelector(selectRegistrationStep4);
+    const errorMessage = useSelector(selectErrorMessage);
     const [verificationCode, setVerificationCode] = useState<string>("");
-    const [error, setError] = useState<string>("");
 
     const checkEmailVerificationCode = (): void => {
-        RegistrationApi.checkRegistrationCode(verificationCode)
-            .then(() => onOpenSetPassword())
-            .catch((error) => setError(error.response.data));
+        dispatch(fetchCheckRegistrationCode(verificationCode));
+    };
+
+    const onChangeVerificationCode = (event: ChangeEvent<HTMLInputElement>): void => {
+        setVerificationCode(event.target.value);
     };
 
     return (
         <DialogWrapper
-            isOpen={isOpen}
-            onClose={onClose}
+            isOpen={registrationStep4}
             onClick={checkEmailVerificationCode}
             disabledButton={!verificationCode}
-            hideBackdrop
-            modalShadow
         >
             <Typography variant={"h3"} component={"div"}>
                 We sent you a code
             </Typography>
             <Typography variant={"subtitle1"} component={"div"}>
-                {`Enter it below to verify ${email}.`}
+                {`Enter it below to verify ${registrationInfo.email}.`}
             </Typography>
             <div style={{ marginTop: 10 }}>
                 <RegistrationInputField
                     label="Verification code"
                     variant="filled"
-                    helperText={error}
-                    error={error !== ""}
+                    helperText={errorMessage}
+                    error={errorMessage !== null}
                     value={verificationCode}
-                    onChange={(event) => setVerificationCode(event.target.value)}
+                    onChange={onChangeVerificationCode}
                     fullWidth
                 />
             </div>
