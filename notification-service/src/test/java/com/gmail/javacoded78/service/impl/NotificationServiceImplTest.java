@@ -1,11 +1,13 @@
 package com.gmail.javacoded78.service.impl;
 
+import com.gmail.javacoded78.NotificationTestHelper;
 import com.gmail.javacoded78.dto.request.IdsRequest;
 import com.gmail.javacoded78.dto.response.notification.NotificationListResponse;
 import com.gmail.javacoded78.dto.response.notification.NotificationTweetResponse;
 import com.gmail.javacoded78.dto.response.notification.NotificationUserResponse;
 import com.gmail.javacoded78.dto.response.tweet.TweetResponse;
 import com.gmail.javacoded78.enums.NotificationType;
+import com.gmail.javacoded78.exception.ApiRequestException;
 import com.gmail.javacoded78.feign.TweetClient;
 import com.gmail.javacoded78.feign.UserClient;
 import com.gmail.javacoded78.repository.NotificationRepository;
@@ -22,6 +24,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.projection.ProjectionFactory;
 import org.springframework.data.projection.SpelAwareProxyProjectionFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.time.LocalDateTime;
@@ -29,7 +32,10 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
+import static com.gmail.javacoded78.constants.ErrorMessage.NOTIFICATION_NOT_FOUND;
+import static com.gmail.javacoded78.util.TestConstants.USER_ID;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -51,47 +57,35 @@ public class NotificationServiceImplTest {
     @MockBean
     private TweetClient tweetClient;
 
-    private final ProjectionFactory factory = new SpelAwareProxyProjectionFactory();
+    private final Pageable pageable = PageRequest.of(0, 20);
+    private final List<Long> tweetIds = Arrays.asList(1L, 2L, 3L);
+
+    @Before
+    public void setUp() {
+        TestUtil.mockAuthenticatedUserId();
+    }
 
     @Test
     public void getUserNotifications() {
-        Map<String, Object> notificationMap = new HashMap<>();
-        notificationMap.put("id", 1L);
-        notificationMap.put("date", LocalDateTime.now());
-        notificationMap.put("notificationType", NotificationType.TWEET);
-        notificationMap.put("userId", 1L);
-        notificationMap.put("userToFollowId", 2L);
-        notificationMap.put("tweetId", 3L);
-        notificationMap.put("listId", 4L);
-        notificationMap.put("user", new NotificationUserResponse());
-        notificationMap.put("userToFollow", new NotificationUserResponse());
-        notificationMap.put("tweet", new NotificationTweetResponse());
-        notificationMap.put("list", new NotificationListResponse());
-        NotificationProjection notification1 = factory.createProjection(NotificationProjection.class, notificationMap);
-        NotificationProjection notification2 = factory.createProjection(NotificationProjection.class, notificationMap);
-        Pageable pageable = PageRequest.of(0, 20);
-        Page<NotificationProjection> notifications = new PageImpl<>(Arrays.asList(notification1, notification2), pageable, 20);
-        when(notificationRepository.getNotificationsByUserId(1L, pageable)).thenReturn(notifications);
-        TestUtil.mockAuthenticatedUserId();
+        Page<NotificationProjection> notifications = new PageImpl<>(
+                NotificationTestHelper.getMockNotificationProjectionList(), pageable, 20);
+        when(notificationRepository.getNotificationsByUserId(USER_ID, pageable)).thenReturn(notifications);
         Page<NotificationProjection> userNotifications = notificationService.getUserNotifications(pageable);
         assertEquals(2, userNotifications.getContent().size());
         verify(userClient, times(1)).resetNotificationCount();
-        verify(notificationRepository, times(1)).getNotificationsByUserId(1L, pageable);
+        verify(notificationRepository, times(1)).getNotificationsByUserId(USER_ID, pageable);
     }
 
     @Test
     public void getUserMentionsNotifications() {
-        Pageable pageable = PageRequest.of(0, 20);
-        List<Long> tweetIds = Arrays.asList(1L, 2L, 3L);
-        when(notificationRepository.getTweetNotificationMentionIds(1L, pageable))
+        when(notificationRepository.getTweetNotificationMentionIds(USER_ID, pageable))
                 .thenReturn(new PageImpl<>(tweetIds, pageable, 20));
         when(tweetClient.getTweetsByIds(new IdsRequest(tweetIds)))
                 .thenReturn(Arrays.asList(new TweetResponse(), new TweetResponse(), new TweetResponse()));
-        TestUtil.mockAuthenticatedUserId();
         Page<TweetResponse> userMentionsNotifications = notificationService.getUserMentionsNotifications(pageable);
         assertEquals(3, userMentionsNotifications.getContent().size());
         verify(userClient, times(1)).resetMentionCount();
-        verify(notificationRepository, times(1)).getTweetNotificationMentionIds(1L, pageable);
+        verify(notificationRepository, times(1)).getTweetNotificationMentionIds(USER_ID, pageable);
         verify(tweetClient, times(1)).getTweetsByIds(new IdsRequest(tweetIds));
     }
 
@@ -103,5 +97,40 @@ public class NotificationServiceImplTest {
         assertEquals(2, notifications.size());
         verify(userClient, times(1)).resetNotificationCount();
         verify(userClient, times(1)).getUsersWhichUserSubscribed();
+    }
+
+    @Test
+    public void getUserNotificationById() {
+        when(notificationRepository.getUserNotificationById(USER_ID, 1L))
+                .thenReturn(Optional.of(NotificationTestHelper.getMockNotificationInfoProjection()));
+        assertNotNull(notificationService.getUserNotificationById(1L));
+        verify(notificationRepository, times(1)).getUserNotificationById(USER_ID, 1L);
+    }
+
+    @Test
+    public void getUserNotificationById_shouldReturnNotificationNotFound() {
+        when(notificationRepository.getUserNotificationById(USER_ID, 1L)).thenReturn(Optional.empty());
+        try {
+            notificationService.getUserNotificationById(1L);
+        } catch (ApiRequestException exception) {
+            assertEquals(NOTIFICATION_NOT_FOUND, exception.getMessage());
+            assertEquals(HttpStatus.NOT_FOUND, exception.getStatus());
+        }
+        verify(notificationRepository, times(1)).getUserNotificationById(USER_ID, 1L);
+    }
+
+    @Test
+    public void getNotificationsFromTweetAuthors() {
+        List<Long> userIds = Arrays.asList(4L, 5L, 6L);
+        when(userClient.getUserIdsWhichUserSubscribed()).thenReturn(userIds);
+        when(notificationRepository.getTweetIdsByNotificationType(userIds, USER_ID, pageable))
+                .thenReturn(new PageImpl<>(tweetIds, pageable, 20));
+        when(tweetClient.getTweetsByIds(new IdsRequest(tweetIds)))
+                .thenReturn(Arrays.asList(new TweetResponse(), new TweetResponse(), new TweetResponse()));
+        Page<TweetResponse> userMentionsNotifications = notificationService.getNotificationsFromTweetAuthors(pageable);
+        assertEquals(3, userMentionsNotifications.getContent().size());
+        verify(userClient, times(1)).getUserIdsWhichUserSubscribed();
+        verify(notificationRepository, times(1)).getTweetIdsByNotificationType(userIds, USER_ID, pageable);
+        verify(tweetClient, times(1)).getTweetsByIds(new IdsRequest(tweetIds));
     }
 }
