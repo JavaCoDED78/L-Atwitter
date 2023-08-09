@@ -13,6 +13,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import static com.gmail.javacoded78.constants.PathConstants.API_V1_LISTS;
 import static com.gmail.javacoded78.constants.PathConstants.AUTH_USER_ID_HEADER;
 import static com.gmail.javacoded78.constants.PathConstants.LIST_ID;
+import static com.gmail.javacoded78.constants.PathConstants.TWEET_LIST_ID;
 import static com.gmail.javacoded78.util.TestConstants.LIST_NAME;
 import static com.gmail.javacoded78.util.TestConstants.USER_ID;
 import static org.junit.jupiter.api.Assertions.*;
@@ -40,5 +41,20 @@ public class ListsApiControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(4))
                 .andExpect(jsonPath("$.name").value(TestConstants.LIST_NAME));
+    }
+
+    @Test
+    @DisplayName("[200] GET /api/v1/lists/tweet/4 - Get tweet list by id")
+    public void getTweetList() throws Exception {
+        mockMvc.perform(get(API_V1_LISTS + TWEET_LIST_ID, 4)
+                        .header(AUTH_USER_ID_HEADER, TestConstants.USER_ID))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(4))
+                .andExpect(jsonPath("$.name").value(TestConstants.LIST_NAME))
+                .andExpect(jsonPath("$.altWallpaper").value(TestConstants.LIST_ALT_WALLPAPER))
+                .andExpect(jsonPath("$.wallpaper").isEmpty())
+                .andExpect(jsonPath("$.listOwner.id").value(TestConstants.LIST_USER_ID))
+                .andExpect(jsonPath("$.membersSize").value(1L))
+                .andExpect(jsonPath("$.isPrivate").value(false));
     }
 }
