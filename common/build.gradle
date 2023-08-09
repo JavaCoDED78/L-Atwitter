@@ -46,8 +46,10 @@ dependencies {
             "io.jsonwebtoken:jjwt-jackson:${versions.jjwt}"
 
     runtimeOnly 'org.postgresql:postgresql'
-
+    implementation 'org.springframework.boot:spring-boot-starter-test'
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
     annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+    testImplementation 'org.projectlombok:lombok:1.18.26'
+
 }
