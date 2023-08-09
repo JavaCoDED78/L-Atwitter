@@ -8,6 +8,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import static com.gmail.javacoded78.util.TestConstants.USER_ID;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -26,19 +27,22 @@ public class TopicProjectionHelperTest {
     @MockBean
     private TopicNotInterestedRepository topicNotInterestedRepository;
 
+    @Before
+    public void setUp() {
+        TestUtil.mockAuthenticatedUserId();
+    }
+
     @Test
     public void isTopicFollowed() {
-        when(topicFollowersRepository.isTopicFollowed(1L, 3L)).thenReturn(true);
-        TestUtil.mockAuthenticatedUserId();
+        when(topicFollowersRepository.isTopicFollowed(USER_ID, 3L)).thenReturn(true);
         assertTrue(topicProjectionHelper.isTopicFollowed(3L));
-        verify(topicFollowersRepository, times(1)).isTopicFollowed(1L, 3L);
+        verify(topicFollowersRepository, times(1)).isTopicFollowed(USER_ID, 3L);
     }
 
     @Test
     public void isTopicNotInterested() {
-        when(topicNotInterestedRepository.isTopicNotInterested(1L, 3L)).thenReturn(true);
-        TestUtil.mockAuthenticatedUserId();
+        when(topicNotInterestedRepository.isTopicNotInterested(USER_ID, 3L)).thenReturn(true);
         assertTrue(topicProjectionHelper.isTopicNotInterested(3L));
-        verify(topicNotInterestedRepository, times(1)).isTopicNotInterested(1L, 3L);
+        verify(topicNotInterestedRepository, times(1)).isTopicNotInterested(USER_ID, 3L);
     }
 }
