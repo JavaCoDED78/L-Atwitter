@@ -1,7 +1,6 @@
 import React, { FC, ReactElement, useCallback, useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import Button from "@material-ui/core/Button";
-import CircularProgress from "@material-ui/core/CircularProgress";
 import TextareaAutosize from "@material-ui/core/TextareaAutosize";
 import "emoji-mart/css/emoji-mart.css";
 
@@ -15,14 +14,12 @@ import {
 import UploadImages from "../UploadImages/UploadImages";
 import { fetchReplyTweet } from "../../store/ducks/tweet/actionCreators";
 import { useAddTweetFormStyles } from "./AddTweetFormStyles";
-import { PullIcon } from "../../icons";
 import Poll, { PollInitialState, pollInitialState } from "./Poll/Poll";
 import Reply from "./Reply/Reply";
 import Quote from "../Quote/Quote";
 import { formatScheduleDate } from "../../util/format-date-helper";
 import { GiphyDataProps, QuoteTweetResponse, TweetResponse } from "../../types/tweet";
 import { Image, ReplyType } from "../../types/common";
-import ActionIconButton from "../ActionIconButton/ActionIconButton";
 import { setOpenSnackBar } from "../../store/ducks/actionSnackbar/actionCreators";
 import EmojiIconButton from "./EmojiIconButton/EmojiIconButton";
 import ScheduleIconButton from "./ScheduleIconButton/ScheduleIconButton";
@@ -37,6 +34,9 @@ import { BaseListResponse } from "../../types/lists";
 import TweetListComponent from "../TweetListComponent/TweetListComponent";
 import GifIconButton from "./GifIconButton/GifIconButton";
 import GifImage from "../GifImage/GifImage";
+import PullIconButton from "./PullIconButton/PullIconButton";
+import TextCountProgress from "./TextCountProgress/TextCountProgress";
+import { MAX_TEXT_LENGTH } from "../../constants/common-constants";
 
 export interface AddTweetFormProps {
     unsentTweet?: TweetResponse;
@@ -57,8 +57,6 @@ export interface ImageObj {
     file: File;
 }
 
-const MAX_LENGTH = 280;
-
 const AddTweetForm: FC<AddTweetFormProps> = (
     {
         unsentTweet,
@@ -74,6 +72,7 @@ const AddTweetForm: FC<AddTweetFormProps> = (
         onCloseModal
     }
 ): ReactElement => {
+    const classes = useAddTweetFormStyles();
     const dispatch = useDispatch();
     const params = useParams<{ userId: string }>();
     const [images, setImages] = useState<ImageObj[]>([]);
@@ -85,9 +84,6 @@ const AddTweetForm: FC<AddTweetFormProps> = (
     const [imageDescription, setImageDescription] = useState<string>("");
     const { text, setText, handleChangeText, addEmoji, textConverter } = useInputText();
     const { selectedUsers, handleDelete, handleListItemClick, resetSelectedUsers } = useSelectUsers();
-    const classes = useAddTweetFormStyles({ quoteTweet: quoteTweet, isScheduled: selectedScheduleDate !== null });
-    const textLimitPercent = Math.round((text.length / MAX_LENGTH) * 100);
-    const textCount = MAX_LENGTH - text.length;
 
     useEffect(() => {
         if (unsentTweet) {
@@ -137,7 +133,7 @@ const AddTweetForm: FC<AddTweetFormProps> = (
             tweetId: tweetId!,
             userId: params.userId,
             addressedUsername: addressedUsername!,
-            addressedId: addressedId!,
+            addressedId: addressedId!
         }));
         tweetPostProcessing();
     };
@@ -252,57 +248,30 @@ const AddTweetForm: FC<AddTweetFormProps> = (
                 <div className={classes.footerWrapper}>
                     <UploadImages onChangeImages={setImages} />
                     <GifIconButton onClickSetGif={onClickSetGif} />
-                    {(buttonName !== "Reply") && (
-                        <div className={classes.quoteImage}>
-                            <ActionIconButton
-                                actionText={"Poll"}
-                                icon={PullIcon}
-                                onClick={onOpenPoll}
-                                disabled={!!quoteTweet || selectedScheduleDate !== null}
-                                size={"medium"}
-                            />
-                        </div>
-                    )}
+                    <PullIconButton
+                        buttonName={buttonName}
+                        onOpenPoll={onOpenPoll}
+                        disabled={!!quoteTweet || selectedScheduleDate !== null}
+                    />
                     <EmojiIconButton addEmoji={addEmoji} />
-                    {(buttonName !== "Reply") && (
-                        <ScheduleIconButton
-                            disabled={!!quoteTweet}
-                            selectedScheduleDate={selectedScheduleDate}
-                            handleScheduleDate={handleScheduleDate}
-                            clearScheduleDate={clearScheduleDate}
-                        />
-                    )}
+                    <ScheduleIconButton
+                        buttonName={buttonName}
+                        disabled={!!quoteTweet}
+                        selectedScheduleDate={selectedScheduleDate}
+                        handleScheduleDate={handleScheduleDate}
+                        clearScheduleDate={clearScheduleDate}
+                    />
                 </div>
                 <div className={classes.footerAddForm}>
-                    {text && (
-                        <>
-                            <span id={"textCount"}>{textCount}</span>
-                            <div className={classes.footerAddFormCircleProgress}>
-                                <CircularProgress
-                                    variant="determinate"
-                                    size={20}
-                                    thickness={5}
-                                    value={text.length >= MAX_LENGTH ? 100 : textLimitPercent}
-                                    style={text.length >= MAX_LENGTH ? { color: "red" } : undefined}
-                                />
-                                <CircularProgress
-                                    style={{ color: "rgba(0, 0, 0, 0.1)" }}
-                                    variant="determinate"
-                                    size={20}
-                                    thickness={5}
-                                    value={100}
-                                />
-                            </div>
-                        </>
-                    )}
+                    <TextCountProgress text={text} />
                     <Button
                         onClick={(buttonName === "Reply") ? handleClickReplyTweet :
                             (quoteTweet !== undefined ? handleClickQuoteTweet : handleClickAddTweet)}
                         disabled={
                             visiblePoll ? (
-                                !pollData.choice1 || !pollData.choice2 || !text || text.length >= MAX_LENGTH
+                                !pollData.choice1 || !pollData.choice2 || !text || text.length >= MAX_TEXT_LENGTH
                             ) : (
-                                !gif && (!text || text.length >= MAX_LENGTH)
+                                !gif && (!text || text.length >= MAX_TEXT_LENGTH)
                             )}
                         color="primary"
                         variant="contained"
