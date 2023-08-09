@@ -12,6 +12,7 @@ import java.util.List;
 
 @Data
 public class TweetResponse {
+
     private Long id;
     private String text;
     private LocalDateTime dateTime;
@@ -24,6 +25,7 @@ public class TweetResponse {
     private String linkTitle;
     private String linkDescription;
     private String linkCover;
+    private GifImageResponse gifImage;
     private LinkCoverSize linkCoverSize;
     private TweetAuthorResponse user;
     private List<ImageResponse> images;
@@ -57,13 +59,24 @@ public class TweetResponse {
 
     @Data
     static class PollResponse {
+
         private Long id;
         private LocalDateTime dateTime;
         private List<PollChoiceResponse> pollChoices;
     }
 
     @Data
+    static class GifImageResponse {
+
+        private Long id;
+        private String url;
+        private Long width;
+        private Long height;
+    }
+
+    @Data
     static class PollChoiceResponse {
+
         private Long id;
         private String choice;
         private List<VotedUserResponse> votedUser;
@@ -71,6 +84,8 @@ public class TweetResponse {
 
     @Data
     static class VotedUserResponse {
+
         private Long id;
     }
+
 }

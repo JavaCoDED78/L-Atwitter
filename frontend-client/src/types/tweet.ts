@@ -16,6 +16,7 @@ export interface TweetResponse {
     linkDescription: string;
     linkCover: string;
     linkCoverSize: LinkCoverSize;
+    gifImage: GifImageResponse;
     user: UserTweetResponse;
     images: Image[];
     imageDescription: string;
@@ -98,6 +99,22 @@ export interface TweetImageResponse {
     tweetId: number;
     imageId: number;
     src: string;
+}
+
+export interface GifImageResponse {
+    id?: number;
+    url: string;
+    width: number;
+    height: number;
+}
+
+export interface GiphyDataProps {
+    id: string;
+    title: string;
+    images: {
+        downsized: GifImageResponse;
+        downsized_still: GifImageResponse;
+    };
 }
 
 interface TweetsActionsPayload {

@@ -15,12 +15,12 @@ import {
 import UploadImages from "../UploadImages/UploadImages";
 import { fetchReplyTweet } from "../../store/ducks/tweet/actionCreators";
 import { useAddTweetFormStyles } from "./AddTweetFormStyles";
-import { GifIcon, PullIcon } from "../../icons";
+import { PullIcon } from "../../icons";
 import Poll, { PollInitialState, pollInitialState } from "./Poll/Poll";
 import Reply from "./Reply/Reply";
 import Quote from "../Quote/Quote";
 import { formatScheduleDate } from "../../util/format-date-helper";
-import { QuoteTweetResponse, TweetResponse } from "../../types/tweet";
+import { GiphyDataProps, QuoteTweetResponse, TweetResponse } from "../../types/tweet";
 import { Image, ReplyType } from "../../types/common";
 import ActionIconButton from "../ActionIconButton/ActionIconButton";
 import { setOpenSnackBar } from "../../store/ducks/actionSnackbar/actionCreators";
@@ -36,6 +36,7 @@ import { useInputText } from "../../hook/useInputText";
 import { BaseListResponse } from "../../types/lists";
 import TweetListComponent from "../TweetListComponent/TweetListComponent";
 import GifIconButton from "./GifIconButton/GifIconButton";
+import GifImage from "../GifImage/GifImage";
 
 export interface AddTweetFormProps {
     unsentTweet?: TweetResponse;
@@ -76,6 +77,7 @@ const AddTweetForm: FC<AddTweetFormProps> = (
     const dispatch = useDispatch();
     const params = useParams<{ userId: string }>();
     const [images, setImages] = useState<ImageObj[]>([]);
+    const [gif, setGif] = useState<GiphyDataProps | null>(null);
     const [replyType, setReplyType] = useState<ReplyType>(ReplyType.EVERYONE);
     const [selectedScheduleDate, setSelectedScheduleDate] = useState<Date | null>(null);
     const [visiblePoll, setVisiblePoll] = useState<boolean>(false);
@@ -150,7 +152,15 @@ const AddTweetForm: FC<AddTweetFormProps> = (
             result.push(data);
         }
         const taggedImageUsers = selectedUsers.map((user) => user.id);
-        return { text: textConverter(), images: result, imageDescription, taggedImageUsers, replyType };
+        return {
+            text: textConverter(),
+            listId: tweetList?.id,
+            gifImage: gif?.images.downsized,
+            images: result,
+            imageDescription,
+            taggedImageUsers,
+            replyType
+        };
     };
 
     const tweetPostProcessing = (snackBarText?: string): void => {
@@ -162,6 +172,7 @@ const AddTweetForm: FC<AddTweetFormProps> = (
         setVisiblePoll(false);
         setPollData(pollInitialState);
         setSelectedScheduleDate(null);
+        setGif(null);
         if (onCloseModal) onCloseModal();
     };
 
@@ -197,6 +208,14 @@ const AddTweetForm: FC<AddTweetFormProps> = (
         setSelectedScheduleDate(null);
     }, []);
 
+    const onClickSetGif = useCallback((gif: GiphyDataProps): void => {
+        setGif(gif);
+    }, []);
+
+    const onClickRemoveGif = useCallback((): void => {
+        setGif(null);
+    }, []);
+
     return (
         <>
             <div className={classes.content}>
@@ -223,6 +242,7 @@ const AddTweetForm: FC<AddTweetFormProps> = (
                     handleDelete={handleDelete}
                     handleListItemClick={handleListItemClick}
                 />
+                {gif && <GifImage gifImage={gif.images.downsized} onClickRemoveGif={onClickRemoveGif} />}
                 {quoteTweet && <Quote quoteTweet={quoteTweet} />}
                 {tweetList && <TweetListComponent tweetList={tweetList} />}
                 <Poll pollData={pollData} onChangePoll={onChangePoll} visiblePoll={visiblePoll} onClose={onClosePoll} />
@@ -231,7 +251,7 @@ const AddTweetForm: FC<AddTweetFormProps> = (
             <div className={classes.footer}>
                 <div className={classes.footerWrapper}>
                     <UploadImages onChangeImages={setImages} />
-                    <GifIconButton />
+                    <GifIconButton onClickSetGif={onClickSetGif} />
                     {(buttonName !== "Reply") && (
                         <div className={classes.quoteImage}>
                             <ActionIconButton
@@ -282,7 +302,7 @@ const AddTweetForm: FC<AddTweetFormProps> = (
                             visiblePoll ? (
                                 !pollData.choice1 || !pollData.choice2 || !text || text.length >= MAX_LENGTH
                             ) : (
-                                !text || text.length >= MAX_LENGTH
+                                !gif && (!text || text.length >= MAX_LENGTH)
                             )}
                         color="primary"
                         variant="contained"
