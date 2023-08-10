@@ -95,10 +95,7 @@ public class ListsServiceImpl implements ListsService {
         if (authUserId.equals(userId)) {
             return listsRepository.getUserTweetListsById(userId);
         }
-        boolean isUserBlocked = userClient.isUserBlocked(authUserId, userId);
-        boolean isPrivateUserProfile = userClient.isUserHavePrivateProfile(userId);
-
-        if (isUserBlocked || isPrivateUserProfile) {
+        if (userClient.isUserBlocked(authUserId, userId) || userClient.isUserHavePrivateProfile(userId)) {
             return new ArrayList<>();
         }
         return listsRepository.getUserTweetListsById(userId);
@@ -140,9 +137,7 @@ public class ListsServiceImpl implements ListsService {
     @Override
     @Transactional
     public ListUserProjection followList(Long listId) {
-        boolean isListExist = listsRepository.findByIdAndIsPrivateFalse(listId);
-
-        if (!isListExist) {
+        if (!listsRepository.findByIdAndIsPrivateFalse(listId)) {
             throw new ApiRequestException(LIST_NOT_FOUND, HttpStatus.NOT_FOUND);
         }
         Long authUserId = AuthUtil.getAuthenticatedUserId();
@@ -152,8 +147,8 @@ public class ListsServiceImpl implements ListsService {
             listsFollowersRepository.delete(follower);
             pinnedListsRepository.removePinnedList(listId, authUserId);
         } else {
-            ListsFollowers bewFollower = new ListsFollowers(listId, authUserId);
-            listsFollowersRepository.save(bewFollower);
+            ListsFollowers newFollower = new ListsFollowers(listId, authUserId);
+            listsFollowersRepository.save(newFollower);
         }
         return listsRepository.getListById(listId, ListUserProjection.class);
     }
@@ -238,9 +233,7 @@ public class ListsServiceImpl implements ListsService {
     @Override
     public HeaderResponse<TweetResponse> getTweetsByListId(Long listId, Pageable pageable) {
         Long authUserId = AuthUtil.getAuthenticatedUserId();
-        boolean isListNotPrivate = listsRepository.isListNotPrivate(listId, authUserId);
-
-        if (!isListNotPrivate) {
+        if (!listsRepository.isListNotPrivate(listId, authUserId)) {
             throw new ApiRequestException(LIST_NOT_FOUND, HttpStatus.NOT_FOUND);
         }
         List<Long> membersIds = listsMembersRepository.getMembersIds(listId);
