@@ -23,9 +23,10 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import static com.gmail.javacoded78.constants.ErrorMessage.CHAT_NOT_FOUND;
-import static com.gmail.javacoded78.constants.ErrorMessage.CHAT_PARTICIPANT_NOT_FOUND;
 import static com.gmail.javacoded78.constants.ErrorMessage.TWEET_NOT_FOUND;
 
 @Service
@@ -37,9 +38,9 @@ public class ChatMessageServiceImpl implements ChatMessageService {
     private final ChatMessageRepository chatMessageRepository;
     private final ChatServiceHelper chatServiceHelper;
     private final UserClient userClient;
-    private final TweetClient tweetClient;
 
     @Override
+    @Transactional(readOnly = true)
     public List<ChatMessageProjection> getChatMessages(Long chatId) {
         Long authUserId = AuthUtil.getAuthenticatedUserId();
         chatRepository.getChatById(chatId, authUserId, ChatProjection.class)
@@ -60,6 +61,7 @@ public class ChatMessageServiceImpl implements ChatMessageService {
     @Override
     @Transactional
     public Map<Long, ChatMessageProjection> addMessage(ChatMessage chatMessage, Long chatId) {
+        chatServiceHelper.checkChatMessageLength(chatMessage.getText());
         Long authUserId = AuthUtil.getAuthenticatedUserId();
         Chat chat = chatRepository.getChatById(chatId, authUserId, Chat.class)
                 .orElseThrow(() -> new ApiRequestException(CHAT_NOT_FOUND, HttpStatus.NOT_FOUND));
@@ -71,18 +73,14 @@ public class ChatMessageServiceImpl implements ChatMessageService {
         chatParticipantRepository.updateParticipantWhoLeftChat(chatParticipantId, chatId);
         chat.getMessages().add(chatMessage);
         ChatMessageProjection message = chatMessageRepository.getChatMessageById(chatMessage.getId()).get();
-        Map<Long, ChatMessageProjection> chatParticipants = new HashMap<>();
-        chatParticipantRepository.getChatParticipantIds(chatId)
-                .forEach(userId -> chatParticipants.put(userId, message));
-        return chatParticipants;
+        return chatParticipantRepository.getChatParticipantIds(chatId).stream()
+                .collect(Collectors.toMap(Function.identity(), (userId) -> message));
     }
 
     @Override
     @Transactional
     public Map<Long, ChatMessageProjection> addMessageWithTweet(String text, Long tweetId, List<Long> usersIds) {
-        if (!tweetClient.isTweetExists(tweetId)) {
-            throw new ApiRequestException(TWEET_NOT_FOUND, HttpStatus.NOT_FOUND);
-        }
+        chatServiceHelper.isTweetExists(tweetId);
         List<Long> validUserIds = userClient.validateChatUsersIds(new IdsRequest(usersIds));
         Map<Long, ChatMessageProjection> chatParticipants = new HashMap<>();
         Long authUserId = AuthUtil.getAuthenticatedUserId();
@@ -99,6 +97,7 @@ public class ChatMessageServiceImpl implements ChatMessageService {
                 newChat.setParticipants(List.of(authorParticipant, userParticipant));
                 chatMessage.setChat(newChat);
                 chatMessageRepository.save(chatMessage);
+                newChat.getMessages().add(chatMessage);
             } else if (!isUserBlockedByMyProfile) {
                 chatMessage.setChat(chat);
                 chatMessageRepository.save(chatMessage);

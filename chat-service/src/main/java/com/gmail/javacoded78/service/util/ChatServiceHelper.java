@@ -10,6 +10,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
 import static com.gmail.javacoded78.constants.ErrorMessage.CHAT_PARTICIPANT_BLOCKED;
+import static com.gmail.javacoded78.constants.ErrorMessage.INCORRECT_CHAT_MESSAGE_LENGTH;
+import static com.gmail.javacoded78.constants.ErrorMessage.TWEET_NOT_FOUND;
 
 @Component
 @RequiredArgsConstructor
@@ -27,11 +29,20 @@ public class ChatServiceHelper {
     }
 
     public void isParticipantBlocked(Long authUserId, Long userId) {
-        Boolean isUserBlockedByMyProfile = userClient.isUserBlockedByMyProfile(authUserId);
-        Boolean isMyProfileBlockedByUser = userClient.isMyProfileBlockedByUser(userId);
-
-        if (isUserBlockedByMyProfile || isMyProfileBlockedByUser) {
+        if (userClient.isUserBlockedByMyProfile(authUserId) || userClient.isMyProfileBlockedByUser(userId)) {
             throw new ApiRequestException(CHAT_PARTICIPANT_BLOCKED, HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    public void checkChatMessageLength(String text) {
+        if (text.length() == 0) {
+            throw new ApiRequestException(INCORRECT_CHAT_MESSAGE_LENGTH, HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    public void isTweetExists(Long tweetId) {
+        if (!tweetClient.isTweetExists(tweetId)) {
+            throw new ApiRequestException(TWEET_NOT_FOUND, HttpStatus.NOT_FOUND);
         }
     }
 }

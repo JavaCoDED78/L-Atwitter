@@ -14,6 +14,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -33,8 +34,8 @@ public class Chat {
     private LocalDateTime creationDate = LocalDateTime.now();
 
     @OneToMany(mappedBy = "chat")
-    private List<ChatParticipant> participants;
+    private List<ChatParticipant> participants = new ArrayList<>();
 
     @OneToMany(mappedBy = "chat")
-    private List<ChatMessage> messages;
+    private List<ChatMessage> messages = new ArrayList<>();
 }

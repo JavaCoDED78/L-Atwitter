@@ -34,17 +34,7 @@ import FullList from "./pages/FullList/FullList";
 import SuggestedLists from "./pages/SuggestedLists/SuggestedLists";
 import ListsMemberships from "./pages/Lists/ListsMemberships/ListsMemberships";
 import Settings from "./pages/Settings/Settings";
-import {
-    blueColor,
-    crimsonColor,
-    defaultTheme,
-    dimTheme,
-    greenColor,
-    lightsOutTheme,
-    orangeColor,
-    violetColor,
-    yellowColor
-} from "./theme";
+import { blueColor, crimsonColor, defaultTheme, dimTheme, greenColor, lightsOutTheme, orangeColor, violetColor, yellowColor } from "./theme";
 import NotificationsTimeline from "./pages/Notifications/NotificationsPage/NotificationsTimeline/NotificationsTimeline";
 import FollowersYouKnow from "./pages/FollowersYouKnow/FollowersYouKnow";
 import { fetchTags } from "./store/ducks/tags/actionCreators";
@@ -145,7 +135,7 @@ const App: FC = (): ReactElement => {
 
         const background = localStorage.getItem(BACKGROUND);
         const color = localStorage.getItem(COLOR);
-        processColorScheme((color !== null) ? color as ColorScheme : ColorScheme.BLUE);
+        processColorScheme(color !== null ? (color as ColorScheme) : ColorScheme.BLUE);
         processBackgroundColor(background as BackgroundTheme);
     }, []);
 
@@ -162,13 +152,13 @@ const App: FC = (): ReactElement => {
                 stompClient?.subscribe(TOPIC_CHAT(myProfileId), (response) => {
                     dispatch(setChatMessage(JSON.parse(response.body)));
 
-                    if (myProfileId !== JSON.parse(response.body).author.id) {
+                    if (myProfileId !== JSON.parse(response.body).authorId) {
                         dispatch(setUnreadMessage(JSON.parse(response.body)));
                     }
                 });
 
                 stompClient?.subscribe(TOPIC_NOTIFICATIONS(myProfileId), (response) => {
-                    const isNotificationExist = notifications.find(notification => notification.id === JSON.parse(response.body).id);
+                    const isNotificationExist = notifications.find((notification) => notification.id === JSON.parse(response.body).id);
 
                     if (!isNotificationExist) {
                         dispatch(setNotification(JSON.parse(response.body)));
@@ -239,11 +229,10 @@ const App: FC = (): ReactElement => {
                         <Route path={NOTIFICATIONS_TIMELINE} component={NotificationsTimeline} exact />
                         <Route path={`${NOTIFICATION}/:id`} component={NotificationInfo} exact />
                         <Route path={MESSAGES} component={Messages} />
-                        <Route path={SETTINGS}
-                               render={() => <Settings
-                                   changeBackgroundColor={changeBackgroundColor}
-                                   changeColorScheme={changeColorScheme} />
-                               } />
+                        <Route
+                            path={SETTINGS}
+                            render={() => <Settings changeBackgroundColor={changeBackgroundColor} changeColorScheme={changeColorScheme} />}
+                        />
                         <Route path={BOOKMARKS} component={Bookmarks} />
                         <Route path={`${TOPICS}/:topics`} component={Topics} />
                         <Route path={`${QUOTES}/:tweetId`} component={QuoteTweets} />
