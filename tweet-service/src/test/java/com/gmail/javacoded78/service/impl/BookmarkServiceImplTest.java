@@ -7,6 +7,7 @@ import com.gmail.javacoded78.model.Tweet;
 import com.gmail.javacoded78.repository.BookmarkRepository;
 import com.gmail.javacoded78.repository.TweetRepository;
 import com.gmail.javacoded78.repository.projection.BookmarkProjection;
+import com.gmail.javacoded78.repository.projection.TweetProjection;
 import com.gmail.javacoded78.service.TweetServiceTestHelper;
 import com.gmail.javacoded78.util.TestConstants;
 import com.gmail.javacoded78.util.TestUtil;
@@ -147,7 +148,7 @@ public class BookmarkServiceImplTest {
                         "id", 1L,
                         "bookmarkDate", LocalDateTime.now(),
                         "tweetId", TestConstants.TWEET_ID,
-                        "tweet", TweetServiceTestHelper.createTweetProjection()
+                        "tweet", TweetServiceTestHelper.createTweetProjection(TweetProjection.class)
                 ));
         BookmarkProjection bookmarkProjection2 = factory.createProjection(
                 BookmarkProjection.class,
@@ -155,7 +156,7 @@ public class BookmarkServiceImplTest {
                         "id", 2L,
                         "bookmarkDate", LocalDateTime.now(),
                         "tweetId", TestConstants.TWEET_ID,
-                        "tweet", TweetServiceTestHelper.createTweetProjection()
+                        "tweet", TweetServiceTestHelper.createTweetProjection(TweetProjection.class)
                 ));
         return Arrays.asList(bookmarkProjection1, bookmarkProjection2);
     }

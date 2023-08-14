@@ -14,6 +14,7 @@ import com.gmail.javacoded78.model.Tweet;
 import com.gmail.javacoded78.repository.LikeTweetRepository;
 import com.gmail.javacoded78.repository.TweetRepository;
 import com.gmail.javacoded78.repository.projection.LikeTweetProjection;
+import com.gmail.javacoded78.repository.projection.TweetProjection;
 import com.gmail.javacoded78.service.TweetServiceTestHelper;
 import com.gmail.javacoded78.util.TestConstants;
 import com.gmail.javacoded78.util.TestUtil;
@@ -177,7 +178,7 @@ public class LikeTweetServiceImplTest {
 
     @Test
     public void likeTweet_ShouldUnlikeTweet() {
-        NotificationRequest request = createMockNotificationRequest(false);
+        NotificationRequest request = TweetServiceTestHelper.createMockNotificationRequest(NotificationType.LIKE, false);
         when(tweetRepository.findById(TestConstants.TWEET_ID)).thenReturn(Optional.of(tweet));
         when(likeTweetRepository.getLikedTweet(TestConstants.USER_ID, TestConstants.TWEET_ID)).thenReturn(new LikeTweet());
         when(notificationClient.sendTweetNotification(request)).thenReturn(new NotificationResponse());
@@ -191,7 +192,7 @@ public class LikeTweetServiceImplTest {
 
     @Test
     public void likeTweet_ShouldLikeTweet() {
-        NotificationRequest request = createMockNotificationRequest(true);
+        NotificationRequest request = TweetServiceTestHelper.createMockNotificationRequest(NotificationType.LIKE, true);
         when(tweetRepository.findById(TestConstants.TWEET_ID)).thenReturn(Optional.of(tweet));
         when(likeTweetRepository.getLikedTweet(TestConstants.USER_ID, TestConstants.TWEET_ID)).thenReturn(null);
         when(notificationClient.sendTweetNotification(request)).thenReturn(new NotificationResponse());
@@ -252,7 +253,7 @@ public class LikeTweetServiceImplTest {
                         "id", 1L,
                         "likeTweetDate", LocalDateTime.now(),
                         "tweetId", TestConstants.TWEET_ID,
-                        "tweet", TweetServiceTestHelper.createTweetProjection()
+                        "tweet", TweetServiceTestHelper.createTweetProjection(TweetProjection.class)
                 ));
         LikeTweetProjection likeTweetProjection2 = factory.createProjection(
                 LikeTweetProjection.class,
@@ -260,18 +261,8 @@ public class LikeTweetServiceImplTest {
                         "id", 2L,
                         "likeTweetDate", LocalDateTime.now(),
                         "tweetId", TestConstants.TWEET_ID,
-                        "tweet", TweetServiceTestHelper.createTweetProjection()
+                        "tweet", TweetServiceTestHelper.createTweetProjection(TweetProjection.class)
                 ));
         return Arrays.asList(likeTweetProjection1, likeTweetProjection2);
-    }
-
-    private static NotificationRequest createMockNotificationRequest(boolean isTweetLiked) {
-        return NotificationRequest.builder()
-                .notificationType(NotificationType.LIKE)
-                .notificationCondition(isTweetLiked)
-                .notifiedUserId(TestConstants.USER_ID)
-                .userId(TestConstants.USER_ID)
-                .tweetId(TestConstants.TWEET_ID)
-                .build();
     }
 }
