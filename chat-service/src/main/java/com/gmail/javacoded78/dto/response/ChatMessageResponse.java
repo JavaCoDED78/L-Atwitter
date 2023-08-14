@@ -16,7 +16,7 @@ public class ChatMessageResponse {
     private ChatResponse chat;
 
     @Data
-    static class ChatResponse {
+    public static class ChatResponse {
 
         private Long id;
     }
