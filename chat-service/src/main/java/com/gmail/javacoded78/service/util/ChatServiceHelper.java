@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 import static com.gmail.javacoded78.constants.ErrorMessage.CHAT_PARTICIPANT_BLOCKED;
 import static com.gmail.javacoded78.constants.ErrorMessage.INCORRECT_CHAT_MESSAGE_LENGTH;
 import static com.gmail.javacoded78.constants.ErrorMessage.TWEET_NOT_FOUND;
+import static com.gmail.javacoded78.constants.ErrorMessage.USER_NOT_FOUND;
 
 @Component
 @RequiredArgsConstructor
@@ -43,6 +44,12 @@ public class ChatServiceHelper {
     public void isTweetExists(Long tweetId) {
         if (!tweetClient.isTweetExists(tweetId)) {
             throw new ApiRequestException(TWEET_NOT_FOUND, HttpStatus.NOT_FOUND);
+        }
+    }
+
+    public void isUserExists(Long userId) {
+        if (!userClient.isUserExists(userId)) {
+            throw new ApiRequestException(USER_NOT_FOUND, HttpStatus.NOT_FOUND);
         }
     }
 }
