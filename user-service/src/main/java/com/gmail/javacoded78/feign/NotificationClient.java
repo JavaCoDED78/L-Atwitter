@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 import static com.gmail.javacoded78.constants.FeignConstants.NOTIFICATION_SERVICE;
 import static com.gmail.javacoded78.constants.PathConstants.API_V1_NOTIFICATION;
-import static com.gmail.javacoded78.constants.PathConstants.USER;
 
 @CircuitBreaker(name = NOTIFICATION_SERVICE)
 @FeignClient(value = NOTIFICATION_SERVICE, path = API_V1_NOTIFICATION, configuration = FeignConfiguration.class)

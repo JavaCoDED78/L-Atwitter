@@ -17,11 +17,6 @@ const Connect: FC = (): ReactElement => {
     useEffect(() => {
         loadUsers(0);
         window.scrollTo(0, 0);
-
-        // TODO reset state after history.goBack()
-        // return () => {
-        //     dispatch(resetUsersState());
-        // };
     }, []);
 
     const loadUsers = (page: number): void => {

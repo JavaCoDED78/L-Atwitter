@@ -6,7 +6,6 @@ import com.gmail.javacoded78.repository.projection.ChatTweetProjection;
 import com.gmail.javacoded78.repository.projection.NotificationTweetProjection;
 import com.gmail.javacoded78.repository.projection.TweetProjection;
 import com.gmail.javacoded78.service.TweetClientService;
-import com.gmail.javacoded78.util.TweetServiceHelper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

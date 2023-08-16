@@ -51,11 +51,6 @@ public class TweetApiController {
         return tweetClientMapper.getTweetById(tweetId);
     }
 
-    @PostMapping(IDS)
-    public HeaderResponse<TweetResponse> getTweetsByIds(@RequestBody IdsRequest request, Pageable pageable) {
-        return tweetClientMapper.getTweetsByIds(request, pageable);
-    }
-
     @GetMapping(NOTIFICATION_TWEET_ID)
     public NotificationTweetResponse getNotificationTweet(@PathVariable("tweetId") Long tweetId) {
         return tweetClientMapper.getNotificationTweet(tweetId);

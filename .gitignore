@@ -35,4 +35,8 @@ out/
 
 ### VS Code ###
 .vscode/
+
+### App ###
 !/qodana.yaml
+!/grafana/
+!/prometheus/

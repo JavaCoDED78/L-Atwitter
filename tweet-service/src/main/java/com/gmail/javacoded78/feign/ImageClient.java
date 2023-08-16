@@ -3,6 +3,7 @@ package com.gmail.javacoded78.feign;
 import com.gmail.javacoded78.configuration.FeignConfiguration;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.multipart.MultipartFile;
@@ -15,6 +16,6 @@ import static com.gmail.javacoded78.constants.PathConstants.UPLOAD;
 @FeignClient(name = IMAGE_SERVICE, path = API_V1_IMAGE, configuration = FeignConfiguration.class)
 public interface ImageClient {
 
-    @PostMapping(UPLOAD)
+    @PostMapping(value = UPLOAD, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     String uploadImage(@RequestPart("file") MultipartFile file);
 }

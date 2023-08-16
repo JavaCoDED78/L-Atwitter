@@ -8,12 +8,13 @@ spring:
     base-url: http://${ZIPKIN_HOST:localhost}:9411
 
 amazon:
-  aws:
-    access-key: AKIA2GKIUFNQ24L7PXBB
-    secret-key: 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
   s3:
     bucket:
       name: perfumeshop
+  aws:
+    access-key: AKIA2GKIUFNQ24L7PXBB
+    secret-key: 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
+
 
 eureka:
   client:

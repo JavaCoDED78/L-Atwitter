@@ -11,14 +11,14 @@ import org.springframework.web.reactive.socket.server.upgrade.TomcatRequestUpgra
 @Configuration
 public class ApiGatewayConfiguration {
 
-//    @Bean
-//    @Primary
-//    WebSocketClient tomcatWebSocketClient() {
-//        return new TomcatWebSocketClient();
-//    }
-//    @Bean
-//    @Primary
-//    public RequestUpgradeStrategy requestUpgradeStrategy() {
-//        return new TomcatRequestUpgradeStrategy();
-//    }
+    @Bean
+    @Primary
+    WebSocketClient tomcatWebSocketClient() {
+        return new TomcatWebSocketClient();
+    }
+    @Bean
+    @Primary
+    public RequestUpgradeStrategy requestUpgradeStrategy() {
+        return new TomcatRequestUpgradeStrategy();
+    }
 }

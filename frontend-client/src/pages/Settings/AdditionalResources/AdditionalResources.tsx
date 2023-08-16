@@ -43,16 +43,14 @@ const AdditionalResources: FC = (): ReactElement => {
                             Release notes
                         </Typography>
                     </div>
-                    <a href={TWITTER_RELEASE_NOTES} target={"_blank"}>
+                    <a href={TWITTER_RELEASE_NOTES} target="_blank" rel="noreferrer noopener">
                         <ListItem>
                             <div>
                                 <Typography variant={"body1"} component={"div"}>
                                     Privacy policy
                                 </Typography>
                             </div>
-                            <div className={globalClasses.arrowIcon}>
-                                {ArrowTopIcon}
-                            </div>
+                            <div className={globalClasses.arrowIcon}>{ArrowTopIcon}</div>
                         </ListItem>
                     </a>
                     <Divider />
@@ -61,52 +59,44 @@ const AdditionalResources: FC = (): ReactElement => {
                             Legal
                         </Typography>
                     </div>
-                    <a href={HOW_TWITTER_ADS_WORK} target={"_blank"}>
+                    <a href={HOW_TWITTER_ADS_WORK} target="_blank" rel="noopener noreferrer">
                         <ListItem>
                             <div>
                                 <Typography variant={"body1"} component={"div"}>
                                     Ads info
                                 </Typography>
                             </div>
-                            <div className={globalClasses.arrowIcon}>
-                                {ArrowTopIcon}
-                            </div>
+                            <div className={globalClasses.arrowIcon}>{ArrowTopIcon}</div>
                         </ListItem>
                     </a>
-                    <a href={TWITTER_COOKIES} target={"_blank"}>
+                    <a href={TWITTER_COOKIES} target="_blank" rel="noopener noreferrer">
                         <ListItem>
                             <div>
                                 <Typography variant={"body1"} component={"div"}>
                                     Cookie Policy
                                 </Typography>
                             </div>
-                            <div className={globalClasses.arrowIcon}>
-                                {ArrowTopIcon}
-                            </div>
+                            <div className={globalClasses.arrowIcon}>{ArrowTopIcon}</div>
                         </ListItem>
                     </a>
-                    <a href={TWITTER_PRIVACY} target={"_blank"}>
+                    <a href={TWITTER_PRIVACY} target="_blank" rel="noopener noreferrer">
                         <ListItem>
                             <div>
                                 <Typography variant={"body1"} component={"div"}>
                                     Privacy Policy
                                 </Typography>
                             </div>
-                            <div className={globalClasses.arrowIcon}>
-                                {ArrowTopIcon}
-                            </div>
+                            <div className={globalClasses.arrowIcon}>{ArrowTopIcon}</div>
                         </ListItem>
                     </a>
-                    <a href={TWITTER_TOS} target={"_blank"}>
+                    <a href={TWITTER_TOS} target="_blank" rel="noopener noreferrer">
                         <ListItem>
                             <div>
                                 <Typography variant={"body1"} component={"div"}>
                                     Terms of Service
                                 </Typography>
                             </div>
-                            <div className={globalClasses.arrowIcon}>
-                                {ArrowTopIcon}
-                            </div>
+                            <div className={globalClasses.arrowIcon}>{ArrowTopIcon}</div>
                         </ListItem>
                     </a>
                     <Divider />
@@ -115,136 +105,114 @@ const AdditionalResources: FC = (): ReactElement => {
                             Miscellaneous
                         </Typography>
                     </div>
-                    <a href={ABOUT_TWITTER} target={"_blank"}>
+                    <a href={ABOUT_TWITTER} target="_blank" rel="noopener noreferrer">
                         <ListItem>
                             <div>
                                 <Typography variant={"body1"} component={"div"}>
                                     About
                                 </Typography>
                             </div>
-                            <div className={globalClasses.arrowIcon}>
-                                {ArrowTopIcon}
-                            </div>
+                            <div className={globalClasses.arrowIcon}>{ArrowTopIcon}</div>
                         </ListItem>
                     </a>
-                    <a href={ADS_TWITTER} target={"_blank"}>
+                    <a href={ADS_TWITTER} target="_blank" rel="noopener noreferrer">
                         <ListItem>
                             <div>
                                 <Typography variant={"body1"} component={"div"}>
                                     Advertising
                                 </Typography>
                             </div>
-                            <div className={globalClasses.arrowIcon}>
-                                {ArrowTopIcon}
-                            </div>
+                            <div className={globalClasses.arrowIcon}>{ArrowTopIcon}</div>
                         </ListItem>
                     </a>
-                    <a href={BLOG_TWITTER} target={"_blank"}>
+                    <a href={BLOG_TWITTER} target="_blank" rel="noopener noreferrer">
                         <ListItem>
                             <div>
                                 <Typography variant={"body1"} component={"div"}>
                                     Blog
                                 </Typography>
                             </div>
-                            <div className={globalClasses.arrowIcon}>
-                                {ArrowTopIcon}
-                            </div>
+                            <div className={globalClasses.arrowIcon}>{ArrowTopIcon}</div>
                         </ListItem>
                     </a>
-                    <a href={BRAND_TOOLKIT} target={"_blank"}>
+                    <a href={BRAND_TOOLKIT} target="_blank" rel="noopener noreferrer">
                         <ListItem>
                             <div>
                                 <Typography variant={"body1"} component={"div"}>
                                     Brand Resources
                                 </Typography>
                             </div>
-                            <div className={globalClasses.arrowIcon}>
-                                {ArrowTopIcon}
-                            </div>
+                            <div className={globalClasses.arrowIcon}>{ArrowTopIcon}</div>
                         </ListItem>
                     </a>
-                    <a href={CAREERS_TWITTER} target={"_blank"}>
+                    <a href={CAREERS_TWITTER} target="_blank" rel="noopener noreferrer">
                         <ListItem>
                             <div>
                                 <Typography variant={"body1"} component={"div"}>
                                     Careers
                                 </Typography>
                             </div>
-                            <div className={globalClasses.arrowIcon}>
-                                {ArrowTopIcon}
-                            </div>
+                            <div className={globalClasses.arrowIcon}>{ArrowTopIcon}</div>
                         </ListItem>
                     </a>
-                    <a href={DEVELOPER_TWITTER} target={"_blank"}>
+                    <a href={DEVELOPER_TWITTER} target="_blank" rel="noopener noreferrer">
                         <ListItem>
                             <div>
                                 <Typography variant={"body1"} component={"div"}>
                                     Developers
                                 </Typography>
                             </div>
-                            <div className={globalClasses.arrowIcon}>
-                                {ArrowTopIcon}
-                            </div>
+                            <div className={globalClasses.arrowIcon}>{ArrowTopIcon}</div>
                         </ListItem>
                     </a>
-                    <a href={TWITTER_DIRECTORY_PROFILES} target={"_blank"}>
+                    <a href={TWITTER_DIRECTORY_PROFILES} target="_blank" rel="noopener noreferrer">
                         <ListItem>
                             <div>
                                 <Typography variant={"body1"} component={"div"}>
                                     Directory
                                 </Typography>
                             </div>
-                            <div className={globalClasses.arrowIcon}>
-                                {ArrowTopIcon}
-                            </div>
+                            <div className={globalClasses.arrowIcon}>{ArrowTopIcon}</div>
                         </ListItem>
                     </a>
-                    <a href={HELP_TWITTER} target={"_blank"}>
+                    <a href={HELP_TWITTER} target="_blank" rel="noopener noreferrer">
                         <ListItem>
                             <div>
                                 <Typography variant={"body1"} component={"div"}>
                                     Help Center
                                 </Typography>
                             </div>
-                            <div className={globalClasses.arrowIcon}>
-                                {ArrowTopIcon}
-                            </div>
+                            <div className={globalClasses.arrowIcon}>{ArrowTopIcon}</div>
                         </ListItem>
                     </a>
-                    <a href={MARKETING_TWITTER} target={"_blank"}>
+                    <a href={MARKETING_TWITTER} target="_blank" rel="noopener noreferrer">
                         <ListItem>
                             <div>
                                 <Typography variant={"body1"} component={"div"}>
                                     Marketing
                                 </Typography>
                             </div>
-                            <div className={globalClasses.arrowIcon}>
-                                {ArrowTopIcon}
-                            </div>
+                            <div className={globalClasses.arrowIcon}>{ArrowTopIcon}</div>
                         </ListItem>
                     </a>
-                    <a href={STATUS_TWITTER} target={"_blank"}>
+                    <a href={STATUS_TWITTER} target="_blank" rel="noopener noreferrer">
                         <ListItem>
                             <div>
                                 <Typography variant={"body1"} component={"div"}>
                                     Status
                                 </Typography>
                             </div>
-                            <div className={globalClasses.arrowIcon}>
-                                {ArrowTopIcon}
-                            </div>
+                            <div className={globalClasses.arrowIcon}>{ArrowTopIcon}</div>
                         </ListItem>
                     </a>
-                    <a href={BUSINESS_TWITTER} target={"_blank"}>
+                    <a href={BUSINESS_TWITTER} target="_blank" rel="noopener noreferrer">
                         <ListItem>
                             <div>
                                 <Typography variant={"body1"} component={"div"}>
                                     Twitter for Business
                                 </Typography>
                             </div>
-                            <div className={globalClasses.arrowIcon}>
-                                {ArrowTopIcon}
-                            </div>
+                            <div className={globalClasses.arrowIcon}>{ArrowTopIcon}</div>
                         </ListItem>
                     </a>
                 </List>

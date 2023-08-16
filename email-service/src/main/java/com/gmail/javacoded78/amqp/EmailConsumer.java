@@ -1,7 +1,6 @@
 package com.gmail.javacoded78.amqp;
 
 import com.gmail.javacoded78.dto.request.EmailRequest;
-import com.gmail.javacoded78.service.EmailService;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
@@ -12,7 +11,6 @@ import org.springframework.stereotype.Service;
 import org.thymeleaf.context.Context;
 import org.thymeleaf.spring5.SpringTemplateEngine;
 
-import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 
 @Service
