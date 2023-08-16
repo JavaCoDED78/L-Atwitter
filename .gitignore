@@ -37,6 +37,7 @@ out/
 .vscode/
 
 ### App ###
-!/qodana.yaml
-!/grafana/
-!/prometheus/
+qodana.yaml
+grafana/
+prometheus/
+
