@@ -79,7 +79,7 @@ public interface TweetRepository extends JpaRepository<Tweet, Long> {
     @Query("SELECT tweet FROM Tweet tweet " +
             "WHERE tweet.authorId IN :userIds " +
             "AND tweet.scheduledDate IS NULL " +
-            "AND tweet.images.size <> 0 " +
+            "AND size(tweet.images) <> 0 " +
             "AND tweet.deleted = false " +
             "ORDER BY tweet.dateTime DESC")
     Page<TweetProjection> getMediaTweets(@Param("userIds") List<Long> userIds, Pageable pageable);
