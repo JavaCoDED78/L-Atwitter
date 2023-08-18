@@ -31,10 +31,12 @@ public class EmailConsumer {
         String htmlBody = thymeleafTemplateEngine.process(emailRequest.getTemplate(), thymeleafContext);
         MimeMessage message = mailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+
         helper.setFrom(username);
         helper.setTo(emailRequest.getTo());
         helper.setSubject(emailRequest.getSubject());
         helper.setText(htmlBody, true);
+
         mailSender.send(message);
     }
 }
