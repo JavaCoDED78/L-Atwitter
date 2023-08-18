@@ -22,7 +22,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -37,6 +39,7 @@ import static com.gmail.javacoded78.constants.PathConstants.START;
 import static com.gmail.javacoded78.constants.PathConstants.SUBSCRIBE_USER_ID;
 import static com.gmail.javacoded78.constants.PathConstants.TOKEN;
 import static com.gmail.javacoded78.constants.PathConstants.UI_V1_USER;
+import static com.gmail.javacoded78.constants.PathConstants.UPLOAD;
 import static com.gmail.javacoded78.constants.PathConstants.USER_ID;
 
 @RestController
@@ -108,5 +111,10 @@ public class UserController {
     @GetMapping(DETAILS_USER_ID)
     public ResponseEntity<UserDetailResponse> getUserDetails(@PathVariable("userId") Long userId) {
         return ResponseEntity.ok(userMapper.getUserDetails(userId));
+    }
+
+    @PostMapping(UPLOAD)
+    public ResponseEntity<String> uploadTweetImage(@RequestPart("file") MultipartFile file) {
+        return ResponseEntity.ok(userMapper.updateUserImage(file));
     }
 }

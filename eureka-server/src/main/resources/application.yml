@@ -5,12 +5,12 @@ spring:
   application:
     name: eureka-server
   zipkin:
-    base-url: http://${ZIPKIN_HOST:localhost}:9411
+    base-url: https://${ZIPKIN_HOST:localhost}:9411
 
 eureka:
   client:
     service-url:
-      defaultZone: http://${EUREKA_HOST:localhost}:8761/eureka
+      defaultZone: https://${EUREKA_HOST:localhost}:8761/eureka
     fetch-registry: false
     register-with-eureka: false
   instance:

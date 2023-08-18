@@ -75,7 +75,7 @@ services:
           - prometheus
 
   eureka-server:
-    image: javacoded/l-atwitter:eureka-server
+    image: androsor/eureka-server:0.0.1-snapshot
     hostname: eureka-server
     environment:
       EUREKA_HOST: eureka-server

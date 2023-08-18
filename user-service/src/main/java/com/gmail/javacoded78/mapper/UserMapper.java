@@ -20,6 +20,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Map;
@@ -89,5 +90,9 @@ public class UserMapper {
     public UserDetailResponse getUserDetails(Long userId) {
         UserDetailProjection userDetails = userService.getUserDetails(userId);
         return basicMapper.convertToResponse(userDetails, UserDetailResponse.class);
+    }
+
+    public String updateUserImage(MultipartFile file) {
+        return userService.updateUserImage(file);
     }
 }

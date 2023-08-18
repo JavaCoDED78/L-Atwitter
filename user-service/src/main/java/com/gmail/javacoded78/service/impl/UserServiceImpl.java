@@ -2,6 +2,7 @@ package com.gmail.javacoded78.service.impl;
 
 import com.gmail.javacoded78.dto.request.SearchTermsRequest;
 import com.gmail.javacoded78.exception.ApiRequestException;
+import com.gmail.javacoded78.feign.ImageClient;
 import com.gmail.javacoded78.feign.TagClient;
 import com.gmail.javacoded78.feign.TweetClient;
 import com.gmail.javacoded78.model.User;
@@ -14,13 +15,13 @@ import com.gmail.javacoded78.repository.projection.UserProjection;
 import com.gmail.javacoded78.service.AuthenticationService;
 import com.gmail.javacoded78.service.UserService;
 import com.gmail.javacoded78.service.util.UserServiceHelper;
-import com.gmail.javacoded78.util.AuthUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Map;
@@ -38,6 +39,7 @@ public class UserServiceImpl implements UserService {
     private final UserServiceHelper userServiceHelper;
     private final TweetClient tweetClient;
     private final TagClient tagClient;
+    private final ImageClient imageClient;
 
     @Override
     public UserProfileProjection getUserById(Long userId) {
@@ -85,7 +87,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public AuthUserProjection updateUserProfile(User userInfo) {
-        if (userInfo.getFullName().length() == 0 || userInfo.getFullName().length() > 50) {
+        if (userInfo.getFullName().isEmpty() || userInfo.getFullName().length() > 50) {
             throw new ApiRequestException(INCORRECT_USERNAME_LENGTH, HttpStatus.BAD_REQUEST);
         }
         User user = authenticationService.getAuthenticatedUser();
@@ -101,7 +103,8 @@ public class UserServiceImpl implements UserService {
         user.setLocation(userInfo.getLocation());
         user.setWebsite(userInfo.getWebsite());
         user.setProfileCustomized(true);
-        return userRepository.getUserById(user.getId(), AuthUserProjection.class).get();
+        return userRepository.getUserById(user.getId(), AuthUserProjection.class)
+                .orElseThrow(() -> new ApiRequestException(USER_NOT_FOUND, HttpStatus.NOT_FOUND));
     }
 
     @Override
@@ -143,5 +146,10 @@ public class UserServiceImpl implements UserService {
         userServiceHelper.checkIsUserExistOrMyProfileBlocked(userId);
         return userRepository.getUserById(userId, UserDetailProjection.class)
                 .orElseThrow(() -> new ApiRequestException(USER_NOT_FOUND, HttpStatus.NOT_FOUND));
+    }
+
+    @Override
+    public String updateUserImage(MultipartFile file) {
+        return imageClient.uploadImage(file);
     }
 }

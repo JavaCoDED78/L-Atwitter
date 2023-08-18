@@ -12,6 +12,7 @@ import com.gmail.javacoded78.repository.projection.UserProfileProjection;
 import com.gmail.javacoded78.repository.projection.UserProjection;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Map;
@@ -39,4 +40,6 @@ public interface UserService {
     Long processPinTweet(Long tweetId);
 
     UserDetailProjection getUserDetails(Long userId);
+
+    String updateUserImage(MultipartFile file);
 }
