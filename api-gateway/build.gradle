@@ -39,6 +39,8 @@ dependencies {
 
     runtimeOnly "io.jsonwebtoken:jjwt-impl:${versions.jjwt}",
             "io.jsonwebtoken:jjwt-jackson:${versions.jjwt}"
+
+    developmentOnly 'org.springframework.boot:spring-boot-devtools'
 }
 
 docker {
