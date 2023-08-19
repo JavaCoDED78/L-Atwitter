@@ -2,17 +2,14 @@ plugins {
     id 'java'
     id 'org.springframework.boot' version '2.7.15-SNAPSHOT'
     id 'io.spring.dependency-management' version '1.1.2'
+    id 'com.bmuschko.docker-spring-boot-application' version '9.3.2'
 }
 
 group 'com.gmail.javacoded78'
 version '0.0.1-SNAPSHOT'
-java.sourceCompatibility = JavaVersion.VERSION_17
 
-repositories {
-    mavenCentral()
-    maven { url 'https://repo.spring.io/milestone' }
-    maven { url 'https://repo.spring.io/snapshot' }
-}
+java.sourceCompatibility = JavaVersion.VERSION_17
+java.targetCompatibility = JavaVersion.VERSION_17
 
 apply from: "$rootProject.projectDir/versions-script.gradle"
 
@@ -36,11 +33,18 @@ dependencies {
     implementation 'org.springframework.cloud:spring-cloud-sleuth-zipkin'
     implementation 'org.springframework.cloud:spring-cloud-starter-config'
     implementation 'org.springframework.cloud:spring-cloud-starter-bootstrap'
-    implementation 'com.github.ben-manes.caffeine:caffeine:3.1.6'
-
-    implementation "io.jsonwebtoken:jjwt-api:${versions.jjwt}"
     implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
+    implementation "com.github.ben-manes.caffeine:caffeine:${versions.caffeine}"
+    implementation "io.jsonwebtoken:jjwt-api:${versions.jjwt}"
 
     runtimeOnly "io.jsonwebtoken:jjwt-impl:${versions.jjwt}",
             "io.jsonwebtoken:jjwt-jackson:${versions.jjwt}"
+}
+
+docker {
+    springBootApplication {
+        baseImage = 'openjdk:17-jdk-alpine'
+        maintainer = 'Andrei Soroka <javacoded78@gmail.com>'
+        ports = [8019]
+    }
 }

@@ -51,6 +51,6 @@ docker {
     springBootApplication {
         baseImage = 'openjdk:17-jdk-alpine'
         maintainer = 'Andrei Soroka <javacoded78@gmail.com>'
-        ports = [8019]
+        ports = [8000]
     }
 }
