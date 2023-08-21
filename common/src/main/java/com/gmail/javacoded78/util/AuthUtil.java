@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import static com.gmail.javacoded78.constants.ErrorMessage.USER_NOT_FOUND;
 import static com.gmail.javacoded78.constants.PathConstants.AUTH_USER_ID_HEADER;
 
+
 @UtilityClass
 public class AuthUtil {
 

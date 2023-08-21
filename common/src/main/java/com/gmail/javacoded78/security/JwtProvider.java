@@ -4,19 +4,16 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.io.Decoders;
+import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
-import javax.crypto.SecretKey;
-import javax.crypto.SecretKeyFactory;
-import javax.crypto.spec.PBEKeySpec;
-import javax.crypto.spec.SecretKeySpec;
-import java.security.spec.KeySpec;
+import java.security.Key;
 import java.util.Base64;
 import java.util.Date;
 
@@ -29,8 +26,9 @@ public class JwtProvider {
     @Value("${jwt.header:Authorization}")
     private String authorizationHeader;
 
-    @Value("${jwt.secret:randomToken}")
+    @Value("${jwt.secret:chpokentokenchpokentokenchpokentokenchpokentokenchpokentokenchpokentoken}")
     private String secret;
+
 
     @Value("${jwt.expiration:6048000}")
     private long validityInMilliseconds;
@@ -48,7 +46,7 @@ public class JwtProvider {
                 .setClaims(claims)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + validityInMilliseconds * 1000))
-                .signWith(generateKey(secret))
+                .signWith(decodeKeyFromString(secret))
                 .compact();
     }
 
@@ -59,7 +57,7 @@ public class JwtProvider {
     public boolean validateToken(String token) {
         try {
             Jws<Claims> claimsJws = Jwts.parserBuilder()
-                    .setSigningKey(generateKey(secret))
+                    .setSigningKey(decodeKeyFromString(secret))
                     .build()
                     .parseClaimsJws(token);
             return !claimsJws.getBody().getExpiration().before(new Date(System.currentTimeMillis()));
@@ -70,15 +68,13 @@ public class JwtProvider {
 
     public String parseToken(String token) {
         return Jwts.parserBuilder()
-                .setSigningKey(generateKey(secret))
+                .setSigningKey(decodeKeyFromString(secret))
                 .build()
                 .parseClaimsJws(token).getBody().getSubject();
     }
 
-    @SneakyThrows
-    public SecretKey generateKey(String secret) {
-        SecretKeyFactory factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA256");
-        KeySpec spec = new PBEKeySpec(secret.toCharArray());
-        return new SecretKeySpec(factory.generateSecret(spec).getEncoded(), "AES");
+    public Key decodeKeyFromString(String secret) {
+        byte[] keyBytes = Decoders.BASE64.decode(secret);
+       return Keys.hmacShaKeyFor(keyBytes);
     }
 }
