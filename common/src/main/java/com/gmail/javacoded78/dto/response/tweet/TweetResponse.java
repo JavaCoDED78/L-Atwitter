@@ -5,12 +5,18 @@ import com.gmail.javacoded78.dto.ImageResponse;
 import com.gmail.javacoded78.dto.response.user.TaggedUserResponse;
 import com.gmail.javacoded78.enums.LinkCoverSize;
 import com.gmail.javacoded78.enums.ReplyType;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class TweetResponse {
 
     private Long id;
@@ -58,6 +64,9 @@ public class TweetResponse {
     private boolean isTweetBookmarked;
 
     @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Builder
     static class PollResponse {
 
         private Long id;
@@ -66,6 +75,9 @@ public class TweetResponse {
     }
 
     @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Builder
     static class GifImageResponse {
 
         private Long id;
@@ -75,6 +87,9 @@ public class TweetResponse {
     }
 
     @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Builder
     static class PollChoiceResponse {
 
         private Long id;
@@ -83,6 +98,8 @@ public class TweetResponse {
     }
 
     @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
     static class VotedUserResponse {
 
         private Long id;

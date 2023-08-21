@@ -39,6 +39,6 @@ public class BasicMapper {
     private <S> HeaderResponse<S> constructHeaderResponse(List<S> responses, Integer totalPages) {
         HttpHeaders responseHeaders = new HttpHeaders();
         responseHeaders.add("page-total-count", String.valueOf(totalPages));
-        return new HeaderResponse<S>(responses, responseHeaders);
+        return new HeaderResponse<>(responses, responseHeaders);
     }
 }

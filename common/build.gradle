@@ -6,19 +6,12 @@ plugins {
 
 group 'com.gmail.javacoded78'
 version '0.0.1-SNAPSHOT'
+
 java.sourceCompatibility = JavaVersion.VERSION_17
+java.targetCompatibility = JavaVersion.VERSION_17
 
 bootJar {
     enabled = false
-}
-//jar {
-//    enabled = false
-//}
-
-repositories {
-    mavenCentral()
-    maven { url 'https://repo.spring.io/milestone' }
-    maven { url 'https://repo.spring.io/snapshot' }
 }
 
 apply from: "$rootProject.projectDir/versions-script.gradle"
@@ -50,6 +43,9 @@ dependencies {
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
     annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
-    testImplementation 'org.projectlombok:lombok:1.18.26'
+    testImplementation 'org.projectlombok:lombok'
+}
 
+tasks.named('test') {
+    useJUnitPlatform()
 }

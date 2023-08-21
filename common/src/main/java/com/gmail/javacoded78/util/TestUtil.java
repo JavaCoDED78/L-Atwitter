@@ -1,10 +1,13 @@
 package com.gmail.javacoded78.util;
 
 import com.gmail.javacoded78.constants.PathConstants;
+import lombok.experimental.UtilityClass;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
+
+@UtilityClass
 public class TestUtil {
     public static void mockAuthenticatedUserId() {
         MockHttpServletRequest mockRequest = new MockHttpServletRequest();

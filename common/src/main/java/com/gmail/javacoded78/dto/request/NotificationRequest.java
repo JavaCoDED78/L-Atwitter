@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class NotificationRequest {
+
     private NotificationType notificationType;
     private Long notifiedUserId;
     private Long userId;
