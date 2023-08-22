@@ -1,0 +1,5 @@
+databaseChangeLog:
+  - include:
+      file: db/changelog/db.changelog-init-tag-1.0.sql
+  - include:
+      file: db/changelog/db.changelog-populate-tag-1.0.sql

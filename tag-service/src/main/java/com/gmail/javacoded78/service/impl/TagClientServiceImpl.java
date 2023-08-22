@@ -9,14 +9,13 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class TagClientServiceImpl implements TagClientService {
 
     private final TagRepository tagRepository;
@@ -30,29 +29,36 @@ public class TagClientServiceImpl implements TagClientService {
     @Override
     @Transactional
     public void parseHashtagsFromText(Long tweetId, String text) {
-        Pattern pattern = Pattern.compile("(#\\w+)\\b");
-        Matcher match = pattern.matcher(text);
-        List<String> hashtags = new ArrayList<>();
+        List<String> hashtags = Arrays.asList(text.split("#+"));
+        hashtags.forEach(hashtag -> {
+            Optional<Tag> maybeTag = tagRepository.findByTagName(hashtag);
+            maybeTag.ifPresentOrElse(
+                    tag -> saveAndUpdateTweetTag(tweetId, tag),
+                    () -> saveTweetTag(tweetId, hashtag)
+            );
+        });
+    }
 
-        while (match.find()) {
-            hashtags.add(match.group(1));
-        }
+    private void saveTweetTag(Long tweetId, String hashtag) {
+        Tag newTag = tagRepository.save(Tag.builder()
+                .tagName(hashtag)
+                .build());
+        TweetTag tweetTag = buildTweetTag(tweetId, newTag.getId());
+        tweetTagRepository.save(tweetTag);
+    }
 
-        if (!hashtags.isEmpty()) {
-            hashtags.forEach(hashtag -> {
-                Optional<Tag> tag = tagRepository.findByTagName(hashtag);
-                TweetTag tweetTag;
+    private void saveAndUpdateTweetTag(Long tweetId, Tag tag) {
+        Long id = tag.getId();
+        TweetTag tweetTag = buildTweetTag(tweetId, id);
+        tagRepository.updateTagQuantity(id, true);
+        tweetTagRepository.save(tweetTag);
+    }
 
-                if (tag.isPresent()) {
-                    tweetTag = new TweetTag(tag.get().getId(), tweetId);
-                    tagRepository.updateTagQuantity(tag.get().getId(), true);
-                } else {
-                    Tag newTag = tagRepository.save(new Tag(hashtag));
-                    tweetTag = new TweetTag(newTag.getId(), tweetId);
-                }
-                tweetTagRepository.save(tweetTag);
-            });
-        }
+    private TweetTag buildTweetTag(Long tweetId, Long tagId) {
+        return TweetTag.builder()
+                .tagId(tagId)
+                .tweetId(tweetId)
+                .build();
     }
 
     @Override
@@ -61,7 +67,7 @@ public class TagClientServiceImpl implements TagClientService {
         List<Long> tagsIds = tweetTagRepository.getTagIdsByTweetId(tweetId);
         List<Tag> tags = tagRepository.getTagsByIds(tagsIds);
         tags.forEach(tag -> {
-            if (tag.getTweetsQuantity() - 1 == 0) {
+            if (tag.getTweetsQuantity() == 1) {
                 tagRepository.delete(tag);
                 tweetTagRepository.deleteTag(tag.getId());
             } else {
