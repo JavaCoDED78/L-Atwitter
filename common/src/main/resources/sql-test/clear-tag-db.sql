@@ -1,2 +1,2 @@
-delete from "tag-test".public.tweet_tags;
-delete from "tag-test".public.tags;
+DELETE FROM "test".public.tweet_tags;
+DELETE FROM "test".public.tags;

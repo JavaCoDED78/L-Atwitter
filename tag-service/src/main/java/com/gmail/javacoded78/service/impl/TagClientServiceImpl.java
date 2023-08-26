@@ -9,9 +9,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Service
 @RequiredArgsConstructor
@@ -29,7 +31,14 @@ public class TagClientServiceImpl implements TagClientService {
     @Override
     @Transactional
     public void parseHashtagsFromText(Long tweetId, String text) {
-        List<String> hashtags = Arrays.asList(text.split("#+"));
+        Pattern pattern = Pattern.compile("(#\\w+)\\b");
+        Matcher match = pattern.matcher(text);
+        List<String> hashtags = new ArrayList<>();
+
+        while (match.find()) {
+            hashtags.add(match.group(1));
+        }
+
         hashtags.forEach(hashtag -> {
             Optional<Tag> maybeTag = tagRepository.findByTagName(hashtag);
             maybeTag.ifPresentOrElse(
@@ -67,7 +76,7 @@ public class TagClientServiceImpl implements TagClientService {
         List<Long> tagsIds = tweetTagRepository.getTagIdsByTweetId(tweetId);
         List<Tag> tags = tagRepository.getTagsByIds(tagsIds);
         tags.forEach(tag -> {
-            if (tag.getTweetsQuantity() == 1) {
+            if (tag.getTweetsQuantity() - 1 == 0) {
                 tagRepository.delete(tag);
                 tweetTagRepository.deleteTag(tag.getId());
             } else {

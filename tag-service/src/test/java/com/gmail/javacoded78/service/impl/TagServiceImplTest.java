@@ -9,6 +9,10 @@ import com.gmail.javacoded78.repository.TagRepository;
 import com.gmail.javacoded78.repository.TweetTagRepository;
 import com.gmail.javacoded78.service.TagService;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -24,73 +28,71 @@ import java.util.List;
 import java.util.Optional;
 
 import static com.gmail.javacoded78.constants.ErrorMessage.TAG_NOT_FOUND;
+
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@SpringBootTest
-@RunWith(SpringRunner.class)
-public class TagServiceImplTest {
+@ExtendWith(MockitoExtension.class)
+class TagServiceImplTest {
 
-    @Autowired
-    private TagService tagService;
+    public static final String TEST_TAG = "test_tag";
+    @InjectMocks
+    private TagServiceImpl tagService;
 
-    @MockBean
+    @Mock
     private TagRepository tagRepository;
 
-    @MockBean
+    @Mock
     private TweetTagRepository tweetTagRepository;
 
-    @MockBean
+    @Mock
     private TweetClient tweetClient;
 
     @Test
-    public void getTags() {
+    void getTags() {
         when(tagRepository.findTop5ByOrderByTweetsQuantityDesc()).thenReturn(Arrays.asList(new Tag(), new Tag()));
-        List<Tag> tags = tagService.getTags();
-        assertEquals(2, tags.size());
+        List<Tag> actualTags = tagService.getTags();
+        assertThat(actualTags).hasSize(2);
         verify(tagRepository, times(1)).findTop5ByOrderByTweetsQuantityDesc();
     }
 
     @Test
-    public void getTrends() {
+    void getTrends() {
         Pageable pageable = PageRequest.of(0, 20);
-        Page<Tag> tags = new PageImpl<>(Arrays.asList(new Tag(), new Tag()), pageable, 20);
-        when(tagRepository.findByOrderByTweetsQuantityDesc(pageable)).thenReturn(tags);
-        Page<Tag> pageTags = tagService.getTrends(pageable);
-        assertEquals(2, pageTags.getContent().size());
+        Page<Tag> expectedTags = new PageImpl<>(Arrays.asList(new Tag(), new Tag()), pageable, 20);
+        when(tagRepository.findByOrderByTweetsQuantityDesc(pageable)).thenReturn(expectedTags);
+        Page<Tag> actualTags = tagService.getTrends(pageable);
+        assertThat(actualTags.getContent()).hasSize(2);
         verify(tagRepository, times(1)).findByOrderByTweetsQuantityDesc(pageable);
     }
 
     @Test
-    public void getTweetsByTag() {
-        String mockTagName = "test_tag";
-        Tag tag = new Tag();
-        tag.setId(1L);
-        tag.setTagName(mockTagName);
-        tag.setTweetsQuantity(111L);
+    void getTweetsByTag() {
+        Tag tag = Tag.builder()
+                .id(1L)
+                .tagName(TEST_TAG)
+                .tweetsQuantity(111L)
+                .build();
         List<Long> tweetIds = Arrays.asList(1L, 2L);
-        when(tagRepository.findByTagName(mockTagName)).thenReturn(Optional.of(tag));
+        when(tagRepository.findByTagName(TEST_TAG)).thenReturn(Optional.of(tag));
         when(tweetTagRepository.getTweetIdsByTagId(tag.getId())).thenReturn(tweetIds);
         when(tweetClient.getTweetsByIds(new IdsRequest(tweetIds))).thenReturn(Arrays.asList(new TweetResponse(), new TweetResponse()));
-        List<TweetResponse> tweetsResponse = tagService.getTweetsByTag(mockTagName);
-        assertEquals(2, tweetsResponse.size());
-        verify(tagRepository, times(1)).findByTagName(mockTagName);
+        List<TweetResponse> actualTweetsResponse = tagService.getTweetsByTag(TEST_TAG);
+        assertThat(actualTweetsResponse).hasSize(2);
+        verify(tagRepository, times(1)).findByTagName(TEST_TAG);
         verify(tweetTagRepository, times(1)).getTweetIdsByTagId(tag.getId());
         verify(tweetClient, times(1)).getTweetsByIds(new IdsRequest(tweetIds));
     }
 
     @Test
-    public void getTweetsByTag_TagNotFound() {
-        String mockTagName = "test_tag";
-        when(tagRepository.findByTagName(mockTagName)).thenReturn(Optional.empty());
-        try {
-            tagService.getTweetsByTag(mockTagName);
-        } catch (ApiRequestException exception) {
-            assertEquals(TAG_NOT_FOUND, exception.getMessage());
-            assertEquals(HttpStatus.NOT_FOUND, exception.getStatus());
-        }
-        verify(tagRepository, times(1)).findByTagName(mockTagName);
+    void getTweetsByTag_TagNotFound() {
+        when(tagRepository.findByTagName(TEST_TAG)).thenReturn(Optional.empty());
+        ApiRequestException exception = assertThrows(ApiRequestException.class, () -> tagService.getTweetsByTag(TEST_TAG));
+        assertThat(exception.getMessage()).isEqualTo(TAG_NOT_FOUND);
+        assertThat(exception.getStatus()).isEqualTo(HttpStatus.NOT_FOUND);
+        verify(tagRepository, times(1)).findByTagName(TEST_TAG);
     }
 }

@@ -3,86 +3,94 @@ package com.gmail.javacoded78.service.impl;
 import com.gmail.javacoded78.model.Tag;
 import com.gmail.javacoded78.repository.TagRepository;
 import com.gmail.javacoded78.repository.TweetTagRepository;
-import com.gmail.javacoded78.service.TagClientService;
-import org.aspectj.lang.annotation.Before;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.context.junit4.SpringRunner;
-
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@SpringBootTest
-@RunWith(SpringRunner.class)
-public class TagClientServiceImplTest {
+@ExtendWith(MockitoExtension.class)
+class TagClientServiceImplTest {
 
-    @Autowired
-    private TagClientService tagClientService;
+    public static final String MOCK_TEXT = "test_text";
+    public static final String HASHTAG_1 = "#hashtag1";
+    public static final String HASHTAG_2 = "#hashtag2";
+    @InjectMocks
+    private TagClientServiceImpl tagClientService;
 
-    @MockBean
+    @Mock
     private TagRepository tagRepository;
 
-    @MockBean
+    @Mock
     private TweetTagRepository tweetTagRepository;
 
     private Tag tag1;
     private Tag tag2;
 
-    @Before
+    @BeforeEach
     public void setUp() {
-        tag1 = new Tag();
-        tag1.setId(1L);
-        tag1.setTagName("#hashtag1");
-        tag1.setTweetsQuantity(111L);
-        tag2 = new Tag();
-        tag2.setId(2L);
-        tag2.setTagName("#hashtag2");
-        tag2.setTweetsQuantity(1L);
+        tag1 = Tag.builder()
+                .id(1L)
+                .tagName(HASHTAG_1)
+                .tweetsQuantity(111L)
+                .build();
+        tag2 = Tag.builder()
+                .id(2L)
+                .tagName(HASHTAG_2)
+                .tweetsQuantity(1L)
+                .build();
     }
 
     @Test
-    public void getTagsByText() {
-        String mockText = "test_text";
-        when(tagRepository.getTagsByText(mockText)).thenReturn(Arrays.asList(mockText, mockText));
-        List<String> tags = tagClientService.getTagsByText(mockText);
-        assertEquals(2, tags.size());
-        verify(tagRepository, times(1)).getTagsByText(mockText);
+    void getTagsByText() {
+        List<String> expectedTags = Arrays.asList(MOCK_TEXT, MOCK_TEXT);
+        when(tagRepository.getTagsByText(MOCK_TEXT)).thenReturn(expectedTags);
+        List<String> actualTags = tagClientService.getTagsByText(MOCK_TEXT);
+        assertEquals(2, actualTags.size());
+        assertEquals(expectedTags, actualTags);
+        verify(tagRepository, times(1)).getTagsByText(MOCK_TEXT);
     }
 
     @Test
-    public void parseHashtagsFromText() {
-        when(tagRepository.save(new Tag("#hashtag2"))).thenReturn(tag2);
-        when(tagRepository.findByTagName("#hashtag1")).thenReturn(Optional.of(tag1));
-        when(tagRepository.findByTagName("#hashtag2")).thenReturn(Optional.empty());
+    void parseHashtagsFromText() {
+        when(tagRepository.findByTagName(HASHTAG_1)).thenReturn(Optional.of(tag1));
+        when(tagRepository.findByTagName(HASHTAG_2)).thenReturn(Optional.empty());
+        doNothing().when(tagRepository).updateTagQuantity(tag1.getId(), true);
+        when(tweetTagRepository.save(any())).thenReturn(null);
+        when(tagRepository.save(any())).thenReturn(tag2);
         tagClientService.parseHashtagsFromText(1L, "test text #hashtag1 #hashtag2");
-        verify(tagRepository, times(1)).findByTagName("#hashtag1");
-        verify(tagRepository, times(1)).findByTagName("#hashtag2");
+        verify(tagRepository, times(1)).findByTagName(HASHTAG_1);
+        verify(tagRepository, times(1)).findByTagName(HASHTAG_2);
         verify(tagRepository, times(1)).updateTagQuantity(tag1.getId(), true);
-        verify(tagRepository, times(1)).save(new Tag("#hashtag2"));
+        verify(tagRepository, times(1)).save(any());
         verify(tweetTagRepository, times(2)).save(any());
     }
 
     @Test
-    public void parseHashtagsFromText_shouldProcessTextWithoutHashtag() {
-        when(tagRepository.findByTagName("test_text")).thenReturn(Optional.empty());
-        tagClientService.parseHashtagsFromText(1L, "test text");
-        verify(tagRepository, times(0)).findByTagName("test_text");
+    void parseHashtagsFromText_shouldProcessTextWithoutHashtag() {
+        tagClientService.parseHashtagsFromText(1L, MOCK_TEXT);
+        verify(tagRepository, times(0)).findByTagName(MOCK_TEXT);
     }
 
     @Test
-    public void deleteTagsByTweetId() {
+    void deleteTagsByTweetId() {
         List<Long> tagsIds = Arrays.asList(1L, 2L);
         when(tweetTagRepository.getTagIdsByTweetId(1L)).thenReturn(tagsIds);
         when(tagRepository.getTagsByIds(tagsIds)).thenReturn(Arrays.asList(tag1, tag2));
+        doNothing().when(tagRepository).delete(any());
+        doNothing().when(tweetTagRepository).deleteTag(any());
+        doNothing().when(tagRepository).updateTagQuantity(tag1.getId(), false);
         tagClientService.deleteTagsByTweetId(1L);
         verify(tagRepository, times(1)).updateTagQuantity(tag1.getId(), false);
         verify(tagRepository, times(1)).delete(tag2);
