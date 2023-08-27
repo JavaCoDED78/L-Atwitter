@@ -28,6 +28,7 @@ import static com.gmail.javacoded78.constants.ErrorMessage.USER_PROFILE_BLOCKED;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class TopicServiceImpl implements TopicService {
 
     private final TopicRepository topicRepository;
@@ -43,10 +44,10 @@ public class TopicServiceImpl implements TopicService {
     @Override
     public List<TopicsByCategoriesResponse> getTopicsByCategories(List<TopicCategory> categories) {
         return categories.stream()
-                .map(topicCategory -> {
-                    List<TopicProjection> topics = topicRepository.getTopicsByCategory(topicCategory);
-                    return new TopicsByCategoriesResponse(topicCategory, topics);
-                })
+                .map(category -> new TopicsByCategoriesResponse(
+                        category,
+                        topicRepository.getTopicsByCategory(category)
+                ))
                 .toList();
     }
 
@@ -80,7 +81,10 @@ public class TopicServiceImpl implements TopicService {
             return false;
         } else {
             topicFollowersRepository.removeFollowedTopic(authUserId, topicId);
-            TopicNotInterested topicNotInterested = new TopicNotInterested(authUserId, topicId);
+            TopicNotInterested topicNotInterested = TopicNotInterested.builder()
+                    .userId(authUserId)
+                    .topicId(topicId)
+                    .build();
             topicNotInterestedRepository.save(topicNotInterested);
             return true;
         }
@@ -98,7 +102,10 @@ public class TopicServiceImpl implements TopicService {
             return false;
         } else {
             topicNotInterestedRepository.removeNotInterestedTopic(authUserId, topicId);
-            TopicFollowers topicFollowers = new TopicFollowers(authUserId, topicId);
+            TopicFollowers topicFollowers = TopicFollowers.builder()
+                    .userId(authUserId)
+                    .topicId(topicId)
+                    .build();
             topicFollowersRepository.save(topicFollowers);
             return true;
         }
@@ -111,18 +118,33 @@ public class TopicServiceImpl implements TopicService {
     }
 
     private void validateUserProfile(Long userId) {
-        if (!userClient.isUserExists(userId)) {
-            throw new ApiRequestException(String.format(USER_ID_NOT_FOUND, userId), HttpStatus.NOT_FOUND);
-        }
+        checkUserExists(userId);
         Long authUserId = AuthUtil.getAuthenticatedUserId();
 
         if (!userId.equals(authUserId)) {
-            if (userClient.isMyProfileBlockedByUser(userId)) {
-                throw new ApiRequestException(USER_PROFILE_BLOCKED, HttpStatus.BAD_REQUEST);
-            }
-            if (userClient.isUserHavePrivateProfile(userId)) {
-                throw new ApiRequestException(USER_NOT_FOUND, HttpStatus.NOT_FOUND);
-            }
+            checkProfileIsBlocked(userId);
+            checkIfUserHavePrivateProfile(userId);
+        }
+    }
+
+    private void checkIfUserHavePrivateProfile(Long userId) {
+        boolean userHavePrivateProfile = userClient.isUserHavePrivateProfile(userId);
+        if (userHavePrivateProfile) {
+            throw new ApiRequestException(USER_NOT_FOUND, HttpStatus.NOT_FOUND);
+        }
+    }
+
+    private void checkProfileIsBlocked(Long userId) {
+        boolean profileBlockedByUser = userClient.isMyProfileBlockedByUser(userId);
+        if (profileBlockedByUser) {
+            throw new ApiRequestException(USER_PROFILE_BLOCKED, HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    private void checkUserExists(Long userId) {
+        boolean notUserExists = !userClient.isUserExists(userId);
+        if (notUserExists) {
+            throw new ApiRequestException(String.format(USER_ID_NOT_FOUND, userId), HttpStatus.NOT_FOUND);
         }
     }
 }

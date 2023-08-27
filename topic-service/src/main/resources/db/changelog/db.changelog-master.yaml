@@ -1,0 +1,5 @@
+databaseChangeLog:
+  - include:
+      file: db/changelog/db.changelog-init-topic-1.0.sql
+  - include:
+      file: db/changelog/db.changelog-populate-topic-1.0.sql

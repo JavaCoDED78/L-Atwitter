@@ -20,5 +20,3 @@ include 'tag-service'
 include 'chat-service'
 include 'notification-service'
 include 'websocket-service'
-include 'websocket-service'
-

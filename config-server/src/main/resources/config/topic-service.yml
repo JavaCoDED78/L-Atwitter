@@ -3,6 +3,9 @@ server:
 spring:
   application:
     name: topic-service
+  devtools:
+    livereload:
+      port: 35733
   datasource:
     url: jdbc:postgresql://${DATASOURCE_HOST:localhost}:5432/topic
     username: postgres
@@ -14,13 +17,11 @@ spring:
       fetch_size: 50
       show_sql: false
       format_sql: false
-    #     open-in-view: false
+    open-in-view: false
     hibernate:
       ddl-auto: validate
     generate-ddl: false
     show-sql: false
-  flyway:
-    locations: classpath:db/migration/topic
   zipkin:
     base-url: http://${ZIPKIN_HOST:localhost}:9411
   rabbitmq:

@@ -7,19 +7,24 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
-
 @Repository
 public interface TopicNotInterestedRepository extends JpaRepository<TopicNotInterested, Long> {
 
-    @Query("SELECT notInterested FROM TopicNotInterested notInterested " +
-            "WHERE notInterested.userId = :userId " +
-            "AND notInterested.topicId = :topicId")
+    @Query("""
+            SELECT ni FROM TopicNotInterested ni
+            WHERE ni.userId = :userId
+            AND ni.topicId = :topicId
+            """)
     TopicNotInterested getNotInterestedByUserIdAndTopicId(@Param("userId") Long userId, @Param("topicId") Long topicId);
 
-    @Query("SELECT CASE WHEN count(notInterested) > 0 THEN true ELSE false END FROM TopicNotInterested notInterested " +
-            "WHERE notInterested.userId = :userId " +
-            "AND notInterested.topicId = :topicId")
+    @Query("""
+            SELECT CASE WHEN count(ni) > 0
+                THEN true
+                ELSE false END
+            FROM TopicNotInterested ni
+            WHERE ni.userId = :userId
+            AND ni.topicId = :topicId
+            """)
     boolean isTopicNotInterested(@Param("userId") Long userId, @Param("topicId") Long topicId);
 
     @Modifying

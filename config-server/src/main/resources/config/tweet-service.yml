@@ -3,6 +3,9 @@ server:
 spring:
   application:
     name: tweet-service
+  devtools:
+    livereload:
+      port: 35732
   datasource:
     url: jdbc:postgresql://${DATASOURCE_HOST:localhost}:5432/tweet
     username: postgres

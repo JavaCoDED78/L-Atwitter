@@ -3,6 +3,9 @@ server:
 spring:
   application:
     name: user-service
+  devtools:
+    livereload:
+      port: 35731
   datasource:
     url: jdbc:postgresql://${DATASOURCE_HOST:localhost}:5432/user
     username: postgres

@@ -7,19 +7,24 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
-
 @Repository
 public interface TopicFollowersRepository extends JpaRepository<TopicFollowers, Long> {
 
-    @Query("SELECT follower FROM TopicFollowers follower " +
-            "WHERE follower.userId = :userId " +
-            "AND follower.topicId = :topicId")
+    @Query("""
+            SELECT tf FROM TopicFollowers tf
+            WHERE tf.userId = :userId
+            AND tf.topicId = :topicId
+            """)
     TopicFollowers getFollowerByUserIdAndTopicId(@Param("userId") Long userId, @Param("topicId") Long topicId);
 
-    @Query("SELECT CASE WHEN count(follower) > 0 THEN true ELSE false END FROM TopicFollowers follower " +
-            "WHERE follower.userId = :userId " +
-            "AND follower.topicId = :topicId")
+    @Query("""
+            SELECT CASE WHEN count(f) > 0
+                THEN true
+                ELSE false END
+            FROM TopicFollowers f
+            WHERE f.userId = :userId
+            AND f.topicId = :topicId
+            """)
     boolean isTopicFollowed(@Param("userId") Long userId, @Param("topicId") Long topicId);
 
     @Modifying

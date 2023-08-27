@@ -3,6 +3,9 @@ server:
 spring:
   application:
     name: tag-service
+  devtools:
+    livereload:
+      port: 35734
   datasource:
     url: jdbc:postgresql://${DATASOURCE_HOST:localhost}:5432/tag
     username: postgres

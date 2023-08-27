@@ -6,7 +6,7 @@ CREATE SEQUENCE IF NOT EXISTS tags_seq START 100 INCREMENT 1;
 
 --changeset soroka andrei:2
 CREATE SEQUENCE tweet_tags_seq START 100 INCREMENT 1;
---rollback DROP SEQUENCE tags_seq
+--rollback DROP SEQUENCE tweet_tags_seq
 
 --changeset soroka andrei:3
 CREATE TABLE IF NOT EXISTS tags

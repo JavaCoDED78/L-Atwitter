@@ -4,6 +4,9 @@ server:
 spring:
   application:
     name: api-gateway
+  devtools:
+    livereload:
+      port: 35730
   cloud:
     gateway:
       globalcors:
