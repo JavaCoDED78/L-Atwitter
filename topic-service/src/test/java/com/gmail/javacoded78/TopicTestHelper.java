@@ -4,6 +4,7 @@ import com.gmail.javacoded78.enums.TopicCategory;
 import com.gmail.javacoded78.repository.projetion.FollowedTopicProjection;
 import com.gmail.javacoded78.repository.projetion.NotInterestedTopicProjection;
 import com.gmail.javacoded78.repository.projetion.TopicProjection;
+import lombok.experimental.UtilityClass;
 import org.springframework.data.projection.ProjectionFactory;
 import org.springframework.data.projection.SpelAwareProxyProjectionFactory;
 
@@ -11,6 +12,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+@UtilityClass
 public class TopicTestHelper {
 
     private static final ProjectionFactory factory = new SpelAwareProxyProjectionFactory();
@@ -65,5 +67,17 @@ public class TopicTestHelper {
                         "topicCategory", TopicCategory.FOOD,
                         "isTopicNotInterested", true));
         return Arrays.asList(topic1, topic2);
+    }
+
+    public static TopicProjection getMockTopicProjection() {
+        return factory.createProjection(
+                TopicProjection.class,
+                Map.of(
+                        "id", 1L,
+                        "topicName", "test topic 1",
+                        "topicCategory", TopicCategory.TRAVEL,
+                        "isTopicFollowed", true,
+                        "isTopicNotInterested", false
+                ));
     }
 }

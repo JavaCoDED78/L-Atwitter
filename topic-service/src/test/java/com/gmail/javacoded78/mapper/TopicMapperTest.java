@@ -8,54 +8,51 @@ import com.gmail.javacoded78.repository.projetion.FollowedTopicProjection;
 import com.gmail.javacoded78.repository.projetion.NotInterestedTopicProjection;
 import com.gmail.javacoded78.repository.projetion.TopicProjection;
 import com.gmail.javacoded78.service.TopicService;
+import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.data.projection.ProjectionFactory;
-import org.springframework.data.projection.SpelAwareProxyProjectionFactory;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest
-@RunWith(SpringRunner.class)
-public class TopicMapperTest {
+@RequiredArgsConstructor
+class TopicMapperTest {
 
-    @Autowired
-    private TopicMapper topicMapper;
-
-    @MockBean
+    @Mock
     private TopicService topicService;
 
-    @MockBean
+    @Mock
     private BasicMapper basicMapper;
 
     @MockBean
     private ModelMapper modelMapper;
-
+    @InjectMocks
+    private TopicMapper topicMapper;
     @Test
-    public void getTopicsByIds() {
+    void getTopicsByIds() {
         List<TopicProjection> topics = TopicTestHelper.getMockTopicProjectionList();
         List<Long> topicsIds = Arrays.asList(1L, 2L);
         when(topicService.getTopicsByIds(topicsIds)).thenReturn(topics);
         when(basicMapper.convertToResponseList(topics, TopicResponse.class)).thenReturn(getTopicResponseList());
-        assertEquals(2, topicMapper.getTopicsByIds(topicsIds).size());
+        assertThat(topicMapper.getTopicsByIds(topicsIds)).hasSize(2);
         verify(topicService, times(1)).getTopicsByIds(topicsIds);
         verify(basicMapper, times(1)).convertToResponseList(topics, TopicResponse.class);
     }
 
     @Test
-    public void getTopicsByCategories() {
+    void getTopicsByCategories() {
         List<TopicProjection> topics = TopicTestHelper.getMockTopicProjectionList();
         List<TopicCategory> categories = Arrays.asList(TopicCategory.FOOD, TopicCategory.TRAVEL);
         TopicsByCategoriesResponse categoriesResponse1 = new TopicsByCategoriesResponse(
@@ -66,72 +63,64 @@ public class TopicMapperTest {
                 Collections.singletonList(topics.get(1)));
         when(topicService.getTopicsByCategories(categories))
                 .thenReturn(Arrays.asList(categoriesResponse1, categoriesResponse2));
-        assertEquals(2, topicMapper.getTopicsByCategories(categories).size());
+        assertThat(topicMapper.getTopicsByCategories(categories)).hasSize(2);
         verify(topicService, times(1)).getTopicsByCategories(categories);
     }
 
     @Test
-    public void getFollowedTopics() {
+    void getFollowedTopics() {
         List<FollowedTopicProjection> topics = TopicTestHelper.getMockFollowedTopicProjectionList();
         when(topicService.getFollowedTopics()).thenReturn(topics);
         when(basicMapper.convertToResponseList(topics, TopicResponse.class)).thenReturn(getTopicResponseList());
-        assertEquals(2, topicMapper.getFollowedTopics().size());
+        assertThat(topicMapper.getFollowedTopics()).hasSize(2);
         verify(topicService, times(1)).getFollowedTopics();
         verify(basicMapper, times(1)).convertToResponseList(topics, TopicResponse.class);
     }
 
     @Test
-    public void getFollowedTopicsByUserId() {
+    void getFollowedTopicsByUserId() {
         List<TopicProjection> topics = TopicTestHelper.getMockTopicProjectionList();
         when(topicService.getFollowedTopicsByUserId(1L)).thenReturn(topics);
         when(basicMapper.convertToResponseList(topics, TopicResponse.class)).thenReturn(getTopicResponseList());
-        assertEquals(2, topicMapper.getFollowedTopicsByUserId(1L).size());
+        assertThat(topicMapper.getFollowedTopicsByUserId(1L)).hasSize(2);
         verify(topicService, times(1)).getFollowedTopicsByUserId(1L);
         verify(basicMapper, times(1)).convertToResponseList(topics, TopicResponse.class);
     }
 
     @Test
-    public void getNotInterestedTopics() {
+    void getNotInterestedTopics() {
         List<NotInterestedTopicProjection> topics = TopicTestHelper.getMockNotInterestedTopicProjectionList();
         when(topicService.getNotInterestedTopics()).thenReturn(topics);
         when(basicMapper.convertToResponseList(topics, TopicResponse.class)).thenReturn(getTopicResponseList());
-        assertEquals(2, topicMapper.getNotInterestedTopics().size());
+        assertThat(topicMapper.getNotInterestedTopics()).hasSize(2);
         verify(topicService, times(1)).getNotInterestedTopics();
         verify(basicMapper, times(1)).convertToResponseList(topics, TopicResponse.class);
     }
 
     @Test
-    public void processNotInterestedTopic() {
+    void processNotInterestedTopic() {
         when(topicService.processNotInterestedTopic(1L)).thenReturn(true);
         assertTrue(topicMapper.processNotInterestedTopic(1L));
         verify(topicService, times(1)).processNotInterestedTopic(1L);
     }
 
     @Test
-    public void processFollowTopic() {
+    void processFollowTopic() {
         when(topicService.processFollowTopic(1L)).thenReturn(true);
         assertTrue(topicMapper.processFollowTopic(1L));
         verify(topicService, times(1)).processFollowTopic(1L);
     }
 
     @Test
-    public void convertTopicProjectionToTopicResponse() {
-        ProjectionFactory factory = new SpelAwareProxyProjectionFactory();
-        TopicProjection topic = factory.createProjection(
-                TopicProjection.class,
-                Map.of(
-                        "id", 1L,
-                        "topicName", "test topic 1",
-                        "topicCategory", TopicCategory.TRAVEL,
-                        "isTopicFollowed", true,
-                        "isTopicNotInterested", false
-                ));
-        TopicResponse response = new TopicResponse();
-        response.setId(1L);
-        response.setTopicName("test topic 1");
-        response.setTopicCategory(TopicCategory.TRAVEL);
-        response.setTopicFollowed(true);
-        response.setTopicNotInterested(false);
+    void convertTopicProjectionToTopicResponse() {
+        TopicProjection topic = TopicTestHelper.getMockTopicProjection();
+        TopicResponse response = TopicResponse.builder()
+                .id(1L)
+                .topicName("test topic 1")
+                .topicCategory(TopicCategory.TRAVEL)
+                .isTopicFollowed(true)
+                .isTopicNotInterested(false)
+                .build();
         when(modelMapper.map(topic, TopicResponse.class)).thenReturn(response);
         TopicResponse topicResponse = modelMapper.map(topic, TopicResponse.class);
         assertEquals(topic.getId(), topicResponse.getId());
@@ -142,18 +131,20 @@ public class TopicMapperTest {
     }
 
     private List<TopicResponse> getTopicResponseList() {
-        TopicResponse topicResponse1 = new TopicResponse();
-        topicResponse1.setId(1L);
-        topicResponse1.setTopicName("test topic 1");
-        topicResponse1.setTopicCategory(TopicCategory.TRAVEL);
-        topicResponse1.setTopicFollowed(false);
-        topicResponse1.setTopicNotInterested(false);
-        TopicResponse topicResponse2 = new TopicResponse();
-        topicResponse2.setId(2L);
-        topicResponse2.setTopicName("test topic 2");
-        topicResponse2.setTopicCategory(TopicCategory.FOOD);
-        topicResponse2.setTopicFollowed(false);
-        topicResponse2.setTopicNotInterested(false);
+        TopicResponse topicResponse1 = TopicResponse.builder()
+                .id(1L)
+                .topicName("test topic 1")
+                .topicCategory(TopicCategory.TRAVEL)
+                .isTopicFollowed(false)
+                .isTopicNotInterested(false)
+                .build();
+        TopicResponse topicResponse2 =TopicResponse.builder()
+                .id(2L)
+                .topicName("test topic 2")
+                .topicCategory(TopicCategory.FOOD)
+                .isTopicFollowed(false)
+                .isTopicNotInterested(false)
+                .build();
         return Arrays.asList(topicResponse1, topicResponse2);
     }
 }

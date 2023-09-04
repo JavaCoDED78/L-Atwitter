@@ -8,7 +8,7 @@ import com.gmail.javacoded78.enums.ReplyType;
 import com.gmail.javacoded78.feign.TweetClient;
 
 import java.time.LocalDateTime;
-import java.util.Arrays;
+import java.util.Collections;
 
 import static com.gmail.javacoded78.util.TestConstants.LINK;
 import static com.gmail.javacoded78.util.TestConstants.LINK_COVER;
@@ -24,7 +24,7 @@ public class TweetClientMock {
     public static void setMockListTweetResponse(TweetClient tweetClient) {
         when(tweetClient.getTweetsByIds(any(IdsRequest.class)))
                 .thenReturn(
-                        Arrays.asList(TweetResponse.builder()
+                        Collections.singletonList(TweetResponse.builder()
                                 .id(43L)
                                 .text(TWEET_TEXT)
                                 .dateTime(LocalDateTime.parse(TWEET_DATETIME))
