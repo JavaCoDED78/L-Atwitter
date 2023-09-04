@@ -32,13 +32,13 @@ public class NotificationController {
     private final NotificationMapper notificationMapper;
 
     @GetMapping(USER)
-    public ResponseEntity<List<NotificationResponse>> getUserNotifications(@PageableDefault(size = 10) Pageable pageable) {
+    public ResponseEntity<List<NotificationResponse>> getUserNotifications(@PageableDefault Pageable pageable) {
         HeaderResponse<NotificationResponse> response = notificationMapper.getUserNotifications(pageable);
         return ResponseEntity.ok().headers(response.getHeaders()).body(response.getItems());
     }
 
     @GetMapping(MENTIONS)
-    public ResponseEntity<List<TweetResponse>> getUserMentionsNotifications(@PageableDefault(size = 10) Pageable pageable) {
+    public ResponseEntity<List<TweetResponse>> getUserMentionsNotifications(@PageableDefault Pageable pageable) {
         HeaderResponse<TweetResponse> response = notificationMapper.getUserMentionsNotifications(pageable);
         return ResponseEntity.ok().headers(response.getHeaders()).body(response.getItems());
     }
@@ -54,7 +54,7 @@ public class NotificationController {
     }
 
     @GetMapping(TIMELINE)
-    public ResponseEntity<List<TweetResponse>> getNotificationsFromTweetAuthors(@PageableDefault(size = 10) Pageable pageable) {
+    public ResponseEntity<List<TweetResponse>> getNotificationsFromTweetAuthors(@PageableDefault() Pageable pageable) {
         HeaderResponse<TweetResponse> response = notificationMapper.getNotificationsFromTweetAuthors(pageable);
         return ResponseEntity.ok().headers(response.getHeaders()).body(response.getItems());
     }

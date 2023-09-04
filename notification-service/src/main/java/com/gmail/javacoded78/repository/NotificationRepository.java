@@ -17,59 +17,86 @@ import java.util.Optional;
 @Repository
 public interface NotificationRepository extends JpaRepository<Notification, Long> {
 
-    @Query("SELECT CASE WHEN count(notification) > 0 THEN true ELSE false END FROM Notification notification " +
-            "WHERE notification.notifiedUserId = :userId " +
-            "AND notification.listId = :listId " +
-            "AND notification.userId = :authUserId " +
-            "AND notification.notificationType = :notificationType")
+    @Query("""
+            SELECT CASE WHEN count(n) > 0
+                THEN true
+                ELSE false END
+            FROM Notification n
+            WHERE n.notifiedUserId = :userId
+            AND n.listId = :listId
+            AND n.userId = :authUserId
+            AND n.notificationType = :notificationType
+            """)
     boolean isListNotificationExists(@Param("userId") Long userId,
                                      @Param("listId") Long listId,
                                      @Param("authUserId") Long authUserId,
                                      @Param("notificationType") NotificationType type);
 
-    @Query("SELECT CASE WHEN count(notification) > 0 THEN true ELSE false END FROM Notification notification " +
-            "WHERE notification.notifiedUserId = :userId " +
-            "AND notification.userToFollowId = :userToFollowId " +
-            "AND notification.userId = :authUserId " +
-            "AND notification.notificationType = :notificationType")
+    @Query("""
+            SELECT CASE WHEN count(n) > 0
+                THEN true
+                ELSE false END
+            FROM Notification n
+            WHERE n.notifiedUserId = :userId
+            AND n.userToFollowId = :userToFollowId
+            AND n.userId = :authUserId
+            AND n.notificationType = :notificationType
+            """)
     boolean isUserNotificationExists(@Param("userId") Long userId,
                                      @Param("userToFollowId") Long userToFollowId,
                                      @Param("authUserId") Long authUserId,
                                      @Param("notificationType") NotificationType type);
 
-    @Query("SELECT CASE WHEN count(notification) > 0 THEN true ELSE false END FROM Notification notification " +
-            "WHERE notification.notifiedUserId = :userId " +
-            "AND notification.tweetId = :tweetId " +
-            "AND notification.userId = :authUserId " +
-            "AND notification.notificationType = :notificationType")
+    @Query("""
+            SELECT CASE WHEN count(n) > 0
+                THEN true
+                ELSE false END
+            FROM Notification n
+            WHERE n.notifiedUserId = :userId
+            AND n.tweetId = :tweetId
+            AND n.userId = :authUserId
+            AND n.notificationType = :notificationType
+            """)
     boolean isTweetNotificationExists(@Param("userId") Long userId,
                                       @Param("tweetId") Long tweetId,
                                       @Param("authUserId") Long authUserId,
                                       @Param("notificationType") NotificationType type);
 
-    @Query("SELECT notification FROM Notification notification " +
-            "WHERE notification.notifiedUserId = :userId " +
-            "AND notification.notificationType NOT IN ('TWEET', 'MENTION') " +
-            "ORDER BY notification.date DESC")
+    @Query("""
+            SELECT n
+            FROM Notification n
+            WHERE n.notifiedUserId = :userId
+            AND n.notificationType NOT IN ('TWEET', 'MENTION')
+            ORDER BY n.date DESC
+            """)
     Page<NotificationProjection> getNotificationsByUserId(@Param("userId") Long userId, Pageable pageable);
 
-    @Query("SELECT notification.tweetId FROM Notification notification " +
-            "WHERE notification.notifiedUserId = :userId " +
-            "AND notification.notificationType = 'MENTION' " +
-            "ORDER BY notification.date DESC")
+    @Query("""
+            SELECT n.tweetId
+            FROM Notification n
+            WHERE n.notifiedUserId = :userId
+            AND n.notificationType = 'MENTION'
+            ORDER BY n.date DESC
+            """)
     Page<Long> getTweetNotificationMentionIds(@Param("userId") Long userId, Pageable pageable);
 
-    @Query("SELECT notification.tweetId FROM Notification notification " +
-            "WHERE notification.userId IN :userIds " +
-            "AND notification.notificationType = 'TWEET' " +
-            "AND notification.notifiedUserId = :userId")
+    @Query("""
+            SELECT n.tweetId
+            FROM Notification n
+            WHERE n.userId IN :userIds
+            AND n.notificationType = 'TWEET'
+            AND n.notifiedUserId = :userId
+            """)
     Page<Long> getTweetIdsByNotificationType(@Param("userIds") List<Long> userIds,
                                              @Param("userId") Long userId,
                                              Pageable pageable);
 
-    @Query("SELECT notification FROM Notification notification " +
-            "WHERE notification.notifiedUserId = :userId " +
-            "AND notification.id = :notificationId")
+    @Query("""
+            SELECT n
+            FROM Notification n
+            WHERE n.notifiedUserId = :userId
+            AND n.id = :notificationId
+            """)
     Optional<NotificationInfoProjection> getUserNotificationById(@Param("userId") Long userId,
                                                                  @Param("notificationId") Long notificationId);
 }

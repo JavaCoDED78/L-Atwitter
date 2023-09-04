@@ -13,11 +13,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import static com.gmail.javacoded78.constants.PathConstants.API_V1_NOTIFICATION;
-import static com.gmail.javacoded78.constants.PathConstants.LIST;
 import static com.gmail.javacoded78.constants.PathConstants.MENTION;
 import static com.gmail.javacoded78.constants.PathConstants.TWEET;
 import static com.gmail.javacoded78.constants.PathConstants.TWEET_TWEET_ID;
-import static com.gmail.javacoded78.constants.PathConstants.USER;
 import static com.gmail.javacoded78.constants.WebsocketConstants.TOPIC_FEED;
 import static com.gmail.javacoded78.constants.WebsocketConstants.TOPIC_MENTIONS;
 import static com.gmail.javacoded78.constants.WebsocketConstants.TOPIC_NOTIFICATIONS;

@@ -1,6 +1,8 @@
 package com.gmail.javacoded78.model;
 
 import com.gmail.javacoded78.enums.NotificationType;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -21,6 +23,8 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @EqualsAndHashCode(of = "id")
 @Table(name = "notifications")
 public class Notification {

@@ -26,6 +26,7 @@ import static com.gmail.javacoded78.constants.ErrorMessage.NOTIFICATION_NOT_FOUN
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class NotificationServiceImpl implements NotificationService {
 
     private final NotificationRepository notificationRepository;
