@@ -1,1 +1,1 @@
-delete from "notification-test".public.notifications;
+delete from "test".public.notifications;

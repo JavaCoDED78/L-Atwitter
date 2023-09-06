@@ -11,57 +11,53 @@ import com.gmail.javacoded78.feign.UserClient;
 import com.gmail.javacoded78.mapper.BasicMapper;
 import com.gmail.javacoded78.model.Notification;
 import com.gmail.javacoded78.repository.NotificationRepository;
-import com.gmail.javacoded78.service.NotificationClientService;
 import com.gmail.javacoded78.util.TestUtil;
+import lombok.RequiredArgsConstructor;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
 
 import static com.gmail.javacoded78.util.TestConstants.USER_ID;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest
-@RunWith(SpringRunner.class)
-public class NotificationClientServiceImplTest {
+@RequiredArgsConstructor
+class NotificationClientServiceImplTest {
 
-    @Autowired
-    private NotificationClientService notificationClientService;
+    @Mock
+    private final NotificationRepository notificationRepository;
 
-    @Autowired
-    private ModelMapper modelMapper;
+    @Mock
+    private final UserClient userClient;
 
-    @MockBean
-    private NotificationRepository notificationRepository;
+    @Mock
+    private final ListsClient listsClient;
 
-    @MockBean
-    private UserClient userClient;
+    @Mock
+    private final TweetClient tweetClient;
 
-    @MockBean
-    private ListsClient listsClient;
+    @Mock
+    private final BasicMapper basicMapper;
 
-    @MockBean
-    private TweetClient tweetClient;
+    @InjectMocks
+    private NotificationClientServiceImpl notificationClientService;
 
-    @MockBean
-    private BasicMapper basicMapper;
-
-    @Before
+    @BeforeEach
     public void setUp() {
         TestUtil.mockAuthenticatedUserId();
     }
 
     @Test
-    public void sendNotification_shouldReturnExistedListNotification() {
+    void sendNotification_shouldReturnExistedListNotification() {
         Notification notification = mockListNotification(true);
         assertNotNull(notificationClientService.sendNotification(notification, true));
         verify(notificationRepository, times(1))
@@ -71,7 +67,7 @@ public class NotificationClientServiceImplTest {
     }
 
     @Test
-    public void sendNotification_shouldSaveAndReturnListNotification() {
+    void sendNotification_shouldSaveAndReturnListNotification() {
         Notification notification = mockListNotification(false);
         assertNotNull(notificationClientService.sendNotification(notification, true));
         verify(notificationRepository, times(1))
@@ -83,7 +79,7 @@ public class NotificationClientServiceImplTest {
     }
 
     @Test
-    public void sendNotification_shouldReturnExistedUserNotification() {
+    void sendNotification_shouldReturnExistedUserNotification() {
         Notification notification = mockUserNotification(true);
         assertNotNull(notificationClientService.sendNotification(notification, true));
         verify(notificationRepository, times(1))
@@ -92,7 +88,7 @@ public class NotificationClientServiceImplTest {
     }
 
     @Test
-    public void sendNotification_shouldSaveAndReturnUserNotification() {
+    void sendNotification_shouldSaveAndReturnUserNotification() {
         Notification notification = mockUserNotification(false);
         assertNotNull(notificationClientService.sendNotification(notification, true));
         verify(notificationRepository, times(1))
@@ -103,7 +99,7 @@ public class NotificationClientServiceImplTest {
     }
 
     @Test
-    public void sendNotification_shouldReturnExistedTweetNotification() {
+    void sendNotification_shouldReturnExistedTweetNotification() {
         Notification notification = mockTweetNotification(true);
         assertNotNull(notificationClientService.sendNotification(notification, true));
         verify(notificationRepository, times(1))
@@ -113,7 +109,7 @@ public class NotificationClientServiceImplTest {
     }
 
     @Test
-    public void sendNotification_shouldSaveAndReturnTweetNotification() {
+    void sendNotification_shouldSaveAndReturnTweetNotification() {
         Notification notification = mockTweetNotification(false);
         assertNotNull(notificationClientService.sendNotification(notification, true));
         verify(notificationRepository, times(1))
@@ -125,21 +121,22 @@ public class NotificationClientServiceImplTest {
     }
 
     @Test
-    public void sendTweetMentionNotification() {
-        Notification notification = new Notification();
-        notification.setId(1L);
-        notification.setDate(LocalDateTime.now());
-        notification.setNotificationType(NotificationType.LIKE);
-        notification.setNotifiedUserId(2L);
-        notification.setTweetId(3L);
-        notification.setUserId(USER_ID);
+    void sendTweetMentionNotification() {
+        Notification notification = Notification.builder()
+                .id(1L)
+                .date(LocalDateTime.now())
+                .notificationType(NotificationType.LIKE)
+                .notifiedUserId(2L)
+                .tweetId(3L)
+                .userId(USER_ID)
+                .build();
         notificationClientService.sendTweetMentionNotification(notification);
         verify(notificationRepository, times(1)).save(notification);
         verify(userClient, times(1)).increaseMentionsCount(notification.getNotifiedUserId());
     }
 
     @Test
-    public void sendTweetNotificationToSubscribers() {
+    void sendTweetNotificationToSubscribers() {
         when(userClient.getSubscribersByUserId(USER_ID)).thenReturn(Arrays.asList(6L, 7L, 8L));
         notificationClientService.sendTweetNotificationToSubscribers(11L);
         verify(userClient, times(1)).getSubscribersByUserId(USER_ID);
@@ -148,56 +145,59 @@ public class NotificationClientServiceImplTest {
     }
 
     private Notification mockListNotification(boolean isNotificationExists) {
-        Notification notification = new Notification();
-        notification.setId(1L);
-        notification.setDate(LocalDateTime.now());
-        notification.setNotificationType(NotificationType.LISTS);
-        notification.setNotifiedUserId(1L);
-        notification.setListId(2L);
-        notification.setUserId(USER_ID);
+        Notification notification = Notification.builder()
+                .id(1L)
+                .date(LocalDateTime.now())
+                .notificationType(NotificationType.LISTS)
+                .notifiedUserId(1L)
+                .listId(2L)
+                .userId(USER_ID)
+                .build();
         when(notificationRepository
                 .isListNotificationExists(notification.getNotifiedUserId(), notification.getListId(), USER_ID, notification.getNotificationType()))
                 .thenReturn(isNotificationExists);
         when(userClient.getNotificationUser(notification.getUserId())).thenReturn(new NotificationUserResponse());
         when(listsClient.getNotificationList(notification.getListId())).thenReturn(new NotificationListResponse());
         when(basicMapper.convertToResponse(notification, NotificationResponse.class))
-                .thenReturn(modelMapper.map(notification, NotificationResponse.class));
+                .thenReturn(new NotificationResponse());
         return notification;
     }
 
     private Notification mockUserNotification(boolean isNotificationExists) {
-        Notification notification = new Notification();
-        notification.setId(1L);
-        notification.setDate(LocalDateTime.now());
-        notification.setNotificationType(NotificationType.FOLLOW);
-        notification.setNotifiedUserId(1L);
-        notification.setUserToFollowId(2L);
-        notification.setUserId(USER_ID);
+        Notification notification = Notification.builder()
+                .id(1L)
+                .date(LocalDateTime.now())
+                .notificationType(NotificationType.FOLLOW)
+                .notifiedUserId(1L)
+                .listId(2L)
+                .userId(USER_ID)
+                .build();
         when(notificationRepository
                 .isUserNotificationExists(notification.getNotifiedUserId(), notification.getUserToFollowId(), USER_ID, notification.getNotificationType()))
                 .thenReturn(isNotificationExists);
         when(userClient.getNotificationUser(notification.getUserId())).thenReturn(new NotificationUserResponse());
         when(userClient.getNotificationUser(notification.getUserToFollowId())).thenReturn(new NotificationUserResponse());
         when(basicMapper.convertToResponse(notification, NotificationResponse.class))
-                .thenReturn(modelMapper.map(notification, NotificationResponse.class));
+                .thenReturn(new NotificationResponse());
         return notification;
     }
 
     private Notification mockTweetNotification(boolean isNotificationExists) {
-        Notification notification = new Notification();
-        notification.setId(1L);
-        notification.setDate(LocalDateTime.now());
-        notification.setNotificationType(NotificationType.LIKE);
-        notification.setNotifiedUserId(1L);
-        notification.setTweetId(3L);
-        notification.setUserId(USER_ID);
+        Notification notification = Notification.builder()
+                .id(1L)
+                .date(LocalDateTime.now())
+                .notificationType(NotificationType.LIKE)
+                .notifiedUserId(1L)
+                .listId(3L)
+                .userId(USER_ID)
+                .build();
         when(notificationRepository
                 .isTweetNotificationExists(notification.getNotifiedUserId(), notification.getTweetId(), USER_ID, notification.getNotificationType()))
                 .thenReturn(isNotificationExists);
         when(userClient.getNotificationUser(notification.getUserId())).thenReturn(new NotificationUserResponse());
         when(tweetClient.getNotificationTweet(notification.getTweetId())).thenReturn(new NotificationTweetResponse());
         when(basicMapper.convertToResponse(notification, NotificationResponse.class))
-                .thenReturn(modelMapper.map(notification, NotificationResponse.class));
+                .thenReturn(new NotificationResponse());
         return notification;
     }
 }

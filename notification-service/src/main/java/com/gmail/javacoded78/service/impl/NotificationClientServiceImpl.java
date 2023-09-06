@@ -36,14 +36,7 @@ public class NotificationClientServiceImpl implements NotificationClientService 
         Long authUserId = AuthUtil.getAuthenticatedUserId();
 
         if (!notification.getNotifiedUserId().equals(authUserId)) {
-            boolean isNotificationExists = switch (notification.getNotificationType()) {
-                case LISTS -> notificationRepository.isListNotificationExists(
-                        notification.getNotifiedUserId(), notification.getListId(), authUserId, notification.getNotificationType());
-                case FOLLOW -> notificationRepository.isUserNotificationExists(
-                        notification.getNotifiedUserId(), notification.getUserToFollowId(), authUserId, notification.getNotificationType());
-                default -> notificationRepository.isTweetNotificationExists(
-                        notification.getNotifiedUserId(), notification.getTweetId(), authUserId, notification.getNotificationType());
-            };
+            boolean isNotificationExists = processTypeNotificationExists(notification, authUserId);
             if (!isNotificationExists) {
                 notificationRepository.save(notification);
                 userClient.increaseNotificationsCount(notification.getNotifiedUserId());
@@ -51,6 +44,17 @@ public class NotificationClientServiceImpl implements NotificationClientService 
             }
         }
         return convertToNotificationResponse(notification, notificationCondition);
+    }
+
+    private boolean processTypeNotificationExists(Notification notification, Long authUserId) {
+        return switch (notification.getNotificationType()) {
+            case LISTS -> notificationRepository.isListNotificationExists(
+                    notification.getNotifiedUserId(), notification.getListId(), authUserId, notification.getNotificationType());
+            case FOLLOW -> notificationRepository.isUserNotificationExists(
+                    notification.getNotifiedUserId(), notification.getUserToFollowId(), authUserId, notification.getNotificationType());
+            default -> notificationRepository.isTweetNotificationExists(
+                    notification.getNotifiedUserId(), notification.getTweetId(), authUserId, notification.getNotificationType());
+        };
     }
 
     @Override
@@ -68,11 +72,12 @@ public class NotificationClientServiceImpl implements NotificationClientService 
 
         if (!subscribersIds.contains(null)) {
             subscribersIds.forEach(subscriberId -> {
-                Notification notification = new Notification();
-                notification.setNotificationType(NotificationType.TWEET);
-                notification.setUserId(authUserId);
-                notification.setTweetId(tweetId);
-                notification.setNotifiedUserId(subscriberId);
+                Notification notification = Notification.builder()
+                        .notificationType(NotificationType.TWEET)
+                        .userId(authUserId)
+                        .tweetId(tweetId)
+                        .notifiedUserId(subscriberId)
+                        .build();
                 notificationRepository.save(notification);
                 userClient.increaseNotificationsCount(subscriberId);
             });

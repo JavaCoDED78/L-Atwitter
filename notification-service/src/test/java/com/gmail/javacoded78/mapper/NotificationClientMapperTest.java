@@ -5,38 +5,39 @@ import com.gmail.javacoded78.dto.response.notification.NotificationResponse;
 import com.gmail.javacoded78.enums.NotificationType;
 import com.gmail.javacoded78.model.Notification;
 import com.gmail.javacoded78.service.NotificationClientService;
+import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import static com.gmail.javacoded78.util.TestConstants.USER_ID;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest
-@RunWith(SpringRunner.class)
-public class NotificationClientMapperTest {
+@RequiredArgsConstructor
+class NotificationClientMapperTest {
 
-    @Autowired
+    @Mock
+    private final BasicMapper basicMapper;
+
+    @Mock
+    private final NotificationClientService notificationClientService;
+
+    @InjectMocks
     private NotificationClientMapper notificationClientMapper;
 
-    @MockBean
-    private BasicMapper basicMapper;
-
-    @MockBean
-    private NotificationClientService notificationClientService;
-
     @Test
-    public void sendNotification() {
+    void sendNotification() {
         NotificationRequest notificationRequest = getMockNotificationRequest();
         Notification notification = getMockNotification();
-        NotificationResponse notificationResponse = new NotificationResponse();
-        notificationResponse.setId(1L);
-        notificationResponse.setNotificationType(NotificationType.LIKE);
+        NotificationResponse notificationResponse = NotificationResponse.builder()
+                .id(1L)
+                .notificationType(NotificationType.LIKE)
+                .build();
         when(basicMapper.convertToResponse(notificationRequest, Notification.class)).thenReturn(notification);
         when(notificationClientService.sendNotification(notification, true)).thenReturn(notificationResponse);
         assertNotNull(notificationClientMapper.sendNotification(notificationRequest));
@@ -45,7 +46,7 @@ public class NotificationClientMapperTest {
     }
 
     @Test
-    public void sendTweetMentionNotification() {
+    void sendTweetMentionNotification() {
         NotificationRequest notificationRequest = getMockNotificationRequest();
         Notification notification = getMockNotification();
         when(basicMapper.convertToResponse(notificationRequest, Notification.class)).thenReturn(notification);
@@ -55,7 +56,7 @@ public class NotificationClientMapperTest {
     }
 
     @Test
-    public void sendTweetNotificationToSubscribers() {
+    void sendTweetNotificationToSubscribers() {
         notificationClientMapper.sendTweetNotificationToSubscribers(11L);
         verify(notificationClientService, times(1)).sendTweetNotificationToSubscribers(11L);
     }
@@ -71,11 +72,11 @@ public class NotificationClientMapperTest {
     }
 
     private Notification getMockNotification() {
-        Notification notification = new Notification();
-        notification.setNotificationType(NotificationType.LIKE);
-        notification.setNotifiedUserId(1L);
-        notification.setUserId(USER_ID);
-        notification.setTweetId(45L);
-        return notification;
+        return Notification.builder()
+                .notificationType(NotificationType.LIKE)
+                .notifiedUserId(1L)
+                .userId(USER_ID)
+                .tweetId(45L)
+                .build();
     }
 }
