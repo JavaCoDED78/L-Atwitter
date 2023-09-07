@@ -1,10 +1,10 @@
 package com.gmail.javacoded78.model;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.Column;
@@ -21,7 +21,8 @@ import javax.persistence.Table;
 @Setter
 @EqualsAndHashCode(of = "id")
 @NoArgsConstructor
-@RequiredArgsConstructor
+@AllArgsConstructor
+@Builder
 @Table(
         name = "lists_followers",
         indexes = {
@@ -35,11 +36,9 @@ public class ListsFollowers {
     @SequenceGenerator(name = "lists_followers_seq", sequenceName = "lists_followers_seq", initialValue = 100, allocationSize = 1)
     private Long id;
 
-    @NonNull
     @Column(name = "list_id", nullable = false)
     private Long listId;
 
-    @NonNull
     @Column(name = "follower_id", nullable = false)
     private Long followerId;
 }

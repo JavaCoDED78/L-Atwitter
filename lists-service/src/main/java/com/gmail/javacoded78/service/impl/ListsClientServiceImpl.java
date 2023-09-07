@@ -35,10 +35,10 @@ public class ListsClientServiceImpl implements ListsClientService {
         Long authUserId = AuthUtil.getAuthenticatedUserId();
         Optional<TweetListProjection> list = listsRepository.getListById(listId, authUserId, TweetListProjection.class);
 
-        if (list.isEmpty() || userClient.isUserBlocked(list.get().getListOwnerId(), authUserId)) {
+        if (list.isEmpty() || Boolean.TRUE.equals(userClient.isUserBlocked(list.get().getListOwnerId(), authUserId))) {
             return new TweetListResponse();
         }
-        if (!authUserId.equals(list.get().getListOwnerId()) && userClient.isUserHavePrivateProfile(list.get().getListOwnerId())) {
+        if (!authUserId.equals(list.get().getListOwnerId()) && Boolean.TRUE.equals(userClient.isUserHavePrivateProfile(list.get().getListOwnerId()))) {
             return new TweetListResponse();
         }
         return basicMapper.convertToResponse(list.get(), TweetListResponse.class);

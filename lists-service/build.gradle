@@ -2,29 +2,21 @@ plugins {
     id 'java'
     id 'org.springframework.boot' version '2.7.15-SNAPSHOT'
     id 'io.spring.dependency-management' version '1.1.2'
+    id "io.freefair.lombok" version "8.2.2"
+    id 'com.bmuschko.docker-spring-boot-application' version '8.1.0'
 }
 
 group 'com.gmail.javacoded78'
 version '0.0.1-SNAPSHOT'
-java.sourceCompatibility = JavaVersion.VERSION_17
 
-repositories {
-    mavenCentral()
-    maven { url 'https://repo.spring.io/milestone' }
-    maven { url 'https://repo.spring.io/snapshot' }
-}
+java.sourceCompatibility = JavaVersion.VERSION_17
+java.targetCompatibility = JavaVersion.VERSION_17
 
 apply from: "$rootProject.projectDir/versions-script.gradle"
 
 configurations {
     compileOnly {
         extendsFrom annotationProcessor
-    }
-}
-
-dependencyManagement {
-    imports {
-        mavenBom "org.springframework.cloud:spring-cloud-dependencies:${versions.springCloudVersion}"
     }
 }
 
@@ -48,18 +40,25 @@ dependencies {
     implementation 'org.springframework.cloud:spring-cloud-starter-circuitbreaker-resilience4j'
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
     implementation 'io.micrometer:micrometer-registry-prometheus'
-    implementation 'org.flywaydb:flyway-core:9.18.0'
-    implementation 'com.github.ben-manes.caffeine:caffeine:3.1.6'
+    implementation 'org.liquibase:liquibase-core'
+    implementation "com.github.ben-manes.caffeine:caffeine:${versions.caffeine}"
 
     runtimeOnly 'org.postgresql:postgresql'
 
-    compileOnly 'org.projectlombok:lombok'
+    developmentOnly 'org.springframework.boot:spring-boot-devtools'
     annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
-    annotationProcessor 'org.projectlombok:lombok'
-    testImplementation 'org.projectlombok:lombok:1.18.26'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation "org.testcontainers:postgresql:${versions.testcontainers}"
 }
 
 tasks.named('test') {
     useJUnitPlatform()
+}
+
+docker {
+    springBootApplication {
+        baseImage = 'openjdk:17-jdk-alpine'
+        maintainer = 'Andrei Soroka <javacoded78@gmail.com>'
+        ports = [8005]
+    }
 }

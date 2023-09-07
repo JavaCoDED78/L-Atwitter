@@ -49,13 +49,13 @@ public class ListsServiceHelper {
     }
 
     public void checkUserIsBlocked(Long userId, Long supposedBlockedUserId) {
-        if (userClient.isUserBlocked(userId, supposedBlockedUserId)) {
+        if (Boolean.TRUE.equals(userClient.isUserBlocked(userId, supposedBlockedUserId))) {
             throw new ApiRequestException(String.format(USER_ID_BLOCKED, supposedBlockedUserId), HttpStatus.BAD_REQUEST);
         }
     }
 
     public void checkIsPrivateUserProfile(Long userId) {
-        if (userClient.isUserHavePrivateProfile(userId)) {
+        if (Boolean.TRUE.equals(userClient.isUserHavePrivateProfile(userId))) {
             throw new ApiRequestException(USER_NOT_FOUND, HttpStatus.NOT_FOUND);
         }
     }
@@ -85,7 +85,7 @@ public class ListsServiceHelper {
     }
 
     public void validateListNameLength(String listName) {
-        if (listName.length() == 0 || listName.length() > 25) {
+        if (listName.isEmpty() || listName.length() > 25) {
             throw new ApiRequestException(INCORRECT_LIST_NAME_LENGTH, HttpStatus.BAD_REQUEST);
         }
     }

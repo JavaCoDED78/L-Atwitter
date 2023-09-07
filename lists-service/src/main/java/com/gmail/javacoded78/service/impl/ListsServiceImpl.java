@@ -37,6 +37,7 @@ import static com.gmail.javacoded78.constants.ErrorMessage.LIST_NOT_FOUND;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class ListsServiceImpl implements ListsService {
 
     private final ListsRepository listsRepository;
@@ -48,7 +49,6 @@ public class ListsServiceImpl implements ListsService {
     private final TweetClient tweetClient;
 
     @Override
-    @Transactional(readOnly = true)
     public List<ListProjection> getAllTweetLists() {
         List<Long> listOwnerIds = listsRepository.getListOwnerIds();
         List<Long> validListUserIds = userClient.getValidUserIds(new IdsRequest(listOwnerIds));
@@ -56,21 +56,18 @@ public class ListsServiceImpl implements ListsService {
     }
 
     @Override
-    @Transactional(readOnly = true)
     public List<ListUserProjection> getUserTweetLists() {
         Long authUserId = AuthUtil.getAuthenticatedUserId();
         return listsRepository.getUserTweetLists(authUserId);
     }
 
     @Override
-    @Transactional(readOnly = true)
     public List<PinnedListProjection> getUserPinnedLists() {
         Long authUserId = AuthUtil.getAuthenticatedUserId();
         return listsRepository.getUserPinnedLists(authUserId);
     }
 
     @Override
-    @Transactional(readOnly = true)
     public BaseListProjection getListById(Long listId) {
         Long authUserId = AuthUtil.getAuthenticatedUserId();
         BaseListProjection list = listsRepository.getListById(listId, authUserId, BaseListProjection.class)
@@ -84,7 +81,7 @@ public class ListsServiceImpl implements ListsService {
 
     @Override
     @Transactional
-    public ListUserProjection createTweetList(Lists list) { // TODO pass listOwner (User) from front-end
+    public ListUserProjection createTweetList(Lists list) {
         Long authUserId = AuthUtil.getAuthenticatedUserId();
         listsServiceHelper.validateListNameLength(list.getName());
         listsServiceHelper.validateListOwner(list.getListOwnerId(), authUserId);
@@ -93,7 +90,6 @@ public class ListsServiceImpl implements ListsService {
     }
 
     @Override
-    @Transactional(readOnly = true)
     public List<ListProjection> getUserTweetListsById(Long userId) {
         Long authUserId = AuthUtil.getAuthenticatedUserId();
 
@@ -107,7 +103,6 @@ public class ListsServiceImpl implements ListsService {
     }
 
     @Override
-    @Transactional(readOnly = true)
     public List<ListProjection> getTweetListsWhichUserIn() {
         Long authUserId = AuthUtil.getAuthenticatedUserId();
         return listsRepository.getTweetListsByIds(authUserId);
@@ -125,7 +120,7 @@ public class ListsServiceImpl implements ListsService {
         list.setDescription(listInfo.getDescription());
         list.setWallpaper(listInfo.getWallpaper());
         list.setPrivate(listInfo.isPrivate());
-        return listsRepository.getListById(list.getId(), authUserId, BaseListProjection.class).get();
+        return listsRepository.getListById(list.getId(), authUserId, BaseListProjection.class).orElse(null);
     }
 
     @Override
@@ -153,7 +148,10 @@ public class ListsServiceImpl implements ListsService {
             listsFollowersRepository.delete(follower);
             pinnedListsRepository.removePinnedList(listId, authUserId);
         } else {
-            ListsFollowers newFollower = new ListsFollowers(listId, authUserId);
+            ListsFollowers newFollower = ListsFollowers.builder()
+                    .listId(listId)
+                    .followerId(authUserId)
+                    .build();
             listsFollowersRepository.save(newFollower);
         }
         return listsRepository.getListById(listId, ListUserProjection.class);
@@ -170,15 +168,16 @@ public class ListsServiceImpl implements ListsService {
         if (pinnedLists != null) {
             pinnedListsRepository.delete(pinnedLists);
         } else {
-            PinnedLists newPinnedLists = new PinnedLists(list, authUserId);
+            PinnedLists newPinnedLists = PinnedLists.builder()
+                    .list(list)
+                    .pinnedUserId(authUserId)
+                    .build();
             pinnedListsRepository.save(newPinnedLists);
         }
         return listsRepository.getListById(listId, PinnedListProjection.class);
-        // TODO or return true/false if lists pinned
     }
 
     @Override
-    @Transactional(readOnly = true)
     public List<Map<String, Object>> getListsToAddUser(Long userId) {
         Long authUserId = AuthUtil.getAuthenticatedUserId();
         List<Map<String, Object>> lists = new ArrayList<>();
@@ -201,11 +200,14 @@ public class ListsServiceImpl implements ListsService {
             listsServiceHelper.checkIsListExist(list.getListId(), authUserId);
             ListsMembers member = listsMembersRepository.getListMember(list.getListId(), listsRequest.getUserId());
 
-            if (list.getIsMemberInList() && member != null) {
+            if (Boolean.TRUE.equals(list.getIsMemberInList()) && member != null) {
                 listsMembersRepository.delete(member);
             } else {
                 if (member == null) {
-                    ListsMembers newMember = new ListsMembers(list.getListId(), listsRequest.getUserId());
+                    ListsMembers newMember = ListsMembers.builder()
+                            .listId(list.getListId())
+                            .memberId(listsRequest.getUserId())
+                            .build();
                     listsMembersRepository.save(newMember);
                     listsServiceHelper.sendNotification(listsRequest.getUserId(), authUserId, list.getListId());
                 }
@@ -229,7 +231,10 @@ public class ListsServiceImpl implements ListsService {
             listsMembersRepository.delete(member);
             isAddedToList = false;
         } else {
-            ListsMembers newMember = new ListsMembers(listId, userId);
+            ListsMembers newMember = ListsMembers.builder()
+                    .listId(listId)
+                    .memberId(userId)
+                    .build();
             listsMembersRepository.save(newMember);
             isAddedToList = true;
             listsServiceHelper.sendNotification(userId, authUserId, listId);
@@ -238,7 +243,6 @@ public class ListsServiceImpl implements ListsService {
     }
 
     @Override
-    @Transactional(readOnly = true)
     public HeaderResponse<TweetResponse> getTweetsByListId(Long listId, Pageable pageable) {
         Long authUserId = AuthUtil.getAuthenticatedUserId();
         if (!listsRepository.isListNotPrivate(listId, authUserId)) {
@@ -249,7 +253,6 @@ public class ListsServiceImpl implements ListsService {
     }
 
     @Override
-    @Transactional(readOnly = true)
     public BaseListProjection getListDetails(Long listId) {
         Long authUserId = AuthUtil.getAuthenticatedUserId();
         return listsRepository.getListDetails(listId, authUserId)
@@ -257,7 +260,6 @@ public class ListsServiceImpl implements ListsService {
     }
 
     @Override
-    @Transactional(readOnly = true)
     public List<ListMemberResponse> getListFollowers(Long listId, Long listOwnerId) {
         Long authUserId = AuthUtil.getAuthenticatedUserId();
 
@@ -273,7 +275,6 @@ public class ListsServiceImpl implements ListsService {
     }
 
     @Override
-    @Transactional(readOnly = true)
     public List<ListMemberResponse> getListMembers(Long listId, Long listOwnerId) {
         Long authUserId = AuthUtil.getAuthenticatedUserId();
 
@@ -291,7 +292,6 @@ public class ListsServiceImpl implements ListsService {
     }
 
     @Override
-    @Transactional(readOnly = true)
     public List<ListMemberResponse> searchListMembersByUsername(Long listId, String username) {
         return userClient.searchListMembersByUsername(username).stream()
                 .peek(member -> member.setMemberInList(listsServiceHelper.isListIncludeUser(listId, member.getId())))

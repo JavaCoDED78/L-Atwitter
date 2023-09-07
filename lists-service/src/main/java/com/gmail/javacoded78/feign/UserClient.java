@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static com.gmail.javacoded78.constants.FeignConstants.USER_SERVICE;
@@ -50,12 +49,4 @@ public interface UserClient {
     @CircuitBreaker(name = USER_SERVICE, fallbackMethod = "defaultEmptyIdsList")
     @PostMapping(VALID_IDS)
     List<Long> getValidUserIds(@RequestBody IdsRequest request);
-
-    default ArrayList<ListMemberResponse> defaultEmptyMemberList(Throwable throwable) {
-        return new ArrayList<>();
-    }
-
-    default ArrayList<Long> defaultEmptyIdsList(Throwable throwable) {
-        return new ArrayList<>();
-    }
 }

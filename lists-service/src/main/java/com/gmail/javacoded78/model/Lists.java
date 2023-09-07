@@ -1,5 +1,7 @@
 package com.gmail.javacoded78.model;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -21,6 +23,8 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @EqualsAndHashCode(of = "id")
 @Table(name = "lists", indexes = @Index(name = "lists_list_owner_id_idx", columnList = "list_owner_id"))
 public class Lists {
@@ -37,7 +41,7 @@ public class Lists {
     private String description;
 
     @Column(name = "private", columnDefinition = "boolean default false")
-    private boolean isPrivate = false;
+    private boolean isPrivate;
 
     @Column(name = "alt_wallpaper")
     private String altWallpaper;

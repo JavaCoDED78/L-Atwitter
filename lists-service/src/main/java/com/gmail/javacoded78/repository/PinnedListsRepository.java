@@ -7,8 +7,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
-
 @Repository
 public interface PinnedListsRepository extends JpaRepository<PinnedLists, Long> {
 
@@ -16,14 +14,22 @@ public interface PinnedListsRepository extends JpaRepository<PinnedLists, Long> 
     @Query(value = "DELETE FROM pinned_lists WHERE list_id = ?1", nativeQuery = true)
     void deletePinnedList(@Param("listId") Long listId);
 
-    @Query("SELECT pinnedList FROM PinnedLists pinnedList " +
-            "WHERE pinnedList.list.id = :listId " +
-            "AND pinnedList.pinnedUserId = :userId")
+    @Query("""
+            SELECT pl
+            FROM PinnedLists pl
+            WHERE pl.list.id = :listId
+            AND pl.pinnedUserId = :userId
+            """)
     PinnedLists getPinnedByUserIdAndListId(@Param("listId") Long listId, @Param("userId") Long userId);
 
-    @Query("SELECT CASE WHEN count(pinnedList) > 0 THEN true ELSE false END FROM PinnedLists pinnedList " +
-            "WHERE pinnedList.list.id = :pinnedListId " +
-            "AND pinnedList.pinnedUserId = :pinnedUserId")
+    @Query("""
+            SELECT CASE WHEN count(pl) > 0
+                THEN true
+                ELSE false END
+            FROM PinnedLists pl
+            WHERE pl.list.id = :pinnedListId
+            AND pl.pinnedUserId = :pinnedUserId
+            """)
     boolean isListPinned(@Param("pinnedListId") Long pinnedListId, @Param("pinnedUserId") Long pinnedUserId);
 
     @Modifying

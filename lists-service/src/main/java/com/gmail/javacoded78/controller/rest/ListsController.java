@@ -122,7 +122,7 @@ public class ListsController {
 
     @GetMapping(LIST_ID_TWEETS)
     public ResponseEntity<List<TweetResponse>> getTweetsByListId(@PathVariable("listId") Long listId,
-                                                                 @PageableDefault(size = 10) Pageable pageable) {
+                                                                 @PageableDefault Pageable pageable) {
         HeaderResponse<TweetResponse> response = listsMapper.getTweetsByListId(listId, pageable);
         return ResponseEntity.ok().headers(response.getHeaders()).body(response.getItems());
     }

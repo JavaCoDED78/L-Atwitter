@@ -11,14 +11,25 @@ import java.util.List;
 @Repository
 public interface ListsMembersRepository extends JpaRepository<ListsMembers, Long> {
 
-    @Query("SELECT listsMembers FROM ListsMembers listsMembers " +
-            "WHERE listsMembers.listId = :listId " +
-            "AND listsMembers.memberId = :userId")
+    @Query("""
+            SELECT lm
+            FROM ListsMembers lm
+            WHERE lm.listId = :listId
+            AND lm.memberId = :userId
+            """)
     ListsMembers getListMember(@Param("listId") Long listId, @Param("userId") Long userId);
 
-    @Query("SELECT listsMembers.memberId FROM ListsMembers listsMembers WHERE listsMembers.listId = :listId")
+    @Query("""
+            SELECT lm.memberId
+            FROM ListsMembers lm
+            WHERE lm.listId = :listId
+            """)
     List<Long> getMembersIds(@Param("listId") Long listId);
 
-    @Query("SELECT COUNT(listsMembers) FROM ListsMembers listsMembers WHERE listsMembers.listId = :listId")
+    @Query("""
+            SELECT COUNT(lm)
+            FROM ListsMembers lm
+            WHERE lm.listId = :listId
+            """)
     Long getMembersSize(@Param("listId") Long listId);
 }
