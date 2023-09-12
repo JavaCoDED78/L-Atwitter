@@ -51,7 +51,9 @@ public class ListsServiceImpl implements ListsService {
     @Override
     public List<ListProjection> getAllTweetLists() {
         List<Long> listOwnerIds = listsRepository.getListOwnerIds();
-        List<Long> validListUserIds = userClient.getValidUserIds(new IdsRequest(listOwnerIds));
+        IdsRequest idsRequest = new IdsRequest(listOwnerIds);
+        List<Long> validListUserIds = userClient.getValidUserIds(idsRequest);
+        System.out.println();
         return listsRepository.getAllTweetLists(validListUserIds);
     }
 
@@ -249,7 +251,8 @@ public class ListsServiceImpl implements ListsService {
             throw new ApiRequestException(LIST_NOT_FOUND, HttpStatus.NOT_FOUND);
         }
         List<Long> membersIds = listsMembersRepository.getMembersIds(listId);
-        return tweetClient.getTweetsByUserIds(new IdsRequest(membersIds), pageable);
+        IdsRequest idsRequest = new IdsRequest(membersIds);
+        return tweetClient.getTweetsByUserIds(idsRequest, pageable);
     }
 
     @Override

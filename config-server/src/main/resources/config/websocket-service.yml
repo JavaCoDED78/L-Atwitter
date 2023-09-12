@@ -4,6 +4,9 @@ server:
 spring:
   application:
     name: websocket-service
+  devtools:
+    livereload:
+      port: 35775
   zipkin:
     base-url: http://${ZIPKIN_HOST:localhost}:9411
 eureka:

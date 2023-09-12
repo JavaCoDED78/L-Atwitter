@@ -15,13 +15,13 @@ import com.gmail.javacoded78.repository.PinnedListsRepository;
 import com.gmail.javacoded78.util.TestConstants;
 import com.gmail.javacoded78.util.TestUtil;
 
-import org.aspectj.lang.annotation.Before;
+import lombok.RequiredArgsConstructor;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.List;
 
@@ -36,37 +36,37 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest
-@RunWith(SpringRunner.class)
-public class ListsServiceHelperTest {
+@RequiredArgsConstructor
+class ListsServiceHelperTest {
 
-    @Autowired
-    private ListsServiceHelper listsServiceHelper;
+    @Mock
+    private final ListsRepository listsRepository;
 
-    @MockBean
-    private ListsRepository listsRepository;
+    @Mock
+    private final ListsFollowersRepository listsFollowersRepository;
 
-    @MockBean
-    private ListsFollowersRepository listsFollowersRepository;
+    @Mock
+    private final ListsMembersRepository listsMembersRepository;
 
-    @MockBean
-    private ListsMembersRepository listsMembersRepository;
+    @Mock
+    private final PinnedListsRepository pinnedListsRepository;
 
-    @MockBean
-    private PinnedListsRepository pinnedListsRepository;
+    @Mock
+    private final NotificationClient notificationClient;
 
-    @MockBean
-    private NotificationClient notificationClient;
+    @Mock
+    private final UserClient userClient;
 
-    @MockBean
-    private UserClient userClient;
+    @InjectMocks
+    private final ListsServiceHelper listsServiceHelper;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         TestUtil.mockAuthenticatedUserId();
     }
 
     @Test
-    public void getListMemberResponses() {
+    void getListMemberResponses() {
         List<Long> membersIds = List.of(1L, 2L, 3L);
         List<ListMemberResponse> mockListMemberResponseList = ListsServiceTestHelper.createMockListMemberResponseList();
         when(listsMembersRepository.getMembersIds(TestConstants.LIST_ID)).thenReturn(membersIds);
@@ -77,14 +77,14 @@ public class ListsServiceHelperTest {
     }
 
     @Test
-    public void isListIncludeUser() {
+    void isListIncludeUser() {
         when(listsRepository.isListIncludeUser(TestConstants.LIST_ID, USER_ID, 1L)).thenReturn(true);
         assertTrue(listsServiceHelper.isListIncludeUser(TestConstants.LIST_ID, 1L));
         verify(listsRepository, times(1)).isListIncludeUser(TestConstants.LIST_ID, USER_ID, 1L);
     }
 
     @Test
-    public void checkUserIsBlocked() {
+    void checkUserIsBlocked() {
         when(userClient.isUserBlocked(1L, 1L)).thenReturn(true);
         ApiRequestException exception = assertThrows(ApiRequestException.class,
                 () -> listsServiceHelper.checkUserIsBlocked(1L, 1L));
@@ -93,14 +93,14 @@ public class ListsServiceHelperTest {
     }
 
     @Test
-    public void checkUserIsNotBlocked() {
+    void checkUserIsNotBlocked() {
         when(userClient.isUserBlocked(1L, 1L)).thenReturn(false);
         listsServiceHelper.checkUserIsBlocked(1L, 1L);
         verify(userClient, times(1)).isUserBlocked(1L, 1L);
     }
 
     @Test
-    public void checkIsPrivateUserProfile() {
+    void checkIsPrivateUserProfile() {
         when(userClient.isUserHavePrivateProfile(1L)).thenReturn(true);
         ApiRequestException exception = assertThrows(ApiRequestException.class,
                 () -> listsServiceHelper.checkIsPrivateUserProfile(1L));
@@ -109,14 +109,14 @@ public class ListsServiceHelperTest {
     }
 
     @Test
-    public void checkIsNotPrivateUserProfile() {
+    void checkIsNotPrivateUserProfile() {
         when(userClient.isUserHavePrivateProfile(1L)).thenReturn(false);
         listsServiceHelper.checkIsPrivateUserProfile(1L);
         verify(userClient, times(1)).isUserHavePrivateProfile(1L);
     }
 
     @Test
-    public void checkIsListPrivate() {
+    void checkIsListPrivate() {
         when(listsRepository.isListPrivate(TestConstants.LIST_ID, USER_ID)).thenReturn(true);
         when(listsFollowersRepository.isListFollowed(USER_ID, TestConstants.LIST_ID)).thenReturn(false);
         ApiRequestException exception = assertThrows(ApiRequestException.class,
@@ -126,14 +126,14 @@ public class ListsServiceHelperTest {
     }
 
     @Test
-    public void checkIsListNotPrivate() {
+    void checkIsListNotPrivate() {
         when(listsRepository.isListPrivate(TestConstants.LIST_ID, USER_ID)).thenReturn(false);
         listsServiceHelper.checkIsListPrivate(TestConstants.LIST_ID);
         verify(listsRepository, times(1)).isListPrivate(TestConstants.LIST_ID, USER_ID);
     }
 
     @Test
-    public void checkIsListNotExist() {
+    void checkIsListNotExist() {
         when(listsRepository.isListExist(TestConstants.LIST_ID, 1L)).thenReturn(false);
         ApiRequestException exception = assertThrows(ApiRequestException.class,
                 () -> listsServiceHelper.checkIsListExist(TestConstants.LIST_ID, 1L));
@@ -142,14 +142,14 @@ public class ListsServiceHelperTest {
     }
 
     @Test
-    public void checkIsListExist() {
+    void checkIsListExist() {
         when(listsRepository.isListExist(TestConstants.LIST_ID, 1L)).thenReturn(true);
         listsServiceHelper.checkIsListExist(TestConstants.LIST_ID, 1L);
         verify(listsRepository, times(1)).isListExist(TestConstants.LIST_ID, 1L);
     }
 
     @Test
-    public void sendNotification() {
+    void sendNotification() {
         NotificationRequest notificationRequest = NotificationRequest.builder()
                 .notificationType(NotificationType.LISTS)
                 .notificationCondition(true)
@@ -162,7 +162,7 @@ public class ListsServiceHelperTest {
     }
 
     @Test
-    public void validateListNameLength_shouldEmptyListName() {
+    void validateListNameLength_shouldEmptyListName() {
         ApiRequestException exception = assertThrows(ApiRequestException.class,
                 () -> listsServiceHelper.validateListNameLength(""));
         assertEquals(INCORRECT_LIST_NAME_LENGTH, exception.getMessage());
@@ -170,7 +170,7 @@ public class ListsServiceHelperTest {
     }
 
     @Test
-    public void validateListNameLength_shouldLargeListName() {
+    void validateListNameLength_shouldLargeListName() {
         ApiRequestException exception = assertThrows(ApiRequestException.class,
                 () -> listsServiceHelper.validateListNameLength("**************************"));
         assertEquals(INCORRECT_LIST_NAME_LENGTH, exception.getMessage());
@@ -178,21 +178,21 @@ public class ListsServiceHelperTest {
     }
 
     @Test
-    public void isMyProfileFollowList() {
+    void isMyProfileFollowList() {
         when(listsFollowersRepository.isListFollowed(USER_ID, TestConstants.LIST_ID)).thenReturn(true);
         listsServiceHelper.isMyProfileFollowList(TestConstants.LIST_ID);
         verify(listsFollowersRepository, times(1)).isListFollowed(USER_ID, TestConstants.LIST_ID);
     }
 
     @Test
-    public void getListOwnerById() {
+    void getListOwnerById() {
         when(userClient.getListOwnerById(1L)).thenReturn(new CommonUserResponse());
         listsServiceHelper.getListOwnerById(1L);
         verify(userClient, times(1)).getListOwnerById(1L);
     }
 
     @Test
-    public void isListPinned() {
+    void isListPinned() {
         when(pinnedListsRepository.isListPinned(1L, USER_ID)).thenReturn(true);
         listsServiceHelper.isListPinned(1L);
         verify(pinnedListsRepository, times(1)).isListPinned(1L, USER_ID);

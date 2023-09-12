@@ -4,6 +4,9 @@ server:
 spring:
   application:
     name: email-service
+  devtools:
+    livereload:
+      port: 35764
   zipkin:
     base-url: http://${ZIPKIN_HOST:localhost}:9411
   rabbitmq:

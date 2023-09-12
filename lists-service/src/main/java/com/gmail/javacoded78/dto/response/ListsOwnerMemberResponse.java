@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class ListsOwnerMemberResponse {
+
     private Long id;
     private String fullName;
     private String username;

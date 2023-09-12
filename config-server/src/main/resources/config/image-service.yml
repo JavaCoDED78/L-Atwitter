@@ -4,6 +4,9 @@ server:
 spring:
   application:
     name: image-service
+  devtools:
+    livereload:
+      port: 35765
   zipkin:
     base-url: http://${ZIPKIN_HOST:localhost}:9411
 

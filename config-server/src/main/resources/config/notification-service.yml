@@ -5,7 +5,7 @@ spring:
     name: notification-service
   devtools:
     livereload:
-      port: 35734
+      port: 35744
   datasource:
     url: jdbc:postgresql://${DATASOURCE_HOST:localhost}:5432/notification
     username: postgres

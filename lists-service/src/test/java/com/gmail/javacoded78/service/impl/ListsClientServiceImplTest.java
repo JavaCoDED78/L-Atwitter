@@ -8,53 +8,52 @@ import com.gmail.javacoded78.mapper.BasicMapper;
 import com.gmail.javacoded78.repository.ListsRepository;
 import com.gmail.javacoded78.repository.projection.NotificationListProjection;
 import com.gmail.javacoded78.repository.projection.TweetListProjection;
-import com.gmail.javacoded78.service.ListsClientService;
 import com.gmail.javacoded78.service.util.ListsServiceTestHelper;
 import com.gmail.javacoded78.util.TestConstants;
 import com.gmail.javacoded78.util.TestUtil;
-import org.aspectj.lang.annotation.Before;
+import lombok.RequiredArgsConstructor;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.projection.ProjectionFactory;
 import org.springframework.data.projection.SpelAwareProxyProjectionFactory;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.Map;
 import java.util.Optional;
 
 import static com.gmail.javacoded78.util.TestConstants.USER_ID;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest
-@RunWith(SpringRunner.class)
-public class ListsClientServiceImplTest {
+@RequiredArgsConstructor
+class ListsClientServiceImplTest {
 
-    @Autowired
-    private ListsClientService listsClientService;
+    @Mock
+    private final ListsRepository listsRepository;
 
-    @MockBean
-    private ListsRepository listsRepository;
+    @Mock
+    private final UserClient userClient;
 
-    @MockBean
-    private UserClient userClient;
+    @Mock
+    private final BasicMapper basicMapper;
 
-    @MockBean
-    private BasicMapper basicMapper;
+    @InjectMocks
+    private final ListsClientServiceImpl listsClientService;
 
     private static final ProjectionFactory factory = new SpelAwareProxyProjectionFactory();
 
-    @Before
+    @BeforeEach
     public void setUp() {
         TestUtil.mockAuthenticatedUserId();
     }
 
     @Test
-    public void getNotificationList() {
+    void getNotificationList() {
         NotificationListProjection notificationList = factory.createProjection(
                 NotificationListProjection.class,
                 Map.of("id", 1L, "name", TestConstants.LIST_NAME));
@@ -69,15 +68,16 @@ public class ListsClientServiceImplTest {
     }
 
     @Test
-    public void getTweetList() {
-        TweetListResponse tweetListResponse = new TweetListResponse();
-        tweetListResponse.setId(TestConstants.LIST_ID);
-        tweetListResponse.setName(TestConstants.LIST_NAME);
-        tweetListResponse.setAltWallpaper(TestConstants.LIST_ALT_WALLPAPER);
-        tweetListResponse.setWallpaper("");
-        tweetListResponse.setListOwner(new CommonUserResponse());
-        tweetListResponse.setPrivate(false);
-        tweetListResponse.setMembersSize(1L);
+    void getTweetList() {
+        TweetListResponse tweetListResponse = TweetListResponse.builder()
+                .id(TestConstants.LIST_ID)
+                .name(TestConstants.LIST_NAME)
+                .altWallpaper(TestConstants.LIST_ALT_WALLPAPER)
+                .wallpaper("")
+                .listOwner(new CommonUserResponse())
+                .isPrivate(false)
+                .membersSize(1L)
+                .build();
         TweetListProjection tweetListProjection = ListsServiceTestHelper.mockTweetListProjection(TestConstants.LIST_USER_ID);
         when(listsRepository.getListById(TestConstants.LIST_ID, USER_ID, TweetListProjection.class)).thenReturn(Optional.of(tweetListProjection));
         when(userClient.isUserBlocked(tweetListProjection.getListOwnerId(), USER_ID)).thenReturn(false);
@@ -90,14 +90,14 @@ public class ListsClientServiceImplTest {
     }
 
     @Test
-    public void getTweetList_shouldReturnEmptyTweetListResponse() {
+    void getTweetList_shouldReturnEmptyTweetListResponse() {
         when(listsRepository.getListById(TestConstants.LIST_ID, USER_ID, TweetListProjection.class)).thenReturn(Optional.empty());
         assertEquals(new TweetListResponse(), listsClientService.getTweetList(TestConstants.LIST_ID));
         verify(listsRepository, times(1)).getListById(TestConstants.LIST_ID, USER_ID, TweetListProjection.class);
     }
 
     @Test
-    public void getTweetList_shouldUserBlockAndReturnEmptyTweetListResponse() {
+    void getTweetList_shouldUserBlockAndReturnEmptyTweetListResponse() {
         when(listsRepository.getListById(TestConstants.LIST_ID, USER_ID, TweetListProjection.class))
                 .thenReturn(Optional.of(ListsServiceTestHelper.mockTweetListProjection(TestConstants.LIST_USER_ID)));
         when(userClient.isUserBlocked(TestConstants.LIST_USER_ID, USER_ID)).thenReturn(true);
@@ -107,7 +107,7 @@ public class ListsClientServiceImplTest {
     }
 
     @Test
-    public void getTweetList_shouldUserHavePrivateProfileAndReturnEmptyTweetListResponse() {
+    void getTweetList_shouldUserHavePrivateProfileAndReturnEmptyTweetListResponse() {
         when(listsRepository.getListById(TestConstants.LIST_ID, USER_ID, TweetListProjection.class))
                 .thenReturn(Optional.of(ListsServiceTestHelper.mockTweetListProjection(1L)));
         when(userClient.isUserBlocked(1L, USER_ID)).thenReturn(false);
