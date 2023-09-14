@@ -13,15 +13,14 @@ import com.gmail.javacoded78.repository.ChatRepository;
 import com.gmail.javacoded78.repository.projection.ChatMessageProjection;
 import com.gmail.javacoded78.repository.projection.ChatProjection;
 import com.gmail.javacoded78.service.ChatServiceTestHelper;
-import com.gmail.javacoded78.service.util.ChatServiceHelper;
 import com.gmail.javacoded78.util.TestConstants;
 import com.gmail.javacoded78.util.TestUtil;
+import lombok.RequiredArgsConstructor;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
@@ -40,26 +39,25 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest
-@RunWith(SpringRunner.class)
-public class ChatMessageServiceImplTest {
+@RequiredArgsConstructor
+class ChatMessageServiceImplTest {
 
-    @Autowired
-    private ChatMessageServiceImpl chatMessageService;
-
-    @MockBean
-    private ChatRepository chatRepository;
+    private final ChatMessageServiceImpl chatMessageService;
 
     @MockBean
-    private ChatParticipantRepository chatParticipantRepository;
+    private  final ChatRepository chatRepository;
 
     @MockBean
-    private ChatMessageRepository chatMessageRepository;
+    private final ChatParticipantRepository chatParticipantRepository;
 
     @MockBean
-    private UserClient userClient;
+    private final ChatMessageRepository chatMessageRepository;
 
     @MockBean
-    private TweetClient tweetClient;
+    private final UserClient userClient;
+
+    @MockBean
+    private final TweetClient tweetClient;
 
     private ChatMessage chatMessage;
     private final Chat mockChat = ChatServiceTestHelper.createMockChat(false);
@@ -70,18 +68,19 @@ public class ChatMessageServiceImplTest {
     private final List<Long> usersIds = List.of(1L, 2L, 3L);
     private final List<Long> validUserIds = List.of(1L, 2L);
 
-    @Before
+    @BeforeEach
     public void setUp() {
-        chatMessage = new ChatMessage();
-        chatMessage.setId(2L);
-        chatMessage.setText("test text");
-        chatMessage.setDate(LocalDateTime.now());
-        chatMessage.setUnread(false);
+        chatMessage = ChatMessage.builder()
+                .id(2L)
+                .text("test text")
+                .date(LocalDateTime.now())
+                .unread(false)
+                .build();
         TestUtil.mockAuthenticatedUserId();
     }
 
     @Test
-    public void getChatMessages() {
+    void getChatMessages() {
         List<ChatMessageProjection> mockChatMessages = ChatServiceTestHelper.createMockChatMessageProjectionList();
         when(chatRepository.getChatById(TestConstants.CHAT_ID, TestConstants.USER_ID, ChatProjection.class))
                 .thenReturn(Optional.of(ChatServiceTestHelper.createMockChatProjection()));
@@ -92,7 +91,7 @@ public class ChatMessageServiceImplTest {
     }
 
     @Test
-    public void getChatMessages_shouldChatNotFound() {
+    void getChatMessages_shouldChatNotFound() {
         when(chatRepository.getChatById(TestConstants.CHAT_ID, TestConstants.USER_ID, ChatProjection.class))
                 .thenReturn(Optional.empty());
         ApiRequestException exception = assertThrows(ApiRequestException.class,
@@ -102,7 +101,7 @@ public class ChatMessageServiceImplTest {
     }
 
     @Test
-    public void readChatMessages() {
+    void readChatMessages() {
         when(chatRepository.getChatById(TestConstants.CHAT_ID, TestConstants.USER_ID, ChatProjection.class))
                 .thenReturn(Optional.of(ChatServiceTestHelper.createMockChatProjection()));
         when(chatMessageRepository.getUnreadMessagesCount(TestConstants.USER_ID)).thenReturn(123L);
@@ -113,7 +112,7 @@ public class ChatMessageServiceImplTest {
     }
 
     @Test
-    public void readChatMessages_shouldChatNotFound() {
+    void readChatMessages_shouldChatNotFound() {
         when(chatRepository.getChatById(TestConstants.CHAT_ID, TestConstants.USER_ID, ChatProjection.class))
                 .thenReturn(Optional.empty());
         ApiRequestException exception = assertThrows(ApiRequestException.class,
@@ -123,7 +122,7 @@ public class ChatMessageServiceImplTest {
     }
 
     @Test
-    public void addMessage() {
+    void addMessage() {
         when(chatRepository.getChatById(TestConstants.CHAT_ID, TestConstants.USER_ID, Chat.class))
                 .thenReturn(Optional.of(mockChat));
         when(chatParticipantRepository.getChatParticipantId(TestConstants.USER_ID, TestConstants.CHAT_ID))
@@ -145,7 +144,7 @@ public class ChatMessageServiceImplTest {
     }
 
     @Test
-    public void addMessage_shouldReturnIncorrectChatMessageLength() {
+    void addMessage_shouldReturnIncorrectChatMessageLength() {
         chatMessage.setText("");
         ApiRequestException exception = assertThrows(ApiRequestException.class,
                 () -> chatMessageService.addMessage(chatMessage, TestConstants.CHAT_ID));
@@ -154,7 +153,7 @@ public class ChatMessageServiceImplTest {
     }
 
     @Test
-    public void addMessage_shouldChatNotFound() {
+    void addMessage_shouldChatNotFound() {
         when(chatRepository.getChatById(TestConstants.CHAT_ID, TestConstants.USER_ID, Chat.class))
                 .thenReturn(Optional.empty());
         ApiRequestException exception = assertThrows(ApiRequestException.class,
@@ -164,7 +163,7 @@ public class ChatMessageServiceImplTest {
     }
 
     @Test
-    public void addMessage_shouldUserBlockedByMyProfile() {
+    void addMessage_shouldUserBlockedByMyProfile() {
         when(chatRepository.getChatById(TestConstants.CHAT_ID, TestConstants.USER_ID, Chat.class))
                 .thenReturn(Optional.of(mockChat));
         when(chatParticipantRepository.getChatParticipantId(TestConstants.USER_ID, TestConstants.CHAT_ID))
@@ -177,7 +176,7 @@ public class ChatMessageServiceImplTest {
     }
 
     @Test
-    public void addMessage_shouldMyProfileBlockedByUser() {
+    void addMessage_shouldMyProfileBlockedByUser() {
         when(chatRepository.getChatById(TestConstants.CHAT_ID, TestConstants.USER_ID, Chat.class))
                 .thenReturn(Optional.of(mockChat));
         when(chatParticipantRepository.getChatParticipantId(TestConstants.USER_ID, TestConstants.CHAT_ID))
@@ -191,7 +190,7 @@ public class ChatMessageServiceImplTest {
     }
 
     @Test
-    public void addMessageWithTweet() {
+    void addMessageWithTweet() {
         when(tweetClient.isTweetExists(TestConstants.TWEET_ID)).thenReturn(true);
         when(userClient.validateChatUsersIds(new IdsRequest(usersIds))).thenReturn(validUserIds);
         when(chatRepository.getChatByParticipants(TestConstants.USER_ID, 1L)).thenReturn(mockChat);
@@ -211,7 +210,7 @@ public class ChatMessageServiceImplTest {
     }
 
     @Test
-    public void addMessageWithTweet_shouldCreateNewChat() {
+    void addMessageWithTweet_shouldCreateNewChat() {
         Chat newChat = new Chat();
         ChatParticipant authorParticipant = new ChatParticipant();
         authorParticipant.setId(11L);
@@ -228,8 +227,14 @@ public class ChatMessageServiceImplTest {
         when(chatRepository.getChatByParticipants(TestConstants.USER_ID, 1L)).thenReturn(null);
         when(userClient.isMyProfileBlockedByUser(1L)).thenReturn(false);
         when(userClient.isMyProfileBlockedByUser(2L)).thenReturn(false);
-        when(chatParticipantRepository.save(new ChatParticipant(TestConstants.USER_ID, newChat))).thenReturn(authorParticipant);
-        when(chatParticipantRepository.save(new ChatParticipant(1L, newChat))).thenReturn(userParticipant);
+        when(chatParticipantRepository.save(ChatParticipant.builder()
+                        .userId(TestConstants.USER_ID)
+                        .chat(newChat)
+                .build())).thenReturn(authorParticipant);
+        when(chatParticipantRepository.save(ChatParticipant.builder()
+                .userId(1L)
+                .chat(newChat)
+                .build())).thenReturn(userParticipant);
         when(chatMessageRepository.getChatMessageById(any())).thenReturn(Optional.of(chatMessageProjection));
         assertEquals(chatParticipants, chatMessageService.addMessageWithTweet("test text", TestConstants.TWEET_ID, usersIds));
         verify(tweetClient, times(1)).isTweetExists(TestConstants.TWEET_ID);
@@ -243,7 +248,7 @@ public class ChatMessageServiceImplTest {
     }
 
     @Test
-    public void addMessageWithTweet_shouldReturnTweetNotFoundException() {
+    void addMessageWithTweet_shouldReturnTweetNotFoundException() {
         when(tweetClient.isTweetExists(TestConstants.TWEET_ID)).thenReturn(false);
         ApiRequestException exception = assertThrows(ApiRequestException.class,
                 () -> chatMessageService.addMessageWithTweet("test text", TestConstants.TWEET_ID, usersIds));

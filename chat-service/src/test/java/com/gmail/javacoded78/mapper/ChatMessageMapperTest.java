@@ -9,39 +9,39 @@ import com.gmail.javacoded78.repository.projection.ChatMessageProjection;
 import com.gmail.javacoded78.service.ChatMessageService;
 import com.gmail.javacoded78.service.ChatServiceTestHelper;
 import com.gmail.javacoded78.util.TestConstants;
+import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.mockito.InjectMocks;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest
-@RunWith(SpringRunner.class)
-public class ChatMessageMapperTest {
+@RequiredArgsConstructor
+class ChatMessageMapperTest {
 
-    @Autowired
-    private ChatMessageMapper chatMessageMapper;
-
-    @MockBean
-    private BasicMapper basicMapper;
+    @InjectMocks
+    private final ChatMessageMapper chatMessageMapper;
 
     @MockBean
-    private ChatMessageService chatMessageService;
+    private final BasicMapper basicMapper;
+
+    @MockBean
+    private final ChatMessageService chatMessageService;
 
     private final Map<Long, ChatMessageProjection> chatMessageProjection = getChatMessageProjection();
     private final Map<Long, ChatMessageResponse> chatMessageResponse = getChatMessageResponse();
 
     @Test
-    public void getChatMessages() {
+    void getChatMessages() {
         List<ChatMessageProjection> mockChatMessageProjectionList = ChatServiceTestHelper.createMockChatMessageProjectionList();
         List<ChatMessageResponse> mockChatMessageResponseList = getMockChatMessageResponseList();
         when(chatMessageService.getChatMessages(TestConstants.CHAT_ID)).thenReturn(mockChatMessageProjectionList);
@@ -53,14 +53,14 @@ public class ChatMessageMapperTest {
     }
 
     @Test
-    public void readChatMessages() {
+    void readChatMessages() {
         when(chatMessageService.readChatMessages(TestConstants.CHAT_ID)).thenReturn(0L);
         assertEquals(0L, chatMessageMapper.readChatMessages(TestConstants.CHAT_ID));
         verify(chatMessageService, times(1)).readChatMessages(TestConstants.CHAT_ID);
     }
 
     @Test
-    public void addMessage() {
+    void addMessage() {
         ChatMessageRequest chatMessageRequest = new ChatMessageRequest(TestConstants.CHAT_ID, "text");
         when(chatMessageService.addMessage(new ChatMessage(), TestConstants.CHAT_ID)).thenReturn(chatMessageProjection);
         when(basicMapper.convertToResponse(chatMessageRequest, ChatMessage.class)).thenReturn(new ChatMessage());
@@ -76,7 +76,7 @@ public class ChatMessageMapperTest {
     }
 
     @Test
-    public void addMessageWithTweet() {
+    void addMessageWithTweet() {
         MessageWithTweetRequest request = new MessageWithTweetRequest("test text", TestConstants.TWEET_ID, List.of(1L, 2L));
         when(chatMessageService.addMessageWithTweet(request.getText(), request.getTweetId(), request.getUsersIds()))
                 .thenReturn(chatMessageProjection);
@@ -91,20 +91,22 @@ public class ChatMessageMapperTest {
     }
 
     private List<ChatMessageResponse> getMockChatMessageResponseList() {
-        ChatMessageResponse messageResponse1 = new ChatMessageResponse();
-        messageResponse1.setId(1L);
-        messageResponse1.setText(TestConstants.CHAT_MESSAGE_TEXT);
-        messageResponse1.setDate(LocalDateTime.now());
-        messageResponse1.setAuthorId(TestConstants.CHAT_MESSAGE_AUTHOR_ID);
-        messageResponse1.setTweet(new ChatTweetResponse());
-        messageResponse1.setChat(new ChatMessageResponse.ChatResponse());
-        ChatMessageResponse messageResponse2 = new ChatMessageResponse();
-        messageResponse2.setId(2L);
-        messageResponse2.setText(TestConstants.CHAT_MESSAGE_TEXT);
-        messageResponse2.setDate(LocalDateTime.now());
-        messageResponse2.setAuthorId(TestConstants.CHAT_MESSAGE_AUTHOR_ID);
-        messageResponse2.setTweet(new ChatTweetResponse());
-        messageResponse2.setChat(new ChatMessageResponse.ChatResponse());
+        ChatMessageResponse messageResponse1 = ChatMessageResponse.builder()
+                .id(1L)
+                .text(TestConstants.CHAT_MESSAGE_TEXT)
+                .date(LocalDateTime.now())
+                .authorId(TestConstants.CHAT_MESSAGE_AUTHOR_ID)
+                .tweet(new ChatTweetResponse())
+                .chat(new ChatMessageResponse.ChatResponse())
+                .build();
+        ChatMessageResponse messageResponse2 = ChatMessageResponse.builder()
+                .id(2L)
+                .text(TestConstants.CHAT_MESSAGE_TEXT)
+                .date(LocalDateTime.now())
+                .authorId(TestConstants.CHAT_MESSAGE_AUTHOR_ID)
+                .tweet(new ChatTweetResponse())
+                .chat(new ChatMessageResponse.ChatResponse())
+                .build();
         return List.of(messageResponse1, messageResponse2);
     }
 

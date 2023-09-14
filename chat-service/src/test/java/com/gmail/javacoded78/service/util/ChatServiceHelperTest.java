@@ -6,7 +6,10 @@ import com.gmail.javacoded78.exception.ApiRequestException;
 import com.gmail.javacoded78.feign.TweetClient;
 import com.gmail.javacoded78.feign.UserClient;
 import com.gmail.javacoded78.util.TestConstants;
+import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -23,34 +26,34 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest
-@RunWith(SpringRunner.class)
-public class ChatServiceHelperTest {
+@RequiredArgsConstructor
+class ChatServiceHelperTest {
 
-    @Autowired
-    private ChatServiceHelper chatServiceHelper;
-
-    @MockBean
-    private UserClient userClient;
+    @InjectMocks
+    private final ChatServiceHelper chatServiceHelper;
 
     @MockBean
-    private TweetClient tweetClient;
+    private final UserClient userClient;
+
+    @MockBean
+    private final TweetClient tweetClient;
 
     @Test
-    public void getChatParticipant() {
+    void getChatParticipant() {
         when(userClient.getChatParticipant(TestConstants.USER_ID)).thenReturn(new ChatUserParticipantResponse());
         assertEquals(new ChatUserParticipantResponse(), chatServiceHelper.getChatParticipant(TestConstants.USER_ID));
         verify(userClient, times(1)).getChatParticipant(TestConstants.USER_ID);
     }
 
     @Test
-    public void getChatTweet() {
+    void getChatTweet() {
         when(tweetClient.getChatTweet(TestConstants.TWEET_ID)).thenReturn(new ChatTweetResponse());
         assertEquals(new ChatTweetResponse(), chatServiceHelper.getChatTweet(TestConstants.TWEET_ID));
         verify(tweetClient, times(1)).getChatTweet(TestConstants.TWEET_ID);
     }
 
     @Test
-    public void isParticipantBlocked() {
+    void isParticipantBlocked() {
         when(userClient.isUserBlockedByMyProfile(TestConstants.USER_ID)).thenReturn(false);
         when(userClient.isMyProfileBlockedByUser(1L)).thenReturn(true);
         ApiRequestException exception = assertThrows(ApiRequestException.class,
@@ -60,7 +63,7 @@ public class ChatServiceHelperTest {
     }
 
     @Test
-    public void checkChatMessageLength() {
+    void checkChatMessageLength() {
         ApiRequestException exception = assertThrows(ApiRequestException.class,
                 () -> chatServiceHelper.checkChatMessageLength(""));
         assertEquals(INCORRECT_CHAT_MESSAGE_LENGTH, exception.getMessage());
@@ -68,7 +71,7 @@ public class ChatServiceHelperTest {
     }
 
     @Test
-    public void isTweetExists() {
+    void isTweetExists() {
         when(tweetClient.isTweetExists(TestConstants.TWEET_ID)).thenReturn(false);
         ApiRequestException exception = assertThrows(ApiRequestException.class,
                 () -> chatServiceHelper.isTweetExists(TestConstants.TWEET_ID));
@@ -77,7 +80,7 @@ public class ChatServiceHelperTest {
     }
 
     @Test
-    public void isUserExists() {
+    void isUserExists() {
         when(userClient.isUserExists(TestConstants.USER_ID)).thenReturn(false);
         ApiRequestException exception = assertThrows(ApiRequestException.class,
                 () -> chatServiceHelper.isUserExists(TestConstants.USER_ID));

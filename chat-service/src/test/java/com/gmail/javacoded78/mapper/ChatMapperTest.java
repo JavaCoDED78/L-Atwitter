@@ -6,11 +6,11 @@ import com.gmail.javacoded78.repository.projection.ChatProjection;
 import com.gmail.javacoded78.service.ChatService;
 import com.gmail.javacoded78.service.ChatServiceTestHelper;
 import com.gmail.javacoded78.util.TestConstants;
+import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.mockito.InjectMocks;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
@@ -22,20 +22,20 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest
-@RunWith(SpringRunner.class)
-public class ChatMapperTest {
+@RequiredArgsConstructor
+class ChatMapperTest {
 
-    @Autowired
-    private ChatMapper chatMapper;
-
-    @MockBean
-    private BasicMapper basicMapper;
+    @InjectMocks
+    private final ChatMapper chatMapper;
 
     @MockBean
-    private ChatService chatService;
+    private final BasicMapper basicMapper;
+
+    @MockBean
+    private final ChatService chatService;
 
     @Test
-    public void getChatById() {
+    void getChatById() {
         ChatProjection mockChatProjection = ChatServiceTestHelper.createMockChatProjection();
         ChatResponse mockChatResponses = getMockChatResponses();
         when(chatService.getChatById(TestConstants.CHAT_ID)).thenReturn(mockChatProjection);
@@ -47,7 +47,7 @@ public class ChatMapperTest {
     }
 
     @Test
-    public void getUserChats() {
+    void getUserChats() {
         ChatProjection mockChatProjection1 = ChatServiceTestHelper.createMockChatProjection();
         ChatProjection mockChatProjection2 = ChatServiceTestHelper.createMockChatProjection();
         ChatResponse mockChatResponses1 = getMockChatResponses();
@@ -63,7 +63,7 @@ public class ChatMapperTest {
     }
 
     @Test
-    public void createChat() {
+    void createChat() {
         ChatProjection mockChatProjection = ChatServiceTestHelper.createMockChatProjection();
         ChatResponse mockChatResponses = getMockChatResponses();
         when(chatService.createChat(TestConstants.CHAT_ID)).thenReturn(mockChatProjection);
@@ -75,18 +75,20 @@ public class ChatMapperTest {
     }
 
     private ChatResponse getMockChatResponses() {
-        ChatResponse.ParticipantResponse participantResponse1 = new ChatResponse.ParticipantResponse();
-        participantResponse1.setId(1L);
-        participantResponse1.setUser(new ChatUserParticipantResponse());
-        participantResponse1.setLeftChat(false);
-        ChatResponse.ParticipantResponse participantResponse2 = new ChatResponse.ParticipantResponse();
-        participantResponse2.setId(2L);
-        participantResponse2.setUser(new ChatUserParticipantResponse());
-        participantResponse2.setLeftChat(false);
-        ChatResponse chatResponse = new ChatResponse();
-        chatResponse.setId(TestConstants.CHAT_ID);
-        chatResponse.setCreationDate(LocalDateTime.now());
-        chatResponse.setParticipants(Arrays.asList(participantResponse1, participantResponse2));
-        return chatResponse;
+        ChatResponse.ParticipantResponse participantResponse1 = ChatResponse.ParticipantResponse.builder()
+                .id(1L)
+                .user(new ChatUserParticipantResponse())
+                .leftChat(false)
+                .build();
+        ChatResponse.ParticipantResponse participantResponse2 = ChatResponse.ParticipantResponse.builder()
+                .id(2L)
+                .user(new ChatUserParticipantResponse())
+                .leftChat(false)
+                .build();
+        return ChatResponse.builder()
+                .id(TestConstants.CHAT_ID)
+                .creationDate(LocalDateTime.now())
+                .participants(Arrays.asList(participantResponse1, participantResponse2))
+                .build();
     }
 }

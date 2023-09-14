@@ -1,13 +1,11 @@
-package com.gmail.javacoded78.controller;
+package com.gmail.javacoded78.integration.controller;
 
+import com.gmail.javacoded78.integration.IntegrationTestBase;
 import com.gmail.javacoded78.util.TestConstants;
+import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static com.gmail.javacoded78.constants.ErrorMessage.CHAT_NOT_FOUND;
@@ -17,44 +15,39 @@ import static com.gmail.javacoded78.constants.PathConstants.LEAVE_CHAT_ID;
 import static com.gmail.javacoded78.constants.PathConstants.PARTICIPANT_CHAT_ID;
 import static com.gmail.javacoded78.constants.PathConstants.UI_V1_CHAT;
 import static org.hamcrest.Matchers.is;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.springframework.test.context.jdbc.Sql.ExecutionPhase.AFTER_TEST_METHOD;
-import static org.springframework.test.context.jdbc.Sql.ExecutionPhase.BEFORE_TEST_METHOD;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@SpringBootTest
 @AutoConfigureMockMvc
-@ActiveProfiles("test")
-@Sql(value = {"/sql-test/clear-chat-db.sql", "/sql-test/populate-chat-db.sql"}, executionPhase = BEFORE_TEST_METHOD)
-@Sql(value = {"/sql-test/clear-chat-db.sql"}, executionPhase = AFTER_TEST_METHOD)
-public class ChatParticipantControllerTest {
+@RequiredArgsConstructor
+class ChatParticipantControllerTest extends IntegrationTestBase {
 
-    @Autowired
-    private MockMvc mockMvc;
+    private final MockMvc mockMvc;
 
     @Test
     @DisplayName("[200] GET /ui/v1/chat/participant/4/8 - Get chat participant")
-    public void getParticipant() throws Exception {
+    void getParticipant() throws Exception {
         mockMvc.perform(get(UI_V1_CHAT + PARTICIPANT_CHAT_ID, 4, 8)
                         .header(AUTH_USER_ID_HEADER, TestConstants.USER_ID))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(1L))
-                .andExpect(jsonPath("$.fullName").value(TestConstants.USERNAME2))
-                .andExpect(jsonPath("$.username").value(TestConstants.USERNAME2))
-                .andExpect(jsonPath("$.about").value(TestConstants.ABOUT2))
-                .andExpect(jsonPath("$.isPrivateProfile").value(false))
-                .andExpect(jsonPath("$.isMutedDirectMessages").value(true))
-                .andExpect(jsonPath("$.isUserBlocked").value(false))
-                .andExpect(jsonPath("$.isMyProfileBlocked").value(false))
-                .andExpect(jsonPath("$.isWaitingForApprove").value(false))
-                .andExpect(jsonPath("$.isFollower").value(true));
+                .andExpectAll(
+                        status().isOk(),
+                        jsonPath("$.id").value(1L),
+                        jsonPath("$.fullName").value(TestConstants.USERNAME2),
+                        jsonPath("$.username").value(TestConstants.USERNAME2),
+                        jsonPath("$.about").value(TestConstants.ABOUT2),
+                        jsonPath("$.isPrivateProfile").value(false),
+                        jsonPath("$.isMutedDirectMessages").value(true),
+                        jsonPath("$.isUserBlocked").value(false),
+                        jsonPath("$.isMyProfileBlocked").value(false),
+                        jsonPath("$.isWaitingForApprove").value(false),
+                        jsonPath("$.isFollower").value(true)
+                );
     }
 
     @Test
     @DisplayName("[404] GET /ui/v1/chat/participant/4/11 - Chat not created")
-    public void getParticipant_ChatNotFound() throws Exception {
+    void getParticipant_ChatNotFound() throws Exception {
         mockMvc.perform(get(UI_V1_CHAT + PARTICIPANT_CHAT_ID, 4, 11)
                         .header(AUTH_USER_ID_HEADER, TestConstants.USER_ID))
                 .andExpect(status().isNotFound())
@@ -63,7 +56,7 @@ public class ChatParticipantControllerTest {
 
     @Test
     @DisplayName("[404] GET /ui/v1/chat/participant/5/8 - Participant Not Found in chat")
-    public void getParticipant_ParticipantNotFound() throws Exception {
+    void getParticipant_ParticipantNotFound() throws Exception {
         mockMvc.perform(get(UI_V1_CHAT + PARTICIPANT_CHAT_ID, 5, 8)
                         .header(AUTH_USER_ID_HEADER, TestConstants.USER_ID))
                 .andExpect(status().isNotFound())
@@ -72,7 +65,7 @@ public class ChatParticipantControllerTest {
 
     @Test
     @DisplayName("[200] GET /ui/v1/chat/leave/3/8 - Leave from conversation")
-    public void leaveFromConversation() throws Exception {
+     void leaveFromConversation() throws Exception {
         mockMvc.perform(get(UI_V1_CHAT + LEAVE_CHAT_ID, 3, 8)
                         .header(AUTH_USER_ID_HEADER, TestConstants.USER_ID))
                 .andExpect(status().isOk())
@@ -81,7 +74,7 @@ public class ChatParticipantControllerTest {
 
     @Test
     @DisplayName("[200] GET /ui/v1/chat/leave/5/10 - Leave from conversation and delete chat")
-    public void leaveFromConversationAndDeleteChat() throws Exception {
+    void leaveFromConversationAndDeleteChat() throws Exception {
         mockMvc.perform(get(UI_V1_CHAT + LEAVE_CHAT_ID, 5, 10)
                         .header(AUTH_USER_ID_HEADER, TestConstants.USER_ID))
                 .andExpect(status().isOk())
@@ -90,7 +83,7 @@ public class ChatParticipantControllerTest {
 
     @Test
     @DisplayName("[404] GET /ui/v1/chat/leave/10/10 - Participant not found")
-    public void leaveFromConversation_ParticipantNotFound() throws Exception {
+    void leaveFromConversation_ParticipantNotFound() throws Exception {
         mockMvc.perform(get(UI_V1_CHAT + LEAVE_CHAT_ID, 10, 10)
                         .header(AUTH_USER_ID_HEADER, TestConstants.USER_ID))
                 .andExpect(status().isNotFound())
@@ -99,7 +92,7 @@ public class ChatParticipantControllerTest {
 
     @Test
     @DisplayName("[404] GET /ui/v1/chat/leave/2/9 - Chat not found")
-    public void leaveFromConversation_ChatNotFound() throws Exception {
+    void leaveFromConversation_ChatNotFound() throws Exception {
         mockMvc.perform(get(UI_V1_CHAT + LEAVE_CHAT_ID, 2, 9)
                         .header(AUTH_USER_ID_HEADER, TestConstants.USER_ID))
                 .andExpect(status().isNotFound())

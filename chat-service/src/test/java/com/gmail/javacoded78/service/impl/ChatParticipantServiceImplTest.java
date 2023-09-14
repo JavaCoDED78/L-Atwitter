@@ -12,51 +12,51 @@ import com.gmail.javacoded78.repository.ChatRepository;
 import com.gmail.javacoded78.service.ChatServiceTestHelper;
 import com.gmail.javacoded78.util.TestConstants;
 import com.gmail.javacoded78.util.TestUtil;
+import lombok.RequiredArgsConstructor;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.List;
 import java.util.Optional;
 
 import static com.gmail.javacoded78.constants.ErrorMessage.CHAT_NOT_FOUND;
 import static com.gmail.javacoded78.constants.ErrorMessage.CHAT_PARTICIPANT_NOT_FOUND;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest
-@RunWith(SpringRunner.class)
-public class ChatParticipantServiceImplTest {
+@RequiredArgsConstructor
+class ChatParticipantServiceImplTest {
 
-    @Autowired
-    private ChatParticipantServiceImpl chatParticipantService;
-
-    @MockBean
-    private ChatRepository chatRepository;
+    private final ChatParticipantServiceImpl chatParticipantService;
 
     @MockBean
-    private ChatParticipantRepository chatParticipantRepository;
+    private final ChatRepository chatRepository;
 
     @MockBean
-    private ChatMessageRepository chatMessageRepository;
+    private final ChatParticipantRepository chatParticipantRepository;
 
     @MockBean
-    private UserClient userClient;
+    private final ChatMessageRepository chatMessageRepository;
 
-    @Before
+    @MockBean
+    private final UserClient userClient;
+
+    @BeforeEach
     public void setUp() {
         TestUtil.mockAuthenticatedUserId();
     }
 
     @Test
-    public void getParticipant() {
+    void getParticipant() {
         when(chatRepository.isChatExists(TestConstants.CHAT_ID, TestConstants.USER_ID)).thenReturn(true);
         when(chatParticipantRepository.getParticipantUserId(1L, TestConstants.CHAT_ID)).thenReturn(Optional.of(1L));
         when(userClient.getUserResponseById(1L)).thenReturn(new UserResponse());
@@ -67,7 +67,7 @@ public class ChatParticipantServiceImplTest {
     }
 
     @Test
-    public void getParticipant_ShouldReturnChatNotFound() {
+    void getParticipant_ShouldReturnChatNotFound() {
         when(chatRepository.isChatExists(TestConstants.CHAT_ID, TestConstants.USER_ID)).thenReturn(false);
         ApiRequestException exception = assertThrows(ApiRequestException.class,
                 () -> chatParticipantService.getParticipant(1L, TestConstants.CHAT_ID));
@@ -76,7 +76,7 @@ public class ChatParticipantServiceImplTest {
     }
 
     @Test
-    public void getParticipant_ShouldChatParticipantNotFound() {
+    void getParticipant_ShouldChatParticipantNotFound() {
         when(chatRepository.isChatExists(TestConstants.CHAT_ID, TestConstants.USER_ID)).thenReturn(true);
         when(chatParticipantRepository.getParticipantUserId(1L, TestConstants.CHAT_ID)).thenReturn(Optional.empty());
         ApiRequestException exception = assertThrows(ApiRequestException.class,
@@ -86,7 +86,7 @@ public class ChatParticipantServiceImplTest {
     }
 
     @Test
-    public void leaveFromConversation() {
+    void leaveFromConversation() {
         when(chatRepository.findById(TestConstants.CHAT_ID)).thenReturn(Optional.of(ChatServiceTestHelper.createMockChat(false)));
         when(chatParticipantRepository.leaveFromConversation(1L, TestConstants.CHAT_ID)).thenReturn(1);
         assertEquals("Successfully left the chat", chatParticipantService.leaveFromConversation(1L, TestConstants.CHAT_ID));
@@ -95,7 +95,7 @@ public class ChatParticipantServiceImplTest {
     }
 
     @Test
-    public void leaveFromConversation_ShouldDeleteChat() {
+    void leaveFromConversation_ShouldDeleteChat() {
         Chat mockChat = ChatServiceTestHelper.createMockChat(true);
         when(chatRepository.findById(TestConstants.CHAT_ID)).thenReturn(Optional.of(mockChat));
         when(chatParticipantRepository.leaveFromConversation(1L, TestConstants.CHAT_ID)).thenReturn(1);
@@ -108,7 +108,7 @@ public class ChatParticipantServiceImplTest {
     }
 
     @Test
-    public void leaveFromConversation_ShouldChatNotFound() {
+    void leaveFromConversation_ShouldChatNotFound() {
         when(chatRepository.findById(TestConstants.CHAT_ID)).thenReturn(Optional.empty());
         ApiRequestException exception = assertThrows(ApiRequestException.class,
                 () -> chatParticipantService.leaveFromConversation(1L, TestConstants.CHAT_ID));
@@ -117,7 +117,7 @@ public class ChatParticipantServiceImplTest {
     }
 
     @Test
-    public void leaveFromConversation_ShouldChatParticipantNotFound() {
+    void leaveFromConversation_ShouldChatParticipantNotFound() {
         when(chatRepository.findById(TestConstants.CHAT_ID)).thenReturn(Optional.of(ChatServiceTestHelper.createMockChat(false)));
         when(chatParticipantRepository.leaveFromConversation(1L, TestConstants.CHAT_ID)).thenReturn(0);
         ApiRequestException exception = assertThrows(ApiRequestException.class,
@@ -127,7 +127,7 @@ public class ChatParticipantServiceImplTest {
     }
 
     @Test
-    public void searchUsersByUsername() {
+    void searchUsersByUsername() {
         PageRequest pageable = PageRequest.of(0, 20);
         HeaderResponse<UserChatResponse> headerResponse = new HeaderResponse<>(
                 List.of(new UserChatResponse(), new UserChatResponse()), new HttpHeaders());

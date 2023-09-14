@@ -5,7 +5,7 @@ spring:
     name: lists-service
   devtools:
     livereload:
-      port: 35739
+      port: 35791
   datasource:
     url: jdbc:postgresql://${DATASOURCE_HOST:localhost}:5432/lists
     username: postgres
