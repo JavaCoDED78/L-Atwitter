@@ -1,5 +1,7 @@
 package com.gmail.javacoded78.model;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -21,6 +23,8 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @EqualsAndHashCode(of = "id")
 @Table(name = "chats")
 public class Chat {
@@ -34,8 +38,10 @@ public class Chat {
     private LocalDateTime creationDate = LocalDateTime.now();
 
     @OneToMany(mappedBy = "chat")
+    @Builder.Default
     private List<ChatParticipant> participants = new ArrayList<>();
 
     @OneToMany(mappedBy = "chat")
+    @Builder.Default
     private List<ChatMessage> messages = new ArrayList<>();
 }

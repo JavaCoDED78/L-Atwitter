@@ -1,5 +1,7 @@
 package com.gmail.javacoded78.model;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -23,7 +25,8 @@ import javax.persistence.Table;
 @Getter
 @Setter
 @NoArgsConstructor
-@RequiredArgsConstructor
+@AllArgsConstructor
+@Builder
 @EqualsAndHashCode(of = "id")
 @Table(
         name = "chats_participants",
@@ -41,11 +44,10 @@ public class ChatParticipant {
     @Column(name = "left_chat", columnDefinition = "boolean default false")
     private boolean leftChat = false;
 
-    @NonNull
     @Column(name = "user_id", nullable = false)
     private Long userId;
 
-    @NonNull
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "chat_id", nullable = false)
     private Chat chat;

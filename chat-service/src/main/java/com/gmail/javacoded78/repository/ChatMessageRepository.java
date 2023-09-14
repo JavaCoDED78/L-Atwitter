@@ -14,28 +14,37 @@ import java.util.Optional;
 @Repository
 public interface ChatMessageRepository extends JpaRepository<ChatMessage, Long> {
 
-    @Query("SELECT chatMessage FROM ChatMessage chatMessage " +
-            "WHERE chatMessage.chat.id = :chatId " +
-            "ORDER BY chatMessage.date ASC")
+    @Query("""
+            SELECT cm FROM ChatMessage cm
+            WHERE cm.chat.id = :chatId
+            ORDER BY cm.date ASC
+            """)
     List<ChatMessageProjection> getChatMessages(@Param("chatId") Long chatId);
 
     @Modifying
-    @Query("UPDATE ChatMessage chatMessage " +
-            "SET chatMessage.unread = false " +
-            "WHERE chatMessage.chat.id = :chatId " +
-            "AND chatMessage.authorId <> :userId")
+    @Query("""
+            UPDATE ChatMessage cm
+            SET cm.unread = false
+            WHERE cm.chat.id = :chatId
+            AND cm.authorId <> :userId
+            """)
     void readChatMessages(@Param("chatId") Long chatId, @Param("userId") Long userId);
 
-    @Query("SELECT COUNT(chatMessage) FROM ChatMessage chatMessage " +
-            "WHERE chatMessage.chat.id IN (" +
-            "   SELECT chat.id FROM Chat chat " +
-            "   LEFT JOIN chat.participants participant " +
-            "   WHERE participant.userId = :userId" +
-            "   AND participant.leftChat = false) " +
-            "AND chatMessage.unread = true " +
-            "AND chatMessage.authorId <> :userId")
+    @Query("""
+            SELECT COUNT(cm) FROM ChatMessage cm
+            WHERE cm.chat.id IN (
+               SELECT chat.id FROM Chat chat
+               LEFT JOIN chat.participants participant
+               WHERE participant.userId = :userId
+               AND participant.leftChat = false)
+            AND cm.unread = true
+            AND cm.authorId <> :userId
+            """)
     Long getUnreadMessagesCount(@Param("userId") Long userId);
 
-    @Query("SELECT chatMessage FROM ChatMessage chatMessage WHERE chatMessage.id = :messageId")
+    @Query("""
+            SELECT cm FROM ChatMessage cm
+            WHERE cm.id = :messageId
+            """)
     Optional<ChatMessageProjection> getChatMessageById(@Param("messageId") Long messageId);
 }

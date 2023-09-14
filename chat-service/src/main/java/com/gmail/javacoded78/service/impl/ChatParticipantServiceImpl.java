@@ -25,6 +25,7 @@ import static com.gmail.javacoded78.constants.ErrorMessage.CHAT_PARTICIPANT_NOT_
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class ChatParticipantServiceImpl implements ChatParticipantService {
 
     private final ChatRepository chatRepository;
@@ -33,7 +34,6 @@ public class ChatParticipantServiceImpl implements ChatParticipantService {
     private final UserClient userClient;
 
     @Override
-    @Transactional(readOnly = true)
     public UserResponse getParticipant(Long participantId, Long chatId) {
         Long authUserId = AuthUtil.getAuthenticatedUserId();
 
@@ -66,14 +66,12 @@ public class ChatParticipantServiceImpl implements ChatParticipantService {
     }
 
     @Override
-    @Transactional(readOnly = true)
     public HeaderResponse<UserChatResponse> searchUsersByUsername(String username, Pageable pageable) {
         Long authUserId = AuthUtil.getAuthenticatedUserId();
         HeaderResponse<UserChatResponse> users = userClient.searchUsersByUsername(username, pageable);
         List<UserChatResponse> usersResponse = users.getItems().stream()
                 .peek(user -> {
                     Chat chat = chatRepository.getChatByParticipants(authUserId, user.getId());
-
                     if (chat != null) {
                         user.setUserChatParticipant(true);
                     }

@@ -2,7 +2,6 @@ package com.gmail.javacoded78.service.impl;
 
 import com.gmail.javacoded78.dto.request.IdsRequest;
 import com.gmail.javacoded78.exception.ApiRequestException;
-import com.gmail.javacoded78.feign.TweetClient;
 import com.gmail.javacoded78.feign.UserClient;
 import com.gmail.javacoded78.model.Chat;
 import com.gmail.javacoded78.model.ChatMessage;
@@ -27,10 +26,10 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static com.gmail.javacoded78.constants.ErrorMessage.CHAT_NOT_FOUND;
-import static com.gmail.javacoded78.constants.ErrorMessage.TWEET_NOT_FOUND;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class ChatMessageServiceImpl implements ChatMessageService {
 
     private final ChatRepository chatRepository;
@@ -40,7 +39,6 @@ public class ChatMessageServiceImpl implements ChatMessageService {
     private final UserClient userClient;
 
     @Override
-    @Transactional(readOnly = true)
     public List<ChatMessageProjection> getChatMessages(Long chatId) {
         Long authUserId = AuthUtil.getAuthenticatedUserId();
         chatRepository.getChatById(chatId, authUserId, ChatProjection.class)
@@ -74,7 +72,7 @@ public class ChatMessageServiceImpl implements ChatMessageService {
         chat.getMessages().add(chatMessage);
         ChatMessageProjection message = chatMessageRepository.getChatMessageById(chatMessage.getId()).get();
         return chatParticipantRepository.getChatParticipantIds(chatId).stream()
-                .collect(Collectors.toMap(Function.identity(), (userId) -> message));
+                .collect(Collectors.toMap(Function.identity(), userId -> message));
     }
 
     @Override
@@ -85,20 +83,30 @@ public class ChatMessageServiceImpl implements ChatMessageService {
         Map<Long, ChatMessageProjection> chatParticipants = new HashMap<>();
         Long authUserId = AuthUtil.getAuthenticatedUserId();
         validUserIds.forEach(userId -> {
-            ChatMessage chatMessage = new ChatMessage(text, tweetId, authUserId);
+            ChatMessage chatMessage = ChatMessage.builder()
+                    .text(text)
+                    .tweetId(tweetId)
+                    .authorId(authUserId)
+                    .build();
             Chat chat = chatRepository.getChatByParticipants(authUserId, userId);
             Boolean isUserBlockedByMyProfile = userClient.isMyProfileBlockedByUser(userId);
 
             if (chat == null && !isUserBlockedByMyProfile) {
                 Chat newChat = new Chat();
                 chatRepository.save(newChat);
-                ChatParticipant authorParticipant = chatParticipantRepository.save(new ChatParticipant(authUserId, newChat));
-                ChatParticipant userParticipant = chatParticipantRepository.save(new ChatParticipant(userId, newChat));
+                ChatParticipant authorParticipant = chatParticipantRepository.save(ChatParticipant.builder()
+                        .userId(authUserId)
+                        .chat(newChat)
+                        .build());
+                ChatParticipant userParticipant = chatParticipantRepository.save(ChatParticipant.builder()
+                        .userId(userId)
+                        .chat(newChat)
+                        .build());
                 newChat.setParticipants(List.of(authorParticipant, userParticipant));
                 chatMessage.setChat(newChat);
                 chatMessageRepository.save(chatMessage);
                 newChat.getMessages().add(chatMessage);
-            } else if (!isUserBlockedByMyProfile) {
+            } else if (Boolean.FALSE.equals(isUserBlockedByMyProfile)) {
                 chatMessage.setChat(chat);
                 chatMessageRepository.save(chatMessage);
                 chatParticipantRepository.updateParticipantWhoLeftChat(userId, chat.getId());

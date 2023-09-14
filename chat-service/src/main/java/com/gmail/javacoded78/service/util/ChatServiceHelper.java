@@ -36,19 +36,19 @@ public class ChatServiceHelper {
     }
 
     public void checkChatMessageLength(String text) {
-        if (text.length() == 0) {
+        if (text.isEmpty()) {
             throw new ApiRequestException(INCORRECT_CHAT_MESSAGE_LENGTH, HttpStatus.BAD_REQUEST);
         }
     }
 
     public void isTweetExists(Long tweetId) {
-        if (!tweetClient.isTweetExists(tweetId)) {
+        if (Boolean.FALSE.equals(tweetClient.isTweetExists(tweetId))) {
             throw new ApiRequestException(TWEET_NOT_FOUND, HttpStatus.NOT_FOUND);
         }
     }
 
     public void isUserExists(Long userId) {
-        if (!userClient.isUserExists(userId)) {
+        if (Boolean.FALSE.equals(userClient.isUserExists(userId))) {
             throw new ApiRequestException(USER_NOT_FOUND, HttpStatus.NOT_FOUND);
         }
     }

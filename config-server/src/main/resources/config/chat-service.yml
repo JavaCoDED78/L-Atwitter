@@ -3,6 +3,9 @@ server:
 spring:
   application:
     name: chat-service
+  devtools:
+    livereload:
+      port: 35739
   datasource:
     url: jdbc:postgresql://${DATASOURCE_HOST:localhost}:5432/chat
     username: postgres
@@ -14,7 +17,7 @@ spring:
       fetch_size: 50
       show_sql: false
       format_sql: false
-    #     open-in-view: false
+    open-in-view: false
     hibernate:
       ddl-auto: validate
     generate-ddl: false

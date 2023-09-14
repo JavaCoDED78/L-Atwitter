@@ -21,6 +21,7 @@ import static com.gmail.javacoded78.constants.ErrorMessage.CHAT_NOT_FOUND;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class ChatServiceImpl implements ChatService {
 
     private final ChatRepository chatRepository;
@@ -28,7 +29,6 @@ public class ChatServiceImpl implements ChatService {
     private final ChatServiceHelper chatServiceHelper;
 
     @Override
-    @Transactional(readOnly = true)
     public ChatProjection getChatById(Long chatId) {
         Long authUserId = AuthUtil.getAuthenticatedUserId();
         return chatRepository.getChatById(chatId, authUserId, ChatProjection.class)
@@ -36,7 +36,6 @@ public class ChatServiceImpl implements ChatService {
     }
 
     @Override
-    @Transactional(readOnly = true)
     public List<ChatProjection> getUserChats() {
         Long authUserId = AuthUtil.getAuthenticatedUserId();
         return chatRepository.getChatsByUserId(authUserId);
@@ -53,8 +52,14 @@ public class ChatServiceImpl implements ChatService {
         if (chat == null) {
             Chat newChat = new Chat();
             chatRepository.save(newChat);
-            ChatParticipant authUserParticipant = chatParticipantRepository.save(new ChatParticipant(authUserId, newChat));
-            ChatParticipant userParticipant = chatParticipantRepository.save(new ChatParticipant(userId, newChat));
+            ChatParticipant authUserParticipant = chatParticipantRepository.save(ChatParticipant.builder()
+                    .userId(authUserId)
+                    .chat(newChat)
+                    .build());
+            ChatParticipant userParticipant = chatParticipantRepository.save(ChatParticipant.builder()
+                    .userId(userId)
+                    .chat(newChat)
+                    .build());
             newChat.setParticipants(Arrays.asList(authUserParticipant, userParticipant));
             return chatRepository.getChatById(newChat.getId());
         }
