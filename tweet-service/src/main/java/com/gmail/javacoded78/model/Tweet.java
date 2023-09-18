@@ -2,6 +2,8 @@ package com.gmail.javacoded78.model;
 
 import com.gmail.javacoded78.enums.LinkCoverSize;
 import com.gmail.javacoded78.enums.ReplyType;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -33,6 +35,8 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @EqualsAndHashCode(of = {"id", "authorId"})
 @Table(name = "tweets", indexes = @Index(name = "tweets_author_id_idx", columnList = "author_id"))
 public class Tweet {
@@ -92,6 +96,7 @@ public class Tweet {
     @Column(name = "image_description")
     private String imageDescription;
 
+    @Builder.Default
     @OneToMany
     private List<TweetImage> images = new ArrayList<>();
 

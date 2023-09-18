@@ -1,10 +1,10 @@
 package com.gmail.javacoded78.model;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.Column;
@@ -17,13 +17,15 @@ import javax.persistence.OneToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Getter
 @Setter
 @NoArgsConstructor
-@RequiredArgsConstructor
+@AllArgsConstructor
+@Builder
 @EqualsAndHashCode(of = "id")
 @Table(name = "polls")
 public class Poll {
@@ -33,15 +35,13 @@ public class Poll {
     @SequenceGenerator(name = "polls_seq", sequenceName = "polls_seq", initialValue = 100, allocationSize = 1)
     private Long id;
 
-    @NonNull
     @Column(name = "date_time")
     private LocalDateTime dateTime;
 
-    @NonNull
     @OneToOne(mappedBy = "poll")
     private Tweet tweet;
 
-    @NonNull
+    @Builder.Default
     @OneToMany
-    private List<PollChoice> pollChoices;
+    private List<PollChoice> pollChoices = new ArrayList<>();
 }

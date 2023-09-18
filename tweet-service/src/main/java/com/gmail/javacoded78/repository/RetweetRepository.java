@@ -12,28 +12,44 @@ import java.util.List;
 @Repository
 public interface RetweetRepository extends JpaRepository<Retweet, Long> {
 
-    @Query("SELECT retweet FROM Retweet retweet " +
-            "WHERE retweet.userId = :userId " +
-            "ORDER BY retweet.retweetDate DESC")
+    @Query("""
+            SELECT rt FROM Retweet rt
+            WHERE rt.userId = :userId
+            ORDER BY rt.retweetDate DESC
+            """)
     List<RetweetProjection> getRetweetsByUserId(@Param("userId") Long userId);
 
-    @Query("SELECT CASE WHEN count(retweet) > 0 THEN true ELSE false END " +
-            "FROM Retweet retweet " +
-            "WHERE retweet.userId = :userId " +
-            "AND retweet.tweetId = :tweetId")
+    @Query("""
+            SELECT CASE WHEN count(rt) > 0 THEN true
+                ELSE false END
+            FROM Retweet rt
+            WHERE rt.userId = :userId
+            AND rt.tweetId = :tweetId
+            """)
     boolean isUserRetweetedTweet(@Param("userId") Long userId, @Param("tweetId") Long tweetId);
 
-    @Query("SELECT COUNT(retweet) FROM Retweet retweet WHERE retweet.tweetId = :tweetId")
+    @Query("""
+            SELECT COUNT(rt) FROM Retweet rt
+            WHERE rt.tweetId = :tweetId
+            """)
     Long getRetweetSize(@Param("tweetId") Long tweetId);
 
-    @Query("SELECT retweet.userId FROM Retweet retweet WHERE retweet.tweetId = :tweetId")
+    @Query("""
+            SELECT rt.userId FROM Retweet rt
+            WHERE rt.tweetId = :tweetId
+            """)
     List<Long> getRetweetedUserIds(@Param("tweetId") Long tweetId);
 
-    @Query("SELECT retweet FROM Retweet retweet " +
-            "WHERE retweet.userId = :userId " +
-            "AND retweet.tweetId = :tweetId")
+    @Query("""
+            SELECT rt FROM Retweet rt
+            WHERE rt.userId = :userId
+            AND rt.tweetId = :tweetId
+            """)
     Retweet isTweetRetweeted(@Param("userId") Long userId, @Param("tweetId") Long tweetId);
 
-    @Query("SELECT retweet.userId FROM Retweet retweet WHERE retweet.tweetId = :tweetId")
+    @Query("""
+            SELECT rt.userId FROM Retweet rt
+            WHERE rt.tweetId = :tweetId
+            """)
     List<Long> getRetweetsUserIds(@Param("tweetId") Long tweetId);
 }

@@ -12,12 +12,18 @@ import java.util.List;
 @Repository
 public interface PollChoiceVotedRepository extends JpaRepository<PollChoiceVoted, Long> {
 
-    @Query("SELECT poolChoice.votedUserId as id FROM PollChoiceVoted poolChoice WHERE poolChoice.pollChoiceId = :pollChoiceId")
+    @Query("""
+        SELECT pch.votedUserId as id FROM PollChoiceVoted pch
+        WHERE pch.pollChoiceId = :pollChoiceId
+        """)
     List<VotedUserProjection> getVotedUserIds(@Param("pollChoiceId") Long pollChoiceId);
 
-    @Query("SELECT CASE WHEN count(poolChoice) > 0 THEN true ELSE false END " +
-            "FROM PollChoiceVoted poolChoice " +
-            "WHERE poolChoice.votedUserId = :votedUserId " +
-            "AND poolChoice.pollChoiceId = :pollChoiceId")
+    @Query("""
+            SELECT CASE WHEN count(pch) > 0 THEN true
+                ELSE false END
+            FROM PollChoiceVoted pch
+            WHERE pch.votedUserId = :votedUserId
+            AND pch.pollChoiceId = :pollChoiceId
+            """)
     boolean ifUserVoted(@Param("votedUserId") Long votedUserId, @Param("pollChoiceId") Long pollChoiceId);
 }

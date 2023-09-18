@@ -140,24 +140,4 @@ public class BookmarkServiceImplTest {
         assertTrue(bookmarkService.getIsTweetBookmarked(TestConstants.TWEET_ID));
         verify(bookmarkRepository, times(1)).isUserBookmarkedTweet(TestConstants.USER_ID, TestConstants.TWEET_ID);
     }
-
-    private static List<BookmarkProjection> createMockBookmarkProjectionList() {
-        BookmarkProjection bookmarkProjection1 = factory.createProjection(
-                BookmarkProjection.class,
-                Map.of(
-                        "id", 1L,
-                        "bookmarkDate", LocalDateTime.now(),
-                        "tweetId", TestConstants.TWEET_ID,
-                        "tweet", TweetServiceTestHelper.createTweetProjection(TweetProjection.class)
-                ));
-        BookmarkProjection bookmarkProjection2 = factory.createProjection(
-                BookmarkProjection.class,
-                Map.of(
-                        "id", 2L,
-                        "bookmarkDate", LocalDateTime.now(),
-                        "tweetId", TestConstants.TWEET_ID,
-                        "tweet", TweetServiceTestHelper.createTweetProjection(TweetProjection.class)
-                ));
-        return Arrays.asList(bookmarkProjection1, bookmarkProjection2);
-    }
 }

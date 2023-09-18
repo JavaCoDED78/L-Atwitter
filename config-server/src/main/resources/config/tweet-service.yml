@@ -17,7 +17,7 @@ spring:
       fetch_size: 50
       show_sql: false
       format_sql: false
-    #     open-in-view: false
+    open-in-view: false
     hibernate:
       ddl-auto: validate
     generate-ddl: false

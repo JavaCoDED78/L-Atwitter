@@ -27,13 +27,13 @@ CREATE TABLE IF NOT EXISTS tweet_tags
 --rollback DROP TABLE tweet_tags
 
 --changeset soroka andrei:5
-create index tags_tag_name_idx on tags (tag_name);
+CREATE INDEX tags_tag_name_idx ON tags (tag_name);
 --rollback DROP INDEX tags_tag_name_idx
 
 --changeset soroka andrei:6
-create index tweet_tags_tag_id_idx on tweet_tags (tag_id);
+CREATE INDEX tweet_tags_tag_id_idx ON tweet_tags (tag_id);
 --rollback DROP INDEX tweet_tags_tag_id_idx
 
 --changeset soroka andrei:7
-create index tweet_tags_tweet_id_idx on tweet_tags (tweet_id);
+CREATE INDEX tweet_tags_tweet_id_idx ON tweet_tags (tweet_id);
 --rollback DROP INDEX tweet_tags_tweet_id_idx

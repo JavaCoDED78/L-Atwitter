@@ -22,6 +22,7 @@ import static com.gmail.javacoded78.constants.ErrorMessage.TWEET_NOT_FOUND;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class ScheduledTweetServiceImpl implements ScheduledTweetService {
 
     private final TweetRepository tweetRepository;
