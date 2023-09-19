@@ -27,7 +27,7 @@ public class BookmarkController {
     private final BookmarkMapper bookmarkMapper;
 
     @GetMapping(USER_BOOKMARKS)
-    public ResponseEntity<List<TweetResponse>> getUserBookmarks(@PageableDefault(size = 10) Pageable pageable) {
+    public ResponseEntity<List<TweetResponse>> getUserBookmarks(@PageableDefault Pageable pageable) {
         HeaderResponse<TweetResponse> response = bookmarkMapper.getUserBookmarks(pageable);
         return ResponseEntity.ok().headers(response.getHeaders()).body(response.getItems());
     }

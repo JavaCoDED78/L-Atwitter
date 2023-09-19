@@ -75,3 +75,4 @@ INSERT INTO retweets (id, retweet_date, tweet_id, user_id) VALUES (3, '2023-09-1
 INSERT INTO bookmarks (id, bookmark_date, tweet_id, user_id) VALUES (1, '2023-09-18 21:09:18.000000', 8, 1);
 INSERT INTO bookmarks (id, bookmark_date, tweet_id, user_id) VALUES (2, '2023-09-18 21:09:28.000000', 15, 1);
 --rollback TRUNCATE bookmarks
+

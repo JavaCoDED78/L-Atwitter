@@ -37,12 +37,15 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Stream;
 
 @Component
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class TweetServiceHelper {
 
     private final TweetRepository tweetRepository;
@@ -65,76 +68,105 @@ public class TweetServiceHelper {
         tweet.setAuthorId(authUserId);
         boolean isMediaTweetCreated = parseMetadataFromURL(tweet);
         tweetRepository.save(tweet);
+        updateUserCounts(tweet, isMediaTweetCreated);
+        return processTweetResponse(tweet);
+    }
 
+    private void updateUserCounts(Tweet tweet, boolean isMediaTweetCreated) {
         if (tweet.getScheduledDate() == null) {
-            if (isMediaTweetCreated || !tweet.getImages().isEmpty()) {
+            if (isMediaTweetCreated ||!tweet.getImages().isEmpty()) {
                 userClient.updateMediaTweetCount(true);
             } else {
                 userClient.updateTweetCount(true);
             }
         }
-        return processTweetResponse(tweet);
     }
 
     @SneakyThrows
     public boolean parseMetadataFromURL(Tweet tweet) {
-        Pattern urlRegex = Pattern.compile("https?:\\/\\/?[\\w\\d\\._\\-%\\/\\?=&#]+", Pattern.CASE_INSENSITIVE);
-        Pattern imgRegex = Pattern.compile("\\.(jpeg|jpg|gif|png)$", Pattern.CASE_INSENSITIVE);
-        Pattern youTubeUrlRegex = Pattern.compile("(?<=watch\\?v=|/videos/|embed\\/|youtu.be\\/|\\/v\\/|\\/e\\/|watch\\?v%3D|watch\\?feature=player_embedded&v=|%2Fvideos%2F|embed%\u200C\u200B2F|youtu.be%2F|%2Fv%2F)[^#\\&\\?\\n]*", Pattern.CASE_INSENSITIVE);
         String text = tweet.getText();
-        Matcher matcher = urlRegex.matcher(text);
+        String url = extractUrl(text);
 
-        if (matcher.find()) {
-            String url = text.substring(matcher.start(), matcher.end());
-            matcher = imgRegex.matcher(url);
+        if (url != null) {
             tweet.setLink(url);
 
-            if (matcher.find()) {
+            if (isImage(url)) {
                 tweet.setLinkCover(url);
             } else if (!url.contains("youtu")) {
-                Document doc = Jsoup.connect(url).get();
-                Elements title = doc.select("meta[name$=title],meta[property$=title]");
-                Elements description = doc.select("meta[name$=description],meta[property$=description]");
-                Elements cover = doc.select("meta[name$=image],meta[property$=image]");
-
-                BufferedImage coverData = ImageIO.read(new URL(getContent(cover.first())));
-                double coverDataSize = (504.0 / (double) coverData.getWidth()) * coverData.getHeight();
-
-                tweet.setLinkTitle(getContent(title.first()));
-                tweet.setLinkDescription(getContent(description.first()));
-                tweet.setLinkCover(getContent(cover.first()));
-                tweet.setLinkCoverSize(coverDataSize > 267.0 ? LinkCoverSize.SMALL : LinkCoverSize.LARGE);
+                extractMetadataFromWebsite(url, tweet);
             } else {
-                String youTubeVideoId = null;
-                Matcher youTubeMatcher = youTubeUrlRegex.matcher(url);
-
-                if (youTubeMatcher.find()) {
-                    youTubeVideoId = youTubeMatcher.group();
-                }
-                String youtubeUrl = String.format(googleApiUrl, youTubeVideoId, googleApiKey);
-                RestTemplate restTemplate = new RestTemplate();
-                String youTubeVideData = restTemplate.getForObject(youtubeUrl, String.class);
-                JSONObject jsonObject = new JSONObject(youTubeVideData);
-                JSONArray items = jsonObject.getJSONArray("items");
-                String videoTitle = null;
-                String videoCoverImage = null;
-
-                for (int i = 0; i < items.length(); i++) {
-                    videoTitle = items.getJSONObject(i)
-                            .getJSONObject("snippet")
-                            .getString("title");
-                    videoCoverImage = items.getJSONObject(i)
-                            .getJSONObject("snippet")
-                            .getJSONObject("thumbnails")
-                            .getJSONObject("medium")
-                            .getString("url");
-                }
-                tweet.setLinkTitle(videoTitle);
-                tweet.setLinkCover(videoCoverImage);
+                extractMetadataFromYouTube(url, tweet);
                 return true;
             }
         }
         return false;
+    }
+
+    private String extractUrl(String text) {
+        Pattern urlRegex = Pattern.compile("https?://?[\\w\\d\\._\\-%/\\?=&#]+", Pattern.CASE_INSENSITIVE);
+        Matcher matcher = urlRegex.matcher(text);
+
+        if (matcher.find()) {
+            return text.substring(matcher.start(), matcher.end());
+        }
+        return null;
+    }
+
+    private boolean isImage(String url) {
+        Pattern imgRegex = Pattern.compile("\\.(jpeg|jpg|gif|png)$", Pattern.CASE_INSENSITIVE);
+        Matcher matcher = imgRegex.matcher(url);
+        return matcher.find();
+    }
+
+    @SneakyThrows
+    private void extractMetadataFromWebsite(String url, Tweet tweet) {
+        Document doc = Jsoup.connect(url).get();
+        Elements title = doc.select("meta[name$=title],meta[property$=title]");
+        Elements description = doc.select("meta[name$=description],meta[property$=description]");
+        Elements cover = doc.select("meta[name$=image],meta[property$=image]");
+
+        BufferedImage coverData = ImageIO.read(new URL(getContent(cover.first())));
+        double coverDataSize = (504.0 / coverData.getWidth()) * coverData.getHeight();
+
+        tweet.setLinkTitle(getContent(title.first()));
+        tweet.setLinkDescription(getContent(description.first()));
+        tweet.setLinkCover(getContent(cover.first()));
+        tweet.setLinkCoverSize(coverDataSize > 267.0 ? LinkCoverSize.SMALL : LinkCoverSize.LARGE);
+    }
+
+    private void extractMetadataFromYouTube(String url, Tweet tweet) {
+        String youTubeVideoId = extractYouTubeVideoId(url);
+        String youtubeUrl = String.format(googleApiUrl, youTubeVideoId, googleApiKey);
+        RestTemplate restTemplate = new RestTemplate();
+        String youTubeVideoData = restTemplate.getForObject(youtubeUrl, String.class);
+        JSONObject jsonObject = new JSONObject(youTubeVideoData);
+        JSONArray items = jsonObject.getJSONArray("items");
+        String videoTitle = null;
+        String videoCoverImage = null;
+
+        for (int i = 0; i < items.length(); i++) {
+            videoTitle = items.getJSONObject(i)
+                    .getJSONObject("snippet")
+                    .getString("title");
+            videoCoverImage = items.getJSONObject(i)
+                    .getJSONObject("snippet")
+                    .getJSONObject("thumbnails")
+                    .getJSONObject("medium")
+                    .getString("url");
+        }
+
+        tweet.setLinkTitle(videoTitle);
+        tweet.setLinkCover(videoCoverImage);
+    }
+
+    private String extractYouTubeVideoId(String url) {
+        Pattern youTubeUrlRegex = Pattern.compile("(?<=watch\\?v=|/videos/|embed/|youtu.be/|/v/|/e/|watch\\?v%3D|watch\\?feature=player_embedded&v=|%2Fvideos%2F|embed%\u200C\u200B2F|youtu.be%2F|%2Fv%2F)[^#\\&\\?\\n]*", Pattern.CASE_INSENSITIVE);
+        Matcher youTubeMatcher = youTubeUrlRegex.matcher(url);
+
+        if (youTubeMatcher.find()) {
+            return youTubeMatcher.group();
+        }
+        return null;
     }
 
     private String getContent(Element element) {
@@ -142,7 +174,7 @@ public class TweetServiceHelper {
     }
 
     public TweetResponse processTweetResponse(Tweet tweet) {
-        TweetProjection tweetProjection = tweetRepository.getTweetById(tweet.getId(), TweetProjection.class).get();
+        TweetProjection tweetProjection = tweetRepository.getTweetById(tweet.getId(), TweetProjection.class).orElse(null);
         TweetResponse tweetResponse = basicMapper.convertToResponse(tweetProjection, TweetResponse.class);
         parseUserMentionFromText(tweetResponse);
         tagClient.parseHashtagsFromText(tweet.getId(), new TweetTextRequest(tweet.getText()));
@@ -201,27 +233,13 @@ public class TweetServiceHelper {
 
     public List<TweetUserProjection> combineTweetsArrays(List<TweetUserProjection> tweets,
                                                          List<RetweetProjection> retweets) {
-        List<TweetUserProjection> allTweets = new ArrayList<>();
-        int i = 0;
-        int j = 0;
+        Stream<TweetUserProjection> tweetStream = tweets.stream();
+        Stream<TweetUserProjection> retweetStream = retweets.stream()
+                .map(RetweetProjection::getTweet);
 
-        while (i < tweets.size() && j < retweets.size()) {
-            if (tweets.get(i).getDateTime().isAfter(retweets.get(j).getRetweetDate())) {
-                allTweets.add(tweets.get(i));
-                i++;
-            } else {
-                allTweets.add(retweets.get(j).getTweet());
-                j++;
-            }
-        }
-        while (i < tweets.size()) {
-            allTweets.add(tweets.get(i));
-            i++;
-        }
-        while (j < retweets.size()) {
-            allTweets.add(retweets.get(j).getTweet());
-            j++;
-        }
-        return allTweets;
+        Stream<TweetUserProjection> combinedStream = Stream.concat(tweetStream, retweetStream)
+                .sorted(Comparator.comparing(TweetUserProjection::getDateTime));
+
+        return combinedStream.toList();
     }
 }

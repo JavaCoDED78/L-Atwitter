@@ -32,11 +32,11 @@ public class TweetProjectionHelper {
     private final ListsClient listsClient;
 
     public TweetProjection getTweetProjection(Long tweetId) {
-        return tweetRepository.getTweetById(tweetId, TweetProjection.class).get();
+        return tweetRepository.getTweetById(tweetId, TweetProjection.class).orElse(null);
     }
 
     public TweetUserProjection getTweetUserProjection(Long tweetId) {
-        return tweetRepository.getTweetById(tweetId, TweetUserProjection.class).get();
+        return tweetRepository.getTweetById(tweetId, TweetUserProjection.class).orElse(null);
     }
 
     public List<TaggedUserResponse> getTaggedImageUsers(Long tweetId) {

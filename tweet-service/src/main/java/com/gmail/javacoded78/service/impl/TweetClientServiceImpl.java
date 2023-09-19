@@ -33,7 +33,7 @@ public class TweetClientServiceImpl implements TweetClientService {
 
     @Override
     public TweetProjection getTweetById(Long tweetId) {
-        return tweetRepository.getTweetById(tweetId, TweetProjection.class).get();
+        return tweetRepository.getTweetById(tweetId, TweetProjection.class).orElse(null);
     }
 
     @Override
@@ -43,7 +43,7 @@ public class TweetClientServiceImpl implements TweetClientService {
 
     @Override
     public NotificationTweetProjection getNotificationTweet(Long tweetId) {
-        return tweetRepository.getTweetById(tweetId, NotificationTweetProjection.class).get();
+        return tweetRepository.getTweetById(tweetId, NotificationTweetProjection.class).orElse(null);
     }
 
     @Override
@@ -58,6 +58,6 @@ public class TweetClientServiceImpl implements TweetClientService {
 
     @Override
     public ChatTweetProjection getChatTweet(Long tweetId) {
-        return tweetRepository.getTweetById(tweetId, ChatTweetProjection.class).get();
+        return tweetRepository.getTweetById(tweetId, ChatTweetProjection.class).orElse(null);
     }
 }

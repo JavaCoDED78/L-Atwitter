@@ -51,14 +51,20 @@ public class PollServiceImpl implements PollService {
         }
         List<PollChoice> pollChoices = new ArrayList<>();
         choices.forEach(choice -> {
-            if (choice.length() == 0 || choice.length() > 25) {
+            if (choice.isEmpty() || choice.length() > 25) {
                 throw new ApiRequestException(INCORRECT_CHOICE_TEXT_LENGTH, HttpStatus.BAD_REQUEST);
             }
-            PollChoice pollChoice = new PollChoice(choice);
+            PollChoice pollChoice = PollChoice.builder()
+                    .choice(choice)
+                    .build();
             pollChoiceRepository.save(pollChoice);
             pollChoices.add(pollChoice);
         });
-        Poll poll = new Poll(LocalDateTime.now().plusMinutes(pollDateTime), tweet, pollChoices);
+        Poll poll = Poll.builder()
+                .dateTime(LocalDateTime.now().plusMinutes(pollDateTime))
+                .tweet(tweet)
+                .pollChoices(pollChoices)
+                .build();
         pollRepository.save(poll);
         tweet.setPoll(poll);
         return tweetServiceHelper.createTweet(tweet);
@@ -79,7 +85,10 @@ public class PollServiceImpl implements PollService {
         if (pollChoiceVotedRepository.ifUserVoted(authUserId, pollChoiceId)) {
             throw new ApiRequestException(USER_VOTED_IN_POLL, HttpStatus.BAD_REQUEST);
         }
-        pollChoiceVotedRepository.save(new PollChoiceVoted(authUserId, pollChoiceId));
+        pollChoiceVotedRepository.save(PollChoiceVoted.builder()
+                        .votedUserId(authUserId)
+                        .pollChoiceId(pollChoiceId)
+                .build());
         return tweetService.getTweetById(tweetId);
     }
 }

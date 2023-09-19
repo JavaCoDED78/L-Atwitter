@@ -24,6 +24,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class LikeTweetServiceImpl implements LikeTweetService {
 
     private final LikeTweetRepository likeTweetRepository;
@@ -32,14 +33,12 @@ public class LikeTweetServiceImpl implements LikeTweetService {
     private final UserClient userClient;
 
     @Override
-    @Transactional(readOnly = true)
     public Page<LikeTweetProjection> getUserLikedTweets(Long userId, Pageable pageable) {
         tweetValidationHelper.validateUserProfile(userId);
         return likeTweetRepository.getUserLikedTweets(userId, pageable);
     }
 
     @Override
-    @Transactional(readOnly = true)
     public HeaderResponse<UserResponse> getLikedUsersByTweetId(Long tweetId, Pageable pageable) {
         tweetValidationHelper.checkValidTweet(tweetId);
         List<Long> likedUserIds = likeTweetRepository.getLikedUserIds(tweetId);
@@ -59,7 +58,10 @@ public class LikeTweetServiceImpl implements LikeTweetService {
             userClient.updateLikeCount(false);
             isTweetLiked = false;
         } else {
-            LikeTweet newLikeTweet = new LikeTweet(authUserId, tweetId);
+            LikeTweet newLikeTweet = LikeTweet.builder()
+                    .userId(authUserId)
+                    .tweetId(tweetId)
+                    .build();
             likeTweetRepository.save(newLikeTweet);
             userClient.updateLikeCount(true);
             isTweetLiked = true;

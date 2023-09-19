@@ -73,7 +73,7 @@ public class TweetServiceImpl implements TweetService {
         Long pinnedTweetId = userClient.getUserPinnedTweetId(userId);
 
         if (pinnedTweetId != null) {
-            TweetUserProjection pinnedTweet = tweetRepository.getTweetById(pinnedTweetId, TweetUserProjection.class).get();
+            TweetUserProjection pinnedTweet = tweetRepository.getTweetById(pinnedTweetId, TweetUserProjection.class).orElse(null);
             boolean isTweetExist = userTweets.removeIf(tweet -> tweet.getId().equals(pinnedTweet.getId()));
 
             if (isTweetExist) {
@@ -137,7 +137,9 @@ public class TweetServiceImpl implements TweetService {
     @Override
     public TweetImage uploadTweetImage(MultipartFile file) {
         String imageSrc = imageClient.uploadImage(file);
-        return tweetImageRepository.save(new TweetImage(imageSrc));
+        return tweetImageRepository.save(TweetImage.builder()
+                .src(imageSrc)
+                .build());
     }
 
     @Override

@@ -17,13 +17,11 @@ spring:
       fetch_size: 50
       show_sql: false
       format_sql: false
-    open-in-view: false
+#    open-in-view: false
     hibernate:
       ddl-auto: validate
     generate-ddl: false
     show-sql: false
-  flyway:
-    locations: classpath:db/migration/tweet
   zipkin:
     base-url: http://${ZIPKIN_HOST:localhost}:9411
   rabbitmq:

@@ -26,6 +26,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class RetweetServiceImpl implements RetweetService {
 
     private final TweetRepository tweetRepository;
@@ -35,7 +36,6 @@ public class RetweetServiceImpl implements RetweetService {
     private final UserClient userClient;
 
     @Override
-    @Transactional(readOnly = true)
     public Page<TweetUserProjection> getUserRetweetsAndReplies(Long userId, Pageable pageable) {
         tweetValidationHelper.validateUserProfile(userId);
         List<TweetUserProjection> replies = tweetRepository.getRepliesByUserId(userId);
@@ -45,7 +45,6 @@ public class RetweetServiceImpl implements RetweetService {
     }
 
     @Override
-    @Transactional(readOnly = true)
     public HeaderResponse<UserResponse> getRetweetedUsersByTweetId(Long tweetId, Pageable pageable) {
         tweetValidationHelper.checkValidTweet(tweetId);
         List<Long> retweetedUserIds = retweetRepository.getRetweetedUserIds(tweetId);
@@ -65,7 +64,10 @@ public class RetweetServiceImpl implements RetweetService {
             userClient.updateTweetCount(false);
             isRetweeted = false;
         } else {
-            retweetRepository.save(new Retweet(authUserId, tweetId));
+            retweetRepository.save(Retweet.builder()
+                    .userId(authUserId)
+                    .tweetId(tweetId)
+                    .build());
             userClient.updateTweetCount(true);
             isRetweeted = true;
         }

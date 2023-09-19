@@ -46,7 +46,7 @@ public class TweetValidationHelper {
     }
 
     public void validateUserProfile(Long userId) {
-        if (!userClient.isUserExists(userId)) {
+        if (Boolean.FALSE.equals(userClient.isUserExists(userId))) {
             throw new ApiRequestException(String.format(USER_ID_NOT_FOUND, userId), HttpStatus.NOT_FOUND);
         }
         checkIsValidUserProfile(userId);
@@ -56,17 +56,17 @@ public class TweetValidationHelper {
         Long authUserId = AuthUtil.getAuthenticatedUserId();
 
         if (!userId.equals(authUserId)) {
-            if (userClient.isUserHavePrivateProfile(userId)) {
+            if (Boolean.TRUE.equals(userClient.isUserHavePrivateProfile(userId))) {
                 throw new ApiRequestException(USER_NOT_FOUND, HttpStatus.NOT_FOUND);
             }
-            if (userClient.isMyProfileBlockedByUser(userId)) {
+            if (Boolean.TRUE.equals(userClient.isMyProfileBlockedByUser(userId))) {
                 throw new ApiRequestException(USER_PROFILE_BLOCKED, HttpStatus.BAD_REQUEST);
             }
         }
     }
 
     public void checkTweetTextLength(String text) {
-        if (text.length() == 0 || text.length() > 280) {
+        if (text.isEmpty() || text.length() > 280) {
             throw new ApiRequestException(INCORRECT_TWEET_TEXT_LENGTH, HttpStatus.BAD_REQUEST);
         }
     }

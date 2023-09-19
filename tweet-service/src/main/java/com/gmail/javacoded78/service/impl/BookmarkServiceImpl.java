@@ -14,13 +14,13 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class BookmarkServiceImpl implements BookmarkService {
 
     private final BookmarkRepository bookmarkRepository;
     private final TweetValidationHelper tweetValidationHelper;
 
     @Override
-    @Transactional(readOnly = true)
     public Page<BookmarkProjection> getUserBookmarks(Pageable pageable) {
         Long authUserId = AuthUtil.getAuthenticatedUserId();
         return bookmarkRepository.getUserBookmarks(authUserId, pageable);
@@ -37,14 +37,16 @@ public class BookmarkServiceImpl implements BookmarkService {
             bookmarkRepository.delete(bookmark);
             return false;
         } else {
-            Bookmark newBookmark = new Bookmark(authUserId, tweetId);
+            Bookmark newBookmark = Bookmark.builder()
+                    .userId(authUserId)
+                    .tweetId(tweetId)
+                    .build();
             bookmarkRepository.save(newBookmark);
             return true;
         }
     }
 
     @Override
-    @Transactional(readOnly = true)
     public Boolean getIsTweetBookmarked(Long tweetId) {
         Long authUserId = AuthUtil.getAuthenticatedUserId();
         return bookmarkRepository.isUserBookmarkedTweet(authUserId, tweetId);

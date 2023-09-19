@@ -2,7 +2,6 @@ package com.gmail.javacoded78.controller.rest;
 
 import com.gmail.javacoded78.dto.HeaderResponse;
 import com.gmail.javacoded78.dto.response.tweet.TweetResponse;
-import com.gmail.javacoded78.dto.request.TweetDeleteRequest;
 import com.gmail.javacoded78.dto.request.TweetRequest;
 import com.gmail.javacoded78.dto.response.NotificationReplyResponse;
 import com.gmail.javacoded78.dto.response.ProfileTweetImageResponse;
@@ -17,12 +16,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -37,11 +34,9 @@ import static com.gmail.javacoded78.constants.PathConstants.IMAGES_USER_ID;
 import static com.gmail.javacoded78.constants.PathConstants.IMAGE_TAGGED;
 import static com.gmail.javacoded78.constants.PathConstants.MEDIA;
 import static com.gmail.javacoded78.constants.PathConstants.MEDIA_USER_USER_ID;
-import static com.gmail.javacoded78.constants.PathConstants.MENTIONS;
 import static com.gmail.javacoded78.constants.PathConstants.QUOTE_USER_ID_TWEET_ID;
 import static com.gmail.javacoded78.constants.PathConstants.REPLY_CHANGE_USER_ID_TWEET_ID;
 import static com.gmail.javacoded78.constants.PathConstants.REPLY_USER_ID_TWEET_ID;
-import static com.gmail.javacoded78.constants.PathConstants.SCHEDULE;
 import static com.gmail.javacoded78.constants.PathConstants.SEARCH_TEXT;
 import static com.gmail.javacoded78.constants.PathConstants.TWEET_ID;
 import static com.gmail.javacoded78.constants.PathConstants.TWEET_ID_INFO;
@@ -66,7 +61,7 @@ public class TweetController {
     private final WebSocketClient webSocketClient;
 
     @GetMapping
-    public ResponseEntity<List<TweetResponse>> getTweets(@PageableDefault(size = 10) Pageable pageable) {
+    public ResponseEntity<List<TweetResponse>> getTweets(@PageableDefault Pageable pageable) {
         HeaderResponse<TweetResponse> response = tweetMapper.getTweets(pageable);
         return ResponseEntity.ok().headers(response.getHeaders()).body(response.getItems());
     }
@@ -78,14 +73,14 @@ public class TweetController {
 
     @GetMapping(USER_USER_ID)
     public ResponseEntity<List<TweetUserResponse>> getUserTweets(@PathVariable("userId") Long userId,
-                                                                 @PageableDefault(size = 10) Pageable pageable) {
+                                                                 @PageableDefault Pageable pageable) {
         HeaderResponse<TweetUserResponse> response = tweetMapper.getUserTweets(userId, pageable);
         return ResponseEntity.ok().headers(response.getHeaders()).body(response.getItems());
     }
 
     @GetMapping(MEDIA_USER_USER_ID)
     public ResponseEntity<List<TweetResponse>> getUserMediaTweets(@PathVariable("userId") Long userId,
-                                                                  @PageableDefault(size = 10) Pageable pageable) {
+                                                                  @PageableDefault Pageable pageable) {
         HeaderResponse<TweetResponse> response = tweetMapper.getUserMediaTweets(userId, pageable);
         return ResponseEntity.ok().headers(response.getHeaders()).body(response.getItems());
     }
@@ -100,32 +95,32 @@ public class TweetController {
         return ResponseEntity.ok(tweetMapper.getTweetAdditionalInfoById(tweetId));
     }
 
-    @GetMapping(TWEET_ID_REPLIES) // TODO add pagination
+    @GetMapping(TWEET_ID_REPLIES)
     public ResponseEntity<List<TweetResponse>> getRepliesByTweetId(@PathVariable("tweetId") Long tweetId) {
         return ResponseEntity.ok(tweetMapper.getRepliesByTweetId(tweetId));
     }
 
     @GetMapping(TWEET_ID_QUOTES)
     public ResponseEntity<List<TweetResponse>> getQuotesByTweetId(@PathVariable("tweetId") Long tweetId,
-                                                                  @PageableDefault(size = 10) Pageable pageable) {
+                                                                  @PageableDefault Pageable pageable) {
         HeaderResponse<TweetResponse> response = tweetMapper.getQuotesByTweetId(pageable, tweetId);
         return ResponseEntity.ok().headers(response.getHeaders()).body(response.getItems());
     }
 
     @GetMapping(MEDIA)
-    public ResponseEntity<List<TweetResponse>> getMediaTweets(@PageableDefault(size = 10) Pageable pageable) {
+    public ResponseEntity<List<TweetResponse>> getMediaTweets(@PageableDefault Pageable pageable) {
         HeaderResponse<TweetResponse> response = tweetMapper.getMediaTweets(pageable);
         return ResponseEntity.ok().headers(response.getHeaders()).body(response.getItems());
     }
 
     @GetMapping(VIDEO)
-    public ResponseEntity<List<TweetResponse>> getTweetsWithVideo(@PageableDefault(size = 10) Pageable pageable) {
+    public ResponseEntity<List<TweetResponse>> getTweetsWithVideo(@PageableDefault Pageable pageable) {
         HeaderResponse<TweetResponse> response = tweetMapper.getTweetsWithVideo(pageable);
         return ResponseEntity.ok().headers(response.getHeaders()).body(response.getItems());
     }
 
     @GetMapping(FOLLOWER)
-    public ResponseEntity<List<TweetResponse>> getFollowersTweets(@PageableDefault(size = 10) Pageable pageable) {
+    public ResponseEntity<List<TweetResponse>> getFollowersTweets(@PageableDefault Pageable pageable) {
         HeaderResponse<TweetResponse> response = tweetMapper.getFollowersTweets(pageable);
         return ResponseEntity.ok().headers(response.getHeaders()).body(response.getItems());
     }
@@ -137,7 +132,7 @@ public class TweetController {
 
     @GetMapping(IMAGE_TAGGED)
     public ResponseEntity<List<UserResponse>> getTaggedImageUsers(@PathVariable("tweetId") Long tweetId,
-                                                                  @PageableDefault(size = 10) Pageable pageable) {
+                                                                  @PageableDefault Pageable pageable) {
         HeaderResponse<UserResponse> response = tweetMapper.getTaggedImageUsers(tweetId, pageable);
         return ResponseEntity.ok().headers(response.getHeaders()).body(response.getItems());
     }

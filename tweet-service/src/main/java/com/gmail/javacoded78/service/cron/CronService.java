@@ -29,7 +29,7 @@ public class CronService {
     @Scheduled(initialDelay = 30000, fixedDelay = 30000)
     public void sendTweetBySchedule() {
         List<Tweet> tweets = tweetRepository.findAllByScheduledDate(LocalDateTime.now());
-        tweets.forEach((tweet) -> {
+        tweets.forEach(tweet -> {
             if (tweet.getText().contains("youtube.com") || !tweet.getImages().isEmpty()) {
                 userClient.updateMediaTweetCount(true);
             } else {
