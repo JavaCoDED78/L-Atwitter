@@ -135,6 +135,7 @@ public class TweetServiceImpl implements TweetService {
     }
 
     @Override
+    @Transactional
     public TweetImage uploadTweetImage(MultipartFile file) {
         String imageSrc = imageClient.uploadImage(file);
         return tweetImageRepository.save(TweetImage.builder()

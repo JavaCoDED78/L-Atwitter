@@ -14,18 +14,18 @@ public class TestConstants {
     public static final String USER_EMAIL = "test2015@test.test";
     public static final String NOT_VALID_EMAIL = "test2222@test.test";
     public static final String PASSWORD = "qwerty123";
-    public static final String FULL_NAME = "MrCat";
+    public static final String FULL_NAME = "Androsor";
     public static final String LOCATION = "New York";
     public static final String PASSWORD_RESET_CODE = "1234567890";
     public static final String REGISTRATION_DATE = "2021-08-01T23:34:32";
     public static final String ROLE = "USER";
-    public static final String USERNAME = "MrCat";
+    public static final String USERNAME = "Androsor";
     public static final String WEBSITE = "https://www.google.com";
     public static final Long TWEET_COUNT = 126L;
     public static final Long MEDIA_TWEET_COUNT = 44L;
     public static final Long LIKE_TWEET_COUNT = 40L;
     public static final Long AVATAR_ID = 33L;
-    public static final String AVATAR_SRC_1 = "https://twitterclonestorage.s3.eu-central-1.amazonaws.com/348b7dbe-3ac5-477f-8483-edc24f53091b_814370.jpg";
+    public static final String AVATAR_SRC_1 = "https://perfumeweb2.s3.eu-central-1.amazonaws.com/348b7dbe-3ac5-477f-8483-edc24f53091b_814370.jpg";
     public static final String AVATAR_SRC_2 = "https://twitterclonestorage.s3.eu-central-1.amazonaws.com/ae83099c-885b-499a-bb6f-5e34e1b69e7d_4ec7201fd370bd9870cdb326f0511f38.jpg";
     public static final String WALLPAPER_SRC = "https://twitterclonestorage.s3.eu-central-1.amazonaws.com/d0e5b95f-acc0-47ef-b499-477f7e5a1a06_PrMnWa2z.jpg";
     public static final Long WALLPAPER_ID = 44L;
@@ -44,22 +44,22 @@ public class TestConstants {
     public static final String AUTH_TOKEN = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1c2VyMjAxNkBnbWFpbC5jb20iLCJyb2xlIjoiVVNFUiIsImlhdCI6MTY2NzY0ODcyMSwiZXhwIjoxNjczNjk2NzIxfQ.KgiNzoq1UPNoeWaY00aPOinDdvv2e6NNlfupyaW2JxU";
 
     public static final String TEST_TWEET_TEXT = "test text";
-    public static final String USERNAME2 = "John_Doe";
+    public static final String USERNAME2 = "Andrei Soroka";
     public static final String ABOUT2 = "Hello2";
 
     public static final Long TWEET_ID = 11L;
     public static final String TWEET_TEXT = "#JetBrains https://www.jetbrains.com/ ";
-    public static final String TWEET_DATETIME = "2021-10-03T20:34:15";
+    public static final String TWEET_DATETIME = "2023-09-20T20:34:15";
     public static final String TWEET_SCHEDULED_DATETIME = "3021-10-03T20:33:36";
     public static final String LINK = "https://www.jetbrains.com/";
     public static final String LINK_TITLE = "JetBrains";
-    public static final String LINK_DESCRIPTION = "JetBrains is a cutting-edge software vendor specializing in the creation of intelligent development tools, including IntelliJ IDEA – the leading Java IDE, and the Kotlin programming language.";
+    public static final String LINK_DESCRIPTION = "JetBrains is a cutting-edge software vendor specializing in the creation of intelligent development tools, including IntelliJ IDEA - the leading Java IDE, and the Kotlin programming language.";
     public static final String LINK_COVER = "https://resources.jetbrains.com/storage/products/jetbrains/img/meta/preview.png";
 
     public static final String TEXT_WITH_YOUTUBE_LINK = "tweet test https://www.youtube.com/watch?v=ewZZNeYDiLo&ab_channel=TeamSESH";
-    public static final String YOUTUBE_LINK = "https://www.youtube.com/watch?v=ewZZNeYDiLo&ab_channel=TeamSESH";
-    public static final String YOUTUBE_LINK_TITLE = "Bones - RestInPeace";
-    public static final String YOUTUBE_LINK_COVER = "https://i.ytimg.com/vi/ewZZNeYDiLo/mqdefault.jpg";
+    public static final String YOUTUBE_LINK = "https://www.youtube.com/watch?v=wd29NuVLjWU&t=36s";
+    public static final String YOUTUBE_LINK_TITLE = "Klim Zhukov. Midshipmen back, it's such a shame";
+    public static final String YOUTUBE_LINK_COVER = "https://i.ytimg.com/vi/wd29NuVLjWU/hqdefault.jpg?sqp=-oaymwE2CNACELwBSFXyq4qpAygIARUAAIhCGAFwAcABBvABAfgB_gmAAtAFigIMCAAQARhlIGUoZTAP&rs=AOn4CLBdqVPo2tVURiz2KTdEMrf7FG-6Zg.jpg";
 
     public static final Long LIST_ID = 1L;
     public static final Long LIST_USER_ID = 2L;

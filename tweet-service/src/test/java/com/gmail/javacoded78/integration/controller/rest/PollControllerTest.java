@@ -1,18 +1,16 @@
-package com.gmail.javacoded78.controller.rest;
+package com.gmail.javacoded78.integration.controller.rest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gmail.javacoded78.dto.request.TweetRequest;
 import com.gmail.javacoded78.dto.request.VoteRequest;
 import com.gmail.javacoded78.enums.ReplyType;
+import com.gmail.javacoded78.integration.IntegrationTestBase;
 import com.gmail.javacoded78.util.TestConstants;
+import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.ArrayList;
@@ -22,35 +20,25 @@ import static com.gmail.javacoded78.constants.ErrorMessage.INCORRECT_CHOICE_TEXT
 import static com.gmail.javacoded78.constants.ErrorMessage.INCORRECT_POLL_CHOICES;
 import static com.gmail.javacoded78.constants.ErrorMessage.POLL_CHOICE_NOT_FOUND;
 import static com.gmail.javacoded78.constants.ErrorMessage.POLL_NOT_FOUND;
-import static com.gmail.javacoded78.constants.ErrorMessage.TWEET_NOT_FOUND;
 import static com.gmail.javacoded78.constants.PathConstants.AUTH_USER_ID_HEADER;
 import static com.gmail.javacoded78.constants.PathConstants.POLL;
 import static com.gmail.javacoded78.constants.PathConstants.UI_V1_TWEETS;
 import static com.gmail.javacoded78.constants.PathConstants.VOTE;
 import static org.hamcrest.Matchers.is;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.springframework.test.context.jdbc.Sql.ExecutionPhase.AFTER_TEST_METHOD;
-import static org.springframework.test.context.jdbc.Sql.ExecutionPhase.BEFORE_TEST_METHOD;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@SpringBootTest
 @AutoConfigureMockMvc
-@ActiveProfiles("test")
-@Sql(value = {"/sql-test/clear-tweet-db.sql", "/sql-test/populate-tweet-db.sql"}, executionPhase = BEFORE_TEST_METHOD)
-@Sql(value = {"/sql-test/clear-tweet-db.sql"}, executionPhase = AFTER_TEST_METHOD)
-public class PollControllerTest {
+@RequiredArgsConstructor
+class PollControllerTest extends IntegrationTestBase {
 
-    @Autowired
-    private MockMvc mockMvc;
-
-    @Autowired
-    private ObjectMapper mapper;
+    private final MockMvc mockMvc;
+    private final ObjectMapper mapper;
 
     @Test
     @DisplayName("[200] POST /ui/v1/tweets/poll - Create tweet with poll")
-    public void createTweetWithPoll() throws Exception {
+    void createTweetWithPoll() throws Exception {
         List<String> pollChoiceList = new ArrayList<>();
         pollChoiceList.add("Choice 1");
         pollChoiceList.add("Choice 2");
@@ -64,39 +52,42 @@ public class PollControllerTest {
                         .header(AUTH_USER_ID_HEADER, TestConstants.USER_ID)
                         .content(mapper.writeValueAsString(tweetRequest))
                         .contentType(MediaType.APPLICATION_JSON_VALUE))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").isNotEmpty())
-                .andExpect(jsonPath("$.text").value(TestConstants.TEST_TWEET_TEXT))
-                .andExpect(jsonPath("$.dateTime").isNotEmpty())
-                .andExpect(jsonPath("$.scheduledDate").isEmpty())
-                .andExpect(jsonPath("$.addressedUsername").isEmpty())
-                .andExpect(jsonPath("$.addressedId").isEmpty())
-                .andExpect(jsonPath("$.addressedTweetId").isEmpty())
-                .andExpect(jsonPath("$.replyType").value(ReplyType.EVERYONE.toString()))
-                .andExpect(jsonPath("$.link").isEmpty())
-                .andExpect(jsonPath("$.linkTitle").isEmpty())
-                .andExpect(jsonPath("$.linkDescription").isEmpty())
-                .andExpect(jsonPath("$.linkCover").isEmpty())
-                .andExpect(jsonPath("$.linkCoverSize").isEmpty())
-                .andExpect(jsonPath("$.quoteTweet").isEmpty())
-                .andExpect(jsonPath("$.user.id").value(2L))
-                .andExpect(jsonPath("$.poll.id").isNotEmpty())
-                .andExpect(jsonPath("$.poll.pollChoices[0].id").isNotEmpty())
-                .andExpect(jsonPath("$.poll.pollChoices[1].id").isNotEmpty())
-                .andExpect(jsonPath("$.images").isEmpty())
-                .andExpect(jsonPath("$.retweetsCount").value(0L))
-                .andExpect(jsonPath("$.likedTweetsCount").value(0L))
-                .andExpect(jsonPath("$.repliesCount").value(0L))
-                .andExpect(jsonPath("$.isTweetLiked").value(false))
-                .andExpect(jsonPath("$.isTweetRetweeted").value(false))
-                .andExpect(jsonPath("$.isUserFollowByOtherUser").value(false))
-                .andExpect(jsonPath("$.isTweetDeleted").value(false))
-                .andExpect(jsonPath("$.isTweetBookmarked").value(false));
+                .andExpectAll(
+                        status().isOk(),
+                        jsonPath("$.id").isNotEmpty(),
+                        jsonPath("$.text").value(TestConstants.TEST_TWEET_TEXT),
+                        jsonPath("$.dateTime").isNotEmpty(),
+                        jsonPath("$.scheduledDate").isEmpty(),
+                        jsonPath("$.addressedUsername").isEmpty(),
+                        jsonPath("$.addressedId").isEmpty(),
+                        jsonPath("$.addressedTweetId").isEmpty(),
+                        jsonPath("$.replyType").value(ReplyType.EVERYONE.toString()),
+                        jsonPath("$.link").isEmpty(),
+                        jsonPath("$.linkTitle").isEmpty(),
+                        jsonPath("$.linkDescription").isEmpty(),
+                        jsonPath("$.linkCover").isEmpty(),
+                        jsonPath("$.linkCoverSize").isEmpty(),
+                        jsonPath("$.quoteTweet").isEmpty(),
+                        jsonPath("$.user.id").value(2L),
+                        jsonPath("$.poll.id").isNotEmpty(),
+                        jsonPath("$.poll.pollChoices[0].id").isNotEmpty(),
+                        jsonPath("$.poll.pollChoices[1].id").isNotEmpty(),
+                        jsonPath("$.images").isEmpty(),
+                        jsonPath("$.retweetsCount").value(0L),
+                        jsonPath("$.likedTweetsCount").value(0L),
+                        jsonPath("$.repliesCount").value(0L),
+                        jsonPath("$.isTweetLiked").value(false),
+                        jsonPath("$.isTweetRetweeted").value(false),
+                        jsonPath("$.isUserFollowByOtherUser").value(false),
+                        jsonPath("$.isTweetDeleted").value(false),
+                        jsonPath("$.isTweetBookmarked").value(false)
+                );
+
     }
 
     @Test
     @DisplayName("[400] POST /ui/v1/tweets/poll - Should incorrect poll choices size is 1")
-    public void createTweetWithPoll_ShouldIncorrectPoolChoicesSizeIs1() throws Exception {
+    void createTweetWithPoll_ShouldIncorrectPoolChoicesSizeIs1() throws Exception {
         List<String> pollChoiceList = new ArrayList<>();
         pollChoiceList.add("Choice 1");
         TweetRequest tweetRequest = new TweetRequest();
@@ -115,7 +106,7 @@ public class PollControllerTest {
 
     @Test
     @DisplayName("[400] POST /ui/v1/tweets/poll - Should incorrect poll choices size is 5")
-    public void createTweetWithPoll_ShouldIncorrectPoolChoicesSizeIs5() throws Exception {
+    void createTweetWithPoll_ShouldIncorrectPoolChoicesSizeIs5() throws Exception {
         List<String> pollChoiceList = new ArrayList<>();
         pollChoiceList.add("Choice 1");
         pollChoiceList.add("Choice 2");
@@ -138,7 +129,7 @@ public class PollControllerTest {
 
     @Test
     @DisplayName("[400] POST /ui/v1/tweets/poll - Should incorrect poll choices text length is 0")
-    public void createTweetWithPoll_ShouldIncorrectPoolChoicesTextLengthIs0() throws Exception {
+    void createTweetWithPoll_ShouldIncorrectPoolChoicesTextLengthIs0() throws Exception {
         List<String> pollChoiceList = new ArrayList<>();
         pollChoiceList.add("Choice 1");
         pollChoiceList.add("");
@@ -158,7 +149,7 @@ public class PollControllerTest {
 
     @Test
     @DisplayName("[400] POST /ui/v1/tweets/poll - Should incorrect poll choices text length more than 25")
-    public void createTweetWithPoll_ShouldIncorrectPoolChoicesTextLengthMoreThan25() throws Exception {
+    void createTweetWithPoll_ShouldIncorrectPoolChoicesTextLengthMoreThan25() throws Exception {
         List<String> pollChoiceList = new ArrayList<>();
         pollChoiceList.add("Choice 1");
         pollChoiceList.add(TestConstants.LINK_DESCRIPTION);
@@ -178,7 +169,7 @@ public class PollControllerTest {
 
     @Test
     @DisplayName("[200] POST /ui/v1/tweets/vote - Vote in poll")
-    public void voteInPoll() throws Exception {
+    void voteInPoll() throws Exception {
         VoteRequest voteRequest = new VoteRequest();
         voteRequest.setTweetId(40L);
         voteRequest.setPollId(2L);
@@ -188,40 +179,42 @@ public class PollControllerTest {
                         .header(AUTH_USER_ID_HEADER, TestConstants.USER_ID)
                         .content(mapper.writeValueAsString(voteRequest))
                         .contentType(MediaType.APPLICATION_JSON_VALUE))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(40))
-                .andExpect(jsonPath("$.text").value("test tweet"))
-                .andExpect(jsonPath("$.dateTime").value("2021-10-03T20:29:03"))
-                .andExpect(jsonPath("$.scheduledDate").isEmpty())
-                .andExpect(jsonPath("$.addressedUsername").isEmpty())
-                .andExpect(jsonPath("$.addressedId").isEmpty())
-                .andExpect(jsonPath("$.addressedTweetId").isEmpty())
-                .andExpect(jsonPath("$.replyType").value(ReplyType.EVERYONE.toString()))
-                .andExpect(jsonPath("$.link").isEmpty())
-                .andExpect(jsonPath("$.linkTitle").isEmpty())
-                .andExpect(jsonPath("$.linkDescription").isEmpty())
-                .andExpect(jsonPath("$.linkCover").isEmpty())
-                .andExpect(jsonPath("$.linkCoverSize").isEmpty())
-                .andExpect(jsonPath("$.user.id").value(2L))
-                .andExpect(jsonPath("$.images").isEmpty())
-                .andExpect(jsonPath("$.quoteTweet").isEmpty())
-                .andExpect(jsonPath("$.poll.pollChoices[0].id").value(9))
-                .andExpect(jsonPath("$.poll.pollChoices[0].votedUser[0].id").value(2))
-                .andExpect(jsonPath("$.poll.pollChoices[1].id").value(10))
-                .andExpect(jsonPath("$.poll.pollChoices[1].votedUser[0].id").value(1))
-                .andExpect(jsonPath("$.retweetsCount").value(1L))
-                .andExpect(jsonPath("$.likedTweetsCount").value(1L))
-                .andExpect(jsonPath("$.repliesCount").value(1L))
-                .andExpect(jsonPath("$.isTweetLiked").value(false))
-                .andExpect(jsonPath("$.isTweetRetweeted").value(false))
-                .andExpect(jsonPath("$.isUserFollowByOtherUser").value(false))
-                .andExpect(jsonPath("$.isTweetDeleted").value(false))
-                .andExpect(jsonPath("$.isTweetBookmarked").value(true));
+                .andExpectAll(
+                        status().isOk(),
+                        jsonPath("$.id").value(40),
+                        jsonPath("$.text").value("test tweet"),
+                        jsonPath("$.dateTime").value("2023-09-20T20:29:03"),
+                        jsonPath("$.scheduledDate").isEmpty(),
+                        jsonPath("$.addressedUsername").isEmpty(),
+                        jsonPath("$.addressedId").isEmpty(),
+                        jsonPath("$.addressedTweetId").isEmpty(),
+                        jsonPath("$.replyType").value(ReplyType.EVERYONE.toString()),
+                        jsonPath("$.link").isEmpty(),
+                        jsonPath("$.linkTitle").isEmpty(),
+                        jsonPath("$.linkDescription").isEmpty(),
+                        jsonPath("$.linkCover").isEmpty(),
+                        jsonPath("$.linkCoverSize").isEmpty(),
+                        jsonPath("$.user.id").value(2L),
+                        jsonPath("$.images").isEmpty(),
+                        jsonPath("$.quoteTweet").isEmpty(),
+                        jsonPath("$.poll.pollChoices[0].id").value(9),
+                        jsonPath("$.poll.pollChoices[0].votedUser[0].id").value(2),
+                        jsonPath("$.poll.pollChoices[1].id").value(10),
+                        jsonPath("$.poll.pollChoices[1].votedUser[0].id").value(1),
+                        jsonPath("$.retweetsCount").value(1L),
+                        jsonPath("$.likedTweetsCount").value(1L),
+                        jsonPath("$.repliesCount").value(1L),
+                        jsonPath("$.isTweetLiked").value(false),
+                        jsonPath("$.isTweetRetweeted").value(false),
+                        jsonPath("$.isUserFollowByOtherUser").value(false),
+                        jsonPath("$.isTweetDeleted").value(false),
+                        jsonPath("$.isTweetBookmarked").value(true)
+                );
     }
 
     @Test
     @DisplayName("[404] POST /ui/v1/tweets/vote - Should poll Not Found")
-    public void voteInPoll_ShouldPollNotFound() throws Exception {
+    void voteInPoll_ShouldPollNotFound() throws Exception {
         VoteRequest voteRequest = new VoteRequest();
         voteRequest.setTweetId(40L);
         voteRequest.setPollId(99L);
@@ -237,7 +230,7 @@ public class PollControllerTest {
 
     @Test
     @DisplayName("[404] POST /ui/v1/tweets/vote - Should poll choice Not Found")
-    public void voteInPoll_ShouldPollChoiceNotFound() throws Exception {
+    void voteInPoll_ShouldPollChoiceNotFound() throws Exception {
         VoteRequest voteRequest = new VoteRequest();
         voteRequest.setTweetId(40L);
         voteRequest.setPollId(2L);
@@ -253,7 +246,7 @@ public class PollControllerTest {
 
     @Test
     @DisplayName("[404] POST /ui/v1/tweets/vote - Should tweet Not Found")
-    public void voteInPoll_ShouldTweetNotFound() throws Exception {
+    void voteInPoll_ShouldTweetNotFound() throws Exception {
         VoteRequest voteRequest = new VoteRequest();
         voteRequest.setTweetId(99L);
         voteRequest.setPollId(2L);
@@ -269,7 +262,7 @@ public class PollControllerTest {
 
     @Test
     @DisplayName("[404] POST /ui/v1/tweets/vote - Should poll in tweet Not Found")
-    public void voteInPoll_ShouldPollInTweetNotFound() throws Exception {
+    void voteInPoll_ShouldPollInTweetNotFound() throws Exception {
         VoteRequest voteRequest = new VoteRequest();
         voteRequest.setTweetId(40L);
         voteRequest.setPollId(8L);
