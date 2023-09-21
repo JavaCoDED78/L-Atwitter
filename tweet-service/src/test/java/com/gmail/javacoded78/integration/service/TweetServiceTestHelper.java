@@ -1,4 +1,4 @@
-package com.gmail.javacoded78.service;
+package com.gmail.javacoded78.integration.service;
 
 import com.gmail.javacoded78.dto.request.NotificationRequest;
 import com.gmail.javacoded78.dto.response.tweet.TweetAuthorResponse;

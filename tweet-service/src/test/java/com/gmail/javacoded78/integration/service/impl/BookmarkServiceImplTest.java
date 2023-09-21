@@ -1,4 +1,4 @@
-package com.gmail.javacoded78.service.impl;
+package com.gmail.javacoded78.integration.service.impl;
 
 import com.gmail.javacoded78.exception.ApiRequestException;
 import com.gmail.javacoded78.feign.UserClient;
@@ -7,6 +7,7 @@ import com.gmail.javacoded78.model.Tweet;
 import com.gmail.javacoded78.repository.BookmarkRepository;
 import com.gmail.javacoded78.repository.TweetRepository;
 import com.gmail.javacoded78.repository.projection.BookmarkProjection;
+import com.gmail.javacoded78.service.impl.BookmarkServiceImpl;
 import com.gmail.javacoded78.util.TestConstants;
 import com.gmail.javacoded78.util.TestUtil;
 import lombok.RequiredArgsConstructor;
@@ -24,7 +25,7 @@ import static com.gmail.javacoded78.constants.ErrorMessage.TWEET_DELETED;
 import static com.gmail.javacoded78.constants.ErrorMessage.TWEET_NOT_FOUND;
 import static com.gmail.javacoded78.constants.ErrorMessage.USER_NOT_FOUND;
 import static com.gmail.javacoded78.constants.ErrorMessage.USER_PROFILE_BLOCKED;
-import static com.gmail.javacoded78.service.TweetServiceTestHelper.createMockBookmarkProjectionList;
+import static com.gmail.javacoded78.integration.service.TweetServiceTestHelper.createMockBookmarkProjectionList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;

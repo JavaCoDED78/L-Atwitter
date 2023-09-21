@@ -1,4 +1,4 @@
-package com.gmail.javacoded78.service.util;
+package com.gmail.javacoded78.integration.service.util;
 
 import com.gmail.javacoded78.constants.PathConstants;
 import com.gmail.javacoded78.dto.request.IdsRequest;
@@ -6,6 +6,7 @@ import com.gmail.javacoded78.exception.ApiRequestException;
 import com.gmail.javacoded78.feign.UserClient;
 import com.gmail.javacoded78.model.Tweet;
 import com.gmail.javacoded78.repository.TweetRepository;
+import com.gmail.javacoded78.service.util.TweetValidationHelper;
 import com.gmail.javacoded78.util.TestConstants;
 import com.gmail.javacoded78.util.TestUtil;
 import lombok.RequiredArgsConstructor;

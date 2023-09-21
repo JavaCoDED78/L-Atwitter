@@ -1,4 +1,4 @@
-package com.gmail.javacoded78.service.util;
+package com.gmail.javacoded78.integration.service.util;
 
 import com.gmail.javacoded78.dto.request.TweetTextRequest;
 import com.gmail.javacoded78.dto.response.tweet.TweetResponse;
@@ -10,7 +10,9 @@ import com.gmail.javacoded78.model.Tweet;
 import com.gmail.javacoded78.model.TweetImage;
 import com.gmail.javacoded78.repository.TweetRepository;
 import com.gmail.javacoded78.repository.projection.TweetProjection;
-import com.gmail.javacoded78.service.TweetServiceTestHelper;
+import com.gmail.javacoded78.integration.service.TweetServiceTestHelper;
+import com.gmail.javacoded78.service.util.TweetServiceHelper;
+import com.gmail.javacoded78.service.util.TweetValidationHelper;
 import com.gmail.javacoded78.util.TestConstants;
 import com.gmail.javacoded78.util.TestUtil;
 import lombok.RequiredArgsConstructor;
