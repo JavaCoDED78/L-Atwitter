@@ -5,6 +5,7 @@ import com.gmail.javacoded78.model.Tweet;
 import com.gmail.javacoded78.repository.TweetRepository;
 import com.gmail.javacoded78.repository.projection.TweetProjection;
 import com.gmail.javacoded78.service.ScheduledTweetService;
+import com.gmail.javacoded78.service.TweetService;
 import com.gmail.javacoded78.service.util.TweetServiceHelper;
 import com.gmail.javacoded78.service.util.TweetValidationHelper;
 import com.gmail.javacoded78.util.AuthUtil;
@@ -25,7 +26,7 @@ import static com.gmail.javacoded78.constants.ErrorMessage.TWEET_NOT_FOUND;
 public class ScheduledTweetServiceImpl implements ScheduledTweetService {
 
     private final TweetRepository tweetRepository;
-    private final TweetServiceImpl tweetService;
+    private final TweetService tweetService;
     private final TweetServiceHelper tweetServiceHelper;
     private final TweetValidationHelper tweetValidationHelper;
 

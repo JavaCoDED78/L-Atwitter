@@ -12,6 +12,7 @@ import com.gmail.javacoded78.repository.PollRepository;
 import com.gmail.javacoded78.repository.TweetRepository;
 import com.gmail.javacoded78.repository.projection.TweetProjection;
 import com.gmail.javacoded78.service.PollService;
+import com.gmail.javacoded78.service.TweetService;
 import com.gmail.javacoded78.service.util.TweetServiceHelper;
 import com.gmail.javacoded78.service.util.TweetValidationHelper;
 import com.gmail.javacoded78.util.AuthUtil;
@@ -38,7 +39,7 @@ public class PollServiceImpl implements PollService {
     private final PollRepository pollRepository;
     private final PollChoiceRepository pollChoiceRepository;
     private final PollChoiceVotedRepository pollChoiceVotedRepository;
-    private final TweetServiceImpl tweetService;
+    private final TweetService tweetService;
     private final TweetServiceHelper tweetServiceHelper;
     private final TweetValidationHelper tweetValidationHelper;
     private final TweetRepository tweetRepository;

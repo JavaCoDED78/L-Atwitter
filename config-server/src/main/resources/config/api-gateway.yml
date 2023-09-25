@@ -54,12 +54,14 @@ spring:
             predicates:
               - Path=/ui/v1/user/**, /api/v1/user/**, /api/v1/auth/**
             filters:
-              - name: AuthFilter
+              - AuthFilter
 
         -   id: auth-service
             uri: lb://user-service
             predicates:
               - Path=/ui/v1/auth/**
+            filters:
+              - AuthFilter
 
         -   id: lists-service
             uri: lb://lists-service

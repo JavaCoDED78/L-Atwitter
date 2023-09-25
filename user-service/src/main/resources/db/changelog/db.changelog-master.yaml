@@ -1,0 +1,5 @@
+databaseChangeLog:
+  - include:
+      file: db/changelog/db.changelog-init-user-1.0.sql
+  - include:
+      file: db/changelog/db.changelog-populate-user-1.0.sql
