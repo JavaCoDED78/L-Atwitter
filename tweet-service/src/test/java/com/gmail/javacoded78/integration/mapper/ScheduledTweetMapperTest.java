@@ -1,20 +1,21 @@
-package com.gmail.javacoded78.mapper;
+package com.gmail.javacoded78.integration.mapper;
 
 import com.gmail.javacoded78.dto.HeaderResponse;
 import com.gmail.javacoded78.dto.request.TweetDeleteRequest;
 import com.gmail.javacoded78.dto.request.TweetRequest;
 import com.gmail.javacoded78.dto.response.tweet.TweetResponse;
 import com.gmail.javacoded78.integration.service.TweetServiceTestHelper;
+import com.gmail.javacoded78.mapper.BasicMapper;
+import com.gmail.javacoded78.mapper.ScheduledTweetMapper;
 import com.gmail.javacoded78.model.Tweet;
 import com.gmail.javacoded78.repository.projection.TweetProjection;
 import com.gmail.javacoded78.service.ScheduledTweetService;
+import com.gmail.javacoded78.util.AbstractAuthTest;
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpHeaders;
 
 import java.util.Arrays;
@@ -25,9 +26,8 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@SpringBootTest
 @RequiredArgsConstructor
-class ScheduledTweetMapperTest {
+class ScheduledTweetMapperTest extends AbstractAuthTest {
 
     private final ScheduledTweetMapper scheduledTweetMapper;
 
@@ -36,8 +36,6 @@ class ScheduledTweetMapperTest {
 
     @MockBean
     private final ScheduledTweetService scheduledTweetService;
-
-    private static final PageRequest pageable = PageRequest.of(0, 20);
     private static final List<TweetProjection> tweetProjections = Arrays.asList(
             TweetServiceTestHelper.createTweetProjection(false, TweetProjection.class),
             TweetServiceTestHelper.createTweetProjection(false, TweetProjection.class));

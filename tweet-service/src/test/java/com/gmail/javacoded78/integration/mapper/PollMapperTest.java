@@ -1,15 +1,17 @@
-package com.gmail.javacoded78.mapper;
+package com.gmail.javacoded78.integration.mapper;
 
 import com.gmail.javacoded78.dto.request.TweetRequest;
 import com.gmail.javacoded78.dto.request.VoteRequest;
 import com.gmail.javacoded78.dto.response.tweet.TweetResponse;
 import com.gmail.javacoded78.integration.service.TweetServiceTestHelper;
+import com.gmail.javacoded78.mapper.BasicMapper;
+import com.gmail.javacoded78.mapper.PollMapper;
 import com.gmail.javacoded78.model.Tweet;
 import com.gmail.javacoded78.repository.projection.TweetProjection;
 import com.gmail.javacoded78.service.PollService;
+import com.gmail.javacoded78.util.AbstractAuthTest;
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -17,9 +19,8 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@SpringBootTest
 @RequiredArgsConstructor
-class PollMapperTest {
+class PollMapperTest extends AbstractAuthTest {
 
     private final PollMapper pollMapper;
 

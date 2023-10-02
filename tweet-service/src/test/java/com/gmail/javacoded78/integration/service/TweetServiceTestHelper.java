@@ -1,6 +1,8 @@
 package com.gmail.javacoded78.integration.service;
 
+import com.gmail.javacoded78.constants.PathConstants;
 import com.gmail.javacoded78.dto.request.NotificationRequest;
+import com.gmail.javacoded78.dto.response.chat.ChatTweetUserResponse;
 import com.gmail.javacoded78.dto.response.tweet.TweetAuthorResponse;
 import com.gmail.javacoded78.dto.response.tweet.TweetListResponse;
 import com.gmail.javacoded78.enums.LinkCoverSize;
@@ -10,6 +12,8 @@ import com.gmail.javacoded78.model.GifImage;
 import com.gmail.javacoded78.model.Poll;
 import com.gmail.javacoded78.model.Tweet;
 import com.gmail.javacoded78.repository.projection.BookmarkProjection;
+import com.gmail.javacoded78.repository.projection.ChatTweetProjection;
+import com.gmail.javacoded78.repository.projection.NotificationTweetProjection;
 import com.gmail.javacoded78.repository.projection.ProfileTweetImageProjection;
 import com.gmail.javacoded78.repository.projection.RetweetProjection;
 import com.gmail.javacoded78.repository.projection.TweetProjection;
@@ -17,6 +21,9 @@ import com.gmail.javacoded78.repository.projection.TweetUserProjection;
 import com.gmail.javacoded78.util.TestConstants;
 import org.springframework.data.projection.ProjectionFactory;
 import org.springframework.data.projection.SpelAwareProxyProjectionFactory;
+import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -141,5 +148,30 @@ public class TweetServiceTestHelper {
                         "tweet", TweetServiceTestHelper.createTweetProjection(false, TweetProjection.class)
                 ));
         return Arrays.asList(bookmarkProjection1, bookmarkProjection2);
+    }
+
+    public static NotificationTweetProjection createNotificationTweetProjection() {
+        return factory.createProjection(
+                NotificationTweetProjection.class,
+                Map.of("id", 1L,
+                        "text", "test text",
+                        "authorId", TestConstants.USER_ID));
+    }
+
+    public static ChatTweetProjection createChatTweetProjection() {
+        return factory.createProjection(
+                ChatTweetProjection.class,
+                Map.of("id", 1L,
+                        "text", "test text",
+                        "dateTime", LocalDateTime.now(),
+                        "user", new ChatTweetUserResponse(),
+                        "authorId", TestConstants.USER_ID,
+                        "deleted", false));
+    }
+
+    public static void mockAuthenticatedUserId() {
+        MockHttpServletRequest mockRequest = new MockHttpServletRequest();
+        mockRequest.addHeader(PathConstants.AUTH_USER_ID_HEADER, 1L);
+        RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(mockRequest));
     }
 }

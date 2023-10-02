@@ -1,19 +1,16 @@
 package com.gmail.javacoded78.integration.service.impl;
 
-import com.gmail.javacoded78.constants.PathConstants;
 import com.gmail.javacoded78.dto.HeaderResponse;
 import com.gmail.javacoded78.dto.request.IdsRequest;
 import com.gmail.javacoded78.dto.response.tweet.TweetResponse;
 import com.gmail.javacoded78.dto.response.user.UserResponse;
 import com.gmail.javacoded78.enums.ReplyType;
 import com.gmail.javacoded78.exception.ApiRequestException;
-import com.gmail.javacoded78.feign.ImageClient;
 import com.gmail.javacoded78.feign.TagClient;
 import com.gmail.javacoded78.feign.UserClient;
 import com.gmail.javacoded78.integration.service.TweetServiceTestHelper;
 import com.gmail.javacoded78.model.Tweet;
 import com.gmail.javacoded78.repository.RetweetRepository;
-import com.gmail.javacoded78.repository.TweetImageRepository;
 import com.gmail.javacoded78.repository.TweetRepository;
 import com.gmail.javacoded78.repository.projection.ProfileTweetImageProjection;
 import com.gmail.javacoded78.repository.projection.RetweetProjection;
@@ -22,21 +19,17 @@ import com.gmail.javacoded78.repository.projection.TweetProjection;
 import com.gmail.javacoded78.repository.projection.TweetUserProjection;
 import com.gmail.javacoded78.service.impl.TweetServiceImpl;
 import com.gmail.javacoded78.service.util.TweetServiceHelper;
+import com.gmail.javacoded78.util.AbstractAuthTest;
 import com.gmail.javacoded78.util.TestConstants;
-import com.gmail.javacoded78.util.TestUtil;
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.mock.web.MockHttpServletRequest;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -54,9 +47,8 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@SpringBootTest
 @RequiredArgsConstructor
-class TweetServiceImplTest {
+class TweetServiceImplTest extends AbstractAuthTest {
 
     private final TweetServiceImpl tweetService;
 
@@ -66,8 +58,6 @@ class TweetServiceImplTest {
     @MockBean
     private final TweetServiceHelper tweetServiceHelper;
 
-    @MockBean
-    private final TweetImageRepository tweetImageRepository;
 
     @MockBean
     private final RetweetRepository retweetRepository;
@@ -78,11 +68,6 @@ class TweetServiceImplTest {
     @MockBean
     private final TagClient tagClient;
 
-    @MockBean
-    private final ImageClient imageClient;
-
-    private static final PageRequest pageable = PageRequest.of(0, 20);
-    private static final List<Long> ids = List.of(1L, 2L, 3L);
     private static final List<TweetProjection> tweetProjections = Arrays.asList(
             TweetServiceTestHelper.createTweetProjection(false, TweetProjection.class),
             TweetServiceTestHelper.createTweetProjection(false, TweetProjection.class));
@@ -90,7 +75,7 @@ class TweetServiceImplTest {
 
     @BeforeEach
     public void setUp() {
-        TestUtil.mockAuthenticatedUserId();
+        super.setUp();
     }
 
     @Test
@@ -132,7 +117,7 @@ class TweetServiceImplTest {
 
     @Test
     void getTweetById_ShouldUserNotFound() {
-        mockAuthenticatedUserId();
+        TweetServiceTestHelper.mockAuthenticatedUserId();
         TweetProjection tweetProjection = TweetServiceTestHelper.createTweetProjection(false, TweetProjection.class);
         when(tweetRepository.getTweetById(TestConstants.TWEET_ID, TweetProjection.class)).thenReturn(Optional.of(tweetProjection));
         when(userClient.isUserHavePrivateProfile(TestConstants.USER_ID)).thenReturn(true);
@@ -144,7 +129,7 @@ class TweetServiceImplTest {
 
     @Test
     void getTweetById_ShouldUserProfileBlocked() {
-        mockAuthenticatedUserId();
+        TweetServiceTestHelper.mockAuthenticatedUserId();
         TweetProjection tweetProjection = TweetServiceTestHelper.createTweetProjection(false, TweetProjection.class);
         when(tweetRepository.getTweetById(TestConstants.TWEET_ID, TweetProjection.class)).thenReturn(Optional.of(tweetProjection));
         when(userClient.isUserHavePrivateProfile(TestConstants.USER_ID)).thenReturn(false);
@@ -215,7 +200,7 @@ class TweetServiceImplTest {
 
     @Test
     void getUserTweets_ShouldUserNotFound() {
-        mockAuthenticatedUserId();
+        TweetServiceTestHelper.mockAuthenticatedUserId();
         when(userClient.isUserExists(TestConstants.USER_ID)).thenReturn(true);
         when(userClient.isUserHavePrivateProfile(TestConstants.USER_ID)).thenReturn(true);
         ApiRequestException exception = assertThrows(ApiRequestException.class,
@@ -226,7 +211,7 @@ class TweetServiceImplTest {
 
     @Test
     void getUserTweets_ShouldUserProfileBlocked() {
-        mockAuthenticatedUserId();
+        TweetServiceTestHelper.mockAuthenticatedUserId();
         when(userClient.isUserExists(TestConstants.USER_ID)).thenReturn(true);
         when(userClient.isUserHavePrivateProfile(TestConstants.USER_ID)).thenReturn(false);
         when(userClient.isMyProfileBlockedByUser(TestConstants.USER_ID)).thenReturn(true);
@@ -256,7 +241,7 @@ class TweetServiceImplTest {
 
     @Test
     void getUserMediaTweets_ShouldUserNotFound() {
-        mockAuthenticatedUserId();
+        TweetServiceTestHelper.mockAuthenticatedUserId();
         when(userClient.isUserExists(TestConstants.USER_ID)).thenReturn(true);
         when(userClient.isUserHavePrivateProfile(TestConstants.USER_ID)).thenReturn(true);
         ApiRequestException exception = assertThrows(ApiRequestException.class,
@@ -267,7 +252,7 @@ class TweetServiceImplTest {
 
     @Test
     void getUserMediaTweets_ShouldUserProfileBlocked() {
-        mockAuthenticatedUserId();
+        TweetServiceTestHelper.mockAuthenticatedUserId();
         when(userClient.isUserExists(TestConstants.USER_ID)).thenReturn(true);
         when(userClient.isUserHavePrivateProfile(TestConstants.USER_ID)).thenReturn(false);
         when(userClient.isMyProfileBlockedByUser(TestConstants.USER_ID)).thenReturn(true);
@@ -299,7 +284,7 @@ class TweetServiceImplTest {
 
     @Test
     void getUserTweetImages_ShouldUserNotFound() {
-        mockAuthenticatedUserId();
+        TweetServiceTestHelper.mockAuthenticatedUserId();
         when(userClient.isUserExists(TestConstants.USER_ID)).thenReturn(true);
         when(userClient.isUserHavePrivateProfile(TestConstants.USER_ID)).thenReturn(true);
         ApiRequestException exception = assertThrows(ApiRequestException.class,
@@ -310,7 +295,7 @@ class TweetServiceImplTest {
 
     @Test
     void getUserTweetImages_ShouldUserProfileBlocked() {
-        mockAuthenticatedUserId();
+        TweetServiceTestHelper.mockAuthenticatedUserId();
         when(userClient.isUserExists(TestConstants.USER_ID)).thenReturn(true);
         when(userClient.isUserHavePrivateProfile(TestConstants.USER_ID)).thenReturn(false);
         when(userClient.isMyProfileBlockedByUser(TestConstants.USER_ID)).thenReturn(true);
@@ -350,7 +335,7 @@ class TweetServiceImplTest {
 
     @Test
     void getTweetAdditionalInfoById_ShouldUserNotFound() {
-        mockAuthenticatedUserId();
+        TweetServiceTestHelper.mockAuthenticatedUserId();
         TweetAdditionalInfoProjection tweetProjection = TweetServiceTestHelper.createTweetProjection(false, TweetAdditionalInfoProjection.class);
         when(tweetRepository.getTweetById(TestConstants.TWEET_ID, TweetAdditionalInfoProjection.class)).thenReturn(Optional.of(tweetProjection));
         when(userClient.isUserHavePrivateProfile(TestConstants.USER_ID)).thenReturn(true);
@@ -362,7 +347,7 @@ class TweetServiceImplTest {
 
     @Test
     void getTweetAdditionalInfoById_ShouldUserProfileBlocked() {
-        mockAuthenticatedUserId();
+        TweetServiceTestHelper.mockAuthenticatedUserId();
         TweetAdditionalInfoProjection tweetProjection = TweetServiceTestHelper.createTweetProjection(false, TweetAdditionalInfoProjection.class);
         when(tweetRepository.getTweetById(TestConstants.TWEET_ID, TweetAdditionalInfoProjection.class)).thenReturn(Optional.of(tweetProjection));
         when(userClient.isUserHavePrivateProfile(TestConstants.USER_ID)).thenReturn(false);
@@ -406,7 +391,7 @@ class TweetServiceImplTest {
 
     @Test
     void getRepliesByTweetId_ShouldUserNotFound() {
-        mockAuthenticatedUserId();
+        TweetServiceTestHelper.mockAuthenticatedUserId();
         Tweet tweet = new Tweet();
         tweet.setDeleted(false);
         tweet.setAuthorId(TestConstants.USER_ID);
@@ -420,7 +405,7 @@ class TweetServiceImplTest {
 
     @Test
     void getRepliesByTweetId_ShouldUserProfileBlocked() {
-        mockAuthenticatedUserId();
+        TweetServiceTestHelper.mockAuthenticatedUserId();
         Tweet tweet = new Tweet();
         tweet.setDeleted(false);
         tweet.setAuthorId(TestConstants.USER_ID);
@@ -470,7 +455,7 @@ class TweetServiceImplTest {
 
     @Test
     void getQuotesByTweetId_ShouldUserNotFound() {
-        mockAuthenticatedUserId();
+        TweetServiceTestHelper.mockAuthenticatedUserId();
         Tweet tweet = new Tweet();
         tweet.setDeleted(false);
         tweet.setAuthorId(TestConstants.USER_ID);
@@ -484,7 +469,7 @@ class TweetServiceImplTest {
 
     @Test
     void getQuotesByTweetId_ShouldUserProfileBlocked() {
-        mockAuthenticatedUserId();
+        TweetServiceTestHelper.mockAuthenticatedUserId();
         Tweet tweet = new Tweet();
         tweet.setDeleted(false);
         tweet.setAuthorId(TestConstants.USER_ID);
@@ -565,7 +550,7 @@ class TweetServiceImplTest {
 
     @Test
     void getTaggedImageUsers_ShouldUserNotFound() {
-        mockAuthenticatedUserId();
+        TweetServiceTestHelper.mockAuthenticatedUserId();
         Tweet tweet = new Tweet();
         tweet.setDeleted(false);
         tweet.setAuthorId(TestConstants.USER_ID);
@@ -579,7 +564,7 @@ class TweetServiceImplTest {
 
     @Test
     void getTaggedImageUsers_ShouldUserProfileBlocked() {
-        mockAuthenticatedUserId();
+        TweetServiceTestHelper.mockAuthenticatedUserId();
         Tweet tweet = new Tweet();
         tweet.setDeleted(false);
         tweet.setAuthorId(TestConstants.USER_ID);
@@ -669,7 +654,7 @@ class TweetServiceImplTest {
 
     @Test
     void replyTweet_ShouldUserNotFound() {
-        mockAuthenticatedUserId();
+        TweetServiceTestHelper.mockAuthenticatedUserId();
         Tweet tweet = new Tweet();
         tweet.setDeleted(false);
         tweet.setAuthorId(TestConstants.USER_ID);
@@ -683,7 +668,7 @@ class TweetServiceImplTest {
 
     @Test
     void replyTweet_ShouldUserProfileBlocked() {
-        mockAuthenticatedUserId();
+        TweetServiceTestHelper.mockAuthenticatedUserId();
         Tweet tweet = new Tweet();
         tweet.setDeleted(false);
         tweet.setAuthorId(TestConstants.USER_ID);
@@ -732,7 +717,7 @@ class TweetServiceImplTest {
 
     @Test
     void quoteTweet_ShouldUserNotFound() {
-        mockAuthenticatedUserId();
+        TweetServiceTestHelper.mockAuthenticatedUserId();
         Tweet tweet = new Tweet();
         tweet.setDeleted(false);
         tweet.setAuthorId(TestConstants.USER_ID);
@@ -746,7 +731,7 @@ class TweetServiceImplTest {
 
     @Test
     void quoteTweet_ShouldUserProfileBlocked() {
-        mockAuthenticatedUserId();
+        TweetServiceTestHelper.mockAuthenticatedUserId();
         Tweet tweet = new Tweet();
         tweet.setDeleted(false);
         tweet.setAuthorId(TestConstants.USER_ID);
@@ -786,7 +771,7 @@ class TweetServiceImplTest {
 
     @Test
     void changeTweetReplyType_ShouldAuthorTweetNotFound() {
-        mockAuthenticatedUserId();
+        TweetServiceTestHelper.mockAuthenticatedUserId();
         Tweet tweet = new Tweet();
         tweet.setAuthorId(TestConstants.USER_ID);
         when(tweetRepository.getTweetByAuthorIdAndTweetId(TestConstants.TWEET_ID, TestConstants.USER_ID))
@@ -795,11 +780,5 @@ class TweetServiceImplTest {
                 () -> tweetService.changeTweetReplyType(TestConstants.TWEET_ID, ReplyType.MENTION));
         assertEquals(TWEET_NOT_FOUND, exception.getMessage());
         assertEquals(HttpStatus.NOT_FOUND, exception.getStatus());
-    }
-
-    private void mockAuthenticatedUserId() {
-        MockHttpServletRequest mockRequest = new MockHttpServletRequest();
-        mockRequest.addHeader(PathConstants.AUTH_USER_ID_HEADER, 1L);
-        RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(mockRequest));
     }
 }

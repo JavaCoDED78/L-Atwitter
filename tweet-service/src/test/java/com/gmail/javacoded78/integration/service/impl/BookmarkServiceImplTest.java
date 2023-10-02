@@ -8,16 +8,14 @@ import com.gmail.javacoded78.repository.BookmarkRepository;
 import com.gmail.javacoded78.repository.TweetRepository;
 import com.gmail.javacoded78.repository.projection.BookmarkProjection;
 import com.gmail.javacoded78.service.impl.BookmarkServiceImpl;
+import com.gmail.javacoded78.util.AbstractAuthTest;
 import com.gmail.javacoded78.util.TestConstants;
-import com.gmail.javacoded78.util.TestUtil;
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import java.util.Optional;
 
@@ -34,9 +32,8 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@SpringBootTest
 @RequiredArgsConstructor
-class BookmarkServiceImplTest {
+class BookmarkServiceImplTest extends AbstractAuthTest {
 
     private final BookmarkServiceImpl bookmarkService;
 
@@ -48,13 +45,11 @@ class BookmarkServiceImplTest {
 
     @MockBean
     private final UserClient userClient;
-
-    private static final PageRequest pageable = PageRequest.of(0, 20);
     private static Tweet tweet;
 
     @BeforeEach
     public void setUp() {
-        TestUtil.mockAuthenticatedUserId();
+        super.setUp();
         tweet = Tweet.builder()
                 .deleted(false)
                 .authorId(TestConstants.USER_ID)

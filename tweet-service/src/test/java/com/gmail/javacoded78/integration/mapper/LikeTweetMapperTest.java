@@ -1,17 +1,16 @@
-package com.gmail.javacoded78.mapper;
+package com.gmail.javacoded78.integration.mapper;
 
 import com.gmail.javacoded78.dto.HeaderResponse;
 import com.gmail.javacoded78.dto.response.notification.NotificationResponse;
 import com.gmail.javacoded78.dto.response.user.UserResponse;
+import com.gmail.javacoded78.mapper.LikeTweetMapper;
 import com.gmail.javacoded78.service.LikeTweetService;
+import com.gmail.javacoded78.util.AbstractAuthTest;
 import com.gmail.javacoded78.util.TestConstants;
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 
 import java.util.List;
@@ -20,16 +19,13 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@SpringBootTest
 @RequiredArgsConstructor
-class LikeTweetMapperTest {
+class LikeTweetMapperTest extends AbstractAuthTest {
 
     private final LikeTweetMapper likeTweetMapper;
 
     @MockBean
     private final LikeTweetService likeTweetService;
-
-    private final Pageable pageable = PageRequest.of(0, 20);
 
     @Test
     void getLikedUsersByTweetId() {

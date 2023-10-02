@@ -16,25 +16,25 @@ import com.gmail.javacoded78.repository.TweetRepository;
 import com.gmail.javacoded78.repository.projection.TweetProjection;
 import com.gmail.javacoded78.repository.projection.TweetUserProjection;
 import com.gmail.javacoded78.service.util.TweetProjectionHelper;
+import com.gmail.javacoded78.util.AbstractAuthTest;
 import com.gmail.javacoded78.util.TestConstants;
-import com.gmail.javacoded78.util.TestUtil;
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@SpringBootTest
 @RequiredArgsConstructor
-class TweetProjectionHelperTest {
+class TweetProjectionHelperTest extends AbstractAuthTest {
 
     private final TweetProjectionHelper tweetProjectionHelper;
 
@@ -58,7 +58,7 @@ class TweetProjectionHelperTest {
 
     @BeforeEach
     public void setUp() {
-        TestUtil.mockAuthenticatedUserId();
+        super.setUp();
     }
 
     @Test
@@ -79,7 +79,6 @@ class TweetProjectionHelperTest {
 
     @Test
     void getTaggedImageUsers() {
-        List<Long> ids = List.of(1L, 2L, 3L);
         List<TaggedUserResponse> taggedUserResponses = List.of(new TaggedUserResponse(), new TaggedUserResponse());
         when(tweetRepository.getTaggedImageUserIds(TestConstants.TWEET_ID)).thenReturn(ids);
         when(userClient.getTaggedImageUsers(new IdsRequest(ids))).thenReturn(taggedUserResponses);

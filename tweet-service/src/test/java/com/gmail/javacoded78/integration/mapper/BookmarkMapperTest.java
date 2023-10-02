@@ -1,10 +1,11 @@
-package com.gmail.javacoded78.mapper;
+package com.gmail.javacoded78.integration.mapper;
 
+import com.gmail.javacoded78.mapper.BookmarkMapper;
 import com.gmail.javacoded78.service.BookmarkService;
+import com.gmail.javacoded78.util.AbstractAuthTest;
 import com.gmail.javacoded78.util.TestConstants;
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -12,9 +13,8 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@SpringBootTest
 @RequiredArgsConstructor
-class BookmarkMapperTest {
+class BookmarkMapperTest extends AbstractAuthTest {
 
     private final BookmarkMapper bookmarkMapper;
 

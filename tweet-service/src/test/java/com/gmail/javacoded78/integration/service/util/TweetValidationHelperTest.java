@@ -1,25 +1,20 @@
 package com.gmail.javacoded78.integration.service.util;
 
-import com.gmail.javacoded78.constants.PathConstants;
 import com.gmail.javacoded78.dto.request.IdsRequest;
 import com.gmail.javacoded78.exception.ApiRequestException;
 import com.gmail.javacoded78.feign.UserClient;
+import com.gmail.javacoded78.integration.service.TweetServiceTestHelper;
 import com.gmail.javacoded78.model.Tweet;
 import com.gmail.javacoded78.repository.TweetRepository;
 import com.gmail.javacoded78.service.util.TweetValidationHelper;
+import com.gmail.javacoded78.util.AbstractAuthTest;
 import com.gmail.javacoded78.util.TestConstants;
-import com.gmail.javacoded78.util.TestUtil;
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
-import org.springframework.mock.web.MockHttpServletRequest;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
 
-import java.util.List;
 import java.util.Optional;
 
 import static com.gmail.javacoded78.constants.ErrorMessage.INCORRECT_TWEET_TEXT_LENGTH;
@@ -28,14 +23,14 @@ import static com.gmail.javacoded78.constants.ErrorMessage.TWEET_NOT_FOUND;
 import static com.gmail.javacoded78.constants.ErrorMessage.USER_ID_NOT_FOUND;
 import static com.gmail.javacoded78.constants.ErrorMessage.USER_NOT_FOUND;
 import static com.gmail.javacoded78.constants.ErrorMessage.USER_PROFILE_BLOCKED;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@SpringBootTest
 @RequiredArgsConstructor
-class TweetValidationHelperTest {
+class TweetValidationHelperTest extends AbstractAuthTest {
 
     private final TweetValidationHelper tweetValidationHelper;
 
@@ -47,17 +42,16 @@ class TweetValidationHelperTest {
 
     @BeforeEach
     public void setUp() {
-        TestUtil.mockAuthenticatedUserId();
+        super.setUp();
     }
 
     @Test
     void getValidUserIds() {
-        List<Long> tweetAuthorIds = List.of(1L, 2L, 3L);
-        when(tweetRepository.getTweetAuthorIds()).thenReturn(tweetAuthorIds);
-        when(userClient.getValidUserIds(new IdsRequest(tweetAuthorIds))).thenReturn(tweetAuthorIds);
-        assertEquals(tweetAuthorIds, tweetValidationHelper.getValidUserIds());
+        when(tweetRepository.getTweetAuthorIds()).thenReturn(ids);
+        when(userClient.getValidUserIds(new IdsRequest(ids))).thenReturn(ids);
+        assertEquals(ids, tweetValidationHelper.getValidUserIds());
         verify(tweetRepository, times(1)).getTweetAuthorIds();
-        verify(userClient, times(1)).getValidUserIds(new IdsRequest(tweetAuthorIds));
+        verify(userClient, times(1)).getValidUserIds(new IdsRequest(ids));
     }
 
     @Test
@@ -91,7 +85,7 @@ class TweetValidationHelperTest {
 
     @Test
     void checkValidTweet_ShouldUserNotFound() {
-        mockAuthenticatedUserId();
+        TweetServiceTestHelper.mockAuthenticatedUserId();
         Tweet tweet = new Tweet();
         tweet.setDeleted(false);
         tweet.setAuthorId(TestConstants.USER_ID);
@@ -105,7 +99,7 @@ class TweetValidationHelperTest {
 
     @Test
     void checkValidTweet_ShouldUserProfileBlocked() {
-        mockAuthenticatedUserId();
+        TweetServiceTestHelper.mockAuthenticatedUserId();
         Tweet tweet = new Tweet();
         tweet.setDeleted(false);
         tweet.setAuthorId(TestConstants.USER_ID);
@@ -133,11 +127,5 @@ class TweetValidationHelperTest {
                 () -> tweetValidationHelper.checkTweetTextLength(""));
         assertEquals(INCORRECT_TWEET_TEXT_LENGTH, exception.getMessage());
         assertEquals(HttpStatus.BAD_REQUEST, exception.getStatus());
-    }
-
-    private void mockAuthenticatedUserId() {
-        MockHttpServletRequest mockRequest = new MockHttpServletRequest();
-        mockRequest.addHeader(PathConstants.AUTH_USER_ID_HEADER, 1L);
-        RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(mockRequest));
     }
 }

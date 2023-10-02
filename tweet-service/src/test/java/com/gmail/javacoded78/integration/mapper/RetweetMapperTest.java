@@ -1,20 +1,21 @@
-package com.gmail.javacoded78.mapper;
+package com.gmail.javacoded78.integration.mapper;
 
 import com.gmail.javacoded78.dto.HeaderResponse;
 import com.gmail.javacoded78.dto.response.TweetUserResponse;
 import com.gmail.javacoded78.dto.response.notification.NotificationResponse;
 import com.gmail.javacoded78.dto.response.user.UserResponse;
 import com.gmail.javacoded78.integration.service.TweetServiceTestHelper;
+import com.gmail.javacoded78.mapper.BasicMapper;
+import com.gmail.javacoded78.mapper.RetweetMapper;
 import com.gmail.javacoded78.repository.projection.TweetUserProjection;
 import com.gmail.javacoded78.service.RetweetService;
+import com.gmail.javacoded78.util.AbstractAuthTest;
 import com.gmail.javacoded78.util.TestConstants;
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpHeaders;
 
 import java.util.List;
@@ -24,9 +25,8 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@SpringBootTest
 @RequiredArgsConstructor
-class RetweetMapperTest {
+class RetweetMapperTest extends AbstractAuthTest {
 
     private final RetweetMapper retweetMapper;
 
@@ -35,8 +35,6 @@ class RetweetMapperTest {
 
     @MockBean
     private final RetweetService retweetService;
-
-    private final static PageRequest pageable = PageRequest.of(0, 20);
 
     @Test
     void getUserRetweetsAndReplies() {

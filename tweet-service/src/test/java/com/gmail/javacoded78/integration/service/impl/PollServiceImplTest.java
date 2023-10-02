@@ -16,12 +16,11 @@ import com.gmail.javacoded78.repository.projection.TweetProjection;
 import com.gmail.javacoded78.service.impl.PollServiceImpl;
 import com.gmail.javacoded78.service.impl.TweetServiceImpl;
 import com.gmail.javacoded78.service.util.TweetServiceHelper;
+import com.gmail.javacoded78.util.AbstractAuthTest;
 import com.gmail.javacoded78.util.TestConstants;
-import com.gmail.javacoded78.util.TestUtil;
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 
@@ -43,9 +42,8 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@SpringBootTest
 @RequiredArgsConstructor
-class PollServiceImplTest {
+class PollServiceImplTest extends AbstractAuthTest {
 
     private final PollServiceImpl pollService;
 
@@ -74,7 +72,7 @@ class PollServiceImplTest {
 
     @BeforeEach
     public void setUp() {
-        TestUtil.mockAuthenticatedUserId();
+        super.setUp();
         tweet = new Tweet();
         tweet.setAuthorId(TestConstants.USER_ID);
     }
