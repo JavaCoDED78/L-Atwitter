@@ -1,19 +1,17 @@
-package com.gmail.javacoded78.controller.rest;
+package com.gmail.javacoded78.integration.controller.rest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gmail.javacoded78.dto.request.AuthenticationRequest;
 import com.gmail.javacoded78.dto.request.ProcessEmailRequest;
 import com.gmail.javacoded78.dto.request.RegistrationRequest;
+import com.gmail.javacoded78.integration.IntegrationTestBase;
 import com.gmail.javacoded78.util.TestConstants;
+import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static com.gmail.javacoded78.constants.ErrorMessage.ACTIVATION_CODE_NOT_FOUND;
@@ -30,32 +28,23 @@ import static com.gmail.javacoded78.constants.PathConstants.REGISTRATION_CONFIRM
 import static com.gmail.javacoded78.constants.PathConstants.UI_V1_AUTH;
 import static com.gmail.javacoded78.util.TestConstants.REGISTRATION_DATE;
 import static org.hamcrest.Matchers.is;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.springframework.test.context.jdbc.Sql.ExecutionPhase.AFTER_TEST_METHOD;
-import static org.springframework.test.context.jdbc.Sql.ExecutionPhase.BEFORE_TEST_METHOD;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@SpringBootTest
 @AutoConfigureMockMvc
-@ActiveProfiles("test")
-@Sql(value = {"/sql-test/clear-user-db.sql", "/sql-test/populate-user-db.sql"}, executionPhase = BEFORE_TEST_METHOD)
-@Sql(value = {"/sql-test/clear-user-db.sql"}, executionPhase = AFTER_TEST_METHOD)
-public class RegistrationControllerTest {
+@RequiredArgsConstructor
+class RegistrationControllerTest extends IntegrationTestBase {
 
-    @Autowired
-    private MockMvc mockMvc;
-
-    @Autowired
-    private ObjectMapper mapper;
+    private final MockMvc mockMvc;
+    private final ObjectMapper mapper;
 
     private AuthenticationRequest authenticationRequest;
     private RegistrationRequest registrationRequest;
 
     @BeforeEach
-    public void init() {
+    void init() {
         authenticationRequest = new AuthenticationRequest();
         authenticationRequest.setEmail(TestConstants.USER_EMAIL);
 
@@ -67,7 +56,7 @@ public class RegistrationControllerTest {
 
     @Test
     @DisplayName("[200] POST /ui/v1/auth/registration/check - Check Email")
-    public void checkEmail() throws Exception {
+    void checkEmail() throws Exception {
         mockMvc.perform(post(UI_V1_AUTH + REGISTRATION_CHECK)
                         .content(mapper.writeValueAsString(registrationRequest))
                         .contentType(MediaType.APPLICATION_JSON_VALUE))
@@ -77,7 +66,7 @@ public class RegistrationControllerTest {
 
     @Test
     @DisplayName("[403] POST /ui/v1/auth/registration/check - Should user email is exist")
-    public void checkEmail_ShouldUserEmailIsExist() throws Exception {
+    void checkEmail_ShouldUserEmailIsExist() throws Exception {
         registrationRequest.setEmail(TestConstants.USER_EMAIL);
         mockMvc.perform(post(UI_V1_AUTH + REGISTRATION_CHECK)
                         .content(mapper.writeValueAsString(registrationRequest))
@@ -88,7 +77,7 @@ public class RegistrationControllerTest {
 
     @Test
     @DisplayName("[400] POST /ui/v1/auth/registration/check - Should email not valid")
-    public void checkEmail_ShouldEmailNotValid() throws Exception {
+    void checkEmail_ShouldEmailNotValid() throws Exception {
         registrationRequest.setEmail("test2015@test");
         mockMvc.perform(post(UI_V1_AUTH + REGISTRATION_CHECK)
                         .content(mapper.writeValueAsString(registrationRequest))
@@ -99,7 +88,7 @@ public class RegistrationControllerTest {
 
     @Test
     @DisplayName("[400] POST /ui/v1/auth/registration/check - Should username is empty")
-    public void checkEmail_ShouldUsernameIsEmpty() throws Exception {
+    void checkEmail_ShouldUsernameIsEmpty() throws Exception {
         registrationRequest.setUsername(null);
         mockMvc.perform(post(UI_V1_AUTH + REGISTRATION_CHECK)
                         .content(mapper.writeValueAsString(registrationRequest))
@@ -110,7 +99,7 @@ public class RegistrationControllerTest {
 
     @Test
     @DisplayName("[400] POST /ui/v1/auth/registration/check - Should username more then 50 characters")
-    public void checkEmail_ShouldUsernameMoreThen50Characters() throws Exception {
+    void checkEmail_ShouldUsernameMoreThen50Characters() throws Exception {
         registrationRequest.setUsername("qwertqwertqwertqwertqwertqwertqwertqwertqwertqwert123");
         mockMvc.perform(post(UI_V1_AUTH + REGISTRATION_CHECK)
                         .content(mapper.writeValueAsString(registrationRequest))
@@ -121,7 +110,7 @@ public class RegistrationControllerTest {
 
     @Test
     @DisplayName("[200] POST /ui/v1/auth/registration/code - Send registration code")
-    public void sendRegistrationCode() throws Exception {
+    void sendRegistrationCode() throws Exception {
         ProcessEmailRequest request = new ProcessEmailRequest();
         request.setEmail(TestConstants.USER_EMAIL);
         mockMvc.perform(post(UI_V1_AUTH + REGISTRATION_CODE)
@@ -133,7 +122,7 @@ public class RegistrationControllerTest {
 
     @Test
     @DisplayName("[400] POST /ui/v1/auth/registration/code - Should email not valid")
-    public void sendRegistrationCode_ShouldEmailNotValid() throws Exception {
+    void sendRegistrationCode_ShouldEmailNotValid() throws Exception {
         ProcessEmailRequest request = new ProcessEmailRequest();
         request.setEmail("test2015@test");
         mockMvc.perform(post(UI_V1_AUTH + REGISTRATION_CODE)
@@ -145,7 +134,7 @@ public class RegistrationControllerTest {
 
     @Test
     @DisplayName("[404] POST /ui/v1/auth/registration/code - User not found")
-    public void sendRegistrationCode_ShouldUserNotFound() throws Exception {
+    void sendRegistrationCode_ShouldUserNotFound() throws Exception {
         ProcessEmailRequest request = new ProcessEmailRequest();
         request.setEmail(TestConstants.NOT_VALID_EMAIL);
         mockMvc.perform(post(UI_V1_AUTH + REGISTRATION_CODE)
@@ -157,7 +146,7 @@ public class RegistrationControllerTest {
 
     @Test
     @DisplayName("[200] GET /ui/v1/auth/registration/activate/1234567890 - Check registration code")
-    public void checkRegistrationCode() throws Exception {
+    void checkRegistrationCode() throws Exception {
         mockMvc.perform(get(UI_V1_AUTH + REGISTRATION_ACTIVATE_CODE, 1234567890))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", is("User successfully activated.")));
@@ -165,7 +154,7 @@ public class RegistrationControllerTest {
 
     @Test
     @DisplayName("[404] GET /ui/v1/auth/registration/activate/test - Registration code not found")
-    public void checkRegistrationCode_NotFound() throws Exception {
+    void checkRegistrationCode_NotFound() throws Exception {
         mockMvc.perform(get(UI_V1_AUTH + REGISTRATION_ACTIVATE_CODE, "test"))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$", is(ACTIVATION_CODE_NOT_FOUND)));
@@ -173,32 +162,34 @@ public class RegistrationControllerTest {
 
     @Test
     @DisplayName("[200] POST /ui/v1/auth/registration/confirm - End registration")
-    public void endRegistration() throws Exception {
+    void endRegistration() throws Exception {
         authenticationRequest.setPassword(TestConstants.PASSWORD);
         mockMvc.perform(post(UI_V1_AUTH + REGISTRATION_CONFIRM)
                         .content(mapper.writeValueAsString(authenticationRequest))
                         .contentType(MediaType.APPLICATION_JSON_VALUE))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.user.id").value(TestConstants.USER_ID))
-                .andExpect(jsonPath("$.user.email").value(TestConstants.USER_EMAIL))
-                .andExpect(jsonPath("$.user.fullName").value(TestConstants.FULL_NAME))
-                .andExpect(jsonPath("$.user.username").value(TestConstants.USERNAME))
-                .andExpect(jsonPath("$.user.location").value(TestConstants.LOCATION))
-                .andExpect(jsonPath("$.user.about").value(TestConstants.ABOUT))
-                .andExpect(jsonPath("$.user.website").value(TestConstants.WEBSITE))
-                .andExpect(jsonPath("$.user.birthday").value(TestConstants.BIRTHDAY))
-                .andExpect(jsonPath("$.user.registrationDate").value(REGISTRATION_DATE))
-                .andExpect(jsonPath("$.user.tweetCount").value(TestConstants.TWEET_COUNT))
-                .andExpect(jsonPath("$.user.avatar").value(TestConstants.AVATAR_SRC_1))
-                .andExpect(jsonPath("$.user.wallpaper").value(TestConstants.WALLPAPER_SRC))
-                .andExpect(jsonPath("$.user.profileCustomized").value(true))
-                .andExpect(jsonPath("$.user.profileStarted").value(true));
+                .andExpectAll(
+                        status().isOk(),
+                        jsonPath("$.user.id").value(TestConstants.USER_ID),
+                        jsonPath("$.user.email").value(TestConstants.USER_EMAIL),
+                        jsonPath("$.user.fullName").value(TestConstants.FULL_NAME),
+                        jsonPath("$.user.username").value(TestConstants.USERNAME),
+                        jsonPath("$.user.location").value(TestConstants.LOCATION),
+                        jsonPath("$.user.about").value(TestConstants.ABOUT),
+                        jsonPath("$.user.website").value(TestConstants.WEBSITE),
+                        jsonPath("$.user.birthday").value(TestConstants.BIRTHDAY),
+                        jsonPath("$.user.registrationDate").value(REGISTRATION_DATE),
+                        jsonPath("$.user.tweetCount").value(TestConstants.TWEET_COUNT),
+                        jsonPath("$.user.avatar").value(TestConstants.AVATAR_SRC_1),
+                        jsonPath("$.user.wallpaper").value(TestConstants.WALLPAPER_SRC),
+                        jsonPath("$.user.profileCustomized").value(true),
+                        jsonPath("$.user.profileStarted").value(true)
+                );
     }
 
     @Test
     @DisplayName("[400] POST /ui/v1/auth/registration/confirm - Should email not valid")
-    public void endRegistration_ShouldEmailNotValid() throws Exception {
-        authenticationRequest.setEmail("test2015@test");
+    void endRegistration_ShouldEmailNotValid() throws Exception {
+        authenticationRequest.setEmail("test2023@test");
         mockMvc.perform(post(UI_V1_AUTH + REGISTRATION_CONFIRM)
                         .content(mapper.writeValueAsString(authenticationRequest))
                         .contentType(MediaType.APPLICATION_JSON_VALUE))
@@ -208,7 +199,7 @@ public class RegistrationControllerTest {
 
     @Test
     @DisplayName("[400] POST /ui/v1/auth/registration/confirm - Should short password")
-    public void endRegistration_ShouldShortPassword() throws Exception {
+    void endRegistration_ShouldShortPassword() throws Exception {
         authenticationRequest.setPassword("123");
         mockMvc.perform(post(UI_V1_AUTH + REGISTRATION_CONFIRM)
                         .content(mapper.writeValueAsString(authenticationRequest))
@@ -219,7 +210,7 @@ public class RegistrationControllerTest {
 
     @Test
     @DisplayName("[404] POST /ui/v1/auth/registration/confirm - Should user Not Found by email")
-    public void endRegistration_ShouldUserNotFound() throws Exception {
+    void endRegistration_ShouldUserNotFound() throws Exception {
         authenticationRequest.setEmail(TestConstants.NOT_VALID_EMAIL);
         authenticationRequest.setPassword(TestConstants.PASSWORD);
         mockMvc.perform(post(UI_V1_AUTH + REGISTRATION_CONFIRM)

@@ -1,42 +1,32 @@
-package com.gmail.javacoded78.controller.api;
+package com.gmail.javacoded78.integration.controller.api;
 
+import com.gmail.javacoded78.integration.IntegrationTestBase;
 import com.gmail.javacoded78.util.TestConstants;
+import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static com.gmail.javacoded78.constants.ErrorMessage.USER_NOT_FOUND;
 import static com.gmail.javacoded78.constants.PathConstants.API_V1_AUTH;
 import static com.gmail.javacoded78.constants.PathConstants.AUTH_USER_ID_HEADER;
 import static com.gmail.javacoded78.util.TestConstants.USER_EMAIL;
-import static com.gmail.javacoded78.util.TestConstants.USER_ID;
 import static org.hamcrest.Matchers.is;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.springframework.test.context.jdbc.Sql.ExecutionPhase.AFTER_TEST_METHOD;
-import static org.springframework.test.context.jdbc.Sql.ExecutionPhase.BEFORE_TEST_METHOD;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@SpringBootTest
 @AutoConfigureMockMvc
-@ActiveProfiles("test")
-@Sql(value = {"/sql-test/clear-user-db.sql", "/sql-test/populate-user-db.sql"}, executionPhase = BEFORE_TEST_METHOD)
-@Sql(value = {"/sql-test/clear-user-db.sql"}, executionPhase = AFTER_TEST_METHOD)
-public class AuthenticationApiControllerTest {
+@RequiredArgsConstructor
+class AuthenticationApiControllerTest extends IntegrationTestBase {
 
-    @Autowired
-    private MockMvc mockMvc;
+    private final MockMvc mockMvc;
 
     @Test
-    @DisplayName("[200] GET /api/v1/auth/user/test2015@test.test - Get user principal by email")
-    public void getUserPrincipalByEmail() throws Exception {
-        mockMvc.perform(get(API_V1_AUTH + USER_EMAIL, "test2015@test.test")
+    @DisplayName("[200] GET /api/v1/auth/user/test2023@test.test - Get user principal by email")
+    void getUserPrincipalByEmail() throws Exception {
+        mockMvc.perform(get(API_V1_AUTH + USER_EMAIL, "test2023@test.test")
                         .header(AUTH_USER_ID_HEADER, TestConstants.USER_ID))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(TestConstants.USER_ID))
@@ -46,7 +36,7 @@ public class AuthenticationApiControllerTest {
 
     @Test
     @DisplayName("[404] GET /api/v1/auth/user/test9999@test.test - Should user principal Not Found by email")
-    public void getUserPrincipalByEmail_ShouldUserNotFound() throws Exception {
+    void getUserPrincipalByEmail_ShouldUserNotFound() throws Exception {
         mockMvc.perform(get(API_V1_AUTH + USER_EMAIL, "test9999@test.test")
                         .header(AUTH_USER_ID_HEADER, TestConstants.USER_ID))
                 .andExpect(status().isNotFound())

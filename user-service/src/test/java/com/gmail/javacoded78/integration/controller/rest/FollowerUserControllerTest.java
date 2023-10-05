@@ -1,13 +1,11 @@
-package com.gmail.javacoded78.controller.rest;
+package com.gmail.javacoded78.integration.controller.rest;
 
+import com.gmail.javacoded78.integration.IntegrationTestBase;
 import com.gmail.javacoded78.util.TestConstants;
+import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static com.gmail.javacoded78.constants.ErrorMessage.USER_ID_NOT_FOUND;
@@ -23,61 +21,42 @@ import static com.gmail.javacoded78.constants.PathConstants.FOLLOW_OVERALL;
 import static com.gmail.javacoded78.constants.PathConstants.FOLLOW_PRIVATE;
 import static com.gmail.javacoded78.constants.PathConstants.FOLLOW_USER_ID;
 import static com.gmail.javacoded78.constants.PathConstants.UI_V1_USER;
-import static com.gmail.javacoded78.util.TestConstants.ABOUT;
-import static com.gmail.javacoded78.util.TestConstants.AVATAR_SRC_1;
-import static com.gmail.javacoded78.util.TestConstants.BIRTHDAY;
-import static com.gmail.javacoded78.util.TestConstants.COUNTRY;
-import static com.gmail.javacoded78.util.TestConstants.FULL_NAME;
-import static com.gmail.javacoded78.util.TestConstants.LIKE_TWEET_COUNT;
-import static com.gmail.javacoded78.util.TestConstants.LOCATION;
-import static com.gmail.javacoded78.util.TestConstants.MEDIA_TWEET_COUNT;
-import static com.gmail.javacoded78.util.TestConstants.REGISTRATION_DATE;
-import static com.gmail.javacoded78.util.TestConstants.TWEET_COUNT;
-import static com.gmail.javacoded78.util.TestConstants.USERNAME;
-import static com.gmail.javacoded78.util.TestConstants.USER_ID;
-import static com.gmail.javacoded78.util.TestConstants.WALLPAPER_SRC;
-import static com.gmail.javacoded78.util.TestConstants.WEBSITE;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.springframework.test.context.jdbc.Sql.ExecutionPhase.AFTER_TEST_METHOD;
-import static org.springframework.test.context.jdbc.Sql.ExecutionPhase.BEFORE_TEST_METHOD;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@SpringBootTest
 @AutoConfigureMockMvc
-@ActiveProfiles("test")
-@Sql(value = {"/sql-test/clear-user-db.sql", "/sql-test/populate-user-db.sql"}, executionPhase = BEFORE_TEST_METHOD)
-@Sql(value = {"/sql-test/clear-user-db.sql"}, executionPhase = AFTER_TEST_METHOD)
-public class FollowerUserControllerTest {
+@RequiredArgsConstructor
+class FollowerUserControllerTest extends IntegrationTestBase {
 
-    @Autowired
-    private MockMvc mockMvc;
+    private final MockMvc mockMvc;
 
     @Test
     @DisplayName("[200] GET /ui/v1/user/followers/1 - Get followers by user id")
-    public void getFollowers() throws Exception {
+    void getFollowers() throws Exception {
         mockMvc.perform(get(UI_V1_USER + FOLLOWERS_USER_ID, 1)
                         .header(AUTH_USER_ID_HEADER, TestConstants.USER_ID))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$[*]", hasSize(2)))
-                .andExpect(jsonPath("$[*].id").isNotEmpty())
-                .andExpect(jsonPath("$[*].fullName").isNotEmpty())
-                .andExpect(jsonPath("$[*].username").isNotEmpty())
-                .andExpect(jsonPath("$[*].about").isNotEmpty())
-                .andExpect(jsonPath("$[*].isPrivateProfile").isNotEmpty())
-                .andExpect(jsonPath("$[*].isMutedDirectMessages").isNotEmpty())
-                .andExpect(jsonPath("$[*].isUserBlocked").isNotEmpty())
-                .andExpect(jsonPath("$[*].isMyProfileBlocked").isNotEmpty())
-                .andExpect(jsonPath("$[*].isWaitingForApprove").isNotEmpty())
-                .andExpect(jsonPath("$[*].isFollower").isNotEmpty());
+                .andExpectAll(
+                        status().isOk(),
+                        jsonPath("$[*]",hasSize(2)),
+                        jsonPath("$[*].id").isNotEmpty(),
+                        jsonPath("$[*].fullName").isNotEmpty(),
+                        jsonPath("$[*].username").isNotEmpty(),
+                        jsonPath("$[*].about").isNotEmpty(),
+                        jsonPath("$[*].isPrivateProfile").isNotEmpty(),
+                        jsonPath("$[*].isMutedDirectMessages").isNotEmpty(),
+                        jsonPath("$[*].isUserBlocked").isNotEmpty(),
+                        jsonPath("$[*].isMyProfileBlocked").isNotEmpty(),
+                        jsonPath("$[*].isWaitingForApprove").isNotEmpty(),
+                        jsonPath("$[*].isFollower").isNotEmpty()
+                );
     }
 
     @Test
     @DisplayName("[404] GET /ui/v1/user/followers/99 - Should user Not Found by id")
-    public void getFollowers_ShouldUserNotFound() throws Exception {
+    void getFollowers_ShouldUserNotFound() throws Exception {
         mockMvc.perform(get(UI_V1_USER + FOLLOWERS_USER_ID, 99)
                         .header(AUTH_USER_ID_HEADER, TestConstants.USER_ID))
                 .andExpect(status().isNotFound())
@@ -86,7 +65,7 @@ public class FollowerUserControllerTest {
 
     @Test
     @DisplayName("[404] GET /ui/v1/user/followers/3 - Should user have private profile")
-    public void getFollowers_ShouldUserHavePrivateProfile() throws Exception {
+    void getFollowers_ShouldUserHavePrivateProfile() throws Exception {
         mockMvc.perform(get(UI_V1_USER + FOLLOWERS_USER_ID, 3)
                         .header(AUTH_USER_ID_HEADER, TestConstants.USER_ID))
                 .andExpect(status().isNotFound())
@@ -95,7 +74,7 @@ public class FollowerUserControllerTest {
 
     @Test
     @DisplayName("[400] GET /ui/v1/user/followers/5 - Should user blocked by other user")
-    public void getFollowers_ShouldUserBlockedByOtherUser() throws Exception {
+    void getFollowers_ShouldUserBlockedByOtherUser() throws Exception {
         mockMvc.perform(get(UI_V1_USER + FOLLOWERS_USER_ID, 5)
                         .header(AUTH_USER_ID_HEADER, TestConstants.USER_ID))
                 .andExpect(status().isBadRequest())
@@ -104,7 +83,7 @@ public class FollowerUserControllerTest {
 
     @Test
     @DisplayName("[200] GET /ui/v1/user/following/4 - Get following by user id")
-    public void getFollowing() throws Exception {
+    void getFollowing() throws Exception {
         mockMvc.perform(get(UI_V1_USER + FOLLOWING_USER_ID, 4)
                         .header(AUTH_USER_ID_HEADER, TestConstants.USER_ID))
                 .andExpect(status().isOk())
@@ -123,7 +102,7 @@ public class FollowerUserControllerTest {
 
     @Test
     @DisplayName("[404] GET /ui/v1/user/following/99 - Should user Not Found by id")
-    public void getFollowing_ShouldUserNotFound() throws Exception {
+    void getFollowing_ShouldUserNotFound() throws Exception {
         mockMvc.perform(get(UI_V1_USER + FOLLOWING_USER_ID, 99)
                         .header(AUTH_USER_ID_HEADER, TestConstants.USER_ID))
                 .andExpect(status().isNotFound())
@@ -132,7 +111,7 @@ public class FollowerUserControllerTest {
 
     @Test
     @DisplayName("[404] GET /ui/v1/user/following/3 -  Should user have private profile")
-    public void getFollowing_ShouldUserHavePrivateProfile() throws Exception {
+    void getFollowing_ShouldUserHavePrivateProfile() throws Exception {
         mockMvc.perform(get(UI_V1_USER + FOLLOWING_USER_ID, 3)
                         .header(AUTH_USER_ID_HEADER, TestConstants.USER_ID))
                 .andExpect(status().isNotFound())
@@ -141,7 +120,7 @@ public class FollowerUserControllerTest {
 
     @Test
     @DisplayName("[400] GET /ui/v1/user/following/6 - Should user blocked by other user")
-    public void getFollowing_ShouldUserBlockedByOtherUser() throws Exception {
+    void getFollowing_ShouldUserBlockedByOtherUser() throws Exception {
         mockMvc.perform(get(UI_V1_USER + FOLLOWING_USER_ID, 6)
                         .header(AUTH_USER_ID_HEADER, TestConstants.USER_ID))
                 .andExpect(status().isBadRequest())
@@ -150,7 +129,7 @@ public class FollowerUserControllerTest {
 
     @Test
     @DisplayName("[200] GET /ui/v1/user/follower-requests - Follow user by id")
-    public void getFollowerRequests() throws Exception {
+    void getFollowerRequests() throws Exception {
         mockMvc.perform(get(UI_V1_USER + FOLLOWER_REQUESTS)
                         .header(AUTH_USER_ID_HEADER, TestConstants.USER_ID))
                 .andExpect(status().isOk())
@@ -164,7 +143,7 @@ public class FollowerUserControllerTest {
 
     @Test
     @DisplayName("[200] GET /ui/v1/user/follow/7 - Follow user by id")
-    public void processFollow() throws Exception {
+    void processFollow() throws Exception {
         mockMvc.perform(get(UI_V1_USER + FOLLOW_USER_ID, 7)
                         .header(AUTH_USER_ID_HEADER, TestConstants.USER_ID))
                 .andExpect(status().isOk())
@@ -173,7 +152,7 @@ public class FollowerUserControllerTest {
 
     @Test
     @DisplayName("[200] GET /ui/v1/user/follow/1 - Unfollow user by id")
-    public void processUnfollow() throws Exception {
+    void processUnfollow() throws Exception {
         mockMvc.perform(get(UI_V1_USER + FOLLOW_USER_ID, 1)
                         .header(AUTH_USER_ID_HEADER, TestConstants.USER_ID))
                 .andExpect(status().isOk())
@@ -182,7 +161,7 @@ public class FollowerUserControllerTest {
 
     @Test
     @DisplayName("[200] GET /ui/v1/user/follow/3 - Follow to user private profile by id")
-    public void processFollowToPrivateProfile() throws Exception {
+    void processFollowToPrivateProfile() throws Exception {
         mockMvc.perform(get(UI_V1_USER + FOLLOW_USER_ID, 3)
                         .header(AUTH_USER_ID_HEADER, TestConstants.USER_ID))
                 .andExpect(status().isOk())
@@ -191,7 +170,7 @@ public class FollowerUserControllerTest {
 
     @Test
     @DisplayName("[404] GET /ui/v1/user/follow/99 - Should user Not Found by id")
-    public void processFollow_ShouldUserNotFound() throws Exception {
+    void processFollow_ShouldUserNotFound() throws Exception {
         mockMvc.perform(get(UI_V1_USER + FOLLOW_USER_ID, 99)
                         .header(AUTH_USER_ID_HEADER, TestConstants.USER_ID))
                 .andExpect(status().isNotFound())
@@ -200,7 +179,7 @@ public class FollowerUserControllerTest {
 
     @Test
     @DisplayName("[400] GET /ui/v1/user/follow/6 - Should user blocked by other user")
-    public void processFollow_ShouldUserBlockedByOtherUser() throws Exception {
+    void processFollow_ShouldUserBlockedByOtherUser() throws Exception {
         mockMvc.perform(get(UI_V1_USER + FOLLOW_USER_ID, 6)
                         .header(AUTH_USER_ID_HEADER, TestConstants.USER_ID))
                 .andExpect(status().isBadRequest())
@@ -209,26 +188,28 @@ public class FollowerUserControllerTest {
 
     @Test
     @DisplayName("[200] GET /ui/v1/user/follow/overall/1 - Get overall followers if exist")
-    public void overallFollowers_exist() throws Exception {
+    void overallFollowers_exist() throws Exception {
         mockMvc.perform(get(UI_V1_USER + FOLLOW_OVERALL, 1)
                         .header(AUTH_USER_ID_HEADER, TestConstants.USER_ID))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[*]", hasSize(1)))
-                .andExpect(jsonPath("$[*].id").isNotEmpty())
-                .andExpect(jsonPath("$[*].fullName").isNotEmpty())
-                .andExpect(jsonPath("$[*].username").isNotEmpty())
-                .andExpect(jsonPath("$[*].about").isNotEmpty())
-                .andExpect(jsonPath("$[*].isPrivateProfile").isNotEmpty())
-                .andExpect(jsonPath("$[*].isMutedDirectMessages").isNotEmpty())
-                .andExpect(jsonPath("$[*].isUserBlocked").isNotEmpty())
-                .andExpect(jsonPath("$[*].isMyProfileBlocked").isNotEmpty())
-                .andExpect(jsonPath("$[*].isWaitingForApprove").isNotEmpty())
-                .andExpect(jsonPath("$[*].isFollower").isNotEmpty());
+                .andExpectAll(
+                        jsonPath("$[*]", hasSize(1)),
+                        jsonPath("$[*].id").isNotEmpty(),
+                        jsonPath("$[*].fullName").isNotEmpty(),
+                        jsonPath("$[*].username").isNotEmpty(),
+                        jsonPath("$[*].about").isNotEmpty(),
+                        jsonPath("$[*].isPrivateProfile").isNotEmpty(),
+                        jsonPath("$[*].isMutedDirectMessages").isNotEmpty(),
+                        jsonPath("$[*].isUserBlocked").isNotEmpty(),
+                        jsonPath("$[*].isMyProfileBlocked").isNotEmpty(),
+                        jsonPath("$[*].isWaitingForApprove").isNotEmpty(),
+                        jsonPath("$[*].isFollower").isNotEmpty()
+                );
     }
 
     @Test
     @DisplayName("[200] GET /ui/v1/user/follow/overall/7 - Get overall followers if not exist")
-    public void overallFollowers_NotExist() throws Exception {
+    void overallFollowers_NotExist() throws Exception {
         mockMvc.perform(get(UI_V1_USER + FOLLOW_OVERALL, 7)
                         .header(AUTH_USER_ID_HEADER, TestConstants.USER_ID))
                 .andExpect(status().isOk())
@@ -237,7 +218,7 @@ public class FollowerUserControllerTest {
 
     @Test
     @DisplayName("[404] GET /ui/v1/user/follow/overall/99 - Should user Not Found by id")
-    public void overallFollowers_ShouldUserNotFound() throws Exception {
+    void overallFollowers_ShouldUserNotFound() throws Exception {
         mockMvc.perform(get(UI_V1_USER + FOLLOW_OVERALL, 99)
                         .header(AUTH_USER_ID_HEADER, TestConstants.USER_ID))
                 .andExpect(status().isNotFound())
@@ -246,7 +227,7 @@ public class FollowerUserControllerTest {
 
     @Test
     @DisplayName("[404] GET /ui/v1/user/follow/overall/3 - Should user have private profile")
-    public void overallFollowers_ShouldUserHavePrivateProfile() throws Exception {
+    void overallFollowers_ShouldUserHavePrivateProfile() throws Exception {
         mockMvc.perform(get(UI_V1_USER + FOLLOW_OVERALL, 3)
                         .header(AUTH_USER_ID_HEADER, TestConstants.USER_ID))
                 .andExpect(status().isNotFound())
@@ -255,7 +236,7 @@ public class FollowerUserControllerTest {
 
     @Test
     @DisplayName("[400] GET /ui/v1/user/follow/overall/6 - Should user blocked by other user")
-    public void overallFollowers_ShouldUserBlockedByOtherUser() throws Exception {
+    void overallFollowers_ShouldUserBlockedByOtherUser() throws Exception {
         mockMvc.perform(get(UI_V1_USER + FOLLOW_OVERALL, 6)
                         .header(AUTH_USER_ID_HEADER, TestConstants.USER_ID))
                 .andExpect(status().isBadRequest())
@@ -264,75 +245,79 @@ public class FollowerUserControllerTest {
 
     @Test
     @DisplayName("[200] GET /ui/v1/user/follow/private/4 - Follow request from private profile")
-    public void followRequestToPrivateProfile() throws Exception {
+    void followRequestToPrivateProfile() throws Exception {
         mockMvc.perform(get(UI_V1_USER + FOLLOW_PRIVATE, 4)
                         .header(AUTH_USER_ID_HEADER, TestConstants.USER_ID))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(4L))
-                .andExpect(jsonPath("$.fullName").value(TestConstants.FULL_NAME))
-                .andExpect(jsonPath("$.username").value(TestConstants.USERNAME))
-                .andExpect(jsonPath("$.location").value(TestConstants.LOCATION))
-                .andExpect(jsonPath("$.about").value(TestConstants.ABOUT))
-                .andExpect(jsonPath("$.website").value(TestConstants.WEBSITE))
-                .andExpect(jsonPath("$.country").value(TestConstants.COUNTRY))
-                .andExpect(jsonPath("$.birthday").value(TestConstants.BIRTHDAY))
-                .andExpect(jsonPath("$.registrationDate").value(TestConstants.REGISTRATION_DATE))
-                .andExpect(jsonPath("$.tweetCount").value(TestConstants.TWEET_COUNT))
-                .andExpect(jsonPath("$.mediaTweetCount").value(TestConstants.MEDIA_TWEET_COUNT))
-                .andExpect(jsonPath("$.likeCount").value(TestConstants.LIKE_TWEET_COUNT))
-                .andExpect(jsonPath("$.avatar").value(TestConstants.AVATAR_SRC_1))
-                .andExpect(jsonPath("$.wallpaper").value(TestConstants.WALLPAPER_SRC))
-                .andExpect(jsonPath("$.pinnedTweetId").isEmpty())
-                .andExpect(jsonPath("$.followersSize").value(0L))
-                .andExpect(jsonPath("$.followingSize").value(2L))
-                .andExpect(jsonPath("$.sameFollowers[*]", hasSize(0)))
-                .andExpect(jsonPath("$.isMutedDirectMessages").value(true))
-                .andExpect(jsonPath("$.isPrivateProfile").value(true))
-                .andExpect(jsonPath("$.isUserMuted").value(false))
-                .andExpect(jsonPath("$.isUserBlocked").value(true))
-                .andExpect(jsonPath("$.isMyProfileBlocked").value(false))
-                .andExpect(jsonPath("$.isWaitingForApprove").value(false))
-                .andExpect(jsonPath("$.isFollower").value(true))
-                .andExpect(jsonPath("$.isSubscriber").value(false));
+                .andExpectAll(
+                        status().isOk(),
+                        jsonPath("$.id").value(4L),
+                        jsonPath("$.fullName").value(TestConstants.FULL_NAME),
+                        jsonPath("$.username").value(TestConstants.USERNAME),
+                        jsonPath("$.location").value(TestConstants.LOCATION),
+                        jsonPath("$.about").value(TestConstants.ABOUT),
+                        jsonPath("$.website").value(TestConstants.WEBSITE),
+                        jsonPath("$.country").value(TestConstants.COUNTRY),
+                        jsonPath("$.birthday").value(TestConstants.BIRTHDAY),
+                        jsonPath("$.registrationDate").value(TestConstants.REGISTRATION_DATE),
+                        jsonPath("$.tweetCount").value(TestConstants.TWEET_COUNT),
+                        jsonPath("$.mediaTweetCount").value(TestConstants.MEDIA_TWEET_COUNT),
+                        jsonPath("$.likeCount").value(TestConstants.LIKE_TWEET_COUNT),
+                        jsonPath("$.avatar").value(TestConstants.AVATAR_SRC_1),
+                        jsonPath("$.wallpaper").value(TestConstants.WALLPAPER_SRC),
+                        jsonPath("$.pinnedTweetId").isEmpty(),
+                        jsonPath("$.followersSize").value(0L),
+                        jsonPath("$.followingSize").value(2L),
+                        jsonPath("$.sameFollowers[*]", hasSize(0)),
+                        jsonPath("$.isMutedDirectMessages").value(true),
+                        jsonPath("$.isPrivateProfile").value(true),
+                        jsonPath("$.isUserMuted").value(false),
+                        jsonPath("$.isUserBlocked").value(true),
+                        jsonPath("$.isMyProfileBlocked").value(false),
+                        jsonPath("$.isWaitingForApprove").value(false),
+                        jsonPath("$.isFollower").value(true),
+                        jsonPath("$.isSubscriber").value(false)
+                );
     }
 
     @Test
     @DisplayName("[200] GET /ui/v1/user/follow/private/7 - Unfollow request to private profile")
-    public void unfollowRequestToPrivateProfile() throws Exception {
+    void unfollowRequestToPrivateProfile() throws Exception {
         mockMvc.perform(get(UI_V1_USER + FOLLOW_PRIVATE, 7)
                         .header(AUTH_USER_ID_HEADER, TestConstants.USER_ID))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(7L))
-                .andExpect(jsonPath("$.fullName").value(TestConstants.FULL_NAME))
-                .andExpect(jsonPath("$.username").value(TestConstants.USERNAME))
-                .andExpect(jsonPath("$.location").value(TestConstants.LOCATION))
-                .andExpect(jsonPath("$.about").value(TestConstants.ABOUT))
-                .andExpect(jsonPath("$.website").value(TestConstants.WEBSITE))
-                .andExpect(jsonPath("$.country").value(TestConstants.COUNTRY))
-                .andExpect(jsonPath("$.birthday").value(TestConstants.BIRTHDAY))
-                .andExpect(jsonPath("$.registrationDate").value(TestConstants.REGISTRATION_DATE))
-                .andExpect(jsonPath("$.tweetCount").value(TestConstants.TWEET_COUNT))
-                .andExpect(jsonPath("$.mediaTweetCount").value(TestConstants.MEDIA_TWEET_COUNT))
-                .andExpect(jsonPath("$.likeCount").value(TestConstants.LIKE_TWEET_COUNT))
-                .andExpect(jsonPath("$.avatar").value(TestConstants.AVATAR_SRC_1))
-                .andExpect(jsonPath("$.wallpaper").value(TestConstants.WALLPAPER_SRC))
-                .andExpect(jsonPath("$.pinnedTweetId").isEmpty())
-                .andExpect(jsonPath("$.followersSize").value(0L))
-                .andExpect(jsonPath("$.followingSize").value(0L))
-                .andExpect(jsonPath("$.sameFollowers[*]", hasSize(0)))
-                .andExpect(jsonPath("$.isMutedDirectMessages").value(true))
-                .andExpect(jsonPath("$.isPrivateProfile").value(false))
-                .andExpect(jsonPath("$.isUserMuted").value(false))
-                .andExpect(jsonPath("$.isUserBlocked").value(false))
-                .andExpect(jsonPath("$.isMyProfileBlocked").value(false))
-                .andExpect(jsonPath("$.isWaitingForApprove").value(false))
-                .andExpect(jsonPath("$.isFollower").value(false))
-                .andExpect(jsonPath("$.isSubscriber").value(false));
+                .andExpectAll(
+                        status().isOk(),
+                        jsonPath("$.id").value(7L),
+                        jsonPath("$.fullName").value(TestConstants.FULL_NAME),
+                        jsonPath("$.username").value(TestConstants.USERNAME),
+                        jsonPath("$.location").value(TestConstants.LOCATION),
+                        jsonPath("$.about").value(TestConstants.ABOUT),
+                        jsonPath("$.website").value(TestConstants.WEBSITE),
+                        jsonPath("$.country").value(TestConstants.COUNTRY),
+                        jsonPath("$.birthday").value(TestConstants.BIRTHDAY),
+                        jsonPath("$.registrationDate").value(TestConstants.REGISTRATION_DATE),
+                        jsonPath("$.tweetCount").value(TestConstants.TWEET_COUNT),
+                        jsonPath("$.mediaTweetCount").value(TestConstants.MEDIA_TWEET_COUNT),
+                        jsonPath("$.likeCount").value(TestConstants.LIKE_TWEET_COUNT),
+                        jsonPath("$.avatar").value(TestConstants.AVATAR_SRC_1),
+                        jsonPath("$.wallpaper").value(TestConstants.WALLPAPER_SRC),
+                        jsonPath("$.pinnedTweetId").isEmpty(),
+                        jsonPath("$.followersSize").value(0L),
+                        jsonPath("$.followingSize").value(0L),
+                        jsonPath("$.sameFollowers[*]").isEmpty(),
+                        jsonPath("$.isMutedDirectMessages").value(true),
+                        jsonPath("$.isPrivateProfile").value(false),
+                        jsonPath("$.isUserMuted").value(false),
+                        jsonPath("$.isUserBlocked").value(false),
+                        jsonPath("$.isMyProfileBlocked").value(false),
+                        jsonPath("$.isWaitingForApprove").value(false),
+                        jsonPath("$.isFollower").value(false),
+                        jsonPath("$.isSubscriber").value(false)
+                );
     }
 
     @Test
     @DisplayName("[404] GET /ui/v1/user/follow/private/99 - Should user Not Found by id")
-    public void processFollowRequestToPrivateProfile_ShouldUserNotFound() throws Exception {
+    void processFollowRequestToPrivateProfile_ShouldUserNotFound() throws Exception {
         mockMvc.perform(get(UI_V1_USER + FOLLOW_PRIVATE, 99)
                         .header(AUTH_USER_ID_HEADER, TestConstants.USER_ID))
                 .andExpect(status().isNotFound())
@@ -341,7 +326,7 @@ public class FollowerUserControllerTest {
 
     @Test
     @DisplayName("[400] GET /ui/v1/user/follow/private/6 -  Should user blocked by other user")
-    public void processFollowRequestToPrivateProfile_ShouldUserBlockedByOtherUser() throws Exception {
+    void processFollowRequestToPrivateProfile_ShouldUserBlockedByOtherUser() throws Exception {
         mockMvc.perform(get(UI_V1_USER + FOLLOW_PRIVATE, 6)
                         .header(AUTH_USER_ID_HEADER, TestConstants.USER_ID))
                 .andExpect(status().isBadRequest())
@@ -350,7 +335,7 @@ public class FollowerUserControllerTest {
 
     @Test
     @DisplayName("[200] GET /ui/v1/user/follow/accept/2 - Accept follow request")
-    public void acceptFollowRequest() throws Exception {
+    void acceptFollowRequest() throws Exception {
         mockMvc.perform(get(UI_V1_USER + FOLLOW_ACCEPT, 2)
                         .header(AUTH_USER_ID_HEADER, TestConstants.USER_ID))
                 .andExpect(status().isOk())
@@ -359,7 +344,7 @@ public class FollowerUserControllerTest {
 
     @Test
     @DisplayName("[404] GET /ui/v1/user/follow/accept/99 - Should user Not Found by id")
-    public void acceptFollowRequest_ShouldUserNotFound() throws Exception {
+    void acceptFollowRequest_ShouldUserNotFound() throws Exception {
         mockMvc.perform(get(UI_V1_USER + FOLLOW_ACCEPT, 99)
                         .header(AUTH_USER_ID_HEADER, TestConstants.USER_ID))
                 .andExpect(status().isNotFound())
@@ -368,7 +353,7 @@ public class FollowerUserControllerTest {
 
     @Test
     @DisplayName("[200] GET /ui/v1/user/follow/decline/2 - Decline follow request")
-    public void declineFollowRequest() throws Exception {
+    void declineFollowRequest() throws Exception {
         mockMvc.perform(get(UI_V1_USER + FOLLOW_DECLINE, 2)
                         .header(AUTH_USER_ID_HEADER, TestConstants.USER_ID))
                 .andExpect(status().isOk())
@@ -377,7 +362,7 @@ public class FollowerUserControllerTest {
 
     @Test
     @DisplayName("[404] GET /ui/v1/user/follow/decline/99 - Should user Not Found by id")
-    public void declineFollowRequest_ShouldUserNotFound() throws Exception {
+    void declineFollowRequest_ShouldUserNotFound() throws Exception {
         mockMvc.perform(get(UI_V1_USER + FOLLOW_DECLINE, 99)
                         .header(AUTH_USER_ID_HEADER, TestConstants.USER_ID))
                 .andExpect(status().isNotFound())

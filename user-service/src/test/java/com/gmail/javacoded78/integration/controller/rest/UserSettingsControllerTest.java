@@ -1,18 +1,16 @@
-package com.gmail.javacoded78.controller.rest;
+package com.gmail.javacoded78.integration.controller.rest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gmail.javacoded78.dto.request.SettingsRequest;
 import com.gmail.javacoded78.enums.BackgroundColorType;
 import com.gmail.javacoded78.enums.ColorSchemeType;
+import com.gmail.javacoded78.integration.IntegrationTestBase;
 import com.gmail.javacoded78.util.TestConstants;
+import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static com.gmail.javacoded78.constants.ErrorMessage.EMAIL_HAS_ALREADY_BEEN_TAKEN;
@@ -25,50 +23,27 @@ import static com.gmail.javacoded78.constants.PathConstants.EMAIL;
 import static com.gmail.javacoded78.constants.PathConstants.LANGUAGE;
 import static com.gmail.javacoded78.constants.PathConstants.PRIVATE;
 import static com.gmail.javacoded78.constants.PathConstants.UI_V1_USER_SETTINGS_UPDATE;
-import static com.gmail.javacoded78.util.TestConstants.ABOUT;
-import static com.gmail.javacoded78.util.TestConstants.AVATAR_SRC_1;
 import static com.gmail.javacoded78.util.TestConstants.BACKGROUND_COLOR;
-import static com.gmail.javacoded78.util.TestConstants.BIRTHDAY;
 import static com.gmail.javacoded78.util.TestConstants.COLOR_SCHEME;
 import static com.gmail.javacoded78.util.TestConstants.COUNTRY;
-import static com.gmail.javacoded78.util.TestConstants.FULL_NAME;
 import static com.gmail.javacoded78.util.TestConstants.GENDER;
-import static com.gmail.javacoded78.util.TestConstants.LIKE_TWEET_COUNT;
-import static com.gmail.javacoded78.util.TestConstants.LINK_DESCRIPTION;
-import static com.gmail.javacoded78.util.TestConstants.LOCATION;
-import static com.gmail.javacoded78.util.TestConstants.MEDIA_TWEET_COUNT;
 import static com.gmail.javacoded78.util.TestConstants.PHONE;
-import static com.gmail.javacoded78.util.TestConstants.PINNED_TWEET_ID;
-import static com.gmail.javacoded78.util.TestConstants.REGISTRATION_DATE;
-import static com.gmail.javacoded78.util.TestConstants.TWEET_COUNT;
 import static com.gmail.javacoded78.util.TestConstants.USERNAME;
-import static com.gmail.javacoded78.util.TestConstants.USER_ID;
-import static com.gmail.javacoded78.util.TestConstants.WALLPAPER_SRC;
-import static com.gmail.javacoded78.util.TestConstants.WEBSITE;
 import static org.hamcrest.Matchers.is;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.springframework.test.context.jdbc.Sql.ExecutionPhase.AFTER_TEST_METHOD;
-import static org.springframework.test.context.jdbc.Sql.ExecutionPhase.BEFORE_TEST_METHOD;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@SpringBootTest
 @AutoConfigureMockMvc
-@ActiveProfiles("test")
-@Sql(value = {"/sql-test/clear-user-db.sql", "/sql-test/populate-user-db.sql"}, executionPhase = BEFORE_TEST_METHOD)
-@Sql(value = {"/sql-test/clear-user-db.sql"}, executionPhase = AFTER_TEST_METHOD)
-public class UserSettingsControllerTest {
+@RequiredArgsConstructor
+class UserSettingsControllerTest extends IntegrationTestBase {
 
-    @Autowired
-    private MockMvc mockMvc;
-
-    @Autowired
-    private ObjectMapper mapper;
+    private final MockMvc mockMvc;
+    private final ObjectMapper mapper;
 
     @Test
     @DisplayName("[200] PUT /ui/v1/settings/update/username - Update username")
-    public void updateUsername() throws Exception {
+    void updateUsername() throws Exception {
         SettingsRequest request = new SettingsRequest();
         request.setUsername("test");
         mockMvc.perform(put(UI_V1_USER_SETTINGS_UPDATE + USERNAME)
@@ -81,7 +56,7 @@ public class UserSettingsControllerTest {
 
     @Test
     @DisplayName("[400] PUT /ui/v1/settings/update/username - Should username length is 0")
-    public void updateUsername_ShouldUsernameLengthIs0() throws Exception {
+    void updateUsername_ShouldUsernameLengthIs0() throws Exception {
         SettingsRequest request = new SettingsRequest();
         request.setUsername("");
         mockMvc.perform(put(UI_V1_USER_SETTINGS_UPDATE + USERNAME)
@@ -94,7 +69,7 @@ public class UserSettingsControllerTest {
 
     @Test
     @DisplayName("[400] PUT /ui/v1/settings/update/username - Should username length more than 50")
-    public void updateUsername_ShouldUsernameLengthMoreThan50() throws Exception {
+    void updateUsername_ShouldUsernameLengthMoreThan50() throws Exception {
         SettingsRequest request = new SettingsRequest();
         request.setUsername(TestConstants.LINK_DESCRIPTION);
         mockMvc.perform(put(UI_V1_USER_SETTINGS_UPDATE + USERNAME)
@@ -107,52 +82,54 @@ public class UserSettingsControllerTest {
 
     @Test
     @DisplayName("[200] PUT /ui/v1/settings/update/email - Update email")
-    public void updateEmail() throws Exception {
+    void updateEmail() throws Exception {
         SettingsRequest request = new SettingsRequest();
         request.setEmail("test2013@test.test");
         mockMvc.perform(put(UI_V1_USER_SETTINGS_UPDATE + EMAIL)
                         .content(mapper.writeValueAsString(request))
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .header(AUTH_USER_ID_HEADER, TestConstants.USER_ID))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.user.id").value(TestConstants.USER_ID))
-                .andExpect(jsonPath("$.user.email").value("test2013@test.test"))
-                .andExpect(jsonPath("$.user.fullName").value(TestConstants.FULL_NAME))
-                .andExpect(jsonPath("$.user.username").value(TestConstants.USERNAME))
-                .andExpect(jsonPath("$.user.location").value(TestConstants.LOCATION))
-                .andExpect(jsonPath("$.user.about").value(TestConstants.ABOUT))
-                .andExpect(jsonPath("$.user.website").value(TestConstants.WEBSITE))
-                .andExpect(jsonPath("$.user.countryCode").value(TestConstants.COUNTRY))
-                .andExpect(jsonPath("$.user.phone").value(TestConstants.PHONE))
-                .andExpect(jsonPath("$.user.country").value(TestConstants.COUNTRY))
-                .andExpect(jsonPath("$.user.gender").value(TestConstants.GENDER))
-                .andExpect(jsonPath("$.user.birthday").value(TestConstants.BIRTHDAY))
-                .andExpect(jsonPath("$.user.registrationDate").value(TestConstants.REGISTRATION_DATE))
-                .andExpect(jsonPath("$.user.tweetCount").value(TestConstants.TWEET_COUNT))
-                .andExpect(jsonPath("$.user.mediaTweetCount").value(TestConstants.MEDIA_TWEET_COUNT))
-                .andExpect(jsonPath("$.user.likeCount").value(TestConstants.LIKE_TWEET_COUNT))
-                .andExpect(jsonPath("$.user.notificationsCount").value(3))
-                .andExpect(jsonPath("$.user.active").value(true))
-                .andExpect(jsonPath("$.user.profileCustomized").value(true))
-                .andExpect(jsonPath("$.user.profileStarted").value(true))
-                .andExpect(jsonPath("$.user.backgroundColor").value(TestConstants.BACKGROUND_COLOR))
-                .andExpect(jsonPath("$.user.colorScheme").value(TestConstants.COLOR_SCHEME))
-                .andExpect(jsonPath("$.user.avatar").value(TestConstants.AVATAR_SRC_1))
-                .andExpect(jsonPath("$.user.wallpaper").value(TestConstants.WALLPAPER_SRC))
-                .andExpect(jsonPath("$.user.pinnedTweetId").value(TestConstants.PINNED_TWEET_ID))
-                .andExpect(jsonPath("$.user.followersSize").value(2L))
-                .andExpect(jsonPath("$.user.followingSize").value(1L))
-                .andExpect(jsonPath("$.user.followerRequestsSize").value(1L))
-                .andExpect(jsonPath("$.user.unreadMessagesCount").value(1L))
-                .andExpect(jsonPath("$.user.isMutedDirectMessages").value(true))
-                .andExpect(jsonPath("$.user.isPrivateProfile").value(false));
+                .andExpectAll(
+                        status().isOk(),
+                        jsonPath("$.user.id").value(TestConstants.USER_ID),
+                        jsonPath("$.user.email").value("test2013@test.test"),
+                        jsonPath("$.user.fullName").value(TestConstants.FULL_NAME),
+                        jsonPath("$.user.username").value(TestConstants.USERNAME),
+                        jsonPath("$.user.location").value(TestConstants.LOCATION),
+                        jsonPath("$.user.about").value(TestConstants.ABOUT),
+                        jsonPath("$.user.website").value(TestConstants.WEBSITE),
+                        jsonPath("$.user.countryCode").value(TestConstants.COUNTRY),
+                        jsonPath("$.user.phone").value(TestConstants.PHONE),
+                        jsonPath("$.user.country").value(TestConstants.COUNTRY),
+                        jsonPath("$.user.gender").value(TestConstants.GENDER),
+                        jsonPath("$.user.birthday").value(TestConstants.BIRTHDAY),
+                        jsonPath("$.user.registrationDate").value(TestConstants.REGISTRATION_DATE),
+                        jsonPath("$.user.tweetCount").value(TestConstants.TWEET_COUNT),
+                        jsonPath("$.user.mediaTweetCount").value(TestConstants.MEDIA_TWEET_COUNT),
+                        jsonPath("$.user.likeCount").value(TestConstants.LIKE_TWEET_COUNT),
+                        jsonPath("$.user.notificationsCount").value(3),
+                        jsonPath("$.user.active").value(true),
+                        jsonPath("$.user.profileCustomized").value(true),
+                        jsonPath("$.user.profileStarted").value(true),
+                        jsonPath("$.user.backgroundColor").value(TestConstants.BACKGROUND_COLOR),
+                        jsonPath("$.user.colorScheme").value(TestConstants.COLOR_SCHEME),
+                        jsonPath("$.user.avatar").value(TestConstants.AVATAR_SRC_1),
+                        jsonPath("$.user.wallpaper").value(TestConstants.WALLPAPER_SRC),
+                        jsonPath("$.user.pinnedTweetId").value(TestConstants.PINNED_TWEET_ID),
+                        jsonPath("$.user.followersSize").value(2L),
+                        jsonPath("$.user.followingSize").value(1L),
+                        jsonPath("$.user.followerRequestsSize").value(1L),
+                        jsonPath("$.user.unreadMessagesCount").value(1L),
+                        jsonPath("$.user.isMutedDirectMessages").value(true),
+                        jsonPath("$.user.isPrivateProfile").value(false)
+                );
     }
 
     @Test
     @DisplayName("[403] PUT /ui/v1/settings/update/email -Should user email is exist")
-    public void updateEmail_ShouldUserEmailIsExist() throws Exception {
+    void updateEmail_ShouldUserEmailIsExist() throws Exception {
         SettingsRequest request = new SettingsRequest();
-        request.setEmail("test2015@test.test");
+        request.setEmail("test2023@test.test");
         mockMvc.perform(put(UI_V1_USER_SETTINGS_UPDATE + EMAIL)
                         .content(mapper.writeValueAsString(request))
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -163,7 +140,7 @@ public class UserSettingsControllerTest {
 
     @Test
     @DisplayName("[200] PUT /ui/v1/settings/update/phone - Update phone")
-    public void updatePhone() throws Exception {
+    void updatePhone() throws Exception {
         SettingsRequest request = new SettingsRequest();
         request.setCountryCode("UK");
         request.setPhone(123456789L);
@@ -178,7 +155,7 @@ public class UserSettingsControllerTest {
 
     @Test
     @DisplayName("[400] PUT /ui/v1/settings/update/phone - Should phone number length lower than 6 digits")
-    public void updatePhone_ShouldPhoneNumberLengthLowerThan6Digits() throws Exception {
+    void updatePhone_ShouldPhoneNumberLengthLowerThan6Digits() throws Exception {
         SettingsRequest request = new SettingsRequest();
         request.setCountryCode("UK");
         request.setPhone(123L);
@@ -192,7 +169,7 @@ public class UserSettingsControllerTest {
 
     @Test
     @DisplayName("[400] PUT /ui/v1/settings/update/phone - Should phone number length more than 10 digits")
-    public void updatePhone_ShouldPhoneNumberLengthMoreThan10Digits() throws Exception {
+    void updatePhone_ShouldPhoneNumberLengthMoreThan10Digits() throws Exception {
         SettingsRequest request = new SettingsRequest();
         request.setCountryCode("UK");
         request.setPhone(12345678900L);
@@ -206,7 +183,7 @@ public class UserSettingsControllerTest {
 
     @Test
     @DisplayName("[200] PUT /ui/v1/settings/update/country - Update country")
-    public void updateCountry() throws Exception {
+    void updateCountry() throws Exception {
         SettingsRequest request = new SettingsRequest();
         request.setCountry("UK");
         mockMvc.perform(put(UI_V1_USER_SETTINGS_UPDATE + COUNTRY)
@@ -219,7 +196,7 @@ public class UserSettingsControllerTest {
 
     @Test
     @DisplayName("[200] PUT /ui/v1/settings/update/gender - Update gender")
-    public void updateGender() throws Exception {
+    void updateGender() throws Exception {
         SettingsRequest request = new SettingsRequest();
         request.setGender("Male");
         mockMvc.perform(put(UI_V1_USER_SETTINGS_UPDATE + GENDER)
@@ -232,7 +209,7 @@ public class UserSettingsControllerTest {
 
     @Test
     @DisplayName("[400] PUT /ui/v1/settings/update/gender - Should gender length is 0 characters")
-    public void updateGender_ShouldGenderLengthIs0() throws Exception {
+    void updateGender_ShouldGenderLengthIs0() throws Exception {
         SettingsRequest request = new SettingsRequest();
         request.setGender("");
         mockMvc.perform(put(UI_V1_USER_SETTINGS_UPDATE + GENDER)
@@ -245,7 +222,7 @@ public class UserSettingsControllerTest {
 
     @Test
     @DisplayName("[400] PUT /ui/v1/settings/update/gender - Should gender length more than 30 characters")
-    public void updateGender_ShouldGenderLengthMoreThan30() throws Exception {
+    void updateGender_ShouldGenderLengthMoreThan30() throws Exception {
         SettingsRequest request = new SettingsRequest();
         request.setGender(TestConstants.LINK_DESCRIPTION);
         mockMvc.perform(put(UI_V1_USER_SETTINGS_UPDATE + GENDER)
@@ -258,7 +235,7 @@ public class UserSettingsControllerTest {
 
     @Test
     @DisplayName("[200] PUT /ui/v1/settings/update/language - Update language")
-    public void updateLanguage() throws Exception {
+    void updateLanguage() throws Exception {
         SettingsRequest request = new SettingsRequest();
         request.setLanguage("English");
         mockMvc.perform(put(UI_V1_USER_SETTINGS_UPDATE + LANGUAGE)
@@ -271,7 +248,7 @@ public class UserSettingsControllerTest {
 
     @Test
     @DisplayName("[200] PUT /ui/v1/settings/update/direct - Update direct message requests")
-    public void updateDirectMessageRequests() throws Exception {
+    void updateDirectMessageRequests() throws Exception {
         SettingsRequest request = new SettingsRequest();
         request.setMutedDirectMessages(false);
         mockMvc.perform(put(UI_V1_USER_SETTINGS_UPDATE + DIRECT)
@@ -284,7 +261,7 @@ public class UserSettingsControllerTest {
 
     @Test
     @DisplayName("[200] PUT /ui/v1/settings/update/private - Update private profile")
-    public void updatePrivateProfile() throws Exception {
+    void updatePrivateProfile() throws Exception {
         SettingsRequest request = new SettingsRequest();
         request.setPrivateProfile(true);
         mockMvc.perform(put(UI_V1_USER_SETTINGS_UPDATE + PRIVATE)
@@ -297,7 +274,7 @@ public class UserSettingsControllerTest {
 
     @Test
     @DisplayName("[200] PUT /ui/v1/settings/update/color_scheme - Update color scheme")
-    public void updateColorScheme() throws Exception {
+    void updateColorScheme() throws Exception {
         SettingsRequest request = new SettingsRequest();
         request.setColorScheme(ColorSchemeType.GREEN);
         mockMvc.perform(put(UI_V1_USER_SETTINGS_UPDATE + COLOR_SCHEME)
@@ -310,7 +287,7 @@ public class UserSettingsControllerTest {
 
     @Test
     @DisplayName("[200] PUT /ui/v1/settings/update/background_color - Update background color")
-    public void updateBackgroundColor() throws Exception {
+    void updateBackgroundColor() throws Exception {
         SettingsRequest request = new SettingsRequest();
         request.setBackgroundColor(BackgroundColorType.DIM);
         mockMvc.perform(put(UI_V1_USER_SETTINGS_UPDATE + BACKGROUND_COLOR)
