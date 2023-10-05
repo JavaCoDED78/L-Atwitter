@@ -12,46 +12,91 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface UserSettingsRepository extends JpaRepository<User, Long> {
 
-    @Query("SELECT CASE WHEN count(user) > 0 THEN true ELSE false END FROM User user WHERE user.email = :email")
+    @Query("""
+            SELECT CASE WHEN count(u) > 0 THEN true
+                ELSE false END
+            FROM User u
+            WHERE u.email = :email
+            """)
     boolean isEmailExist(@Param("email") String email);
 
     @Modifying
-    @Query("UPDATE User user SET user.email = :email WHERE user.id = :userId")
+    @Query("""
+            UPDATE User u
+            SET u.email = :email
+            WHERE u.id = :userId
+            """)
     void updateEmail(@Param("email") String email, @Param("userId") Long userId);
 
     @Modifying
-    @Query("UPDATE User user SET user.username = :username WHERE user.id = :userId")
+    @Query("""
+            UPDATE User u
+            SET u.username = :username
+            WHERE u.id = :userId
+            """)
     void updateUsername(@Param("username") String username, @Param("userId") Long userId);
 
     @Modifying
-    @Query("UPDATE User user SET user.countryCode = :countryCode, user.phone = :phone WHERE user.id = :userId")
+    @Query("""
+            UPDATE User u
+            SET u.countryCode = :countryCode, u.phone = :phone
+            WHERE u.id = :userId
+            """)
     void updatePhone(@Param("countryCode") String countryCode, @Param("phone") Long phone, @Param("userId") Long userId);
 
     @Modifying
-    @Query("UPDATE User user SET user.country = :country WHERE user.id = :userId")
+    @Query("""
+            UPDATE User u
+            SET u.country = :country
+            WHERE u.id = :userId
+            """)
     void updateCountry(@Param("country") String country, @Param("userId") Long userId);
 
     @Modifying
-    @Query("UPDATE User user SET user.gender = :gender WHERE user.id = :userId")
+    @Query("""
+            UPDATE User u
+            SET u.gender = :gender
+            WHERE u.id = :userId
+            """)
     void updateGender(@Param("gender") String gender, @Param("userId") Long userId);
 
     @Modifying
-    @Query("UPDATE User user SET user.language = :language WHERE user.id = :userId")
+    @Query("""
+            UPDATE User u
+            SET u.language = :language
+            WHERE u.id = :userId
+            """)
     void updateLanguage(@Param("language") String language, @Param("userId") Long userId);
 
     @Modifying
-    @Query("UPDATE User user SET user.mutedDirectMessages = :mutedDirectMessages WHERE user.id = :userId")
+    @Query("""
+            UPDATE User u
+            SET u.mutedDirectMessages = :mutedDirectMessages
+            WHERE u.id = :userId
+            """)
     void updateDirectMessageRequests(@Param("mutedDirectMessages") boolean mutedDirectMessages, @Param("userId") Long userId);
 
     @Modifying
-    @Query("UPDATE User user SET user.privateProfile = :privateProfile WHERE user.id = :userId")
+    @Query("""
+            UPDATE User u
+            SET u.privateProfile = :privateProfile
+            WHERE u.id = :userId
+            """)
     void updatePrivateProfile(@Param("privateProfile") boolean privateProfile, @Param("userId") Long userId);
 
     @Modifying
-    @Query("UPDATE User user SET user.colorScheme = :colorSchemeType WHERE user.id = :userId")
+    @Query("""
+            UPDATE User u
+            SET u.colorScheme = :colorSchemeType
+            WHERE u.id = :userId
+            """)
     void updateColorScheme(@Param("colorSchemeType") ColorSchemeType colorSchemeType, @Param("userId") Long userId);
 
     @Modifying
-    @Query("UPDATE User user SET user.backgroundColor = :backgroundColor WHERE user.id = :userId")
+    @Query("""
+            UPDATE User u
+            SET u.backgroundColor = :backgroundColor
+            WHERE u.id = :userId
+            """)
     void updateBackgroundColor(@Param("backgroundColor") BackgroundColorType backgroundColorType, @Param("userId") Long userId);
 }

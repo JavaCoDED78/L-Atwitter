@@ -22,6 +22,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class FollowerUserServiceImpl implements FollowerUserService {
 
     private final UserRepository userRepository;
@@ -98,7 +99,7 @@ public class FollowerUserServiceImpl implements FollowerUserService {
         } else {
             followerUserRepository.addFollowerRequest(authUserId, userId);
         }
-        return userRepository.getUserById(userId, UserProfileProjection.class).get();
+        return userRepository.getUserById(userId, UserProfileProjection.class).orElse(null);
     }
 
     @Override

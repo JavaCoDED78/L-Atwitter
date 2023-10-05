@@ -32,6 +32,7 @@ import static com.gmail.javacoded78.constants.ErrorMessage.USER_NOT_FOUND;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class UserServiceImpl implements UserService {
 
     private final AuthenticationService authenticationService;
@@ -90,6 +91,12 @@ public class UserServiceImpl implements UserService {
         if (userInfo.getFullName().isEmpty() || userInfo.getFullName().length() > 50) {
             throw new ApiRequestException(INCORRECT_USERNAME_LENGTH, HttpStatus.BAD_REQUEST);
         }
+        User user = getUser(userInfo);
+        return userRepository.getUserById(user.getId(), AuthUserProjection.class)
+                .orElseThrow(() -> new ApiRequestException(USER_NOT_FOUND, HttpStatus.NOT_FOUND));
+    }
+
+    private User getUser(User userInfo) {
         User user = authenticationService.getAuthenticatedUser();
 
         if (userInfo.getAvatar() != null) {
@@ -103,8 +110,7 @@ public class UserServiceImpl implements UserService {
         user.setLocation(userInfo.getLocation());
         user.setWebsite(userInfo.getWebsite());
         user.setProfileCustomized(true);
-        return userRepository.getUserById(user.getId(), AuthUserProjection.class)
-                .orElseThrow(() -> new ApiRequestException(USER_NOT_FOUND, HttpStatus.NOT_FOUND));
+        return user;
     }
 
     @Override
@@ -126,7 +132,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public Long processPinTweet(Long tweetId) {
-        if (!tweetClient.isTweetExists(tweetId)) {
+        if (Boolean.FALSE.equals(tweetClient.isTweetExists(tweetId))) {
             throw new ApiRequestException(TWEET_NOT_FOUND, HttpStatus.NOT_FOUND);
         }
         Long authUserId = authenticationService.getAuthenticatedUserId();

@@ -41,6 +41,7 @@ import java.util.stream.Stream;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class UserClientServiceImpl implements UserClientService {
 
     private final UserRepository userRepository;
@@ -129,7 +130,7 @@ public class UserClientServiceImpl implements UserClientService {
 
     @Override
     public CommonUserResponse getListOwnerById(Long userId) {
-        CommonUserProjection user = userRepository.getUserById(userId, CommonUserProjection.class).get();
+        CommonUserProjection user = userRepository.getUserById(userId, CommonUserProjection.class).orElse(null);
         return basicMapper.convertToResponse(user, CommonUserResponse.class);
     }
 
@@ -147,20 +148,20 @@ public class UserClientServiceImpl implements UserClientService {
 
     @Override
     public NotificationUserResponse getNotificationUser(Long userId) {
-        NotificationUserProjection user = userRepository.getUserById(userId, NotificationUserProjection.class).get();
+        NotificationUserProjection user = userRepository.getUserById(userId, NotificationUserProjection.class).orElse(null);
         return basicMapper.convertToResponse(user, NotificationUserResponse.class);
     }
 
     @Override
     public TweetAuthorResponse getTweetAuthor(Long userId) {
-        TweetAuthorProjection user = userRepository.getUserById(userId, TweetAuthorProjection.class).get();
+        TweetAuthorProjection user = userRepository.getUserById(userId, TweetAuthorProjection.class).orElse(null);
         return basicMapper.convertToResponse(user, TweetAuthorResponse.class);
     }
 
     @Override
     public TweetAdditionalInfoUserResponse getTweetAdditionalInfoUser(Long userId) {
         TweetAdditionalInfoUserProjection user =
-                userRepository.getUserById(userId, TweetAdditionalInfoUserProjection.class).get();
+                userRepository.getUserById(userId, TweetAdditionalInfoUserProjection.class).orElse(null);
         return basicMapper.convertToResponse(user, TweetAdditionalInfoUserResponse.class);
     }
 
@@ -210,7 +211,7 @@ public class UserClientServiceImpl implements UserClientService {
 
     @Override
     public ChatUserParticipantResponse getChatParticipant(Long userId) {
-        ChatUserParticipantProjection user = userRepository.getUserById(userId, ChatUserParticipantProjection.class).get();
+        ChatUserParticipantProjection user = userRepository.getUserById(userId, ChatUserParticipantProjection.class).orElse(null);
         return basicMapper.convertToResponse(user, ChatUserParticipantResponse.class);
     }
 
@@ -221,7 +222,7 @@ public class UserClientServiceImpl implements UserClientService {
 
     @Override
     public UserResponse getUserResponseById(Long userId) {
-        UserProjection user = userRepository.getUserById(userId, UserProjection.class).get();
+        UserProjection user = userRepository.getUserById(userId, UserProjection.class).orElse(null);
         return basicMapper.convertToResponse(user, UserResponse.class);
     }
 
@@ -232,7 +233,7 @@ public class UserClientServiceImpl implements UserClientService {
 
     @Override
     public ChatTweetUserResponse getChatTweetUser(Long userId) {
-        ChatTweetUserProjection user = userRepository.getUserById(userId, ChatTweetUserProjection.class).get();
+        ChatTweetUserProjection user = userRepository.getUserById(userId, ChatTweetUserProjection.class).orElse(null);
         return basicMapper.convertToResponse(user, ChatTweetUserResponse.class);
     }
 

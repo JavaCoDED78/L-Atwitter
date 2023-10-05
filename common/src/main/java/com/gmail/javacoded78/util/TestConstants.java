@@ -10,14 +10,14 @@ public class TestConstants {
     public static final String ABOUT = "Hello twitter!";
     public static final String ACTIVATION_CODE = "1234567890";
     public static final Boolean ACTIVE = true;
-    public static final String BIRTHDAY = "Mar 10, 1991";
-    public static final String USER_EMAIL = "test2015@test.test";
+    public static final String BIRTHDAY = "Jan 04, 1978";
+    public static final String USER_EMAIL = "test2023@test.test";
     public static final String NOT_VALID_EMAIL = "test2222@test.test";
     public static final String PASSWORD = "qwerty123";
     public static final String FULL_NAME = "Androsor";
-    public static final String LOCATION = "New York";
+    public static final String LOCATION = "Minsk";
     public static final String PASSWORD_RESET_CODE = "1234567890";
-    public static final String REGISTRATION_DATE = "2021-08-01T23:34:32";
+    public static final String REGISTRATION_DATE = "2023-08-01T23:34:32";
     public static final String ROLE = "USER";
     public static final String USERNAME = "Androsor";
     public static final String WEBSITE = "https://www.google.com";
@@ -29,11 +29,11 @@ public class TestConstants {
     public static final String AVATAR_SRC_2 = "https://twitterclonestorage.s3.eu-central-1.amazonaws.com/ae83099c-885b-499a-bb6f-5e34e1b69e7d_4ec7201fd370bd9870cdb326f0511f38.jpg";
     public static final String WALLPAPER_SRC = "https://twitterclonestorage.s3.eu-central-1.amazonaws.com/d0e5b95f-acc0-47ef-b499-477f7e5a1a06_PrMnWa2z.jpg";
     public static final Long WALLPAPER_ID = 44L;
-    public static final String COUNTRY_CODE = "UA";
+    public static final String COUNTRY_CODE = "BY";
     public static final Long PHONE = 666966623L;
-    public static final String COUNTRY = "UA";
-    public static final String GENDER = "Cat";
-    public static final String LANGUAGE = "Ukrainian - українська";
+    public static final String COUNTRY = "BY";
+    public static final String GENDER = "Male";
+    public static final String LANGUAGE = "Belarusian - Белорусская";
     public static final String BACKGROUND_COLOR = "DEFAULT";
     public static final String COLOR_SCHEME = "BLUE";
     public static final Long PINNED_TWEET_ID = 40L;
@@ -67,7 +67,7 @@ public class TestConstants {
     public static final String LIST_NAME = "test list name 1";
     public static final String LIST_NAME_2 = "test list name 2";
     public static final String LIST_DESCRIPTION = "test list description";
-    public static final String LIST_PINNED_DATE = "2021-10-03T20:42:53";
+    public static final String LIST_PINNED_DATE = "2023-09-03T20:42:53";
 
     public static final Long CHAT_ID = 1L;
     public static final Long CHAT_MESSAGE_AUTHOR_ID = 2L;

@@ -48,7 +48,7 @@ public class FollowerUserController {
     }
 
     @GetMapping(FOLLOWER_REQUESTS)
-    public ResponseEntity<List<FollowerUserResponse>> getFollowerRequests(@PageableDefault(size = 10) Pageable pageable) {
+    public ResponseEntity<List<FollowerUserResponse>> getFollowerRequests(@PageableDefault() Pageable pageable) {
         HeaderResponse<FollowerUserResponse> response = followerUserMapper.getFollowerRequests(pageable);
         return ResponseEntity.ok().headers(response.getHeaders()).body(response.getItems());
     }
@@ -58,7 +58,7 @@ public class FollowerUserController {
         return ResponseEntity.ok(followerUserMapper.processFollow(userId));
     }
 
-    @GetMapping(FOLLOW_OVERALL) // TODO add pagination
+    @GetMapping(FOLLOW_OVERALL)
     public ResponseEntity<List<UserResponse>> overallFollowers(@PathVariable("userId") Long userId) {
         return ResponseEntity.ok(followerUserMapper.overallFollowers(userId));
     }

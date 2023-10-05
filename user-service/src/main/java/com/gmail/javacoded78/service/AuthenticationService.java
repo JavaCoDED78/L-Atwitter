@@ -2,7 +2,6 @@ package com.gmail.javacoded78.service;
 
 
 import com.gmail.javacoded78.dto.request.AuthenticationRequest;
-import com.gmail.javacoded78.dto.request.RegistrationRequest;
 import com.gmail.javacoded78.model.User;
 import com.gmail.javacoded78.repository.projection.AuthUserProjection;
 import com.gmail.javacoded78.repository.projection.UserPrincipalProjection;

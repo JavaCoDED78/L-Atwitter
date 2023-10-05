@@ -3,11 +3,17 @@ package com.gmail.javacoded78.dto.response;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.gmail.javacoded78.enums.BackgroundColorType;
 import com.gmail.javacoded78.enums.ColorSchemeType;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 public class AuthUserResponse {
 
     private Long id;

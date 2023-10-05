@@ -13,22 +13,34 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface BlockUserRepository extends JpaRepository<User, Long> {
 
-    @Query(value = "SELECT *, users.full_name as fullName, users.private_profile as privateProfile FROM users " +
-            "LEFT JOIN user_blocked ON user_blocked.blocked_user_id = users.id " +
-            "WHERE user_blocked.user_id = :userId", nativeQuery = true)
+    @Query(value = """
+            SELECT *, users.full_name as fullName, users.private_profile as privateProfile FROM users
+            LEFT JOIN user_blocked ON user_blocked.blocked_user_id = users.id
+            WHERE user_blocked.user_id = :userId
+            """, nativeQuery = true)
     Page<BlockedUserProjection> getUserBlockListById(@Param("userId") Long userId, Pageable pageable);
 
-    @Query("SELECT CASE WHEN count(blockedUser) > 0 THEN true ELSE false END FROM User user " +
-            "LEFT JOIN user.userBlockedList blockedUser " +
-            "WHERE user.id = :userId " +
-            "AND blockedUser.id = :blockedUserId")
+    @Query("""
+            SELECT CASE WHEN count(bu) > 0 THEN true
+                ELSE false END
+            FROM User u
+            LEFT JOIN u.userBlockedList bu
+            WHERE u.id = :userId
+            AND bu.id = :blockedUserId
+            """)
     boolean isUserBlocked(@Param("userId") Long userId, @Param("blockedUserId") Long blockedUserId);
 
     @Modifying
-    @Query(value = "INSERT INTO user_blocked (user_id, blocked_user_id) VALUES (?1, ?2)", nativeQuery = true)
+    @Query(value = """
+                    INSERT INTO user_blocked (user_id, blocked_user_id)
+                    VALUES (?1, ?2)
+                    """, nativeQuery = true)
     void blockUser(@Param("authUserId") Long authUserId, @Param("userId") Long userId);
 
     @Modifying
-    @Query(value = "DELETE FROM user_blocked WHERE user_id = ?1 AND blocked_user_id = ?2", nativeQuery = true)
+    @Query(value = """
+                    DELETE FROM user_blocked
+                    WHERE user_id = ?1 AND blocked_user_id = ?2
+                    """, nativeQuery = true)
     void unblockUser(@Param("authUserId") Long authUserId, @Param("userId") Long userId);
 }

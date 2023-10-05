@@ -29,6 +29,7 @@ import static com.gmail.javacoded78.constants.ErrorMessage.USER_NOT_FOUND;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class RegistrationServiceImpl implements RegistrationService {
 
     private final UserRepository userRepository;
@@ -53,10 +54,11 @@ public class RegistrationServiceImpl implements RegistrationService {
             return "User data checked.";
         }
         if (!existingUser.get().isActive()) {
-            existingUser.get().setUsername(request.getUsername());
-            existingUser.get().setFullName(request.getUsername());
-            existingUser.get().setBirthday(request.getBirthday());
-            userRepository.save(existingUser.get());
+            User mayBeUser = existingUser.get();
+            mayBeUser.setUsername(request.getUsername());
+            mayBeUser.setFullName(request.getUsername());
+            mayBeUser.setBirthday(request.getBirthday());
+            userRepository.save(mayBeUser);
             return "User data checked.";
         }
         throw new ApiRequestException(EMAIL_HAS_ALREADY_BEEN_TAKEN, HttpStatus.FORBIDDEN);

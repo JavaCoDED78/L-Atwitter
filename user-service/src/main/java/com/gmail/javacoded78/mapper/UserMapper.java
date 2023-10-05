@@ -52,6 +52,7 @@ public class UserMapper {
         return basicMapper.getHeaderResponse(users, UserResponse.class);
     }
 
+    @SuppressWarnings("unchecked")
     public SearchResultResponse searchByText(String text) {
         Map<String, Object> searchResult = userService.searchByText(text);
         SearchResultResponse searchResultResponse = new SearchResultResponse();

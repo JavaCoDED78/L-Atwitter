@@ -1,6 +1,9 @@
 package com.gmail.javacoded78.dto.request;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
@@ -11,6 +14,9 @@ import static com.gmail.javacoded78.constants.ErrorMessage.EMPTY_PASSWORD;
 import static com.gmail.javacoded78.constants.ErrorMessage.SHORT_PASSWORD;
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 public class AuthenticationRequest {
 
     @Email(regexp = ".+@.+\\..+", message = EMAIL_NOT_VALID)

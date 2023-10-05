@@ -36,6 +36,7 @@ import static com.gmail.javacoded78.constants.PathConstants.AUTH_USER_ID_HEADER;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class AuthenticationServiceImpl implements AuthenticationService {
 
     private final UserRepository userRepository;

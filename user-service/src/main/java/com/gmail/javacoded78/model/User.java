@@ -2,6 +2,8 @@ package com.gmail.javacoded78.model;
 
 import com.gmail.javacoded78.enums.BackgroundColorType;
 import com.gmail.javacoded78.enums.ColorSchemeType;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -27,6 +29,8 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @EqualsAndHashCode(of = {"id", "email"})
 @Table(name = "users")
 public class User {
@@ -138,36 +142,42 @@ public class User {
     private Long unreadMessagesCount = 0L;
 
     @ManyToMany
+    @Builder.Default
     @JoinTable(name = "user_muted",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "muted_user_id"))
-    private List<User> userMutedList;
+    private List<User> userMutedList = new ArrayList<>();
 
     @ManyToMany
+    @Builder.Default
     @JoinTable(name = "user_blocked",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "blocked_user_id"))
-    private List<User> userBlockedList;
+    private List<User> userBlockedList = new ArrayList<>();
 
     @ManyToMany
+    @Builder.Default
     @JoinTable(name = "user_subscriptions",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "subscriber_id"))
-    private List<User> followers;
+    private List<User> followers = new ArrayList<>();
 
     @ManyToMany
+    @Builder.Default
     @JoinTable(name = "user_subscriptions",
             joinColumns = @JoinColumn(name = "subscriber_id"),
             inverseJoinColumns = @JoinColumn(name = "user_id"))
-    private List<User> following;
+    private List<User> following = new ArrayList<>();
 
     @ManyToMany
+    @Builder.Default
     @JoinTable(name = "user_follower_requests",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "follower_id"))
-    private List<User> followerRequests;
+    private List<User> followerRequests = new ArrayList<>();
 
     @ManyToMany
+    @Builder.Default
     @JoinTable(name = "subscribers",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "subscriber_id"))
