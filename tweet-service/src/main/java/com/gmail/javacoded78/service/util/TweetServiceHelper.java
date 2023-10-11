@@ -41,6 +41,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Component
@@ -76,6 +77,7 @@ public class TweetServiceHelper {
         if (tweet.getScheduledDate() == null) {
             if (isMediaTweetCreated ||!tweet.getImages().isEmpty()) {
                 userClient.updateMediaTweetCount(true);
+                userClient.updateTweetCount(true);
             } else {
                 userClient.updateTweetCount(true);
             }
@@ -240,6 +242,6 @@ public class TweetServiceHelper {
         Stream<TweetUserProjection> combinedStream = Stream.concat(tweetStream, retweetStream)
                 .sorted(Comparator.comparing(TweetUserProjection::getDateTime));
 
-        return combinedStream.toList();
+        return combinedStream.collect(Collectors.toList());
     }
 }

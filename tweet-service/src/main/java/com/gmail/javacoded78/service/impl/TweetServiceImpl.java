@@ -73,7 +73,7 @@ public class TweetServiceImpl implements TweetService {
         Long pinnedTweetId = userClient.getUserPinnedTweetId(userId);
 
         if (pinnedTweetId != null) {
-            TweetUserProjection pinnedTweet = tweetRepository.getTweetById(pinnedTweetId, TweetUserProjection.class).orElse(null);
+            TweetUserProjection pinnedTweet = tweetRepository.getTweetById(pinnedTweetId, TweetUserProjection.class).get();
             boolean isTweetExist = userTweets.removeIf(tweet -> tweet.getId().equals(pinnedTweet.getId()));
 
             if (isTweetExist) {

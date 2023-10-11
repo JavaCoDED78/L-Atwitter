@@ -30,7 +30,8 @@ public class TopicMapper {
 
     public List<TopicResponse> getFollowedTopics() {
         List<FollowedTopicProjection> topics = topicService.getFollowedTopics();
-        return basicMapper.convertToResponseList(topics, TopicResponse.class);
+        List<TopicResponse> list = basicMapper.convertToResponseList(topics, TopicResponse.class);
+        return list;
     }
 
     public List<TopicResponse> getFollowedTopicsByUserId(Long userId) {

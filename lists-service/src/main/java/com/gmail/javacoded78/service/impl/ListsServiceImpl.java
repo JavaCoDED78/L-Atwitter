@@ -53,7 +53,6 @@ public class ListsServiceImpl implements ListsService {
         List<Long> listOwnerIds = listsRepository.getListOwnerIds();
         IdsRequest idsRequest = new IdsRequest(listOwnerIds);
         List<Long> validListUserIds = userClient.getValidUserIds(idsRequest);
-        System.out.println();
         return listsRepository.getAllTweetLists(validListUserIds);
     }
 
