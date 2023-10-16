@@ -140,5 +140,35 @@
 ![Profile](demo/images/profile_edit.png)
 #### Another Profile
 ![AnotherProfile](demo/images/profile_diff.png)
-
-
+#### Profile Tweets
+![ProfileTweets](demo/images/profile_tweets.png)
+#### Profile Replies
+![ProfileReplies](demo/images/profile_replies.png)
+#### Profile Likes
+![ProfileLikes](demo/images/profile_likes.png)
+#### Profile Media
+![ProfileMedia](demo/images/profile_media.png)
+#### More
+![More](demo/images/more.png)
+#### More Setting
+![MoreSetting](demo/images/more_setting.png)
+#### More Setting Accessibility
+![MoreSettingAccessibility](demo/images/more_setting_acces.png)
+#### More Setting Account
+![MoreSettingAccount](demo/images/more_setting_account.png)
+#### More Setting Notification
+![MoreSettingNotification](demo/images/more_setting_notification.png)
+#### More Setting Privacy
+![MoreSettingPrivacy](demo/images/more_setting_privacy.png)
+#### More Setting Security
+![MoreSettingSecurity](demo/images/more_setting_security.png)
+#### More Setting Additional
+![MoreSettingAdditional](demo/images/more_setting_additional.png)
+#### More Custom
+![MoreSettingCustom](demo/images/more_cust.png)
+#### More Topic Followed
+![MoreTopicFollowed](demo/images/topic_foll.png)
+#### More Topic Suggested
+![MoreTopicSuggested](demo/images/topic_sug.png)
+#### Log Out
+![LogOut](demo/images/logout.png)
