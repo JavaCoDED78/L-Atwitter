@@ -42,6 +42,7 @@ public class ChatParticipant {
     private Long id;
 
     @Column(name = "left_chat", columnDefinition = "boolean default false")
+    @Builder.Default
     private boolean leftChat = false;
 
     @Column(name = "user_id", nullable = false)

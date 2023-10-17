@@ -35,6 +35,7 @@ public class Notification {
     private Long id;
 
     @Column(name = "date", columnDefinition = "timestamp default current_timestamp")
+    @Builder.Default
     private LocalDateTime date = LocalDateTime.now();
 
     @Column(name = "notification_type", nullable = false)

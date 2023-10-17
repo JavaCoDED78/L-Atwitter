@@ -38,6 +38,7 @@ public class Retweet {
     private Long id;
 
     @Column(name = "retweet_date", columnDefinition = "timestamp default current_timestamp")
+    @Builder.Default
     private LocalDateTime retweetDate = LocalDateTime.now();
 
     @Column(name = "user_id", nullable = false)

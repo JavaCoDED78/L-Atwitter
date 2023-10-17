@@ -35,6 +35,7 @@ public class Chat {
     private Long id;
 
     @Column(name = "creation_date", columnDefinition = "timestamp default current_timestamp")
+    @Builder.Default
     private LocalDateTime creationDate = LocalDateTime.now();
 
     @OneToMany(mappedBy = "chat")

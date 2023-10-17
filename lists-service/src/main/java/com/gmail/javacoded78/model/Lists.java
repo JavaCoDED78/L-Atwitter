@@ -1,5 +1,6 @@
 package com.gmail.javacoded78.model;
 
+import liquibase.pro.packaged.B;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -50,6 +51,7 @@ public class Lists {
     private String wallpaper;
 
     @OneToMany(mappedBy = "list")
+    @Builder.Default
     private List<PinnedLists> pinnedLists = new ArrayList<>();
 
     @Column(name = "list_owner_id", nullable = false)

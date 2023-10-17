@@ -38,6 +38,7 @@ public class LikeTweet {
     private Long id;
 
     @Column(name = "liked_tweet_date", columnDefinition = "timestamp default current_timestamp")
+    @Builder.Default
     private LocalDateTime likeTweetDate = LocalDateTime.now();
 
     @Column(name = "user_id", nullable = false)

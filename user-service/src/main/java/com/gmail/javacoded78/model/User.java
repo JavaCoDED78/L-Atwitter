@@ -80,6 +80,7 @@ public class User {
     private String birthday;
 
     @Column(name = "registration_date", columnDefinition = "timestamp default current_timestamp")
+    @Builder.Default
     private LocalDateTime registrationDate = LocalDateTime.now();
 
     @Column(name = "activation_code")
@@ -89,44 +90,57 @@ public class User {
     private String passwordResetCode;
 
     @Column(name = "role", columnDefinition = "varchar(255) default 'USER'")
+    @Builder.Default
     private String role = "USER";
 
     @Column(name = "tweet_count", columnDefinition = "int8 default 0")
+    @Builder.Default
     private Long tweetCount = 0L;
 
     @Column(name = "media_tweet_count", columnDefinition = "int8 default 0")
+    @Builder.Default
     private Long mediaTweetCount = 0L;
 
     @Column(name = "like_count", columnDefinition = "int8 default 0")
+    @Builder.Default
     private Long likeCount = 0L;
 
     @Column(name = "notifications_count", columnDefinition = "int8 default 0")
+    @Builder.Default
     private Long notificationsCount = 0L;
 
     @Column(name = "mentions_count", columnDefinition = "int8 default 0")
+    @Builder.Default
     private Long mentionsCount = 0L;
 
     @Column(name = "active", columnDefinition = "boolean default false")
+    @Builder.Default
     private boolean active = false;
 
     @Column(name = "profile_customized", columnDefinition = "boolean default false")
+    @Builder.Default
     private boolean profileCustomized = false;
 
     @Column(name = "profile_started", columnDefinition = "boolean default false")
+    @Builder.Default
     private boolean profileStarted = false;
 
     @Column(name = "muted_direct_messages", columnDefinition = "boolean default false")
+    @Builder.Default
     private boolean mutedDirectMessages = false;
 
     @Column(name = "private_profile", columnDefinition = "boolean default false")
+    @Builder.Default
     private boolean privateProfile = false;
 
     @Column(name = "background_color", columnDefinition = "varchar(255) default 'DEFAULT'")
     @Enumerated(EnumType.STRING)
-    private BackgroundColorType backgroundColor= BackgroundColorType.DEFAULT;
+    @Builder.Default
+    private BackgroundColorType backgroundColor = BackgroundColorType.DEFAULT;
 
     @Column(name = "color_scheme", columnDefinition = "varchar(255) default 'BLUE'")
     @Enumerated(EnumType.STRING)
+    @Builder.Default
     private ColorSchemeType colorScheme = ColorSchemeType.BLUE;
 
     @Column(name = "pinned_tweet_id")
@@ -139,6 +153,7 @@ public class User {
     private String wallpaper;
 
     @Column(name = "unread_messages_count", columnDefinition = "int8 default 0")
+    @Builder.Default
     private Long unreadMessagesCount = 0L;
 
     @ManyToMany

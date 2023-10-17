@@ -50,6 +50,7 @@ public class Tweet {
     private String text;
 
     @Column(name = "date_time", columnDefinition = "timestamp default current_timestamp")
+    @Builder.Default
     private LocalDateTime dateTime = LocalDateTime.now();
 
     @Column(name = "scheduled_date")
@@ -66,6 +67,7 @@ public class Tweet {
 
     @Column(name = "reply_type", columnDefinition = "varchar(255) default 'EVERYONE'")
     @Enumerated(EnumType.STRING)
+    @Builder.Default
     private ReplyType replyType = ReplyType.EVERYONE;
 
     @Column(name = "link")
@@ -85,6 +87,7 @@ public class Tweet {
     private LinkCoverSize linkCoverSize;
 
     @Column(name = "deleted", columnDefinition = "boolean default false")
+    @Builder.Default
     private boolean deleted = false;
 
     @Column(name = "author_id", nullable = false)

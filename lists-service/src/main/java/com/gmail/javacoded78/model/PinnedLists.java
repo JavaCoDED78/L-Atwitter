@@ -40,6 +40,7 @@ public class PinnedLists {
     private Long id;
 
     @Column(name = "pinned_date", columnDefinition = "timestamp default current_timestamp")
+    @Builder.Default
     private LocalDateTime pinnedDate = LocalDateTime.now();
 
     @ManyToOne

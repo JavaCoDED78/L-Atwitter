@@ -35,5 +35,6 @@ public class Tag {
     private String tagName;
 
     @Column(name = "tweets_quantity", columnDefinition = "bigint default 1")
+    @Builder.Default
     private Long tweetsQuantity = 1L;
 }

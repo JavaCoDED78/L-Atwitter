@@ -44,9 +44,11 @@ public class ChatMessage {
     private String text;
 
     @Column(name = "date", columnDefinition = "timestamp default current_timestamp")
+    @Builder.Default
     private LocalDateTime date = LocalDateTime.now();
 
     @Column(name = "is_unread", columnDefinition = "boolean default true")
+    @Builder.Default
     private boolean unread = true;
 
     @Column(name = "tweet_id")

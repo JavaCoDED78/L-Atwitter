@@ -59,6 +59,8 @@
 >* Users can search tweets by hashtags and search other users and users tweets.
 >* All images downloads on Amazon S3 bucket.
 
+![DataGraph](demo/images/data-graph.svg)
+
 ## Work in progress
 
 >* Front-end refactoring

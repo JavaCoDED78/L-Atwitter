@@ -144,7 +144,7 @@ services:
       - api-gateway
 
   tweet-service:
-    image: javacoded/l-atwitter:tweet-service
+    image: androsor/twitter:tweet-service
     container_name: tweet-service
     hostname: tweet-service
     environment:
@@ -166,7 +166,7 @@ services:
       - config-server
 
   topic-service:
-    image: javacoded/l-atwitter:topic-service
+    image: androsor/twitter:topic-service
     container_name: topic-service
     hostname: topic-service
     environment:
@@ -189,7 +189,7 @@ services:
         - api-gateway
 
   tag-service:
-    image: javacoded/l-atwitter:tag-service
+    image: androsor/twitter:tag-service
     container_name: tag-service
     hostname: tag-service
     environment:
@@ -211,7 +211,7 @@ services:
       - config-server
 
   lists-service:
-    image: javacoded/l-atwitter:lists-service
+    image: androsor/twitter:lists-service
     container_name: lists-service
     hostname: lists-service
     environment:
@@ -233,7 +233,7 @@ services:
       - config-server
 
   chat-service:
-    image: javacoded/l-atwitter:chat-service
+    image: androsor/twitter:chat-service
     container_name: chat-service
     hostname: chat-service
     environment:
@@ -255,7 +255,7 @@ services:
       - config-server
 
   notification-service:
-    image: javacoded/l-atwitter:notification-service
+    image: androsor/twitter:notification-service
     container_name: notification-service
     hostname: notification-service
     environment:
@@ -277,7 +277,7 @@ services:
       - config-server
 
   email-service:
-    image: javacoded/l-atwitter:email-service
+    image: androsor/twitter:email-service
     container_name: email-service
     hostname: email-service
     environment:
@@ -294,7 +294,7 @@ services:
       - config-server
 
   image-service:
-    image: javacoded/l-atwitter:image-service
+    image: androsor/twitter:image-service
     container_name: image-service
     hostname: image-service
     environment:
@@ -311,7 +311,7 @@ services:
       - config-server
 
   websocket-service:
-    image: javacoded/l-atwitter:websocket-service
+    image: androsor/twitter:websocket-service
     container_name: websocket-service
     hostname: websocket-service
     environment:
