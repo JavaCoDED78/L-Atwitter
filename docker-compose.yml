@@ -75,7 +75,8 @@ services:
           - prometheus
 
   eureka-server:
-    image: androsor/eureka-server:0.0.1-snapshot
+    image: androsor/twitter:eureka-server
+    container_name: eureka-server
     hostname: eureka-server
     environment:
       EUREKA_HOST: eureka-server
@@ -88,7 +89,7 @@ services:
       - zipkin
 
   config-server:
-    image: javacoded/l-atwitter:config-server
+    image: androsor/twitter:config-server
     container_name: config-server
     hostname: config-server
     environment:
@@ -103,7 +104,7 @@ services:
         - eureka-server
 
   api-gateway:
-    image: javacoded/l-atwitter:api-gateway
+    image: androsor/twitter:api-gateway
     container_name: api-gateway
     hostname: api-gateway
     environment:
@@ -120,7 +121,7 @@ services:
       - config-server
 
   user-service:
-    image: javacoded/l-atwitter:user-service
+    image: androsor/twitter:user-service
     container_name: user-service
     hostname: user-service
     environment:

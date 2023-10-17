@@ -2,8 +2,17 @@ package com.gmail.javacoded78.service;
 
 import com.gmail.javacoded78.repository.projection.BaseUserProjection;
 import com.gmail.javacoded78.repository.projection.BlockedUserProjection;
+import com.gmail.javacoded78.repository.projection.ChatUserParticipantProjection;
+import com.gmail.javacoded78.repository.projection.CommonUserProjection;
 import com.gmail.javacoded78.repository.projection.FollowerUserProjection;
+import com.gmail.javacoded78.repository.projection.ListMemberProjection;
 import com.gmail.javacoded78.repository.projection.MutedUserProjection;
+import com.gmail.javacoded78.repository.projection.NotificationUserProjection;
+import com.gmail.javacoded78.repository.projection.TaggedUserProjection;
+import com.gmail.javacoded78.repository.projection.TweetAdditionalInfoUserProjection;
+import com.gmail.javacoded78.repository.projection.TweetAuthorProjection;
+import com.gmail.javacoded78.repository.projection.UserChatProjection;
+import com.gmail.javacoded78.repository.projection.UserProfileProjection;
 import com.gmail.javacoded78.repository.projection.UserProjection;
 import com.gmail.javacoded78.util.TestConstants;
 import org.springframework.data.domain.Page;
@@ -161,5 +170,166 @@ public class UserServiceTestHelper {
                 }});
 
         return Arrays.asList(baseUserProjection1, baseUserProjection2);
+    }
+
+    public static UserProfileProjection createUserProfileProjection() {
+        return factory.createProjection(
+                UserProfileProjection.class,
+                new HashMap<>() {{
+                    put("id", 1L);
+                    put("fullName", TestConstants.FULL_NAME);
+                    put("username", TestConstants.USERNAME);
+                    put("location", TestConstants.LOCATION);
+                    put("about", TestConstants.ABOUT);
+                    put("website", TestConstants.WEBSITE);
+                    put("country", TestConstants.COUNTRY);
+                    put("birthday", TestConstants.BIRTHDAY);
+                    put("registrationDate", TestConstants.REGISTRATION_DATE);
+                    put("tweetCount", TestConstants.TWEET_COUNT);
+                    put("mediaTweetCount", TestConstants.MEDIA_TWEET_COUNT);
+                    put("likeCount", TestConstants.LIKE_TWEET_COUNT);
+                    put("isMutedDirectMessages", false);
+                    put("isPrivateProfile", false);
+                    put("avatar", TestConstants.AVATAR_SRC_1);
+                    put("wallpaper", TestConstants.WALLPAPER_SRC);
+                    put("pinnedTweetId", TestConstants.PINNED_TWEET_ID);
+                    put("followersSize", 11L);
+                    put("followingSize", 11L);
+                    put("isUserMuted", false);
+                    put("isUserBlocked", false);
+                    put("isMyProfileBlocked", false);
+                    put("isWaitingForApprove", false);
+                    put("isFollower", false);
+                    put("isSubscriber", false);
+                }});
+    }
+
+    public static UserChatProjection createUserChatProjection() {
+        return factory.createProjection(
+                UserChatProjection.class,
+                new HashMap<>() {{
+                    put("id", 1L);
+                    put("fullName", TestConstants.FULL_NAME);
+                    put("username", TestConstants.USERNAME);
+                    put("about", TestConstants.ABOUT);
+                    put("avatar", TestConstants.AVATAR_SRC_1);
+                    put("privateProfile", false);
+                    put("mutedDirectMessages", false);
+                    put("isUserBlocked", false);
+                    put("isMyProfileBlocked", false);
+                    put("isWaitingForApprove", false);
+                    put("isFollower", false);
+                    put("isUserChatParticipant", false);
+                }});
+    }
+
+    public static CommonUserProjection createCommonUserProjection() {
+        return factory.createProjection(
+                CommonUserProjection.class,
+                Map.of(
+                        "id", 1L,
+                        "fullName", TestConstants.FULL_NAME,
+                        "username", TestConstants.USERNAME,
+                        "avatar", TestConstants.AVATAR_SRC_1,
+                        "privateProfile", false
+                ));
+    }
+
+    public static NotificationUserProjection createNotificationUserProjection() {
+        return factory.createProjection(
+                NotificationUserProjection.class,
+                Map.of(
+                        "id", 1L,
+                        "fullName", TestConstants.FULL_NAME,
+                        "username", TestConstants.USERNAME
+                ));
+    }
+
+    public static List<TaggedUserProjection> createTaggedUserProjectionList() {
+        TaggedUserProjection taggedUserResponse1 = factory.createProjection(
+                TaggedUserProjection.class,
+                Map.of(
+                        "id", 1L,
+                        "fullName", TestConstants.FULL_NAME
+                ));
+        TaggedUserProjection taggedUserResponse2 = factory.createProjection(
+                TaggedUserProjection.class,
+                Map.of(
+                        "id", 2L,
+                        "fullName", TestConstants.FULL_NAME
+                ));
+        return Arrays.asList(taggedUserResponse1, taggedUserResponse2);
+    }
+
+    public static TweetAuthorProjection createTweetAuthorProjection() {
+        return factory.createProjection(
+                TweetAuthorProjection.class,
+                new HashMap<>() {{
+                    put("id", 1L);
+                    put("email", TestConstants.USER_EMAIL);
+                    put("fullName", TestConstants.FULL_NAME);
+                    put("username", TestConstants.USERNAME);
+                    put("avatar", TestConstants.AVATAR_SRC_1);
+                    put("privateProfile", false);
+                    put("mutedDirectMessages", false);
+                    put("isUserBlocked", false);
+                    put("isMyProfileBlocked", false);
+                    put("isWaitingForApprove", false);
+                    put("isFollower", false);
+                }});
+    }
+
+    public static TweetAdditionalInfoUserProjection createTweetAdditionalInfoUserProjection() {
+        return factory.createProjection(
+                TweetAdditionalInfoUserProjection.class,
+                new HashMap<>() {{
+                    put("id", 1L);
+                    put("fullName", TestConstants.FULL_NAME);
+                    put("username", TestConstants.USERNAME);
+                    put("mutedDirectMessages", false);
+                    put("isUserBlocked", false);
+                    put("isMyProfileBlocked", false);
+                    put("isFollower", false);
+                }});
+    }
+
+    public static ChatUserParticipantProjection createChatUserParticipantProjection() {
+        return factory.createProjection(
+                ChatUserParticipantProjection.class,
+                new HashMap<>() {{
+                    put("id", 1L);
+                    put("fullName", TestConstants.FULL_NAME);
+                    put("username", TestConstants.USERNAME);
+                    put("avatar", TestConstants.AVATAR_SRC_1);
+                    put("isMutedDirectMessages", false);
+                    put("isUserBlocked", false);
+                    put("isMyProfileBlocked", false);
+                }});
+    }
+
+    public static List<ListMemberProjection> createListMemberProjections() {
+        ListMemberProjection listMemberProjection1 = factory.createProjection(
+                ListMemberProjection.class,
+                Map.of(
+                        "id", 1L,
+                        "fullName", TestConstants.FULL_NAME,
+                        "username", TestConstants.USERNAME,
+                        "about", TestConstants.ABOUT,
+                        "avatar", TestConstants.AVATAR_SRC_1,
+                        "privateProfile", false,
+                        "isUserMuted", true
+                ));
+        ListMemberProjection listMemberProjection2 = factory.createProjection(
+                ListMemberProjection.class,
+                Map.of(
+                        "id", 2L,
+                        "fullName", TestConstants.FULL_NAME,
+                        "username", TestConstants.USERNAME,
+                        "about", TestConstants.ABOUT,
+                        "avatar", TestConstants.AVATAR_SRC_1,
+                        "privateProfile", false,
+                        "isUserMuted", true
+                ));
+        return Arrays.asList(listMemberProjection1, listMemberProjection2);
     }
 }
