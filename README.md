@@ -35,7 +35,7 @@
 >- Discovery Server
 >- Spring Api Gateway
 >- Distributed tracing with Zipkin
-> Spring cloud config server
+>- Spring cloud config server
 >- Model mapper
 >- Testcontainers
 >- LiquiBase
