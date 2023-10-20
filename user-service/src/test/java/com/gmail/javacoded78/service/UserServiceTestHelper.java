@@ -2,6 +2,7 @@ package com.gmail.javacoded78.service;
 
 import com.gmail.javacoded78.repository.projection.BaseUserProjection;
 import com.gmail.javacoded78.repository.projection.BlockedUserProjection;
+import com.gmail.javacoded78.repository.projection.ChatTweetUserProjection;
 import com.gmail.javacoded78.repository.projection.ChatUserParticipantProjection;
 import com.gmail.javacoded78.repository.projection.CommonUserProjection;
 import com.gmail.javacoded78.repository.projection.FollowerUserProjection;
@@ -331,5 +332,34 @@ public class UserServiceTestHelper {
                         "isUserMuted", true
                 ));
         return Arrays.asList(listMemberProjection1, listMemberProjection2);
+    }
+
+    public static UserProjection createUserProjection() {
+        return factory.createProjection(
+                UserProjection.class,
+                new HashMap<>() {{
+                    put("id", 1L);
+                    put("fullName", TestConstants.FULL_NAME);
+                    put("username", TestConstants.USERNAME);
+                    put("about", TestConstants.ABOUT);
+                    put("avatar", TestConstants.AVATAR_SRC_1);
+                    put("privateProfile", false);
+                    put("mutedDirectMessages", false);
+                    put("isUserBlocked", false);
+                    put("isMyProfileBlocked", false);
+                    put("isWaitingForApprove", false);
+                    put("isFollower", false);
+                }});
+    }
+
+    public static ChatTweetUserProjection createChatTweetUserProjection() {
+        return factory.createProjection(
+                ChatTweetUserProjection.class,
+                new HashMap<>() {{
+                    put("id", 1L);
+                    put("fullName", TestConstants.FULL_NAME);
+                    put("username", TestConstants.USERNAME);
+                    put("avatar", TestConstants.AVATAR_SRC_1);
+                }});
     }
 }
