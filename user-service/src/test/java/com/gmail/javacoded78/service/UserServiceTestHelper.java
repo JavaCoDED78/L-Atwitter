@@ -1,5 +1,6 @@
 package com.gmail.javacoded78.service;
 
+import com.gmail.javacoded78.repository.projection.AuthUserProjection;
 import com.gmail.javacoded78.repository.projection.BaseUserProjection;
 import com.gmail.javacoded78.repository.projection.BlockedUserProjection;
 import com.gmail.javacoded78.repository.projection.ChatTweetUserProjection;
@@ -359,6 +360,21 @@ public class UserServiceTestHelper {
                     put("id", 1L);
                     put("fullName", TestConstants.FULL_NAME);
                     put("username", TestConstants.USERNAME);
+                    put("avatar", TestConstants.AVATAR_SRC_1);
+                }});
+    }
+
+    public static AuthUserProjection createAuthUserProjection() {
+        return factory.createProjection(
+                AuthUserProjection.class,
+                new HashMap<>() {{
+                    put("id", 1L);
+                    put("email", TestConstants.USER_EMAIL);
+                    put("fullName", TestConstants.FULL_NAME);
+                    put("username", TestConstants.USERNAME);
+                    put("location", TestConstants.LOCATION);
+                    put("about", TestConstants.ABOUT);
+                    put("website", TestConstants.WEBSITE);
                     put("avatar", TestConstants.AVATAR_SRC_1);
                 }});
     }
