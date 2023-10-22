@@ -19,6 +19,7 @@ import java.util.Optional;
 
 import static com.gmail.javacoded78.constants.ErrorMessage.EMAIL_HAS_ALREADY_BEEN_TAKEN;
 import static com.gmail.javacoded78.constants.ErrorMessage.INCORRECT_USERNAME_LENGTH;
+import static com.gmail.javacoded78.constants.ErrorMessage.INVALID_GENDER_LENGTH;
 import static com.gmail.javacoded78.constants.ErrorMessage.INVALID_PHONE_NUMBER;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -108,5 +109,29 @@ public class UserSettingsServiceImplTest extends AbstractAuthTest {
         assertEquals(TestConstants.COUNTRY, userSettingsService.updateCountry(TestConstants.COUNTRY));
         verify(authenticationService, times(1)).getAuthenticatedUserId();
         verify(userSettingsRepository, times(1)).updateCountry(TestConstants.COUNTRY, TestConstants.USER_ID);
+    }
+
+    @Test
+    void updateGender_ShouldReturnUpdatedGender() {
+        when(authenticationService.getAuthenticatedUserId()).thenReturn(TestConstants.USER_ID);
+        assertEquals(TestConstants.GENDER, userSettingsService.updateGender(TestConstants.GENDER));
+        verify(authenticationService, times(1)).getAuthenticatedUserId();
+        verify(userSettingsRepository, times(1)).updateGender(TestConstants.GENDER, TestConstants.USER_ID);
+    }
+
+    @Test
+    public void updateGender_ShouldThrowInvalidGenderLengthException() {
+        ApiRequestException exception = assertThrows(ApiRequestException.class,
+                () -> userSettingsService.updateGender(""));
+        assertEquals(INVALID_GENDER_LENGTH, exception.getMessage());
+        assertEquals(HttpStatus.BAD_REQUEST, exception.getStatus());
+    }
+
+    @Test
+    public void updateLanguage_ShouldReturnUpdatedLanguage() {
+        when(authenticationService.getAuthenticatedUserId()).thenReturn(TestConstants.USER_ID);
+        assertEquals(TestConstants.LANGUAGE, userSettingsService.updateLanguage(TestConstants.LANGUAGE));
+        verify(authenticationService, times(1)).getAuthenticatedUserId();
+        verify(userSettingsRepository, times(1)).updateLanguage(TestConstants.LANGUAGE, TestConstants.USER_ID);
     }
 }
