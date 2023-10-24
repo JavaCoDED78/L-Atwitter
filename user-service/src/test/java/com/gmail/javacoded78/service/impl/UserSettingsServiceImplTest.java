@@ -1,5 +1,7 @@
 package com.gmail.javacoded78.service.impl;
 
+import com.gmail.javacoded78.enums.BackgroundColorType;
+import com.gmail.javacoded78.enums.ColorSchemeType;
 import com.gmail.javacoded78.exception.ApiRequestException;
 import com.gmail.javacoded78.repository.UserRepository;
 import com.gmail.javacoded78.repository.UserSettingsRepository;
@@ -23,6 +25,7 @@ import static com.gmail.javacoded78.constants.ErrorMessage.INVALID_GENDER_LENGTH
 import static com.gmail.javacoded78.constants.ErrorMessage.INVALID_PHONE_NUMBER;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -120,7 +123,7 @@ public class UserSettingsServiceImplTest extends AbstractAuthTest {
     }
 
     @Test
-    public void updateGender_ShouldThrowInvalidGenderLengthException() {
+    void updateGender_ShouldThrowInvalidGenderLengthException() {
         ApiRequestException exception = assertThrows(ApiRequestException.class,
                 () -> userSettingsService.updateGender(""));
         assertEquals(INVALID_GENDER_LENGTH, exception.getMessage());
@@ -128,10 +131,42 @@ public class UserSettingsServiceImplTest extends AbstractAuthTest {
     }
 
     @Test
-    public void updateLanguage_ShouldReturnUpdatedLanguage() {
+    void updateLanguage_ShouldReturnUpdatedLanguage() {
         when(authenticationService.getAuthenticatedUserId()).thenReturn(TestConstants.USER_ID);
         assertEquals(TestConstants.LANGUAGE, userSettingsService.updateLanguage(TestConstants.LANGUAGE));
         verify(authenticationService, times(1)).getAuthenticatedUserId();
         verify(userSettingsRepository, times(1)).updateLanguage(TestConstants.LANGUAGE, TestConstants.USER_ID);
+    }
+
+    @Test
+    void updateDirectMessageRequests_ShouldReturnUpdatedDirectMessage() {
+        when(authenticationService.getAuthenticatedUserId()).thenReturn(TestConstants.USER_ID);
+        assertTrue(userSettingsService.updateDirectMessageRequests(true));
+        verify(authenticationService, times(1)).getAuthenticatedUserId();
+        verify(userSettingsRepository, times(1)).updateDirectMessageRequests(true, TestConstants.USER_ID);
+    }
+
+    @Test
+    void updatePrivateProfile_ShouldReturnUpdatedPrivateProfile() {
+        when(authenticationService.getAuthenticatedUserId()).thenReturn(TestConstants.USER_ID);
+        assertTrue(userSettingsService.updatePrivateProfile(true));
+        verify(authenticationService, times(1)).getAuthenticatedUserId();
+        verify(userSettingsRepository, times(1)).updatePrivateProfile(true, TestConstants.USER_ID);
+    }
+
+    @Test
+    void updateColorScheme_ShouldReturnUpdatedColorScheme() {
+        when(authenticationService.getAuthenticatedUserId()).thenReturn(TestConstants.USER_ID);
+        assertEquals(ColorSchemeType.BLUE, userSettingsService.updateColorScheme(ColorSchemeType.BLUE));
+        verify(authenticationService, times(1)).getAuthenticatedUserId();
+        verify(userSettingsRepository, times(1)).updateColorScheme(ColorSchemeType.BLUE, TestConstants.USER_ID);
+    }
+
+    @Test
+    void updateBackgroundColor_ShouldReturnUpdatedBackgroundColor() {
+        when(authenticationService.getAuthenticatedUserId()).thenReturn(TestConstants.USER_ID);
+        assertEquals(BackgroundColorType.DIM, userSettingsService.updateBackgroundColor(BackgroundColorType.DIM));
+        verify(authenticationService, times(1)).getAuthenticatedUserId();
+        verify(userSettingsRepository, times(1)).updateBackgroundColor(BackgroundColorType.DIM, TestConstants.USER_ID);
     }
 }
