@@ -389,7 +389,7 @@ public class UserServiceTestHelper {
                     put("username", TestConstants.USERNAME);
                     put("about", TestConstants.ABOUT);
                     put("avatar", TestConstants.AVATAR_SRC_1);
-                    put("зrivateProfile", TestConstants.PRIVATE_PROFILE);
+                    put("privateProfile", TestConstants.PRIVATE_PROFILE);
                 }});
     }
 }
