@@ -15,6 +15,7 @@ import com.gmail.javacoded78.repository.projection.TweetAdditionalInfoUserProjec
 import com.gmail.javacoded78.repository.projection.TweetAuthorProjection;
 import com.gmail.javacoded78.repository.projection.UserChatProjection;
 import com.gmail.javacoded78.repository.projection.UserDetailProjection;
+import com.gmail.javacoded78.repository.projection.UserPrincipalProjection;
 import com.gmail.javacoded78.repository.projection.UserProfileProjection;
 import com.gmail.javacoded78.repository.projection.UserProjection;
 import com.gmail.javacoded78.util.TestConstants;
@@ -390,6 +391,16 @@ public class UserServiceTestHelper {
                     put("about", TestConstants.ABOUT);
                     put("avatar", TestConstants.AVATAR_SRC_1);
                     put("privateProfile", TestConstants.PRIVATE_PROFILE);
+                }});
+    }
+
+    public static UserPrincipalProjection createUserPrincipalProjection() {
+        return factory.createProjection(
+                UserPrincipalProjection.class,
+                new HashMap<>() {{
+                    put("id", TestConstants.USER_ID);
+                    put("email", TestConstants.FULL_NAME);
+                    put("activationCode", TestConstants.ACTIVATION_CODE);
                 }});
     }
 }
