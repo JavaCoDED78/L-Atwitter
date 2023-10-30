@@ -6,6 +6,7 @@ import com.gmail.javacoded78.exception.ApiRequestException;
 import com.gmail.javacoded78.model.User;
 import com.gmail.javacoded78.repository.UserRepository;
 import com.gmail.javacoded78.repository.projection.AuthUserProjection;
+import com.gmail.javacoded78.repository.projection.UserCommonProjection;
 import com.gmail.javacoded78.repository.projection.UserPrincipalProjection;
 import com.gmail.javacoded78.security.JwtProvider;
 import com.gmail.javacoded78.service.AuthenticationService;
@@ -23,6 +24,7 @@ import org.springframework.validation.BindingResult;
 import java.util.Map;
 import java.util.Optional;
 
+import static com.gmail.javacoded78.constants.ErrorMessage.EMAIL_NOT_FOUND;
 import static com.gmail.javacoded78.constants.ErrorMessage.USER_NOT_FOUND;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -114,6 +116,51 @@ public class AuthenticationServiceImplTest extends AbstractAuthTest {
         ApiRequestException exception = assertThrows(ApiRequestException.class,
                 () -> authenticationService.login(request, bindingResult));
         assertEquals(USER_NOT_FOUND, exception.getMessage());
+        assertEquals(HttpStatus.NOT_FOUND, exception.getStatus());
+    }
+
+    @Test
+    void getUserByToken_ShouldReturnAuthUserProjection() {
+        AuthUserProjection authUserProjection = UserServiceTestHelper.createAuthUserProjection();
+        Map<String, Object> userMap = Map.of("user", authUserProjection, "token", TestConstants.AUTH_TOKEN);
+        when(userRepository.getUserById(any(), AuthUserProjection.class))
+                .thenReturn(Optional.of(authUserProjection));
+        when(jwtProvider.createToken(TestConstants.USER_EMAIL,"USER")).thenReturn(TestConstants.AUTH_TOKEN);
+        assertEquals(userMap, authenticationService.getUserByToken());
+        verify(userRepository, times(1)).getUserById(any(), AuthUserProjection.class);
+        verify(jwtProvider, times(1)).createToken(TestConstants.USER_EMAIL,"USER");
+    }
+
+    @Test
+    void getUserByToken_ShouldThrowUserNotFoundException() {
+        when(userRepository.getUserById(any(), AuthUserProjection.class))
+                .thenReturn(Optional.empty());
+        ApiRequestException exception = assertThrows(ApiRequestException.class,
+                authenticationService::getUserByToken);
+        assertEquals(USER_NOT_FOUND, exception.getMessage());
+        assertEquals(HttpStatus.NOT_FOUND, exception.getStatus());
+    }
+
+    @Test
+    void getExistingEmail_ShouldReturnSuccessMessage() {
+        BindingResult bindingResult = mock(BindingResult.class);
+        UserCommonProjection userCommonProjection = UserServiceTestHelper.createUserCommonProjection();
+        when(userRepository.getUserByEmail(TestConstants.USER_EMAIL, UserCommonProjection.class))
+                .thenReturn(Optional.of(userCommonProjection));
+        assertEquals("Reset password code is send to your E-mail",
+                authenticationService.getExistingEmail(TestConstants.USER_EMAIL, bindingResult));
+        verify(userServiceHelper, times(1)).processInputErrors(bindingResult);
+        verify(userRepository, times(1)).getUserByEmail(TestConstants.USER_EMAIL, UserCommonProjection.class);
+    }
+
+    @Test
+    void getExistingEmail_ShouldThrowEmailNotFoundException() {
+        BindingResult bindingResult = mock(BindingResult.class);
+        when(userRepository.getUserByEmail(TestConstants.USER_EMAIL, UserCommonProjection.class))
+                .thenReturn(Optional.empty());
+        ApiRequestException exception = assertThrows(ApiRequestException.class,
+                () -> authenticationService.getExistingEmail(TestConstants.USER_EMAIL, bindingResult));
+        assertEquals(EMAIL_NOT_FOUND, exception.getMessage());
         assertEquals(HttpStatus.NOT_FOUND, exception.getStatus());
     }
 }
