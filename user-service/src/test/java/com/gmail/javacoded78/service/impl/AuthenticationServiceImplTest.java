@@ -2,6 +2,7 @@ package com.gmail.javacoded78.service.impl;
 
 import com.gmail.javacoded78.amqp.AmqpProducer;
 import com.gmail.javacoded78.dto.request.AuthenticationRequest;
+import com.gmail.javacoded78.dto.request.EmailRequest;
 import com.gmail.javacoded78.exception.ApiRequestException;
 import com.gmail.javacoded78.model.User;
 import com.gmail.javacoded78.repository.UserRepository;
@@ -25,6 +26,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import static com.gmail.javacoded78.constants.ErrorMessage.EMAIL_NOT_FOUND;
+import static com.gmail.javacoded78.constants.ErrorMessage.INVALID_PASSWORD_RESET_CODE;
 import static com.gmail.javacoded78.constants.ErrorMessage.USER_NOT_FOUND;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -162,5 +164,58 @@ public class AuthenticationServiceImplTest extends AbstractAuthTest {
                 () -> authenticationService.getExistingEmail(TestConstants.USER_EMAIL, bindingResult));
         assertEquals(EMAIL_NOT_FOUND, exception.getMessage());
         assertEquals(HttpStatus.NOT_FOUND, exception.getStatus());
+    }
+
+    @Test
+    void sendPasswordResetCode_ShouldReturnSuccessMessage() {
+        BindingResult bindingResult = mock(BindingResult.class);
+        UserCommonProjection userCommonProjection = UserServiceTestHelper.createUserCommonProjection();
+        EmailRequest request = EmailRequest.builder()
+                .to(userCommonProjection.getEmail())
+                .subject("Password reset")
+                .template("password-reset-template")
+                .attributes(Map.of(
+                        "fullName", userCommonProjection.getFullName(),
+                        "passwordResetCode", TestConstants.PASSWORD_RESET_CODE))
+                .build();
+        when(userRepository.getUserByEmail(TestConstants.USER_EMAIL, UserCommonProjection.class))
+                .thenReturn(Optional.of(userCommonProjection));
+        when(userRepository.getPasswordResetCode(TestConstants.USER_ID)).thenReturn(TestConstants.PASSWORD_RESET_CODE);
+        assertEquals("Reset password code is send to your E-mail",
+                authenticationService.sendPasswordResetCode(TestConstants.USER_EMAIL, bindingResult));
+        verify(userServiceHelper, times(1)).processInputErrors(bindingResult);
+        verify(userRepository, times(1)).getUserByEmail(TestConstants.USER_EMAIL, UserCommonProjection.class);
+        verify(userRepository, times(1)).getPasswordResetCode(TestConstants.USER_ID);
+        verify(amqpProducer, times(1)).sendEmail(request);
+    }
+
+    @Test
+    void sendPasswordResetCode_ShouldThrowEmailNotFoundException() {
+        BindingResult bindingResult = mock(BindingResult.class);
+        when(userRepository.getUserByEmail(TestConstants.USER_EMAIL, UserCommonProjection.class))
+                .thenReturn(Optional.empty());
+        ApiRequestException exception = assertThrows(ApiRequestException.class,
+                () -> authenticationService.sendPasswordResetCode(TestConstants.USER_EMAIL, bindingResult));
+        assertEquals(EMAIL_NOT_FOUND, exception.getMessage());
+        assertEquals(HttpStatus.NOT_FOUND, exception.getStatus());
+    }
+
+    @Test
+    void getUserByPasswordResetCode_ShouldReturnAuthUserProjection() {
+        AuthUserProjection authUserProjection = UserServiceTestHelper.createAuthUserProjection();
+        when(userRepository.getByPasswordResetCode(TestConstants.PASSWORD_RESET_CODE))
+                .thenReturn(Optional.of(authUserProjection));
+        assertEquals(authUserProjection, authenticationService.getUserByPasswordResetCode(TestConstants.PASSWORD_RESET_CODE));
+        verify(userRepository, times(1)).getByPasswordResetCode(TestConstants.PASSWORD_RESET_CODE);
+    }
+
+    @Test
+    void getUserByPasswordResetCode_ShouldThrowEmailNotFoundException() {
+        when(userRepository.getByPasswordResetCode(TestConstants.PASSWORD_RESET_CODE))
+                .thenReturn(Optional.empty());
+        ApiRequestException exception = assertThrows(ApiRequestException.class,
+                () -> authenticationService.getUserByPasswordResetCode(TestConstants.PASSWORD_RESET_CODE));
+        assertEquals(INVALID_PASSWORD_RESET_CODE, exception.getMessage());
+        assertEquals(HttpStatus.BAD_REQUEST, exception.getStatus());
     }
 }
