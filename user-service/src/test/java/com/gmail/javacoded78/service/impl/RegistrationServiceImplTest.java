@@ -23,7 +23,9 @@ import org.springframework.validation.BindingResult;
 import java.util.Map;
 import java.util.Optional;
 
+import static com.gmail.javacoded78.constants.ErrorMessage.ACTIVATION_CODE_NOT_FOUND;
 import static com.gmail.javacoded78.constants.ErrorMessage.EMAIL_HAS_ALREADY_BEEN_TAKEN;
+import static com.gmail.javacoded78.constants.ErrorMessage.USER_NOT_FOUND;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
@@ -89,7 +91,7 @@ public class RegistrationServiceImplTest extends AbstractAuthTest {
     }
 
     @Test
-    public void registrationExistedUser_ShouldThrowEmailHasAlreadyBeenTakenException() {
+    void registrationExistedUser_ShouldThrowEmailHasAlreadyBeenTakenException() {
         User user = new User();
         user.setEmail(TestConstants.USER_EMAIL);
         user.setUsername(TestConstants.USERNAME);
@@ -108,7 +110,7 @@ public class RegistrationServiceImplTest extends AbstractAuthTest {
     }
 
     @Test
-    public void sendRegistrationCode_ShouldReturnSuccessMessage() {
+    void sendRegistrationCode_ShouldReturnSuccessMessage() {
         UserCommonProjection userCommonProjection = UserServiceTestHelper.createUserCommonProjection();
         EmailRequest request = EmailRequest.builder()
                 .to(userCommonProjection.getEmail())
@@ -127,5 +129,34 @@ public class RegistrationServiceImplTest extends AbstractAuthTest {
         verify(userRepository, times(1)).getUserByEmail(TestConstants.USER_EMAIL, UserCommonProjection.class);
         verify(userRepository, times(1)).getActivationCode(userCommonProjection.getId());
         verify(amqpProducer, times(1)).sendEmail(request);
+    }
+
+    @Test
+    void sendRegistrationCode_ShouldThrowUserNotFound() {
+        when(userRepository.getUserByEmail(TestConstants.USER_EMAIL, UserCommonProjection.class))
+                .thenReturn(Optional.empty());
+        ApiRequestException exception = assertThrows(ApiRequestException.class,
+                () -> registrationService.sendRegistrationCode(TestConstants.USER_EMAIL, bindingResult));
+        assertEquals(USER_NOT_FOUND, exception.getMessage());
+        assertEquals(HttpStatus.NOT_FOUND, exception.getStatus());
+    }
+
+    @Test
+    void checkRegistrationCode_ShouldReturnSuccessMessage() {
+        UserCommonProjection userCommonProjection = UserServiceTestHelper.createUserCommonProjection();
+        when(userRepository.getCommonUserByActivationCode(TestConstants.ACTIVATION_CODE))
+                .thenReturn(Optional.of(userCommonProjection));
+        assertEquals("User successfully activated.",
+                registrationService.checkRegistrationCode(TestConstants.ACTIVATION_CODE));
+        verify(userRepository, times(1)).getCommonUserByActivationCode(TestConstants.ACTIVATION_CODE);
+        verify(userRepository, times(1)).updateActivationCode(null, userCommonProjection.getId());
+    }
+
+    @Test
+    public void checkRegistrationCode_ShouldThrowActivationCodeNotFound() {
+        ApiRequestException exception = assertThrows(ApiRequestException.class,
+                () -> registrationService.checkRegistrationCode(TestConstants.ACTIVATION_CODE));
+        assertEquals(ACTIVATION_CODE_NOT_FOUND, exception.getMessage());
+        assertEquals(HttpStatus.NOT_FOUND, exception.getStatus());
     }
 }
