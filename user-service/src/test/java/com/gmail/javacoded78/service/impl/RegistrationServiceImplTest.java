@@ -6,6 +6,7 @@ import com.gmail.javacoded78.dto.request.RegistrationRequest;
 import com.gmail.javacoded78.exception.ApiRequestException;
 import com.gmail.javacoded78.model.User;
 import com.gmail.javacoded78.repository.UserRepository;
+import com.gmail.javacoded78.repository.projection.AuthUserProjection;
 import com.gmail.javacoded78.repository.projection.UserCommonProjection;
 import com.gmail.javacoded78.security.JwtProvider;
 import com.gmail.javacoded78.service.RegistrationService;
@@ -25,6 +26,7 @@ import java.util.Optional;
 
 import static com.gmail.javacoded78.constants.ErrorMessage.ACTIVATION_CODE_NOT_FOUND;
 import static com.gmail.javacoded78.constants.ErrorMessage.EMAIL_HAS_ALREADY_BEEN_TAKEN;
+import static com.gmail.javacoded78.constants.ErrorMessage.PASSWORD_LENGTH_ERROR;
 import static com.gmail.javacoded78.constants.ErrorMessage.USER_NOT_FOUND;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -43,13 +45,13 @@ public class RegistrationServiceImplTest extends AbstractAuthTest {
 
 //    @MockBean
 //    private final UserServiceHelper userServiceHelper;
-//
-//    @MockBean
-//    private final PasswordEncoder passwordEncoder;
-//
-//    @MockBean
-//    private final JwtProvider jwtProvider;
-//
+
+    @MockBean
+    private final PasswordEncoder passwordEncoder;
+
+    @MockBean
+    private final JwtProvider jwtProvider;
+
     @MockBean
     private final AmqpProducer amqpProducer;
 
@@ -153,10 +155,35 @@ public class RegistrationServiceImplTest extends AbstractAuthTest {
     }
 
     @Test
-    public void checkRegistrationCode_ShouldThrowActivationCodeNotFound() {
+    void checkRegistrationCode_ShouldThrowActivationCodeNotFound() {
         ApiRequestException exception = assertThrows(ApiRequestException.class,
                 () -> registrationService.checkRegistrationCode(TestConstants.ACTIVATION_CODE));
         assertEquals(ACTIVATION_CODE_NOT_FOUND, exception.getMessage());
         assertEquals(HttpStatus.NOT_FOUND, exception.getStatus());
+    }
+
+    @Test
+    void endRegistration_ShouldReturnSuccessMessage() {
+        AuthUserProjection authUserProjection = UserServiceTestHelper.createAuthUserProjection();
+        Map<String, Object> userMap = Map.of("user", authUserProjection, "token", TestConstants.AUTH_TOKEN);
+        when(userRepository.getUserByEmail(TestConstants.USER_EMAIL, AuthUserProjection.class))
+                .thenReturn(Optional.of(authUserProjection));
+        when(passwordEncoder.encode(TestConstants.PASSWORD)).thenReturn(TestConstants.PASSWORD);
+        when(jwtProvider.createToken(TestConstants.USER_EMAIL, "USER"))
+                .thenReturn(TestConstants.AUTH_TOKEN);
+        assertEquals(userMap, registrationService.endRegistration(TestConstants.USER_EMAIL, TestConstants.PASSWORD,
+                bindingResult));
+        verify(userRepository, times(1)).getUserByEmail(TestConstants.USER_EMAIL, AuthUserProjection.class);
+        verify(userRepository, times(1)).updatePassword(TestConstants.PASSWORD, authUserProjection.getId());
+        verify(userRepository, times(1)).updateActiveUserProfile(authUserProjection.getId());
+        verify(jwtProvider, times(1)).createToken(TestConstants.USER_EMAIL, "USER");
+    }
+
+    @Test
+    void endRegistration_ShouldThrowPasswordLengthException() {
+        ApiRequestException exception = assertThrows(ApiRequestException.class,
+                () -> registrationService.endRegistration(TestConstants.USER_EMAIL, "", bindingResult));
+        assertEquals(PASSWORD_LENGTH_ERROR, exception.getMessage());
+        assertEquals(HttpStatus.BAD_REQUEST, exception.getStatus());
     }
 }
