@@ -2,6 +2,8 @@ package com.gmail.javacoded78.mapper;
 
 import com.gmail.javacoded78.dto.request.SettingsRequest;
 import com.gmail.javacoded78.dto.response.UserPhoneResponse;
+import com.gmail.javacoded78.enums.BackgroundColorType;
+import com.gmail.javacoded78.enums.ColorSchemeType;
 import com.gmail.javacoded78.service.UserSettingsService;
 import com.gmail.javacoded78.util.AbstractAuthTest;
 import com.gmail.javacoded78.util.TestConstants;
@@ -87,5 +89,32 @@ public class UserSettingsMapperTest extends AbstractAuthTest {
         when(userSettingsService.updateDirectMessageRequests(true)).thenReturn(true);
         assertTrue(userSettingsMapper.updateDirectMessageRequests(request));
         verify(userSettingsService, times(1)).updateDirectMessageRequests(true);
+    }
+
+    @Test
+    void updatePrivateProfile() {
+        SettingsRequest request = new SettingsRequest();
+        request.setPrivateProfile(true);
+        when(userSettingsService.updatePrivateProfile(true)).thenReturn(true);
+        assertTrue(userSettingsMapper.updatePrivateProfile(request));
+        verify(userSettingsService, times(1)).updatePrivateProfile(true);
+    }
+
+    @Test
+    void updateColorScheme() {
+        SettingsRequest request = new SettingsRequest();
+        request.setColorScheme(ColorSchemeType.BLUE);
+        when(userSettingsService.updateColorScheme(ColorSchemeType.BLUE)).thenReturn(ColorSchemeType.BLUE);
+        assertEquals(ColorSchemeType.BLUE, userSettingsMapper.updateColorScheme(request));
+        verify(userSettingsService, times(1)).updateColorScheme(ColorSchemeType.BLUE);
+    }
+
+    @Test
+    void updateBackgroundColor() {
+        SettingsRequest request = new SettingsRequest();
+        request.setBackgroundColor(BackgroundColorType.DIM);
+        when(userSettingsService.updateBackgroundColor(BackgroundColorType.DIM)).thenReturn(BackgroundColorType.DIM);
+        assertEquals(BackgroundColorType.DIM, userSettingsMapper.updateBackgroundColor(request));
+        verify(userSettingsService, times(1)).updateBackgroundColor(BackgroundColorType.DIM);
     }
 }
