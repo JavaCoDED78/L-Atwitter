@@ -26,10 +26,11 @@ public class AuthenticationMapperTest extends AbstractAuthTest {
     @MockBean
     private final AuthenticationService authenticationService;
 
+    BindingResult bindingResult = mock(BindingResult.class);
+
     @Test
     void login() {
         AuthUserProjection authUserProjection = UserServiceTestHelper.createAuthUserProjection();
-        BindingResult bindingResult = mock(BindingResult.class);
         AuthenticationRequest request = new AuthenticationRequest();
         request.setEmail(TestConstants.USER_EMAIL);
         Map<String, Object> credentials = Map.of(
@@ -38,5 +39,32 @@ public class AuthenticationMapperTest extends AbstractAuthTest {
         when(authenticationService.login(request, bindingResult)).thenReturn(credentials);
         authenticationMapper.login(request, bindingResult);
         verify(authenticationService, times(1)).login(request, bindingResult);
+    }
+
+    @Test
+    void getUserByToken() {
+        AuthUserProjection authUserProjection = UserServiceTestHelper.createAuthUserProjection();
+        Map<String, Object> credentials = Map.of(
+                "user", authUserProjection,
+                "token", TestConstants.AUTH_TOKEN);
+        when(authenticationService.getUserByToken()).thenReturn(credentials);
+        authenticationMapper.getUserByToken();
+        verify(authenticationService, times(1)).getUserByToken();
+    }
+
+    @Test
+    void getExistingEmail() {
+        when(authenticationService.getExistingEmail(TestConstants.USER_EMAIL, bindingResult))
+                .thenReturn("Reset password code is send to your E-mail");
+        authenticationMapper.getExistingEmail(TestConstants.USER_EMAIL, bindingResult);
+        verify(authenticationService, times(1)).getExistingEmail(TestConstants.USER_EMAIL, bindingResult);
+    }
+
+    @Test
+    void sendPasswordResetCode() {
+        when(authenticationService.sendPasswordResetCode(TestConstants.USER_EMAIL, bindingResult))
+                .thenReturn("Reset password code is send to your E-mail");
+        authenticationMapper.sendPasswordResetCode(TestConstants.USER_EMAIL, bindingResult);
+        verify(authenticationService, times(1)).sendPasswordResetCode(TestConstants.USER_EMAIL, bindingResult);
     }
 }
