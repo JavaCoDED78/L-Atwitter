@@ -1,6 +1,8 @@
 package com.gmail.javacoded78.mapper;
 
 import com.gmail.javacoded78.dto.request.AuthenticationRequest;
+import com.gmail.javacoded78.dto.request.CurrentPasswordResetRequest;
+import com.gmail.javacoded78.dto.request.PasswordResetRequest;
 import com.gmail.javacoded78.repository.projection.AuthUserProjection;
 import com.gmail.javacoded78.service.AuthenticationService;
 import com.gmail.javacoded78.service.UserServiceTestHelper;
@@ -66,5 +68,55 @@ public class AuthenticationMapperTest extends AbstractAuthTest {
                 .thenReturn("Reset password code is send to your E-mail");
         authenticationMapper.sendPasswordResetCode(TestConstants.USER_EMAIL, bindingResult);
         verify(authenticationService, times(1)).sendPasswordResetCode(TestConstants.USER_EMAIL, bindingResult);
+    }
+
+    @Test
+    void getUserByPasswordResetCode() {
+        AuthUserProjection authUserProjection = UserServiceTestHelper.createAuthUserProjection();
+        when(authenticationService.getUserByPasswordResetCode(TestConstants.ACTIVATION_CODE)).thenReturn(authUserProjection);
+        authenticationMapper.getUserByPasswordResetCode(TestConstants.ACTIVATION_CODE);
+        verify(authenticationService, times(1)).getUserByPasswordResetCode(TestConstants.ACTIVATION_CODE);
+    }
+
+    @Test
+    void passwordReset() {
+        PasswordResetRequest request = new PasswordResetRequest();
+        request.setEmail(TestConstants.USER_EMAIL);
+        request.setPassword(TestConstants.PASSWORD);
+        request.setPassword2(TestConstants.PASSWORD);
+        when(authenticationService.passwordReset(
+                TestConstants.USER_EMAIL,
+                TestConstants.PASSWORD,
+                TestConstants.PASSWORD,
+                bindingResult
+        )).thenReturn("Password successfully changed!");
+        authenticationMapper.passwordReset(request, bindingResult);
+        verify(authenticationService, times(1)).passwordReset(
+                TestConstants.USER_EMAIL,
+                TestConstants.PASSWORD,
+                TestConstants.PASSWORD,
+                bindingResult
+        );
+    }
+
+    @Test
+    void currentPasswordReset() {
+        CurrentPasswordResetRequest request = new CurrentPasswordResetRequest();
+        request.setCurrentPassword(TestConstants.PASSWORD);
+        request.setPassword(TestConstants.PASSWORD);
+        request.setPassword2(TestConstants.PASSWORD);
+        when(authenticationService.currentPasswordReset(
+                TestConstants.PASSWORD,
+                TestConstants.PASSWORD,
+                TestConstants.PASSWORD,
+                bindingResult
+        )).thenReturn("Your password has been successfully updated.");
+        authenticationMapper.currentPasswordReset(request, bindingResult);
+        verify(authenticationService, times(1)).currentPasswordReset(
+                TestConstants.PASSWORD,
+                TestConstants.PASSWORD,
+                TestConstants.PASSWORD,
+                bindingResult
+        );
     }
 }
