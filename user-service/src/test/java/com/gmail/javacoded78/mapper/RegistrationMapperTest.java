@@ -23,8 +23,8 @@ public class RegistrationMapperTest extends AbstractAuthTest {
     @MockBean
     private final RegistrationService registrationService;
 
-//    @MockBean
-//    private final AuthenticationMapper authenticationMapper;
+    @MockBean
+    private final AuthenticationMapper authenticationMapper;
 
     private final BindingResult bindingResult = mock(BindingResult.class);
 
