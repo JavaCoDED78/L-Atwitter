@@ -74,4 +74,3 @@ public class RegistrationMapperTest extends AbstractAuthTest {
         verify(authenticationMapper, times(1)).getAuthenticationResponse(user);
     }
 }
-
