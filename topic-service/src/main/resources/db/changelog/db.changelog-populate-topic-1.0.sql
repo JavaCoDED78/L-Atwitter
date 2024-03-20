@@ -29,3 +29,20 @@ INSERT INTO topics (id, topic_category, topic_name) VALUES (26, 'ONLY_ON_TWITTER
 INSERT INTO topics (id, topic_category, topic_name) VALUES (27, 'GAMING', 'Game development');
 INSERT INTO topics (id, topic_category, topic_name) VALUES (28, 'GAMING', 'Call of Duty');
 --rollback TRUNCATE topics
+
+--changeset soroka andrei:2
+INSERT INTO users(id, full_name, username, private_profile) VALUES (1, 'Andrei Soroka', 'Andrei Soroka', true);
+INSERT INTO users(id, full_name, username, private_profile) VALUES (2, 'Androsor', 'Androsor', true);
+INSERT INTO users(id, full_name, username, private_profile) VALUES (3, 'JavaDed', 'JavaDed', true);
+INSERT INTO users(id, full_name, username, private_profile) VALUES (4, 'Пиздобол', 'Пиздобол', false);
+INSERT INTO users(id, full_name, username, private_profile) VALUES (5, 'Хрен с горы', 'Хрен с горы', false);
+--rollback TRUNCATE users
+
+--changeset soroka andrei:3
+INSERT INTO user_subscriptions (subscriber_id, user_id) VALUES (1, 2);
+INSERT INTO user_subscriptions (subscriber_id, user_id) VALUES (1, 3);
+INSERT INTO user_subscriptions (subscriber_id, user_id) VALUES (1, 4);
+INSERT INTO user_subscriptions (subscriber_id, user_id) VALUES (1, 5);
+INSERT INTO user_subscriptions (subscriber_id, user_id) VALUES (2, 1);
+INSERT INTO user_subscriptions (subscriber_id, user_id) VALUES (5, 1);
+--rollback TRUNCATE user_subscriptions

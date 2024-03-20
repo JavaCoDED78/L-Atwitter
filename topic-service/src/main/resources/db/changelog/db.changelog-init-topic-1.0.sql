@@ -38,4 +38,31 @@ CREATE TABLE IF NOT EXISTS topic_not_interested
     user_id  BIGINT NOT NULL
 );
 --rollback DROP TABLE topic_not_interested
+
+--changeset soroka andrei:7
+CREATE TABLE IF NOT EXISTS users
+(
+    id              BIGINT PRIMARY KEY,
+    full_name       VARCHAR(255) NOT NULL,
+    username        VARCHAR(255) NOT NULL,
+    private_profile BOOLEAN DEFAULT false,
+);
+--rollback DROP TABLE users
+
+--changeset soroka andrei:8
+CREATE TABLE IF NOT EXISTS user_blocked
+(
+    user_id         BIGINT NOT NULL,
+    blocked_user_id BIGINT NOT NULL
+);
+--rollback DROP TABLE user_blocked
+
+--changeset soroka andrei:9
+CREATE TABLE IF NOT EXISTS user_subscriptions
+(
+    subscriber_id BIGINT NOT NULL,
+    user_id       BIGINT NOT NULL
+);
+--rollback DROP TABLE user_subscriptions
+
 -- liquibase formatted sql

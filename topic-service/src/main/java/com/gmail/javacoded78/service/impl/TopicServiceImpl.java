@@ -13,6 +13,7 @@ import com.gmail.javacoded78.repository.projetion.FollowedTopicProjection;
 import com.gmail.javacoded78.repository.projetion.NotInterestedTopicProjection;
 import com.gmail.javacoded78.repository.projetion.TopicProjection;
 import com.gmail.javacoded78.service.TopicService;
+import com.gmail.javacoded78.service.UserService;
 import com.gmail.javacoded78.util.AuthUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -35,6 +36,7 @@ public class TopicServiceImpl implements TopicService {
     private final TopicFollowersRepository topicFollowersRepository;
     private final TopicNotInterestedRepository topicNotInterestedRepository;
     private final UserClient userClient;
+    private final UserService userService;
 
     @Override
     public List<TopicProjection> getTopicsByIds(List<Long> topicsIds) {
@@ -142,7 +144,7 @@ public class TopicServiceImpl implements TopicService {
     }
 
     private void checkUserExists(Long userId) {
-        boolean notUserExists = !userClient.isUserExists(userId);
+        boolean notUserExists =!userService.isUserExists(userId);
         if (notUserExists) {
             throw new ApiRequestException(String.format(USER_ID_NOT_FOUND, userId), HttpStatus.NOT_FOUND);
         }
