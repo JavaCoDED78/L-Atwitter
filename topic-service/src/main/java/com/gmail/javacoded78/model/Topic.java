@@ -15,8 +15,12 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import java.util.List;
 
 @Entity
 @Getter
@@ -39,4 +43,16 @@ public class Topic {
     @Column(name = "topic_category")
     @Enumerated(EnumType.STRING)
     private TopicCategory topicCategory;
+
+    @ManyToMany
+    @JoinTable(name = "topic_followers",
+            joinColumns = @JoinColumn(name = "topic_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id"))
+    private List<User> topicFollowers;
+
+    @ManyToMany
+    @JoinTable(name = "topic_not_interested",
+            joinColumns = @JoinColumn(name = "topic_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id"))
+    private List<User> topicNotInterested;
 }
