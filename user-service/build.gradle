@@ -37,6 +37,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
+    implementation 'org.springframework.kafka:spring-kafka'
     implementation 'org.springframework.cloud:spring-cloud-starter-circuitbreaker-resilience4j'
     implementation 'org.springframework.boot:spring-boot-starter-amqp'
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
@@ -44,6 +45,8 @@ dependencies {
     implementation "org.modelmapper:modelmapper:${versions.modelMapper}"
     implementation 'org.liquibase:liquibase-core'
     implementation "com.github.ben-manes.caffeine:caffeine:${versions.caffeine}"
+    implementation 'com.fasterxml.jackson.core:jackson-annotations:2.14.2'
+    implementation'com.fasterxml.jackson.core:jackson-databind:2.14.2'
 
     runtimeOnly 'org.postgresql:postgresql'
 
