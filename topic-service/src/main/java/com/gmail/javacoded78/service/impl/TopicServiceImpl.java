@@ -3,7 +3,6 @@ package com.gmail.javacoded78.service.impl;
 import com.gmail.javacoded78.dto.response.TopicsByCategoriesResponse;
 import com.gmail.javacoded78.enums.TopicCategory;
 import com.gmail.javacoded78.exception.ApiRequestException;
-import com.gmail.javacoded78.feign.UserClient;
 import com.gmail.javacoded78.model.TopicFollowers;
 import com.gmail.javacoded78.model.TopicNotInterested;
 import com.gmail.javacoded78.repository.TopicFollowersRepository;
@@ -35,7 +34,6 @@ public class TopicServiceImpl implements TopicService {
     private final TopicRepository topicRepository;
     private final TopicFollowersRepository topicFollowersRepository;
     private final TopicNotInterestedRepository topicNotInterestedRepository;
-    private final UserClient userClient;
     private final UserService userService;
 
     @Override
@@ -130,14 +128,14 @@ public class TopicServiceImpl implements TopicService {
     }
 
     private void checkIfUserHavePrivateProfile(Long userId) {
-        boolean userHavePrivateProfile = userClient.isUserHavePrivateProfile(userId);
+        boolean userHavePrivateProfile = userService.isUserHavePrivateProfile(userId);
         if (userHavePrivateProfile) {
             throw new ApiRequestException(USER_NOT_FOUND, HttpStatus.NOT_FOUND);
         }
     }
 
     private void checkProfileIsBlocked(Long userId) {
-        boolean profileBlockedByUser = userClient.isMyProfileBlockedByUser(userId);
+        boolean profileBlockedByUser = userService.isMyProfileBlockedByUser(userId);
         if (profileBlockedByUser) {
             throw new ApiRequestException(USER_PROFILE_BLOCKED, HttpStatus.BAD_REQUEST);
         }
