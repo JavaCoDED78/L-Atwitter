@@ -1,6 +1,7 @@
 package com.gmail.javacoded78.service;
 
 import com.gmail.javacoded78.event.BlockUserEvent;
+import com.gmail.javacoded78.event.FollowUserEvent;
 import com.gmail.javacoded78.event.UpdateUserEvent;
 import com.gmail.javacoded78.event.UserEvent;
 
@@ -14,5 +15,7 @@ public interface UserService {
 
     void handleUpdateUser(UpdateUserEvent updateUserEvent);
 
-    void handleBlockUser(BlockUserEvent blockUserEvent);
+    void handleBlockUser(BlockUserEvent blockUserEvent, String authId);
+
+    void handleFollowUser(FollowUserEvent followUserEvent, String authId);
 }

@@ -23,14 +23,14 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
-@Builder
 @EqualsAndHashCode(of = {"id", "email"})
 @Table(name = "users")
 public class User {
@@ -80,7 +80,6 @@ public class User {
     private String birthday;
 
     @Column(name = "registration_date", columnDefinition = "timestamp default current_timestamp")
-    @Builder.Default
     private LocalDateTime registrationDate = LocalDateTime.now();
 
     @Column(name = "activation_code")
@@ -90,57 +89,44 @@ public class User {
     private String passwordResetCode;
 
     @Column(name = "role", columnDefinition = "varchar(255) default 'USER'")
-    @Builder.Default
     private String role = "USER";
 
     @Column(name = "tweet_count", columnDefinition = "int8 default 0")
-    @Builder.Default
     private Long tweetCount = 0L;
 
     @Column(name = "media_tweet_count", columnDefinition = "int8 default 0")
-    @Builder.Default
     private Long mediaTweetCount = 0L;
 
     @Column(name = "like_count", columnDefinition = "int8 default 0")
-    @Builder.Default
     private Long likeCount = 0L;
 
     @Column(name = "notifications_count", columnDefinition = "int8 default 0")
-    @Builder.Default
     private Long notificationsCount = 0L;
 
     @Column(name = "mentions_count", columnDefinition = "int8 default 0")
-    @Builder.Default
     private Long mentionsCount = 0L;
 
     @Column(name = "active", columnDefinition = "boolean default false")
-    @Builder.Default
     private boolean active = false;
 
     @Column(name = "profile_customized", columnDefinition = "boolean default false")
-    @Builder.Default
     private boolean profileCustomized = false;
 
     @Column(name = "profile_started", columnDefinition = "boolean default false")
-    @Builder.Default
     private boolean profileStarted = false;
 
     @Column(name = "muted_direct_messages", columnDefinition = "boolean default false")
-    @Builder.Default
     private boolean mutedDirectMessages = false;
 
     @Column(name = "private_profile", columnDefinition = "boolean default false")
-    @Builder.Default
     private boolean privateProfile = false;
 
     @Column(name = "background_color", columnDefinition = "varchar(255) default 'DEFAULT'")
     @Enumerated(EnumType.STRING)
-    @Builder.Default
-    private BackgroundColorType backgroundColor = BackgroundColorType.DEFAULT;
+    private BackgroundColorType backgroundColor= BackgroundColorType.DEFAULT;
 
     @Column(name = "color_scheme", columnDefinition = "varchar(255) default 'BLUE'")
     @Enumerated(EnumType.STRING)
-    @Builder.Default
     private ColorSchemeType colorScheme = ColorSchemeType.BLUE;
 
     @Column(name = "pinned_tweet_id")
@@ -153,48 +139,41 @@ public class User {
     private String wallpaper;
 
     @Column(name = "unread_messages_count", columnDefinition = "int8 default 0")
-    @Builder.Default
     private Long unreadMessagesCount = 0L;
 
     @ManyToMany
-    @Builder.Default
     @JoinTable(name = "user_muted",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "muted_user_id"))
-    private List<User> userMutedList = new ArrayList<>();
+    private Set<User> userMutedList = new HashSet<>();
 
     @ManyToMany
-    @Builder.Default
     @JoinTable(name = "user_blocked",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "blocked_user_id"))
-    private List<User> userBlockedList = new ArrayList<>();
+    private Set<User> userBlockedList = new HashSet<>();
 
     @ManyToMany
-    @Builder.Default
     @JoinTable(name = "user_subscriptions",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "subscriber_id"))
-    private List<User> followers = new ArrayList<>();
+    private Set<User> followers = new HashSet<>();
 
     @ManyToMany
-    @Builder.Default
     @JoinTable(name = "user_subscriptions",
             joinColumns = @JoinColumn(name = "subscriber_id"),
             inverseJoinColumns = @JoinColumn(name = "user_id"))
-    private List<User> following = new ArrayList<>();
+    private Set<User> following = new HashSet<>();
 
     @ManyToMany
-    @Builder.Default
     @JoinTable(name = "user_follower_requests",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "follower_id"))
-    private List<User> followerRequests = new ArrayList<>();
+    private Set<User> followerRequests = new HashSet<>();
 
     @ManyToMany
-    @Builder.Default
     @JoinTable(name = "subscribers",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "subscriber_id"))
-    private List<User> subscribers = new ArrayList<>();
+    private Set<User> subscribers = new HashSet<>();
 }

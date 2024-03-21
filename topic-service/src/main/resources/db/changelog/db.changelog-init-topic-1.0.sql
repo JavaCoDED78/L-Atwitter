@@ -65,4 +65,17 @@ CREATE TABLE IF NOT EXISTS user_subscriptions
 );
 --rollback DROP TABLE user_subscriptions
 
+--changeset soroka andrei:10
+ALTER TABLE user_blocked
+    add constraint user_blocked_blocked_user_id foreign key (blocked_user_id) references users;
+
+ALTER TABLE user_blocked
+    add constraint user_blocked_user_id foreign key (user_id) references users;
+
+ALTER TABLE user_subscriptions
+    add constraint user_subscriptions_user_id foreign key (user_id) references users;
+
+ALTER TABLE user_subscriptions
+    add constraint user_subscriptions_subscriber_id foreign key (subscriber_id) references users;
+
 -- liquibase formatted sql

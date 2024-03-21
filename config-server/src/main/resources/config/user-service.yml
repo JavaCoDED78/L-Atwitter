@@ -15,7 +15,7 @@ spring:
     properties.hibernate:
       batch_size: 50
       fetch_size: 50
-      show_sql: false
+      show_sql: true
       format_sql: false
     #     open-in-view: false
     hibernate:

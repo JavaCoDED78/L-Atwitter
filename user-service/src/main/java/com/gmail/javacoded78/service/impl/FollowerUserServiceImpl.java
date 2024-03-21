@@ -3,6 +3,8 @@ package com.gmail.javacoded78.service.impl;
 import com.gmail.javacoded78.dto.request.NotificationRequest;
 import com.gmail.javacoded78.enums.NotificationType;
 import com.gmail.javacoded78.feign.NotificationClient;
+import com.gmail.javacoded78.model.User;
+import com.gmail.javacoded78.producer.FollowUserProducer;
 import com.gmail.javacoded78.repository.FollowerUserRepository;
 import com.gmail.javacoded78.repository.UserRepository;
 import com.gmail.javacoded78.repository.projection.BaseUserProjection;
@@ -30,6 +32,7 @@ public class FollowerUserServiceImpl implements FollowerUserService {
     private final AuthenticationService authenticationService;
     private final NotificationClient notificationClient;
     private final UserServiceHelper userServiceHelper;
+    private final FollowUserProducer followUserProducer;
 
     @Override
     public Page<UserProjection> getFollowers(Long userId, Pageable pageable) {
@@ -52,32 +55,31 @@ public class FollowerUserServiceImpl implements FollowerUserService {
     @Override
     @Transactional
     public Boolean processFollow(Long userId) {
-        userServiceHelper.checkIsUserExistOrMyProfileBlocked(userId);
-        Long authUserId = authenticationService.getAuthenticatedUserId();
-        boolean isFollower = followerUserRepository.isFollower(authUserId, userId);
-        boolean follower = false;
+        User user = userServiceHelper.getUserById(userId);
+        User authUser = authenticationService.getAuthenticatedUser();
+        userServiceHelper.checkIsUserBlocked(user, authUser);
+        boolean hasUserFollowed = false;
 
-        if (isFollower) {
-            followerUserRepository.unfollow(authUserId, userId);
-            userRepository.unsubscribe(authUserId, userId);
+        if (followerUserRepository.isFollower(authUser, user)) {
+            authUser.getFollowers().remove(user);
+            user.getSubscribers().remove(authUser);
         } else {
-            boolean isPrivateProfile = userRepository.getUserPrivateProfile(userId);
-
-            if (!isPrivateProfile) {
-                followerUserRepository.follow(authUserId, userId);
+            if (!user.isPrivateProfile()) {
+                authUser.getFollowers().add(user);
                 NotificationRequest request = NotificationRequest.builder()
                         .notificationType(NotificationType.FOLLOW)
-                        .userId(authUserId)
+                        .userId(authUser.getId())
                         .userToFollowId(userId)
                         .notifiedUserId(userId)
                         .build();
                 notificationClient.sendNotification(request);
-                follower = true;
+                hasUserFollowed = true;
             } else {
-                followerUserRepository.addFollowerRequest(authUserId, userId);
+                followerUserRepository.addFollowerRequest(authUser.getId(), userId);
             }
         }
-        return follower;
+        followUserProducer.sendFollowUserEvent(user, authUser.getId(), hasUserFollowed);
+        return hasUserFollowed;
     }
 
     @Override
@@ -99,7 +101,7 @@ public class FollowerUserServiceImpl implements FollowerUserService {
         } else {
             followerUserRepository.addFollowerRequest(authUserId, userId);
         }
-        return userRepository.getUserById(userId, UserProfileProjection.class).orElse(null);
+        return userRepository.getUserById(userId, UserProfileProjection.class).get();
     }
 
     @Override

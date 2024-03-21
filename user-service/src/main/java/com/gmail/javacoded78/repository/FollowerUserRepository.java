@@ -64,6 +64,14 @@ public interface FollowerUserRepository extends JpaRepository<User, Long> {
             """)
     boolean isFollower(@Param("authUserId") Long authUserId, @Param("userId") Long userId);
 
+    @Query("""
+            SELECT CASE WHEN count(user) > 0 THEN true ELSE false END FROM User user
+            LEFT JOIN user.followers follower
+            WHERE follower = :user
+            AND user = :authUser
+            """)
+    boolean isFollower(@Param("authUser") User authUser, @Param("user") User user);
+
     @Modifying
     @Query(value = """
                     INSERT INTO user_subscriptions (user_id, subscriber_id)
