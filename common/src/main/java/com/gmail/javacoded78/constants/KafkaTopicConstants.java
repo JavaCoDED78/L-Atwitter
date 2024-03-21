@@ -1,6 +1,6 @@
 package com.gmail.javacoded78.constants;
 
-public class KafkaConstants {
+public class KafkaTopicConstants {
 
     public static final String UPDATE_USER_TOPIC = "user-service.user.update";
     public static final String BLOCK_USER_TOPIC = "user-service.user.block";

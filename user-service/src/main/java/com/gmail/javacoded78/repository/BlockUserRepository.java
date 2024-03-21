@@ -21,6 +21,14 @@ public interface BlockUserRepository extends JpaRepository<User, Long> {
     Page<BlockedUserProjection> getUserBlockListById(@Param("userId") Long userId, Pageable pageable);
 
     @Query("""
+            SELECT CASE WHEN count(blockedUser) > 0 THEN true ELSE false END FROM User user
+            LEFT JOIN user.userBlockedList blockedUser
+            WHERE user = :user
+            AND blockedUser = :blockedUser
+            """)
+    boolean isUserBlocked(@Param("user") User user, @Param("blockedUser") User blockedUser);
+
+    @Query("""
             SELECT CASE WHEN count(bu) > 0 THEN true
                 ELSE false END
             FROM User u

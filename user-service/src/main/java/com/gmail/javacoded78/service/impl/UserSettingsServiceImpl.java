@@ -4,7 +4,7 @@ import com.gmail.javacoded78.enums.BackgroundColorType;
 import com.gmail.javacoded78.enums.ColorSchemeType;
 import com.gmail.javacoded78.exception.ApiRequestException;
 import com.gmail.javacoded78.model.User;
-import com.gmail.javacoded78.producer.UserProducer;
+import com.gmail.javacoded78.producer.UpdateUserProducer;
 import com.gmail.javacoded78.repository.UserRepository;
 import com.gmail.javacoded78.repository.UserSettingsRepository;
 import com.gmail.javacoded78.repository.projection.AuthUserProjection;
@@ -33,17 +33,17 @@ public class UserSettingsServiceImpl implements UserSettingsService {
     private final UserRepository userRepository;
     private final UserSettingsRepository userSettingsRepository;
     private final JwtProvider jwtProvider;
-    private final UserProducer userProducer;
+    private final UpdateUserProducer updateUserProducer;
 
     @Override
     @Transactional
     public String updateUsername(String username) {
-        if (username.isEmpty() || username.length() > 50) {
+        if (username.length() == 0 || username.length() > 50) {
             throw new ApiRequestException(INCORRECT_USERNAME_LENGTH, HttpStatus.BAD_REQUEST);
         }
         User user = authenticationService.getAuthenticatedUser();
         user.setUsername(username);
-        userProducer.sendUserEvent(user);
+        updateUserProducer.sendUpdateUserEvent(user);
         return username;
     }
 
@@ -54,7 +54,7 @@ public class UserSettingsServiceImpl implements UserSettingsService {
             Long authUserId = authenticationService.getAuthenticatedUserId();
             userSettingsRepository.updateEmail(email, authUserId);
             String token = jwtProvider.createToken(email, "USER");
-            AuthUserProjection user = userRepository.getUserById(authUserId, AuthUserProjection.class).orElse(null);
+            AuthUserProjection user = userRepository.getUserById(authUserId, AuthUserProjection.class).get();
             return Map.of("user", user, "token", token);
         }
         throw new ApiRequestException(EMAIL_HAS_ALREADY_BEEN_TAKEN, HttpStatus.FORBIDDEN);
@@ -84,7 +84,7 @@ public class UserSettingsServiceImpl implements UserSettingsService {
     @Override
     @Transactional
     public String updateGender(String gender) {
-        if (gender.isEmpty() || gender.length() > 30) {
+        if (gender.length() == 0 || gender.length() > 30) {
             throw new ApiRequestException(INVALID_GENDER_LENGTH, HttpStatus.BAD_REQUEST);
         }
         Long authUserId = authenticationService.getAuthenticatedUserId();
@@ -113,7 +113,7 @@ public class UserSettingsServiceImpl implements UserSettingsService {
     public boolean updatePrivateProfile(boolean privateProfile) {
         User user = authenticationService.getAuthenticatedUser();
         user.setPrivateProfile(privateProfile);
-        userProducer.sendUserEvent(user);
+        updateUserProducer.sendUpdateUserEvent(user);
         return privateProfile;
     }
 

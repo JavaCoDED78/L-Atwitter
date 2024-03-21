@@ -1,5 +1,7 @@
 package com.gmail.javacoded78.service;
 
+import com.gmail.javacoded78.event.BlockUserEvent;
+import com.gmail.javacoded78.event.UpdateUserEvent;
 import com.gmail.javacoded78.event.UserEvent;
 
 public interface UserService {
@@ -10,5 +12,7 @@ public interface UserService {
 
     boolean isUserHavePrivateProfile(Long userId);
 
-    void handleUser(UserEvent userEvent);
+    void handleUpdateUser(UpdateUserEvent updateUserEvent);
+
+    void handleBlockUser(BlockUserEvent blockUserEvent);
 }

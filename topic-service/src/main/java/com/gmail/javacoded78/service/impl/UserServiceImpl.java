@@ -1,5 +1,7 @@
 package com.gmail.javacoded78.service.impl;
 
+import com.gmail.javacoded78.event.BlockUserEvent;
+import com.gmail.javacoded78.event.UpdateUserEvent;
 import com.gmail.javacoded78.event.UserEvent;
 import com.gmail.javacoded78.model.User;
 import com.gmail.javacoded78.repository.UserRepository;
@@ -8,8 +10,6 @@ import com.gmail.javacoded78.util.AuthUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -20,20 +20,6 @@ public class UserServiceImpl implements UserService {
     @Override
     public boolean isUserExists(Long userId) {
         return userRepository.isUserExists(userId);
-    }
-
-    @Override
-    @Transactional
-    public void handleUser(UserEvent userEvent) {
-        Optional<User> user = userRepository.findById(userEvent.getId());
-
-        if (user.isPresent()) {
-            mapUser(user.get(), userEvent);
-        } else {
-            User newUser = new User();
-            mapUser(newUser, userEvent);
-            userRepository.save(newUser);
-        }
     }
 
     @Override
@@ -48,9 +34,41 @@ public class UserServiceImpl implements UserService {
         return userRepository.isUserHavePrivateProfile(userId, authUserId);
     }
 
-    private void mapUser(User user, UserEvent userEvent) {
-        user.setUsername(userEvent.getUsername());
-        user.setFullName(userEvent.getFullName());
-        user.setPrivateProfile(userEvent.isPrivateProfile());
+    @Override
+    @Transactional
+    public void handleBlockUser(BlockUserEvent blockUserEvent) {
+        Long authUserId = AuthUtil.getAuthenticatedUserId();
+        User authUser = userRepository.findById(authUserId).get();
+        User user = userRepository.findById(blockUserEvent.getId())
+                .orElse(createUser(blockUserEvent));
+
+        if (blockUserEvent.isUserBlocked()) {
+            authUser.getUserBlockedList().add(user);
+            authUser.getFollowers().remove(user);
+            authUser.getFollowing().remove(user);
+        } else {
+            authUser.getUserBlockedList().remove(user);
+        }
+    }
+
+    @Override
+    @Transactional
+    public void handleUpdateUser(UpdateUserEvent updateUserEvent) {
+        userRepository.findById(updateUserEvent.getId())
+                .map(user -> {
+                    user.setUsername(updateUserEvent.getUsername());
+                    user.setFullName(updateUserEvent.getFullName());
+                    user.setPrivateProfile(updateUserEvent.isPrivateProfile());
+                    return user;
+                })
+                .orElse(createUser(updateUserEvent));
+    }
+
+    private User createUser(UserEvent userEvent) {
+        User newUser = new User();
+        newUser.setUsername(userEvent.getUsername());
+        newUser.setFullName(userEvent.getFullName());
+        newUser.setPrivateProfile(userEvent.isPrivateProfile());
+        return userRepository.save(newUser);
     }
 }

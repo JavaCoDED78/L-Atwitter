@@ -2,6 +2,7 @@ package com.gmail.javacoded78.service.util;
 
 import com.gmail.javacoded78.exception.ApiRequestException;
 import com.gmail.javacoded78.exception.InputFieldException;
+import com.gmail.javacoded78.model.User;
 import com.gmail.javacoded78.repository.BlockUserRepository;
 import com.gmail.javacoded78.repository.FollowerUserRepository;
 import com.gmail.javacoded78.repository.MuteUserRepository;
@@ -50,6 +51,11 @@ public class UserServiceHelper {
     public void checkIsUserExistOrMyProfileBlocked(Long userId) {
         checkIsUserExist(userId);
         checkIsUserBlocked(userId);
+    }
+
+    public User getUserById(Long userId) {
+        return userRepository.findById(userId)
+                .orElseThrow(() -> new ApiRequestException(String.format(USER_ID_NOT_FOUND, userId), HttpStatus.NOT_FOUND));
     }
 
     public void checkIsUserExist(Long userId) {
