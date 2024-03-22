@@ -14,45 +14,45 @@ import java.util.List;
 @Repository
 public interface TopicRepository extends JpaRepository<Topic, Long> {
 
-    @Query("""
-            SELECT t FROM Topic t
-            WHERE t.id IN :topicsIds
-            ORDER BY t.id DESC
-            """)
+    @Query("SELECT topic FROM Topic topic WHERE topic.id IN :topicsIds ORDER BY topic.id DESC")
     List<TopicProjection> getTopicsByIds(@Param("topicsIds") List<Long> topicsIds);
 
+    @Query("SELECT topic FROM Topic topic WHERE topic.topicCategory = :topicCategory ORDER BY topic.id DESC")
+    List<TopicProjection> getTopicsByCategory(@Param("topicCategory") TopicCategory topicCategory);
+
     @Query("""
-            SELECT t.id as id, t.topicName as topicName, t.topicCategory as topicCategory FROM Topic t
-            WHERE t.id IN (
-                    SELECT f.topicId FROM TopicFollowers f
-                    WHERE f.userId = :userId)
-            ORDER BY t.id DESC
+            SELECT topic FROM Topic topic
+            JOIN topic.topicFollowers topicFollower
+            WHERE topicFollower.id = :userId
+            ORDER BY topic.id DESC
             """)
     <T> List<T> getTopicsByTopicFollowerId(@Param("userId") Long userId, Class<T> type);
 
     @Query("""
-            SELECT t.id as id, t.topicName as topicName, t.topicCategory as topicCategory FROM Topic t
-            WHERE t.id IN (
-                    SELECT ni.topicId FROM TopicNotInterested ni
-                    WHERE ni.userId = :userId)
-            ORDER BY t.id DESC
+            SELECT topic FROM Topic topic
+            JOIN topic.topicNotInterested topicNotInterested
+            WHERE topicNotInterested.id = :userId
+            ORDER BY topic.id DESC
             """)
     List<NotInterestedTopicProjection> getTopicsByNotInterestedUserId(@Param("userId") Long userId);
 
     @Query("""
-            SELECT t FROM Topic t
-            WHERE t.topicCategory = :topicCategory
-            ORDER BY t.id DESC
+            SELECT CASE WHEN count(topic) > 0 THEN true ELSE false END FROM Topic topic
+            JOIN topic.topicFollowers topicFollower
+            WHERE topicFollower.id = :userId
+            AND topic.id = :topicId
             """)
-    List<TopicProjection> getTopicsByCategory(@Param("topicCategory") TopicCategory topicCategory);
+    boolean isTopicFollowed(@Param("userId") Long userId, @Param("topicId") Long topicId);
 
     @Query("""
-            SELECT CASE WHEN count(t) > 0
-                THEN true
-                ELSE false END
-            FROM Topic t
-            WHERE t.id = :topicId
+            SELECT CASE WHEN count(topic) > 0 THEN true ELSE false END FROM Topic topic
+            JOIN topic.topicNotInterested topicNotInterested
+            WHERE topicNotInterested.id = :userId
+            AND topic.id = :topicId
             """)
+    boolean isTopicNotInterested(@Param("userId") Long userId, @Param("topicId") Long topicId);
+
+    @Query("SELECT CASE WHEN count(topic) > 0 THEN true ELSE false END FROM Topic topic WHERE topic.id = :topicId")
     boolean isTopicExist(@Param("topicId") Long topicId);
 }
 

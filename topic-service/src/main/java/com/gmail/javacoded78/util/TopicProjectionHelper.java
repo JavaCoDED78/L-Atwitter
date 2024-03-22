@@ -1,7 +1,6 @@
 package com.gmail.javacoded78.util;
 
-import com.gmail.javacoded78.repository.TopicFollowersRepository;
-import com.gmail.javacoded78.repository.TopicNotInterestedRepository;
+import com.gmail.javacoded78.repository.TopicRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -9,16 +8,15 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class TopicProjectionHelper {
 
-    private final TopicFollowersRepository topicFollowersRepository;
-    private final TopicNotInterestedRepository topicNotInterestedRepository;
+    private final TopicRepository topicRepository;
 
     public boolean isTopicFollowed(Long topicId) {
         Long authUserId = AuthUtil.getAuthenticatedUserId();
-        return topicFollowersRepository.isTopicFollowed(authUserId, topicId);
+        return topicRepository.isTopicFollowed(authUserId, topicId);
     }
 
     public boolean isTopicNotInterested(Long topicId) {
         Long authUserId = AuthUtil.getAuthenticatedUserId();
-        return topicNotInterestedRepository.isTopicNotInterested(authUserId, topicId);
+        return topicRepository.isTopicNotInterested(authUserId, topicId);
     }
 }

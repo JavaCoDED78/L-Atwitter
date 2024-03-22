@@ -4,14 +4,13 @@ import com.gmail.javacoded78.event.BlockUserEvent;
 import com.gmail.javacoded78.event.FollowUserEvent;
 import com.gmail.javacoded78.event.UpdateUserEvent;
 import com.gmail.javacoded78.event.UserEvent;
+import com.gmail.javacoded78.model.User;
 
 public interface UserService {
 
-    boolean isUserExists(Long userId);
+    User getAuthUser();
 
-    boolean isMyProfileBlockedByUser(Long userId);
-
-    boolean isUserHavePrivateProfile(Long userId);
+    void validateUserProfile(Long userId);
 
     void handleUpdateUser(UpdateUserEvent updateUserEvent);
 

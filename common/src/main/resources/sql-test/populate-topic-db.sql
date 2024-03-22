@@ -1,3 +1,23 @@
+-- users
+INSERT INTO users (id, full_name, username, private_profile) VALUES (1, 'Андрей ', 'Андрей', false);
+INSERT INTO users (id, full_name, username, private_profile) VALUES (2, 'Androsor99', 'Androsor99', false);
+INSERT INTO users (id, full_name, username, private_profile) VALUES (3, 'Androsor99', 'Androsor99', true);
+INSERT INTO users (id, full_name, username, private_profile) VALUES (4, 'Androsor99', 'Androsor99', true);
+INSERT INTO users (id, full_name, username, private_profile) VALUES (5, 'Androsor99', 'Androsor99', true);
+INSERT INTO users (id, full_name, username, private_profile) VALUES (6, 'Androsor99', 'Androsor99', false);
+INSERT INTO users (id, full_name, username, private_profile) VALUES (7, 'Androsor99', 'Androsor99', false);
+
+-- user_subscriptions
+INSERT INTO user_subscriptions (subscriber_id, user_id) VALUES (1, 2);
+INSERT INTO user_subscriptions (subscriber_id, user_id) VALUES (2, 1);
+INSERT INTO user_subscriptions (subscriber_id, user_id) VALUES (4, 2);
+INSERT INTO user_subscriptions (subscriber_id, user_id) VALUES (4, 1);
+
+-- user_blocked
+INSERT INTO user_blocked (user_id, blocked_user_id) VALUES (2, 4);
+INSERT INTO user_blocked (user_id, blocked_user_id) VALUES (5, 2);
+INSERT INTO user_blocked (user_id, blocked_user_id) VALUES (6, 2);
+
 -- topics
 INSERT INTO topics (id, topic_category, topic_name) VALUES (51, null, 'My Blog');
 INSERT INTO topics (id, topic_category, topic_name) VALUES (52, null, 'Technology');
@@ -28,11 +48,11 @@ INSERT INTO topics (id, topic_category, topic_name) VALUES (77, 'GAMING', 'Game 
 INSERT INTO topics (id, topic_category, topic_name) VALUES (78, 'GAMING', 'Call of Duty');
 
 -- topic_followers
-INSERT INTO topic_followers (id, topic_id, user_id) VALUES (1, 58, 2);
-INSERT INTO topic_followers (id, topic_id, user_id) VALUES (2, 67, 2);
-INSERT INTO topic_followers (id, topic_id, user_id) VALUES (3, 63, 2);
-INSERT INTO topic_followers (id, topic_id, user_id) VALUES (4, 62, 2);
+INSERT INTO topic_followers (id, topic_id, user_id) VALUES (58, 2);
+INSERT INTO topic_followers (id, topic_id, user_id) VALUES (67, 2);
+INSERT INTO topic_followers (id, topic_id, user_id) VALUES (63, 2);
+INSERT INTO topic_followers (id, topic_id, user_id) VALUES (62, 2);
 
 -- topic_not_interested
-INSERT INTO topic_not_interested (id, topic_id, user_id) VALUES (1, 58, 2);
-INSERT INTO topic_not_interested (id, topic_id, user_id) VALUES (2, 69, 2);
+INSERT INTO topic_not_interested (id, topic_id, user_id) VALUES (58, 2);
+INSERT INTO topic_not_interested (id, topic_id, user_id) VALUES (69, 2);

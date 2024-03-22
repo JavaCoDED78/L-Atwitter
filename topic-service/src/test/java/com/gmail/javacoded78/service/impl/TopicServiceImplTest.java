@@ -4,12 +4,10 @@ import com.gmail.javacoded78.TopicTestHelper;
 import com.gmail.javacoded78.dto.response.TopicsByCategoriesResponse;
 import com.gmail.javacoded78.enums.TopicCategory;
 import com.gmail.javacoded78.exception.ApiRequestException;
-import com.gmail.javacoded78.feign.UserClient;
-import com.gmail.javacoded78.model.TopicFollowers;
-import com.gmail.javacoded78.model.TopicNotInterested;
-import com.gmail.javacoded78.repository.TopicFollowersRepository;
-import com.gmail.javacoded78.repository.TopicNotInterestedRepository;
+import com.gmail.javacoded78.model.Topic;
+import com.gmail.javacoded78.model.User;
 import com.gmail.javacoded78.repository.TopicRepository;
+import com.gmail.javacoded78.repository.UserRepository;
 import com.gmail.javacoded78.repository.projetion.FollowedTopicProjection;
 import com.gmail.javacoded78.repository.projetion.NotInterestedTopicProjection;
 import com.gmail.javacoded78.repository.projetion.TopicProjection;
@@ -23,12 +21,17 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 
 import static com.gmail.javacoded78.constants.ErrorMessage.TOPIC_NOT_FOUND;
 import static com.gmail.javacoded78.constants.ErrorMessage.USER_ID_NOT_FOUND;
 import static com.gmail.javacoded78.constants.ErrorMessage.USER_NOT_FOUND;
 import static com.gmail.javacoded78.constants.ErrorMessage.USER_PROFILE_BLOCKED;
+import static com.gmail.javacoded78.util.TestConstants.TOPIC_ID;
+import static com.gmail.javacoded78.util.TestConstants.TOPIC_NAME;
 import static com.gmail.javacoded78.util.TestConstants.USER_ID;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
@@ -45,13 +48,7 @@ class TopicServiceImplTest {
     private TopicRepository topicRepository;
 
     @Mock
-    private TopicFollowersRepository topicFollowersRepository;
-
-    @Mock
-    private TopicNotInterestedRepository topicNotInterestedRepository;
-
-    @Mock
-    private UserClient userClient;
+    private UserRepository userRepository;
 
     @InjectMocks
     private TopicServiceImpl topicService;
@@ -93,40 +90,35 @@ class TopicServiceImplTest {
 
     @Test
     void getFollowedTopicsByUserId() {
-        when(userClient.isUserExists(USER_ID)).thenReturn(true);
+        when(userRepository.isUserExists(USER_ID)).thenReturn(true);
         when(topicRepository.getTopicsByTopicFollowerId(USER_ID, TopicProjection.class))
                 .thenReturn(TopicTestHelper.getMockTopicProjectionList());
         List<TopicProjection> topics = topicService.getFollowedTopicsByUserId(USER_ID);
         assertThat(topics).hasSize(2);
         verify(topicRepository, times(1)).getTopicsByTopicFollowerId(USER_ID, TopicProjection.class);
-        verify(userClient, times(1)).isUserExists(USER_ID);
+        verify(userRepository, times(1)).isUserExists(USER_ID);
     }
 
     @Test
     void getFollowedTopicsByUserId_shouldUserIdNotFound() {
-        when(userClient.isUserExists(USER_ID)).thenReturn(false);
+        when(userRepository.isUserExists(USER_ID)).thenReturn(false);
         validateProfileTest(USER_ID, String.format(USER_ID_NOT_FOUND, USER_ID), HttpStatus.NOT_FOUND);
-        verify(userClient, times(1)).isUserExists(USER_ID);
+        verify(userRepository, times(1)).isUserExists(USER_ID);
     }
 
     @Test
     void getFollowedTopicsByUserId_shouldUserProfileBlocked() {
-        when(userClient.isUserExists(1L)).thenReturn(true);
-        when(userClient.isMyProfileBlockedByUser(1L)).thenReturn(true);
+        when(userRepository.isUserExists(1L)).thenReturn(true);
+        when(userRepository.isUserBlocked(1L, USER_ID)).thenReturn(true);
         validateProfileTest(1L, USER_PROFILE_BLOCKED, HttpStatus.BAD_REQUEST);
-        verify(userClient, times(1)).isUserExists(1L);
-        verify(userClient, times(1)).isMyProfileBlockedByUser(1L);
     }
 
     @Test
     void getFollowedTopicsByUserId_shouldUserHavePrivateProfile() {
-        when(userClient.isUserExists(1L)).thenReturn(true);
-        when(userClient.isMyProfileBlockedByUser(1L)).thenReturn(false);
-        when(userClient.isUserHavePrivateProfile(1L)).thenReturn(true);
+        when(userRepository.isUserExists(1L)).thenReturn(true);
+        when(userRepository.isUserBlocked(1L, USER_ID)).thenReturn(false);
+        when(userRepository.isUserHavePrivateProfile(1L, USER_ID)).thenReturn(false);
         validateProfileTest(1L, USER_NOT_FOUND, HttpStatus.NOT_FOUND);
-        verify(userClient, times(1)).isUserExists(1L);
-        verify(userClient, times(1)).isMyProfileBlockedByUser(1L);
-        verify(userClient, times(1)).isUserHavePrivateProfile(1L);
     }
 
     @Test
@@ -139,27 +131,27 @@ class TopicServiceImplTest {
     }
 
     @Test
-    void processNotInterestedTopic_deleteTopic() {
-        when(topicRepository.isTopicExist(3L)).thenReturn(true);
-        when(topicNotInterestedRepository.getNotInterestedByUserIdAndTopicId(USER_ID, 3L)).thenReturn(new TopicNotInterested());
-        assertFalse(topicService.processNotInterestedTopic(3L));
-        verify(topicRepository, times(1)).isTopicExist(3L);
-        verify(topicNotInterestedRepository, times(1)).getNotInterestedByUserIdAndTopicId(USER_ID, 3L);
-        verify(topicNotInterestedRepository, times(1)).delete(new TopicNotInterested());
+    void processNotInterestedTopic_removeTopic() {
+        User authUser = TopicTestHelper.mockAuthUser();
+        Topic topic = mockTopic();
+        topic.setTopicNotInterested(new HashSet<>(Set.of(authUser)));
+        when(topicRepository.findById(TOPIC_ID)).thenReturn(Optional.of(topic));
+        when(userRepository.findById(USER_ID)).thenReturn(Optional.of(authUser));
+        assertFalse(topicService.processNotInterestedTopic(TOPIC_ID));
+        verify(topicRepository, times(1)).findById(TOPIC_ID);
+        verify(userRepository, times(1)).findById(USER_ID);
     }
 
     @Test
-    void processNotInterestedTopic_saveTopic() {
-        when(topicRepository.isTopicExist(3L)).thenReturn(true);
-        when(topicNotInterestedRepository.getNotInterestedByUserIdAndTopicId(USER_ID, 3L)).thenReturn(null);
-        assertTrue(topicService.processNotInterestedTopic(3L));
-        verify(topicRepository, times(1)).isTopicExist(3L);
-        verify(topicNotInterestedRepository, times(1)).getNotInterestedByUserIdAndTopicId(USER_ID, 3L);
-        verify(topicFollowersRepository, times(1)).removeFollowedTopic(USER_ID, 3L);
-        verify(topicNotInterestedRepository, times(1)).save(TopicNotInterested.builder()
-                .userId(USER_ID)
-                .topicId(3L)
-                .build());
+    void processNotInterestedTopic_addTopic() {
+        User authUser = TopicTestHelper.mockAuthUser();
+        Topic topic = mockTopic();
+        topic.setTopicNotInterested(new HashSet<>());
+        when(topicRepository.findById(TOPIC_ID)).thenReturn(Optional.of(topic));
+        when(userRepository.findById(USER_ID)).thenReturn(Optional.of(authUser));
+        assertTrue(topicService.processNotInterestedTopic(TOPIC_ID));
+        verify(topicRepository, times(1)).findById(TOPIC_ID);
+        verify(userRepository, times(1)).findById(USER_ID);
     }
 
     @Test
@@ -172,27 +164,27 @@ class TopicServiceImplTest {
     }
 
     @Test
-    void processFollowTopic_deleteTopic() {
-        when(topicRepository.isTopicExist(3L)).thenReturn(true);
-        when(topicFollowersRepository.getFollowerByUserIdAndTopicId(USER_ID, 3L)).thenReturn(new TopicFollowers());
-        assertFalse(topicService.processFollowTopic(3L));
-        verify(topicRepository, times(1)).isTopicExist(3L);
-        verify(topicFollowersRepository, times(1)).getFollowerByUserIdAndTopicId(USER_ID, 3L);
-        verify(topicFollowersRepository, times(1)).delete(new TopicFollowers());
+    void processFollowTopic_unfollowTopic() {
+        User authUser = TopicTestHelper.mockAuthUser();
+        Topic topic = mockTopic();
+        topic.setTopicFollowers(new HashSet<>(Set.of(authUser)));
+        when(topicRepository.findById(TOPIC_ID)).thenReturn(Optional.of(topic));
+        when(userRepository.findById(USER_ID)).thenReturn(Optional.of(authUser));
+        assertFalse(topicService.processFollowTopic(TOPIC_ID));
+        verify(topicRepository, times(1)).findById(TOPIC_ID);
+        verify(userRepository, times(1)).findById(USER_ID);
     }
 
     @Test
-    void processFollowTopic_saveTopic() {
-        when(topicRepository.isTopicExist(3L)).thenReturn(true);
-        when(topicFollowersRepository.getFollowerByUserIdAndTopicId(USER_ID, 3L)).thenReturn(null);
-        assertTrue(topicService.processFollowTopic(3L));
-        verify(topicRepository, times(1)).isTopicExist(3L);
-        verify(topicFollowersRepository, times(1)).getFollowerByUserIdAndTopicId(USER_ID, 3L);
-        verify(topicNotInterestedRepository, times(1)).removeNotInterestedTopic(USER_ID, 3L);
-        verify(topicFollowersRepository, times(1)).save(TopicFollowers.builder()
-                .userId(USER_ID)
-                .topicId(3L)
-                .build());
+    void processFollowTopic_followTopic() {
+        User authUser = TopicTestHelper.mockAuthUser();
+        Topic topic = mockTopic();
+        topic.setTopicFollowers(new HashSet<>());
+        when(topicRepository.findById(TOPIC_ID)).thenReturn(Optional.of(topic));
+        when(userRepository.findById(USER_ID)).thenReturn(Optional.of(authUser));
+        assertTrue(topicService.processFollowTopic(TOPIC_ID));
+        verify(topicRepository, times(1)).findById(TOPIC_ID);
+        verify(userRepository, times(1)).findById(USER_ID);
     }
 
     @Test
@@ -208,5 +200,13 @@ class TopicServiceImplTest {
         ApiRequestException exception = assertThrows(ApiRequestException.class, () -> topicService.getFollowedTopicsByUserId(userId));
         assertThat(exception.getMessage()).isEqualTo(testMessage);
         assertThat(exception.getStatus()).isEqualTo(status);
+    }
+
+    private Topic mockTopic() {
+        Topic topic = new Topic();
+        topic.setId(TOPIC_ID);
+        topic.setTopicName(TOPIC_NAME);
+        topic.setTopicCategory(TopicCategory.GAMING);
+        return topic;
     }
 }

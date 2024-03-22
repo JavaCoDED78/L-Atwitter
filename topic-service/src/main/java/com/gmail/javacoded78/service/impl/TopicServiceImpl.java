@@ -3,10 +3,8 @@ package com.gmail.javacoded78.service.impl;
 import com.gmail.javacoded78.dto.response.TopicsByCategoriesResponse;
 import com.gmail.javacoded78.enums.TopicCategory;
 import com.gmail.javacoded78.exception.ApiRequestException;
-import com.gmail.javacoded78.model.TopicFollowers;
-import com.gmail.javacoded78.model.TopicNotInterested;
-import com.gmail.javacoded78.repository.TopicFollowersRepository;
-import com.gmail.javacoded78.repository.TopicNotInterestedRepository;
+import com.gmail.javacoded78.model.Topic;
+import com.gmail.javacoded78.model.User;
 import com.gmail.javacoded78.repository.TopicRepository;
 import com.gmail.javacoded78.repository.projetion.FollowedTopicProjection;
 import com.gmail.javacoded78.repository.projetion.NotInterestedTopicProjection;
@@ -22,18 +20,12 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 import static com.gmail.javacoded78.constants.ErrorMessage.TOPIC_NOT_FOUND;
-import static com.gmail.javacoded78.constants.ErrorMessage.USER_ID_NOT_FOUND;
-import static com.gmail.javacoded78.constants.ErrorMessage.USER_NOT_FOUND;
-import static com.gmail.javacoded78.constants.ErrorMessage.USER_PROFILE_BLOCKED;
 
 @Service
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
 public class TopicServiceImpl implements TopicService {
 
     private final TopicRepository topicRepository;
-    private final TopicFollowersRepository topicFollowersRepository;
-    private final TopicNotInterestedRepository topicNotInterestedRepository;
     private final UserService userService;
 
     @Override
@@ -44,10 +36,10 @@ public class TopicServiceImpl implements TopicService {
     @Override
     public List<TopicsByCategoriesResponse> getTopicsByCategories(List<TopicCategory> categories) {
         return categories.stream()
-                .map(category -> new TopicsByCategoriesResponse(
-                        category,
-                        topicRepository.getTopicsByCategory(category)
-                ))
+                .map(topicCategory -> {
+                    List<TopicProjection> topics = topicRepository.getTopicsByCategory(topicCategory);
+                    return new TopicsByCategoriesResponse(topicCategory, topics);
+                })
                 .toList();
     }
 
@@ -59,7 +51,7 @@ public class TopicServiceImpl implements TopicService {
 
     @Override
     public List<TopicProjection> getFollowedTopicsByUserId(Long userId) {
-        validateUserProfile(userId);
+        userService.validateUserProfile(userId);
         return topicRepository.getTopicsByTopicFollowerId(userId, TopicProjection.class);
     }
 
@@ -72,20 +64,15 @@ public class TopicServiceImpl implements TopicService {
     @Override
     @Transactional
     public Boolean processNotInterestedTopic(Long topicId) {
-        checkIsTopicExist(topicId);
-        Long authUserId = AuthUtil.getAuthenticatedUserId();
-        TopicNotInterested topic = topicNotInterestedRepository.getNotInterestedByUserIdAndTopicId(authUserId, topicId);
+        Topic topic = getTopicById(topicId);
+        User authUser = userService.getAuthUser();
 
-        if (topic != null) {
-            topicNotInterestedRepository.delete(topic);
+        if (topic.getTopicNotInterested().contains(authUser)) {
+            topic.getTopicNotInterested().remove(authUser);
             return false;
         } else {
-            topicFollowersRepository.removeFollowedTopic(authUserId, topicId);
-            TopicNotInterested topicNotInterested = TopicNotInterested.builder()
-                    .userId(authUserId)
-                    .topicId(topicId)
-                    .build();
-            topicNotInterestedRepository.save(topicNotInterested);
+            topic.getTopicFollowers().remove(authUser);
+            topic.getTopicNotInterested().add(authUser);
             return true;
         }
     }
@@ -93,58 +80,21 @@ public class TopicServiceImpl implements TopicService {
     @Override
     @Transactional
     public Boolean processFollowTopic(Long topicId) {
-        checkIsTopicExist(topicId);
-        Long authUserId = AuthUtil.getAuthenticatedUserId();
-        TopicFollowers follower = topicFollowersRepository.getFollowerByUserIdAndTopicId(authUserId, topicId);
+        Topic topic = getTopicById(topicId);
+        User authUser = userService.getAuthUser();
 
-        if (follower != null) {
-            topicFollowersRepository.delete(follower);
+        if (topic.getTopicFollowers().contains(authUser)) {
+            topic.getTopicFollowers().remove(authUser);
             return false;
         } else {
-            topicNotInterestedRepository.removeNotInterestedTopic(authUserId, topicId);
-            TopicFollowers topicFollowers = TopicFollowers.builder()
-                    .userId(authUserId)
-                    .topicId(topicId)
-                    .build();
-            topicFollowersRepository.save(topicFollowers);
+            topic.getTopicNotInterested().remove(authUser);
+            topic.getTopicFollowers().add(authUser);
             return true;
         }
     }
 
-    private void checkIsTopicExist(Long topicId) {
-        if (!topicRepository.isTopicExist(topicId)) {
-            throw new ApiRequestException(TOPIC_NOT_FOUND, HttpStatus.NOT_FOUND);
-        }
-    }
-
-    private void validateUserProfile(Long userId) {
-        checkUserExists(userId);
-        Long authUserId = AuthUtil.getAuthenticatedUserId();
-
-        if (!userId.equals(authUserId)) {
-            checkProfileIsBlocked(userId);
-            checkIfUserHavePrivateProfile(userId);
-        }
-    }
-
-    private void checkIfUserHavePrivateProfile(Long userId) {
-        boolean userHavePrivateProfile = userService.isUserHavePrivateProfile(userId);
-        if (userHavePrivateProfile) {
-            throw new ApiRequestException(USER_NOT_FOUND, HttpStatus.NOT_FOUND);
-        }
-    }
-
-    private void checkProfileIsBlocked(Long userId) {
-        boolean profileBlockedByUser = userService.isMyProfileBlockedByUser(userId);
-        if (profileBlockedByUser) {
-            throw new ApiRequestException(USER_PROFILE_BLOCKED, HttpStatus.BAD_REQUEST);
-        }
-    }
-
-    private void checkUserExists(Long userId) {
-        boolean notUserExists =!userService.isUserExists(userId);
-        if (notUserExists) {
-            throw new ApiRequestException(String.format(USER_ID_NOT_FOUND, userId), HttpStatus.NOT_FOUND);
-        }
+    private Topic getTopicById(Long topicId) {
+        return topicRepository.findById(topicId)
+                .orElseThrow(() -> new ApiRequestException(TOPIC_NOT_FOUND, HttpStatus.NOT_FOUND));
     }
 }
