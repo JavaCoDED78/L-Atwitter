@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.Column;
@@ -19,26 +21,21 @@ import javax.persistence.Table;
 @Entity
 @Getter
 @Setter
-@EqualsAndHashCode(of = "id")
 @NoArgsConstructor
-@AllArgsConstructor
-@Builder
-@Table(
-        name = "lists_members",
-        indexes = {
-                @Index(name = "lists_members_list_id_idx", columnList = "list_id"),
-                @Index(name = "lists_members_member_id_idx", columnList = "member_id")
-        })
+@RequiredArgsConstructor
+@EqualsAndHashCode(of = "id")
+@Table(name = "lists_members_demo")
 public class ListsMembers {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "lists_members_seq")
-    @SequenceGenerator(name = "lists_members_seq", sequenceName = "lists_members_seq", initialValue = 100, allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NonNull
     @Column(name = "list_id", nullable = false)
     private Long listId;
 
+    @NonNull
     @Column(name = "member_id", nullable = false)
     private Long memberId;
 }

@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @Builder
 public class BaseListResponse {
     private Long id;
-    private String name;
+    private String listName;
     private String description;
     private String altWallpaper;
     private String wallpaper;

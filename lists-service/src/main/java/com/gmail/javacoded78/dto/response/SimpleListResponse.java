@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 public class SimpleListResponse {
 
     private Long id;
-    private String name;
+    private String listName;
     private String altWallpaper;
     private String wallpaper;
 
