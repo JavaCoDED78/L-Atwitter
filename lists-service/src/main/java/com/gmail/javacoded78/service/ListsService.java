@@ -1,6 +1,7 @@
 package com.gmail.javacoded78.service;
 
 import com.gmail.javacoded78.dto.HeaderResponse;
+import com.gmail.javacoded78.dto.request.ListsRequest;
 import com.gmail.javacoded78.dto.response.tweet.TweetResponse;
 import com.gmail.javacoded78.dto.response.lists.ListMemberResponse;
 import com.gmail.javacoded78.dto.request.UserToListsRequest;
@@ -24,13 +25,13 @@ public interface ListsService {
 
     BaseListProjection getListById(Long listId);
 
-    ListUserProjection createTweetList(Lists lists);
+    ListUserProjection createTweetList(ListsRequest listsRequest);
 
     List<ListProjection> getUserTweetListsById(Long userId);
 
     List<ListProjection> getTweetListsWhichUserIn();
 
-    BaseListProjection editTweetList(Lists lists);
+    BaseListProjection editTweetList(ListsRequest listsRequest);
 
     String deleteList(Long listId);
 
