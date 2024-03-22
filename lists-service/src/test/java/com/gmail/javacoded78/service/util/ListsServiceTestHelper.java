@@ -122,24 +122,22 @@ public class ListsServiceTestHelper {
     }
 
     public static List<ListMemberResponse> createMockListMemberResponseList() {
-        ListMemberResponse listMember1 = ListMemberResponse.builder()
-                .id(1L)
-                .fullName("test name 1")
-                .username("test username 1")
-                .about("")
-                .avatar("")
-                .isMemberInList(false)
-                .isPrivateProfile(false)
-                .build();
-        ListMemberResponse listMember2 = ListMemberResponse.builder()
-                .id(2L)
-                .fullName("test name 2")
-                .username("test username 2")
-                .about("")
-                .avatar("")
-                .isMemberInList(false)
-                .isPrivateProfile(false)
-                .build();
+        ListMemberResponse listMember1 = new ListMemberResponse();
+        listMember1.setId(1L);
+        listMember1.setFullName("test name 1");
+        listMember1.setUsername("test username 1");
+        listMember1.setAbout("");
+        listMember1.setAvatar("");
+        listMember1.setMemberInList(false);
+        listMember1.setPrivateProfile(false);
+        ListMemberResponse listMember2 = new ListMemberResponse();
+        listMember1.setId(2L);
+        listMember1.setFullName("test name 2");
+        listMember1.setUsername("test username 2");
+        listMember1.setAbout("");
+        listMember1.setAvatar("");
+        listMember1.setMemberInList(false);
+        listMember1.setPrivateProfile(false);
         return Arrays.asList(listMember1, listMember2);
     }
 
@@ -160,14 +158,14 @@ public class ListsServiceTestHelper {
     }
 
     public static Lists createMockLists() {
-        return Lists.builder()
-                .id(TestConstants.LIST_ID)
-                .name(TestConstants.LIST_NAME)
-                .description(TestConstants.LIST_DESCRIPTION)
-                .altWallpaper(TestConstants.LIST_ALT_WALLPAPER)
-                .wallpaper("")
-                .listOwnerId(TestConstants.LIST_USER_ID)
-                .build();
+        Lists lists = new Lists();
+        lists.setId(TestConstants.LIST_ID);
+        lists.setListName(TestConstants.LIST_NAME);
+        lists.setDescription(TestConstants.LIST_DESCRIPTION);
+        lists.setAltWallpaper(TestConstants.LIST_ALT_WALLPAPER);
+        lists.setWallpaper("");
+        lists.setListOwnerId(TestConstants.LIST_USER_ID);
+        return lists;
     }
 
     public static UserToListsRequest mockUserToListsRequest() {
