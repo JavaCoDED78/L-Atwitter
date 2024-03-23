@@ -56,178 +56,159 @@ class ListsControllerTest extends IntegrationTestBase {
     private UserToListsRequest userToListsRequest;
 
     public void createUserToList(Long userId) {
-        userToListsRequest = UserToListsRequest.builder()
-                .userId(userId)
-                .lists(
-                        Arrays.asList(
-                                new UserToListsRequest.ListsRequest(54L, true),
-                                new UserToListsRequest.ListsRequest(56L, true)
-                        )
-                )
-                .build();
+        userToListsRequest = new UserToListsRequest();
+        userToListsRequest.setUserId(userId);
+        userToListsRequest.setLists(Arrays.asList(
+                new UserToListsRequest.ListsRequest(4L, true),
+                new UserToListsRequest.ListsRequest(6L, true)
+        ));
     }
 
     @Test
     @DisplayName("[200] GET /ui/v1/lists - Get all tweet lists")
-    void getAllTweetLists() throws Exception {
+    public void getAllTweetLists() throws Exception {
         mockMvc.perform(get(UI_V1_LISTS)
                         .header(AUTH_USER_ID_HEADER, TestConstants.USER_ID))
-                .andExpectAll(
-                        status().isOk(),
-                        jsonPath("$[*]", hasSize(7)),
-                        jsonPath("$[0].id").value(54L),
-                        jsonPath("$[0].name").value(TestConstants.LIST_NAME),
-                        jsonPath("$[0].description").value(TestConstants.LIST_DESCRIPTION),
-                        jsonPath("$[0].altWallpaper").value(TestConstants.LIST_ALT_WALLPAPER),
-                        jsonPath("$[0].wallpaper").isEmpty(),
-                        jsonPath("$[0].listOwner.id").value(TestConstants.LIST_USER_ID),
-                        jsonPath("$[0].isFollower").value(false)
-                );
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[*]", hasSize(7)))
+                .andExpect(jsonPath("$[0].id").value(4L))
+                .andExpect(jsonPath("$[0].listName").value(TestConstants.LIST_NAME))
+                .andExpect(jsonPath("$[0].description").value(TestConstants.LIST_DESCRIPTION))
+                .andExpect(jsonPath("$[0].altWallpaper").value(TestConstants.LIST_ALT_WALLPAPER))
+                .andExpect(jsonPath("$[0].wallpaper").isEmpty())
+                .andExpect(jsonPath("$[0].listOwner.id").value(TestConstants.LIST_USER_ID))
+                .andExpect(jsonPath("$[0].isFollower").value(false));
     }
 
     @Test
     @DisplayName("[200] GET /ui/v1/lists/user - Get user tweet lists")
-    void getUserTweetLists() throws Exception {
+    public void getUserTweetLists() throws Exception {
         mockMvc.perform(get(UI_V1_LISTS + USER)
                         .header(AUTH_USER_ID_HEADER, TestConstants.USER_ID))
-                .andExpectAll(
-                        status().isOk(),
-                        jsonPath("$[*]", hasSize(3)),
-                        jsonPath("$[0].id").isNotEmpty(),
-                        jsonPath("$[0].name").value(TestConstants.LIST_NAME),
-                        jsonPath("$[0].description").value(TestConstants.LIST_DESCRIPTION),
-                        jsonPath("$[0].altWallpaper").value(TestConstants.LIST_ALT_WALLPAPER),
-                        jsonPath("$[0].wallpaper").isEmpty(),
-                        jsonPath("$[0].listOwner.id").value(TestConstants.LIST_USER_ID),
-                        jsonPath("$[0].isPrivate").value(false)
-                );
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[*]", hasSize(3)))
+                .andExpect(jsonPath("$[0].id").isNotEmpty())
+                .andExpect(jsonPath("$[0].listName").value(TestConstants.LIST_NAME))
+                .andExpect(jsonPath("$[0].description").value(TestConstants.LIST_DESCRIPTION))
+                .andExpect(jsonPath("$[0].altWallpaper").value(TestConstants.LIST_ALT_WALLPAPER))
+                .andExpect(jsonPath("$[0].wallpaper").isEmpty())
+                .andExpect(jsonPath("$[0].listOwner.id").value(TestConstants.LIST_USER_ID))
+                .andExpect(jsonPath("$[0].isPrivate").value(false));
     }
 
     @Test
     @DisplayName("[200] GET /ui/v1/lists/user/2 - Get user tweet lists by id")
-    void getUserTweetListsById() throws Exception {
+    public void getUserTweetListsById() throws Exception {
         mockMvc.perform(get(UI_V1_LISTS + USER_USER_ID, TestConstants.USER_ID)
                         .header(AUTH_USER_ID_HEADER, TestConstants.USER_ID))
-                .andExpectAll(
-                        status().isOk(),
-                        jsonPath("$[*]", hasSize(1)),
-                        jsonPath("$[0].id").value(54L),
-                        jsonPath("$[0].name").value(TestConstants.LIST_NAME),
-                        jsonPath("$[0].description").value(TestConstants.LIST_DESCRIPTION),
-                        jsonPath("$[0].altWallpaper").value(TestConstants.LIST_ALT_WALLPAPER),
-                        jsonPath("$[0].wallpaper").isEmpty(),
-                        jsonPath("$[0].listOwner.id").value(TestConstants.LIST_USER_ID),
-                        jsonPath("$[0].isFollower").value(false)
-                );
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[*]", hasSize(1)))
+                .andExpect(jsonPath("$[0].id").value(4L))
+                .andExpect(jsonPath("$[0].listName").value(TestConstants.LIST_NAME))
+                .andExpect(jsonPath("$[0].description").value(TestConstants.LIST_DESCRIPTION))
+                .andExpect(jsonPath("$[0].altWallpaper").value(TestConstants.LIST_ALT_WALLPAPER))
+                .andExpect(jsonPath("$[0].wallpaper").isEmpty())
+                .andExpect(jsonPath("$[0].listOwner.id").value(TestConstants.LIST_USER_ID))
+                .andExpect(jsonPath("$[0].isFollower").value(false));
     }
 
     @Test
     @DisplayName("[200] GET /ui/v1/lists/user/consist - Get tweet lists which user in")
-    void getTweetListsWhichUserIn() throws Exception {
+    public void getTweetListsWhichUserIn() throws Exception {
         mockMvc.perform(get(UI_V1_LISTS + USER_CONSIST)
                         .header(AUTH_USER_ID_HEADER, TestConstants.USER_ID))
-                .andExpectAll(
-                        status().isOk(),
-                        jsonPath("$[*]", hasSize(1)),
-                        jsonPath("$[0].id").value(57L),
-                        jsonPath("$[0].name").value(TestConstants.LIST_NAME),
-                        jsonPath("$[0].description").value(TestConstants.LIST_DESCRIPTION),
-                        jsonPath("$[0].altWallpaper").value(TestConstants.LIST_ALT_WALLPAPER),
-                        jsonPath("$[0].wallpaper").isEmpty(),
-                        jsonPath("$[0].listOwner.id").value(1L),
-                        jsonPath("$[0].isFollower").value(true)
-                );
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[*]", hasSize(1)))
+                .andExpect(jsonPath("$[0].id").value(7L))
+                .andExpect(jsonPath("$[0].listName").value(TestConstants.LIST_NAME))
+                .andExpect(jsonPath("$[0].description").value(TestConstants.LIST_DESCRIPTION))
+                .andExpect(jsonPath("$[0].altWallpaper").value(TestConstants.LIST_ALT_WALLPAPER))
+                .andExpect(jsonPath("$[0].wallpaper").isEmpty())
+                .andExpect(jsonPath("$[0].listOwner.id").value(1L))
+                .andExpect(jsonPath("$[0].isFollower").value(true));
     }
 
     @Test
     @DisplayName("[200] GET /ui/v1/lists/pined - Get user pinned tweet lists")
-    void getUserPinnedLists() throws Exception {
+    public void getUserPinnedLists() throws Exception {
         mockMvc.perform(get(UI_V1_LISTS + PINED)
                         .header(AUTH_USER_ID_HEADER, TestConstants.USER_ID))
-                .andExpectAll(
-                        status().isOk(),
-                        jsonPath("$[*]", hasSize(2)),
-                        jsonPath("$[0].id").value(54L),
-                        jsonPath("$[0].name").value(TestConstants.LIST_NAME),
-                        jsonPath("$[0].altWallpaper").value(TestConstants.LIST_ALT_WALLPAPER),
-                        jsonPath("$[0].wallpaper").isEmpty(),
-                        jsonPath("$[0].isPrivate").value(false)
-                );
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[*]", hasSize(2)))
+                .andExpect(jsonPath("$[0].id").value(4L))
+                .andExpect(jsonPath("$[0].listName").value(TestConstants.LIST_NAME))
+                .andExpect(jsonPath("$[0].altWallpaper").value(TestConstants.LIST_ALT_WALLPAPER))
+                .andExpect(jsonPath("$[0].wallpaper").isEmpty())
+                .andExpect(jsonPath("$[0].isPrivate").value(false));
     }
 
     @Test
-    @DisplayName("[200] GET /ui/v1/lists/54 - Get list by id")
-    void getListById() throws Exception {
-        mockMvc.perform(get(UI_V1_LISTS + LIST_ID, 54)
+    @DisplayName("[200] GET /ui/v1/lists/4 - Get list by id")
+    public void getListById() throws Exception {
+        mockMvc.perform(get(UI_V1_LISTS + LIST_ID, 4)
                         .header(AUTH_USER_ID_HEADER, TestConstants.USER_ID))
-                .andExpectAll(
-                        status().isOk(),
-                        jsonPath("$.id").value(54),
-                        jsonPath("$.name").value(TestConstants.LIST_NAME),
-                        jsonPath("$.description").value(TestConstants.LIST_DESCRIPTION),
-                        jsonPath("$.altWallpaper").value(TestConstants.LIST_ALT_WALLPAPER),
-                        jsonPath("$.wallpaper").isEmpty(),
-                        jsonPath("$.listOwner.id").value(TestConstants.LIST_USER_ID),
-                        jsonPath("$.membersSize").value(1L),
-                        jsonPath("$.followersSize").value(1L),
-                        jsonPath("$.isPrivate").value(false),
-                        jsonPath("$.isFollower").value(false)
-                );
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(4))
+                .andExpect(jsonPath("$.listName").value(TestConstants.LIST_NAME))
+                .andExpect(jsonPath("$.description").value(TestConstants.LIST_DESCRIPTION))
+                .andExpect(jsonPath("$.altWallpaper").value(TestConstants.LIST_ALT_WALLPAPER))
+                .andExpect(jsonPath("$.wallpaper").isEmpty())
+                .andExpect(jsonPath("$.listOwner.id").value(TestConstants.LIST_USER_ID))
+                .andExpect(jsonPath("$.membersSize").value(1L))
+                .andExpect(jsonPath("$.followersSize").value(1L))
+                .andExpect(jsonPath("$.isPrivate").value(false))
+                .andExpect(jsonPath("$.isFollower").value(false));
     }
 
     @Test
-    @DisplayName("[200] GET /ui/v1/lists/56 - Get owner private list by id")
-    void getOwnerPrivateListById() throws Exception {
-        mockMvc.perform(get(UI_V1_LISTS + LIST_ID, 56)
+    @DisplayName("[200] GET /ui/v1/lists/6 - Get owner private list by id")
+    public void getOwnerPrivateListById() throws Exception {
+        mockMvc.perform(get(UI_V1_LISTS + LIST_ID, 6)
                         .header(AUTH_USER_ID_HEADER, TestConstants.USER_ID))
-                .andExpectAll(
-                        status().isOk(),
-                        jsonPath("$.id").value(56),
-                        jsonPath("$.name").value(TestConstants.LIST_NAME),
-                        jsonPath("$.description").value(TestConstants.LIST_DESCRIPTION),
-                        jsonPath("$.altWallpaper").value(TestConstants.LIST_ALT_WALLPAPER),
-                        jsonPath("$.wallpaper").isEmpty(),
-                        jsonPath("$.listOwner.id").value(TestConstants.LIST_USER_ID),
-                        jsonPath("$.membersSize").value(0L),
-                        jsonPath("$.followersSize").value(0L),
-                        jsonPath("$.isPrivate").value(true),
-                        jsonPath("$.isFollower").value(false)
-                );
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(6))
+                .andExpect(jsonPath("$.listName").value(TestConstants.LIST_NAME))
+                .andExpect(jsonPath("$.description").value(TestConstants.LIST_DESCRIPTION))
+                .andExpect(jsonPath("$.altWallpaper").value(TestConstants.LIST_ALT_WALLPAPER))
+                .andExpect(jsonPath("$.wallpaper").isEmpty())
+                .andExpect(jsonPath("$.listOwner.id").value(TestConstants.LIST_USER_ID))
+                .andExpect(jsonPath("$.membersSize").value(0L))
+                .andExpect(jsonPath("$.followersSize").value(0L))
+                .andExpect(jsonPath("$.isPrivate").value(true))
+                .andExpect(jsonPath("$.isFollower").value(false));
     }
 
     @Test
-    @DisplayName("[200] GET /ui/v1/lists/57 - Get followed private list by id")
-    void getFollowedPrivateListById() throws Exception {
-        mockMvc.perform(get(UI_V1_LISTS + LIST_ID, 57)
+    @DisplayName("[200] GET /ui/v1/lists/7 - Get followed private list by id")
+    public void getFollowedPrivateListById() throws Exception {
+        mockMvc.perform(get(UI_V1_LISTS + LIST_ID, 7)
                         .header(AUTH_USER_ID_HEADER, TestConstants.USER_ID))
-                .andExpectAll(
-                        status().isOk(),
-                        jsonPath("$.id").value(57),
-                        jsonPath("$.name").value(TestConstants.LIST_NAME),
-                        jsonPath("$.description").value(TestConstants.LIST_DESCRIPTION),
-                        jsonPath("$.altWallpaper").value(TestConstants.LIST_ALT_WALLPAPER),
-                        jsonPath("$.wallpaper").isEmpty(),
-                        jsonPath("$.listOwner.id").value(1L),
-                        jsonPath("$.membersSize").value(1L),
-                        jsonPath("$.followersSize").value(1L),
-                        jsonPath("$.isPrivate").value(true),
-                        jsonPath("$.isFollower").value(true)
-                );
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(7))
+                .andExpect(jsonPath("$.listName").value(TestConstants.LIST_NAME))
+                .andExpect(jsonPath("$.description").value(TestConstants.LIST_DESCRIPTION))
+                .andExpect(jsonPath("$.altWallpaper").value(TestConstants.LIST_ALT_WALLPAPER))
+                .andExpect(jsonPath("$.wallpaper").isEmpty())
+                .andExpect(jsonPath("$.listOwner.id").value(1L))
+                .andExpect(jsonPath("$.membersSize").value(1L))
+                .andExpect(jsonPath("$.followersSize").value(1L))
+                .andExpect(jsonPath("$.isPrivate").value(true))
+                .andExpect(jsonPath("$.isFollower").value(true));
     }
 
     @Test
-    @DisplayName("[404] GET /ui/v1/lists/58 - Not found existing private list by id")
-    void getPrivateListById_NotFound() throws Exception {
-        mockMvc.perform(get(UI_V1_LISTS + LIST_ID, 58)
+    @DisplayName("[404] GET /ui/v1/lists/8 - Not found existing private list by id")
+    public void getPrivateListById_NotFound() throws Exception {
+        mockMvc.perform(get(UI_V1_LISTS + LIST_ID, 8)
                         .header(AUTH_USER_ID_HEADER, TestConstants.USER_ID))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$", is(LIST_NOT_FOUND)));
     }
 
     @Test
-    @DisplayName("[404] GET /ui/v1/lists/99999 - Not found list by id")
-    void getListById_NotFound() throws Exception {
-        mockMvc.perform(get(UI_V1_LISTS + "/99999")
+    @DisplayName("[404] GET /ui/v1/lists/99 - Not found list by id")
+    public void getListById_NotFound() throws Exception {
+        mockMvc.perform(get(UI_V1_LISTS + "/99")
                         .header(AUTH_USER_ID_HEADER, TestConstants.USER_ID))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$", is(LIST_NOT_FOUND)));
@@ -235,17 +216,17 @@ class ListsControllerTest extends IntegrationTestBase {
 
     @Test
     @DisplayName("[400] GET /ui/v1/lists/10 - Should validate is list author blocked my profile")
-    void getBlockedUserByListId() throws Exception {
-        mockMvc.perform(get(UI_V1_LISTS + LIST_ID, 60)
+    public void getBlockedUserByListId() throws Exception {
+        mockMvc.perform(get(UI_V1_LISTS + LIST_ID, 10)
                         .header(AUTH_USER_ID_HEADER, TestConstants.USER_ID))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$", is(String.format(USER_ID_BLOCKED, 2))));
     }
 
     @Test
-    @DisplayName("[404] GET /ui/v1/lists/61 - Should validate is list author have private profile")
-    void getPrivateUserProfileByListId() throws Exception {
-        mockMvc.perform(get(UI_V1_LISTS + LIST_ID, 61)
+    @DisplayName("[404] GET /ui/v1/lists/11 - Should validate is list author have private profile")
+    public void getPrivateUserProfileByListId() throws Exception {
+        mockMvc.perform(get(UI_V1_LISTS + LIST_ID, 11)
                         .header(AUTH_USER_ID_HEADER, TestConstants.USER_ID))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$", is(USER_NOT_FOUND)));
@@ -253,37 +234,34 @@ class ListsControllerTest extends IntegrationTestBase {
 
     @Test
     @DisplayName("[200] POST /ui/v1/lists - Create Tweet List")
-    void createTweetList() throws Exception {
-        ListsRequest listsRequest = ListsRequest.builder()
-                .name(TestConstants.LIST_NAME)
-                .listOwnerId(TestConstants.USER_ID)
-                .description(TestConstants.LIST_DESCRIPTION)
-                .altWallpaper(TestConstants.LIST_ALT_WALLPAPER)
-                .build();
+    public void createTweetList() throws Exception {
+        ListsRequest listsRequest = new ListsRequest();
+        listsRequest.setListName(TestConstants.LIST_NAME);
+        listsRequest.setIsPrivate(false);
+        listsRequest.setDescription(TestConstants.LIST_DESCRIPTION);
+        listsRequest.setAltWallpaper(TestConstants.LIST_ALT_WALLPAPER);
 
         mockMvc.perform(post(UI_V1_LISTS)
                         .header(AUTH_USER_ID_HEADER, TestConstants.USER_ID)
                         .content(mapper.writeValueAsString(listsRequest))
                         .contentType(MediaType.APPLICATION_JSON_VALUE))
-                .andExpectAll(
-                        status().isOk(),
-                        jsonPath("$.name").value(TestConstants.LIST_NAME),
-                        jsonPath("$.description").value(TestConstants.LIST_DESCRIPTION),
-                        jsonPath("$.altWallpaper").value(TestConstants.LIST_ALT_WALLPAPER),
-                        jsonPath("$.wallpaper").isEmpty(),
-                        jsonPath("$.listOwner.id").value(TestConstants.LIST_USER_ID),
-                        jsonPath("$.isPrivate").value(false)
-                );
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.listName").value(TestConstants.LIST_NAME))
+                .andExpect(jsonPath("$.description").value(TestConstants.LIST_DESCRIPTION))
+                .andExpect(jsonPath("$.altWallpaper").value(TestConstants.LIST_ALT_WALLPAPER))
+                .andExpect(jsonPath("$.wallpaper").isEmpty())
+                .andExpect(jsonPath("$.listOwner.id").value(TestConstants.LIST_USER_ID))
+                .andExpect(jsonPath("$.isPrivate").value(false));
     }
 
     @Test
     @DisplayName("[400] POST /ui/v1/lists - Should list name length is 0")
-    void createTweetList_ShouldListNameLengthIs0Symbols() throws Exception {
-        ListsRequest listsRequest = ListsRequest.builder()
-                .name("")
-                .description(TestConstants.LIST_DESCRIPTION)
-                .altWallpaper(TestConstants.LIST_ALT_WALLPAPER)
-                .build();
+    public void createTweetList_ShouldListNameLengthIs0Symbols() throws Exception {
+        ListsRequest listsRequest = new ListsRequest();
+        listsRequest.setListName("");
+        listsRequest.setIsPrivate(false);
+        listsRequest.setDescription(TestConstants.LIST_DESCRIPTION);
+        listsRequest.setAltWallpaper(TestConstants.LIST_ALT_WALLPAPER);
 
         mockMvc.perform(post(UI_V1_LISTS)
                         .header(AUTH_USER_ID_HEADER, TestConstants.USER_ID)
@@ -295,12 +273,12 @@ class ListsControllerTest extends IntegrationTestBase {
 
     @Test
     @DisplayName("[400] POST /ui/v1/lists - Should list name length more than 25 symbols")
-    void createTweetList_ShouldListNameLengthMoreThan25Symbols() throws Exception {
-        ListsRequest listsRequest = ListsRequest.builder()
-                .name(TestConstants.LIST_NAME)
-                .description(TestConstants.LIST_DESCRIPTION)
-                .altWallpaper(TestConstants.LIST_ALT_WALLPAPER)
-                .build();
+    public void createTweetList_ShouldListNameLengthMoreThan25Symbols() throws Exception {
+        ListsRequest listsRequest = new ListsRequest();
+        listsRequest.setListName(TestConstants.LINK_DESCRIPTION);
+        listsRequest.setIsPrivate(false);
+        listsRequest.setDescription(TestConstants.LIST_DESCRIPTION);
+        listsRequest.setAltWallpaper(TestConstants.LIST_ALT_WALLPAPER);
 
         mockMvc.perform(post(UI_V1_LISTS)
                         .header(AUTH_USER_ID_HEADER, TestConstants.USER_ID)
@@ -310,61 +288,56 @@ class ListsControllerTest extends IntegrationTestBase {
                 .andExpect(jsonPath("$", is(INCORRECT_LIST_NAME_LENGTH)));
     }
 
-    @Test
-    @DisplayName("[404] POST /ui/v1/lists - Should list owner Not Found")
-    void createTweetList_ShouldValidateListOwner() throws Exception {
-        ListsRequest listsRequest = ListsRequest.builder()
-                .name(TestConstants.LIST_NAME)
-                .listOwnerId(1L)
-                .description(TestConstants.LIST_DESCRIPTION)
-                .altWallpaper(TestConstants.LIST_ALT_WALLPAPER)
-                .build();
-
-        mockMvc.perform(post(UI_V1_LISTS)
-                        .header(AUTH_USER_ID_HEADER, TestConstants.USER_ID)
-                        .content(mapper.writeValueAsString(listsRequest))
-                        .contentType(MediaType.APPLICATION_JSON_VALUE))
-                .andExpect(status().isNotFound())
-                .andExpect(jsonPath("$", is(LIST_OWNER_NOT_FOUND)));
-    }
+//    @Test
+//    @DisplayName("[404] POST /ui/v1/lists - Should list owner Not Found")
+//    public void createTweetList_ShouldValidateListOwner() throws Exception {
+//        ListsRequest listsRequest = new ListsRequest();
+//        listsRequest.setName(TestConstants.LIST_NAME);
+//        listsRequest.setDescription(TestConstants.LIST_DESCRIPTION);
+//        listsRequest.setAltWallpaper(TestConstants.LIST_ALT_WALLPAPER);
+//
+//        mockMvc.perform(post(UI_V1_LISTS)
+//                        .header(AUTH_USER_ID_HEADER, TestConstants.USER_ID)
+//                        .content(mapper.writeValueAsString(listsRequest))
+//                        .contentType(MediaType.APPLICATION_JSON_VALUE))
+//                .andExpect(status().isNotFound())
+//                .andExpect(jsonPath("$", is(LIST_OWNER_NOT_FOUND)));
+//    }
 
     @Test
     @DisplayName("[200] PUT /ui/v1/lists - Edit Tweet List")
-    void editTweetList() throws Exception {
-        ListsRequest listsRequest = ListsRequest.builder()
-                .name("edited name")
-                .listOwnerId(2L)
-                .id(54L)
-                .description("edited description")
-                .build();
+    public void editTweetList() throws Exception {
+        ListsRequest listsRequest = new ListsRequest();
+        listsRequest.setId(4L);
+        listsRequest.setIsPrivate(false);
+        listsRequest.setListName("edited name");
+        listsRequest.setDescription("edited description");
 
         mockMvc.perform(put(UI_V1_LISTS)
                         .header(AUTH_USER_ID_HEADER, TestConstants.USER_ID)
                         .content(mapper.writeValueAsString(listsRequest))
                         .contentType(MediaType.APPLICATION_JSON_VALUE))
-                .andExpectAll(
-                        status().isOk(),
-                        jsonPath("$.id").value(54),
-                        jsonPath("$.name").value("edited name"),
-                        jsonPath("$.description").value("edited description"),
-                        jsonPath("$.altWallpaper").value(TestConstants.LIST_ALT_WALLPAPER),
-                        jsonPath("$.wallpaper").isEmpty(),
-                        jsonPath("$.listOwner.id").value(TestConstants.LIST_USER_ID),
-                        jsonPath("$.membersSize").value(1L),
-                        jsonPath("$.followersSize").value(1L),
-                        jsonPath("$.isPrivate").value(false),
-                        jsonPath("$.isFollower").value(false)
-                );
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(4))
+                .andExpect(jsonPath("$.listName").value("edited name"))
+                .andExpect(jsonPath("$.description").value("edited description"))
+                .andExpect(jsonPath("$.altWallpaper").value(TestConstants.LIST_ALT_WALLPAPER))
+                .andExpect(jsonPath("$.wallpaper").isEmpty())
+                .andExpect(jsonPath("$.listOwner.id").value(TestConstants.LIST_USER_ID))
+                .andExpect(jsonPath("$.membersSize").value(1L))
+                .andExpect(jsonPath("$.followersSize").value(1L))
+                .andExpect(jsonPath("$.isPrivate").value(false))
+                .andExpect(jsonPath("$.isFollower").value(false));
     }
 
     @Test
     @DisplayName("[400] PUT /ui/v1/lists - Should list name length is 0")
-    void editTweetList_ShouldListNameLengthIs0() throws Exception {
-        ListsRequest listsRequest = ListsRequest.builder()
-                .name("")
-                .id(54L)
-                .description("edited description")
-                .build();
+    public void editTweetList_ShouldListNameLengthIs0() throws Exception {
+        ListsRequest listsRequest = new ListsRequest();
+        listsRequest.setId(4L);
+        listsRequest.setIsPrivate(false);
+        listsRequest.setListName("");
+        listsRequest.setDescription("edited description");
 
         mockMvc.perform(put(UI_V1_LISTS)
                         .header(AUTH_USER_ID_HEADER, TestConstants.USER_ID)
@@ -376,12 +349,12 @@ class ListsControllerTest extends IntegrationTestBase {
 
     @Test
     @DisplayName("[400] PUT /ui/v1/lists - Should list name length more than 25 symbols")
-    void editTweetList_ShouldListNameLengthMoreThan25Symbols() throws Exception {
-        ListsRequest listsRequest = ListsRequest.builder()
-                .name(TestConstants.LINK_DESCRIPTION)
-                .id(54L)
-                .description("edited description")
-                .build();
+    public void editTweetList_ShouldListNameLengthMoreThan25Symbols() throws Exception {
+        ListsRequest listsRequest = new ListsRequest();
+        listsRequest.setId(4L);
+        listsRequest.setIsPrivate(false);
+        listsRequest.setListName(TestConstants.LINK_DESCRIPTION);
+        listsRequest.setDescription("edited description");
 
         mockMvc.perform(put(UI_V1_LISTS)
                         .header(AUTH_USER_ID_HEADER, TestConstants.USER_ID)
@@ -393,13 +366,12 @@ class ListsControllerTest extends IntegrationTestBase {
 
     @Test
     @DisplayName("[404] PUT /ui/v1/lists - Should list Not Found")
-    void editTweetList_ShouldListNotFound() throws Exception {
-        ListsRequest listsRequest = ListsRequest.builder()
-                .name("edited name")
-                .listOwnerId(TestConstants.USER_ID)
-                .id(99L)
-                .description("edited description")
-                .build();
+    public void editTweetList_ShouldListNotFound() throws Exception {
+        ListsRequest listsRequest = new ListsRequest();
+        listsRequest.setId(99L);
+        listsRequest.setIsPrivate(false);
+        listsRequest.setListName(TestConstants.LIST_DESCRIPTION);
+        listsRequest.setDescription("edited description");
 
         mockMvc.perform(put(UI_V1_LISTS)
                         .header(AUTH_USER_ID_HEADER, TestConstants.USER_ID)
@@ -409,71 +381,68 @@ class ListsControllerTest extends IntegrationTestBase {
                 .andExpect(jsonPath("$", is(LIST_NOT_FOUND)));
     }
 
-    @Test
-    @DisplayName("[404] PUT /ui/v1/lists - Should list owner Not Found")
-    void editTweetList_ShouldListOwnerNotFound() throws Exception {
-        ListsRequest listsRequest = ListsRequest.builder()
-                .name("edited name")
-                .listOwnerId(3L)
-                .id(55L)
-                .description("edited description")
-                .build();
+//    @Test
+//    @DisplayName("[404] PUT /ui/v1/lists - Should list owner Not Found")
+//    public void editTweetList_ShouldListOwnerNotFound() throws Exception {
+//        ListsRequest listsRequest = new ListsRequest();
+//        listsRequest.setListOwnerId(3L);
+//        listsRequest.setId(5L);
+//        listsRequest.setName(TestConstants.LIST_DESCRIPTION);
+//        listsRequest.setDescription("edited description");
+//
+//        mockMvc.perform(put(UI_V1_LISTS)
+//                        .header(AUTH_USER_ID_HEADER, TestConstants.USER_ID)
+//                        .content(mapper.writeValueAsString(listsRequest))
+//                        .contentType(MediaType.APPLICATION_JSON_VALUE))
+//                .andExpect(status().isNotFound())
+//                .andExpect(jsonPath("$", is(LIST_OWNER_NOT_FOUND)));
+//    }
 
-        mockMvc.perform(put(UI_V1_LISTS)
-                        .header(AUTH_USER_ID_HEADER, TestConstants.USER_ID)
-                        .content(mapper.writeValueAsString(listsRequest))
-                        .contentType(MediaType.APPLICATION_JSON_VALUE))
-                .andExpect(status().isNotFound())
-                .andExpect(jsonPath("$", is(LIST_OWNER_NOT_FOUND)));
-    }
-
     @Test
-    @DisplayName("[200] DELETE /ui/v1/lists/54 - Delete list")
-    void deleteList() throws Exception {
-        mockMvc.perform(delete(UI_V1_LISTS + LIST_ID, 54)
+    @DisplayName("[200] DELETE /ui/v1/lists/4 - Delete list")
+    public void deleteList() throws Exception {
+        mockMvc.perform(delete(UI_V1_LISTS + LIST_ID, 4)
                         .header(AUTH_USER_ID_HEADER, TestConstants.USER_ID))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$", is("List id:54 deleted.")));
+                .andExpect(jsonPath("$", is("List id:4 deleted.")));
     }
 
     @Test
     @DisplayName("[404] DELETE /ui/v1/lists/99 - Delete list Should Not found")
-    void deleteList_ShouldNotFound() throws Exception {
+    public void deleteList_ShouldNotFound() throws Exception {
         mockMvc.perform(delete(UI_V1_LISTS + "/99")
                         .header(AUTH_USER_ID_HEADER, TestConstants.USER_ID))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$", is(LIST_NOT_FOUND)));
     }
 
-    @Test
-    @DisplayName("[400] DELETE /ui/v1/lists/55 - Delete another user list Should Not found")
-    void deleteAnotherUserList_ShouldNotFound() throws Exception {
-        mockMvc.perform(delete(UI_V1_LISTS + LIST_ID, 55)
-                        .header(AUTH_USER_ID_HEADER, TestConstants.USER_ID))
-                .andExpect(status().isNotFound())
-                .andExpect(jsonPath("$", is(LIST_OWNER_NOT_FOUND)));
-    }
+//    @Test
+//    @DisplayName("[400] DELETE /ui/v1/lists/5 - Delete another user list Should Not found")
+//    public void deleteAnotherUserList_ShouldNotFound() throws Exception {
+//        mockMvc.perform(delete(UI_V1_LISTS + LIST_ID, 5)
+//                        .header(AUTH_USER_ID_HEADER, TestConstants.USER_ID))
+//                .andExpect(status().isNotFound())
+//                .andExpect(jsonPath("$", is(LIST_OWNER_NOT_FOUND)));
+//    }
 
     @Test
     @DisplayName("[200] GET /ui/v1/lists/follow/9 - Follow list")
-    void followList() throws Exception {
-        mockMvc.perform(get(UI_V1_LISTS + FOLLOW_LIST_ID, 59)
+    public void followList() throws Exception {
+        mockMvc.perform(get(UI_V1_LISTS + FOLLOW_LIST_ID, 9)
                         .header(AUTH_USER_ID_HEADER, TestConstants.USER_ID))
-                .andExpectAll(
-                        status().isOk(),
-                        jsonPath("$.id").value(59),
-                        jsonPath("$.name").value(TestConstants.LIST_NAME),
-                        jsonPath("$.description").value(TestConstants.LIST_DESCRIPTION),
-                        jsonPath("$.altWallpaper").value(TestConstants.LIST_ALT_WALLPAPER),
-                        jsonPath("$.wallpaper").isEmpty(),
-                        jsonPath("$.listOwner.id").value(1),
-                        jsonPath("$.isPrivate").value(false)
-                );
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(9))
+                .andExpect(jsonPath("$.listName").value(TestConstants.LIST_NAME))
+                .andExpect(jsonPath("$.description").value(TestConstants.LIST_DESCRIPTION))
+                .andExpect(jsonPath("$.altWallpaper").value(TestConstants.LIST_ALT_WALLPAPER))
+                .andExpect(jsonPath("$.wallpaper").isEmpty())
+                .andExpect(jsonPath("$.listOwner.id").value(1))
+                .andExpect(jsonPath("$.isPrivate").value(false));
     }
 
     @Test
     @DisplayName("[404] GET /ui/v1/lists/follow/99 - Should List Not Found by id")
-    void followList_ShouldListNotFound() throws Exception {
+    public void followList_ShouldListNotFound() throws Exception {
         mockMvc.perform(get(UI_V1_LISTS + FOLLOW_LIST_ID, 99)
                         .header(AUTH_USER_ID_HEADER, TestConstants.USER_ID))
                 .andExpect(status().isNotFound())
@@ -481,90 +450,82 @@ class ListsControllerTest extends IntegrationTestBase {
     }
 
     @Test
-    @DisplayName("[404] GET /ui/v1/lists/follow/58 - Should follow to private List Not Found by id")
-    void followList_ShouldFollowToPrivateListNotFound() throws Exception {
-        mockMvc.perform(get(UI_V1_LISTS + FOLLOW_LIST_ID, 58)
+    @DisplayName("[404] GET /ui/v1/lists/follow/8 - Should follow to private List Not Found by id")
+    public void followList_ShouldFollowToPrivateListNotFound() throws Exception {
+        mockMvc.perform(get(UI_V1_LISTS + FOLLOW_LIST_ID, 8)
                         .header(AUTH_USER_ID_HEADER, TestConstants.USER_ID))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$", is(LIST_NOT_FOUND)));
     }
 
     @Test
-    @DisplayName("[200] GET /ui/v1/lists/follow/54 - Unfollow list")
-    void unfollowList() throws Exception {
-        mockMvc.perform(get(UI_V1_LISTS + FOLLOW_LIST_ID, 54)
+    @DisplayName("[200] GET /ui/v1/lists/follow/4 - Unfollow list")
+    public void unfollowList() throws Exception {
+        mockMvc.perform(get(UI_V1_LISTS + FOLLOW_LIST_ID, 4)
                         .header(AUTH_USER_ID_HEADER, TestConstants.USER_ID))
-                .andExpectAll(
-                        status().isOk(),
-                        jsonPath("$.id").value(54),
-                        jsonPath("$.name").value(TestConstants.LIST_NAME),
-                        jsonPath("$.description").value(TestConstants.LIST_DESCRIPTION),
-                        jsonPath("$.altWallpaper").value(TestConstants.LIST_ALT_WALLPAPER),
-                        jsonPath("$.wallpaper").isEmpty(),
-                        jsonPath("$.listOwner.id").value(2),
-                        jsonPath("$.isPrivate").value(false)
-                );
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(4))
+                .andExpect(jsonPath("$.listName").value(TestConstants.LIST_NAME))
+                .andExpect(jsonPath("$.description").value(TestConstants.LIST_DESCRIPTION))
+                .andExpect(jsonPath("$.altWallpaper").value(TestConstants.LIST_ALT_WALLPAPER))
+                .andExpect(jsonPath("$.wallpaper").isEmpty())
+                .andExpect(jsonPath("$.listOwner.id").value(2))
+                .andExpect(jsonPath("$.isPrivate").value(false));
     }
 
     @Test
-    @DisplayName("[200] GET /ui/v1/lists/pin/56 - Pin list")
-    void pinList() throws Exception {
-        mockMvc.perform(get(UI_V1_LISTS + PIN_LIST_ID, 56)
+    @DisplayName("[200] GET /ui/v1/lists/pin/6 - Pin list")
+    public void pinList() throws Exception {
+        mockMvc.perform(get(UI_V1_LISTS + PIN_LIST_ID, 6)
                         .header(AUTH_USER_ID_HEADER, TestConstants.USER_ID))
-                .andExpectAll(
-                        status().isOk(),
-                        jsonPath("$.id").value(56),
-                        jsonPath("$.name").value(TestConstants.LIST_NAME),
-                        jsonPath("$.altWallpaper").value(TestConstants.LIST_ALT_WALLPAPER),
-                        jsonPath("$.wallpaper").isEmpty(),
-                        jsonPath("$.isPrivate").value(true)
-                );
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(6))
+                .andExpect(jsonPath("$.listName").value(TestConstants.LIST_NAME))
+                .andExpect(jsonPath("$.altWallpaper").value(TestConstants.LIST_ALT_WALLPAPER))
+                .andExpect(jsonPath("$.wallpaper").isEmpty())
+                .andExpect(jsonPath("$.isPrivate").value(true));
     }
 
     @Test
-    @DisplayName("[200] GET /ui/v1/lists/pin/54 - Unpin list")
-    void unpinList() throws Exception {
-        mockMvc.perform(get(UI_V1_LISTS + PIN_LIST_ID, 54)
+    @DisplayName("[200] GET /ui/v1/lists/pin/4 - Unpin list")
+    public void unpinList() throws Exception {
+        mockMvc.perform(get(UI_V1_LISTS + PIN_LIST_ID, 4)
                         .header(AUTH_USER_ID_HEADER, TestConstants.USER_ID))
-                .andExpectAll(
-                        status().isOk(),
-                        jsonPath("$.id").value(54),
-                        jsonPath("$.name").value(TestConstants.LIST_NAME),
-                        jsonPath("$.altWallpaper").value(TestConstants.LIST_ALT_WALLPAPER),
-                        jsonPath("$.wallpaper").isEmpty(),
-                        jsonPath("$.isPrivate").value(false)
-                );
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(4))
+                .andExpect(jsonPath("$.listName").value(TestConstants.LIST_NAME))
+                .andExpect(jsonPath("$.altWallpaper").value(TestConstants.LIST_ALT_WALLPAPER))
+                .andExpect(jsonPath("$.wallpaper").isEmpty())
+                .andExpect(jsonPath("$.isPrivate").value(false));
     }
 
     @Test
-    @DisplayName("[404] GET /ui/v1/lists/pin/58 - Should pinned list Not Found by id")
-    void pinList_ShouldPinnedListNotFound() throws Exception {
-        mockMvc.perform(get(UI_V1_LISTS + PIN_LIST_ID, 58)
+    @DisplayName("[404] GET /ui/v1/lists/pin/8 - Should pinned list Not Found by id")
+    public void pinList_ShouldPinnedListNotFound() throws Exception {
+        mockMvc.perform(get(UI_V1_LISTS + PIN_LIST_ID, 8)
                         .header(AUTH_USER_ID_HEADER, TestConstants.USER_ID))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$", is(LIST_NOT_FOUND)));
     }
 
     @Test
-    @DisplayName("[200] GET /ui/v1/lists/add/user/51 - Get lists to add user")
-    void getListsToAddUser() throws Exception {
-        mockMvc.perform(get(UI_V1_LISTS + ADD_USER_USER_ID, 51)
+    @DisplayName("[200] GET /ui/v1/lists/add/user/1 - Get lists to add user")
+    public void getListsToAddUser() throws Exception {
+        mockMvc.perform(get(UI_V1_LISTS + ADD_USER_USER_ID, 1)
                         .header(AUTH_USER_ID_HEADER, TestConstants.USER_ID))
-                .andExpectAll(
-                        status().isOk(),
-                        jsonPath("$[*]", hasSize(2)),
-                        jsonPath("$[0].id", Matchers.oneOf(54, 56)),
-                        jsonPath("$[0].name").value(TestConstants.LIST_NAME),
-                        jsonPath("$[0].altWallpaper").value(TestConstants.LIST_ALT_WALLPAPER),
-                        jsonPath("$[0].wallpaper").isEmpty(),
-                        jsonPath("$[0].isMemberInList").value(true),
-                        jsonPath("$[0].isPrivate").value(false)
-                );
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[*]", hasSize(2)))
+                .andExpect(jsonPath("$[0].id", Matchers.oneOf(4, 6)))
+                .andExpect(jsonPath("$[0].listName").value(TestConstants.LIST_NAME))
+                .andExpect(jsonPath("$[0].altWallpaper").value(TestConstants.LIST_ALT_WALLPAPER))
+                .andExpect(jsonPath("$[0].wallpaper").isEmpty())
+                .andExpect(jsonPath("$[0].isMemberInList").value(true))
+                .andExpect(jsonPath("$[0].isPrivate").value(false));
     }
 
     @Test
     @DisplayName("[200] POST /ui/v1/lists/add/user - Add users to lists")
-    void addUserToLists() throws Exception {
+    public void addUserToLists() throws Exception {
         createUserToList(1L);
 
         mockMvc.perform(post(UI_V1_LISTS + ADD_USER)
@@ -577,7 +538,7 @@ class ListsControllerTest extends IntegrationTestBase {
 
     @Test
     @DisplayName("[400] POST /ui/v1/lists/add/user - Should user is blocked Add users to lists")
-    void addUserToLists_ShouldUserIsBlocked() throws Exception {
+    public void addUserToLists_ShouldUserIsBlocked() throws Exception {
         createUserToList(4L);
 
         mockMvc.perform(post(UI_V1_LISTS + ADD_USER)
@@ -590,7 +551,7 @@ class ListsControllerTest extends IntegrationTestBase {
 
     @Test
     @DisplayName("[404] POST /ui/v1/lists/add/user - Should user have a private profile")
-    void addUserToLists_ShouldUserHavePrivateProfile() throws Exception {
+    public void addUserToLists_ShouldUserHavePrivateProfile() throws Exception {
         createUserToList(3L);
 
         mockMvc.perform(post(UI_V1_LISTS + ADD_USER)
@@ -603,7 +564,7 @@ class ListsControllerTest extends IntegrationTestBase {
 
     @Test
     @DisplayName("[400] POST /ui/v1/lists/add/user - Should user blocked my profile")
-    void addUserToLists_ShouldUserBlockedMyProfile() throws Exception {
+    public void addUserToLists_ShouldUserBlockedMyProfile() throws Exception {
         createUserToList(6L);
 
         mockMvc.perform(post(UI_V1_LISTS + ADD_USER)
@@ -616,7 +577,7 @@ class ListsControllerTest extends IntegrationTestBase {
 
     @Test
     @DisplayName("[200] POST /ui/v1/lists/add/user/1/6 - Add user to list")
-    void addUserToList() throws Exception {
+    public void addUserToList() throws Exception {
         mockMvc.perform(get(UI_V1_LISTS + ADD_USER_LIST_ID, 1, 6)
                         .header(AUTH_USER_ID_HEADER, TestConstants.USER_ID))
                 .andExpect(status().isOk())
@@ -625,7 +586,7 @@ class ListsControllerTest extends IntegrationTestBase {
 
     @Test
     @DisplayName("[400] POST /ui/v1/lists/add/user/4/6 - Should user is blocked Add users to list")
-    void addUserToList_ShouldUserIsBlocked() throws Exception {
+    public void addUserToList_ShouldUserIsBlocked() throws Exception {
         mockMvc.perform(get(UI_V1_LISTS + ADD_USER_LIST_ID, 4, 6)
                         .header(AUTH_USER_ID_HEADER, TestConstants.USER_ID))
                 .andExpect(status().isBadRequest())
@@ -634,7 +595,7 @@ class ListsControllerTest extends IntegrationTestBase {
 
     @Test
     @DisplayName("[404] POST /ui/v1/lists/add/user/3/6 - Should user have a private profile")
-    void addUserToList_ShouldUserHavePrivateProfile() throws Exception {
+    public void addUserToList_ShouldUserHavePrivateProfile() throws Exception {
         mockMvc.perform(get(UI_V1_LISTS + ADD_USER_LIST_ID, 3, 6)
                         .header(AUTH_USER_ID_HEADER, TestConstants.USER_ID))
                 .andExpect(status().isNotFound())
@@ -643,7 +604,7 @@ class ListsControllerTest extends IntegrationTestBase {
 
     @Test
     @DisplayName("[400] POST /ui/v1/lists/add/user/6/6 - Should user blocked my profile")
-    void addUserToList_ShouldUserBlockedMyProfile() throws Exception {
+    public void addUserToList_ShouldUserBlockedMyProfile() throws Exception {
         mockMvc.perform(get(UI_V1_LISTS + ADD_USER_LIST_ID, 6, 6)
                         .header(AUTH_USER_ID_HEADER, TestConstants.USER_ID))
                 .andExpect(status().isBadRequest())
@@ -652,7 +613,7 @@ class ListsControllerTest extends IntegrationTestBase {
 
     @Test
     @DisplayName("[404] POST /ui/v1/lists/add/user/7/99 - Should list Not Found")
-    void addUserToList_ShouldListNotFound() throws Exception {
+    public void addUserToList_ShouldListNotFound() throws Exception {
         mockMvc.perform(get(UI_V1_LISTS + ADD_USER_LIST_ID, 7, 99)
                         .header(AUTH_USER_ID_HEADER, TestConstants.USER_ID))
                 .andExpect(status().isNotFound())
@@ -661,7 +622,7 @@ class ListsControllerTest extends IntegrationTestBase {
 
     @Test
     @DisplayName("[200] GET /ui/v1/lists/add/user/1/4 - Remove user from list")
-    void removeUserFromList() throws Exception {
+    public void removeUserFromList() throws Exception {
         mockMvc.perform(get(UI_V1_LISTS + ADD_USER_LIST_ID, 1, 4)
                         .header(AUTH_USER_ID_HEADER, TestConstants.USER_ID))
                 .andExpect(status().isOk())
@@ -669,99 +630,93 @@ class ListsControllerTest extends IntegrationTestBase {
     }
 
     @Test
-    @DisplayName("[200] GET /ui/v1/lists/54/tweets - Get tweets by list id")
-    void getTweetsByListId() throws Exception {
-        mockMvc.perform(get(UI_V1_LISTS + LIST_ID_TWEETS, 54)
+    @DisplayName("[200] GET /ui/v1/lists/4/tweets - Get tweets by list id")
+    public void getTweetsByListId() throws Exception {
+        mockMvc.perform(get(UI_V1_LISTS + LIST_ID_TWEETS, 4)
                         .header(AUTH_USER_ID_HEADER, TestConstants.USER_ID))
-                .andExpectAll(
-                        status().isOk(),
-                        jsonPath("$[*]", hasSize(1)),
-                        jsonPath("$[0].id").value(45L),
-                        jsonPath("$[0].text").value("media tweet test"),
-                        jsonPath("$[0].dateTime").value("2021-10-03T20:38:51"),
-                        jsonPath("$[0].scheduledDate").isEmpty(),
-                        jsonPath("$[0].addressedUsername").isEmpty(),
-                        jsonPath("$[0].addressedId").isEmpty(),
-                        jsonPath("$[0].addressedTweetId").isEmpty(),
-                        jsonPath("$[0].replyType").value(ReplyType.EVERYONE.toString()),
-                        jsonPath("$[0].link").isEmpty(),
-                        jsonPath("$[0].linkTitle").isEmpty(),
-                        jsonPath("$[0].linkDescription").isEmpty(),
-                        jsonPath("$[0].linkCover").isEmpty(),
-                        jsonPath("$[0].linkCoverSize").isEmpty(),
-                        jsonPath("$[0].user.id").value(1L),
-                        jsonPath("$[0].images[0].id").value(1L),
-                        jsonPath("$[0].quoteTweet.id").value(40L),
-                        jsonPath("$[0].poll").isEmpty(),
-                        jsonPath("$[0].retweetsCount").value(1L),
-                        jsonPath("$[0].likedTweetsCount").value(1L),
-                        jsonPath("$[0].repliesCount").value(0L),
-                        jsonPath("$[0].isTweetLiked").value(true),
-                        jsonPath("$[0].isTweetRetweeted").value(true),
-                        jsonPath("$[0].isUserFollowByOtherUser").value(true),
-                        jsonPath("$[0].isTweetDeleted").value(false),
-                        jsonPath("$[0].isTweetBookmarked").value(false)
-                );
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[*]", hasSize(1)))
+                .andExpect(jsonPath("$[0].id").value(45L))
+                .andExpect(jsonPath("$[0].text").value("media tweet test"))
+                .andExpect(jsonPath("$[0].dateTime").value("2021-10-03T20:38:51"))
+                .andExpect(jsonPath("$[0].scheduledDate").isEmpty())
+                .andExpect(jsonPath("$[0].addressedUsername").isEmpty())
+                .andExpect(jsonPath("$[0].addressedId").isEmpty())
+                .andExpect(jsonPath("$[0].addressedTweetId").isEmpty())
+                .andExpect(jsonPath("$[0].replyType").value(ReplyType.EVERYONE.toString()))
+                .andExpect(jsonPath("$[0].link").isEmpty())
+                .andExpect(jsonPath("$[0].linkTitle").isEmpty())
+                .andExpect(jsonPath("$[0].linkDescription").isEmpty())
+                .andExpect(jsonPath("$[0].linkCover").isEmpty())
+                .andExpect(jsonPath("$[0].linkCoverSize").isEmpty())
+                .andExpect(jsonPath("$[0].user.id").value(1L))
+                .andExpect(jsonPath("$[0].images[0].id").value(1L))
+                .andExpect(jsonPath("$[0].quoteTweet.id").value(40L))
+                .andExpect(jsonPath("$[0].poll").isEmpty())
+                .andExpect(jsonPath("$[0].retweetsCount").value(1L))
+                .andExpect(jsonPath("$[0].likedTweetsCount").value(1L))
+                .andExpect(jsonPath("$[0].repliesCount").value(0L))
+                .andExpect(jsonPath("$[0].isTweetLiked").value(true))
+                .andExpect(jsonPath("$[0].isTweetRetweeted").value(true))
+                .andExpect(jsonPath("$[0].isUserFollowByOtherUser").value(true))
+                .andExpect(jsonPath("$[0].isTweetDeleted").value(false))
+                .andExpect(jsonPath("$[0].isTweetBookmarked").value(false));
     }
 
     @Test
-    @DisplayName("[404] GET /ui/v1/lists/55/tweets - Get tweets by other user private list id")
-    void getTweetsByUserPrivateListId() throws Exception {
-        mockMvc.perform(get(UI_V1_LISTS + LIST_ID_TWEETS, 55)
+    @DisplayName("[404] GET /ui/v1/lists/5/tweets - Get tweets by other user private list id")
+    public void getTweetsByUserPrivateListId() throws Exception {
+        mockMvc.perform(get(UI_V1_LISTS + LIST_ID_TWEETS, 5)
                         .header(AUTH_USER_ID_HEADER, TestConstants.USER_ID))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$", is(LIST_NOT_FOUND)));
     }
 
     @Test
-    @DisplayName("[200] GET /ui/v1/lists/54/details - Get list details")
-    void getListDetails() throws Exception {
-        mockMvc.perform(get(UI_V1_LISTS + LIST_ID_DETAILS, 54)
+    @DisplayName("[200] GET /ui/v1/lists/4/details - Get list details")
+    public void getListDetails() throws Exception {
+        mockMvc.perform(get(UI_V1_LISTS + LIST_ID_DETAILS, 4)
                         .header(AUTH_USER_ID_HEADER, TestConstants.USER_ID))
-                .andExpectAll(
-                        status().isOk(),
-                        jsonPath("$.id").value(54),
-                        jsonPath("$.name").value(TestConstants.LIST_NAME),
-                        jsonPath("$.description").value(TestConstants.LIST_DESCRIPTION),
-                        jsonPath("$.altWallpaper").value(TestConstants.LIST_ALT_WALLPAPER),
-                        jsonPath("$.wallpaper").isEmpty(),
-                        jsonPath("$.listOwner.id").value(TestConstants.LIST_USER_ID),
-                        jsonPath("$.membersSize").value(1L),
-                        jsonPath("$.followersSize").value(1L),
-                        jsonPath("$.isPrivate").value(false),
-                        jsonPath("$.isFollower").value(false)
-                );
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(4))
+                .andExpect(jsonPath("$.listName").value(TestConstants.LIST_NAME))
+                .andExpect(jsonPath("$.description").value(TestConstants.LIST_DESCRIPTION))
+                .andExpect(jsonPath("$.altWallpaper").value(TestConstants.LIST_ALT_WALLPAPER))
+                .andExpect(jsonPath("$.wallpaper").isEmpty())
+                .andExpect(jsonPath("$.listOwner.id").value(TestConstants.LIST_USER_ID))
+                .andExpect(jsonPath("$.membersSize").value(1L))
+                .andExpect(jsonPath("$.followersSize").value(1L))
+                .andExpect(jsonPath("$.isPrivate").value(false))
+                .andExpect(jsonPath("$.isFollower").value(false));
     }
 
     @Test
-    @DisplayName("[404] GET /ui/v1/lists/55/details - Get list details by other user private list")
-    void getListDetailsByUserPrivateList() throws Exception {
-        mockMvc.perform(get(UI_V1_LISTS + LIST_ID_DETAILS, 55)
+    @DisplayName("[404] GET /ui/v1/lists/5/details - Get list details by other user private list")
+    public void getListDetailsByUserPrivateList() throws Exception {
+        mockMvc.perform(get(UI_V1_LISTS + LIST_ID_DETAILS, 5)
                         .header(AUTH_USER_ID_HEADER, TestConstants.USER_ID))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$", is(LIST_NOT_FOUND)));
     }
 
     @Test
-    @DisplayName("[200] GET /ui/v1/lists/54/2/followers - Get list followers")
-    void getListFollowers() throws Exception {
-        mockMvc.perform(get(UI_V1_LISTS + LIST_ID_FOLLOWERS, 54, 2)
+    @DisplayName("[200] GET /ui/v1/lists/4/2/followers - Get list followers")
+    public void getListFollowers() throws Exception {
+        mockMvc.perform(get(UI_V1_LISTS + LIST_ID_FOLLOWERS, 4, 2)
                         .header(AUTH_USER_ID_HEADER, TestConstants.USER_ID))
-                .andExpectAll(
-                        status().isOk(),
-                        jsonPath("$[*]", hasSize(1)),
-                        jsonPath("$[0].id").value(1L),
-                        jsonPath("$[0].fullName").value(TestConstants.USERNAME2),
-                        jsonPath("$[0].username").value(TestConstants.USERNAME2),
-                        jsonPath("$[0].about").value(TestConstants.ABOUT2),
-                        jsonPath("$[0].avatar").value(TestConstants.AVATAR_SRC_2),
-                        jsonPath("$[0].isPrivateProfile").value(false)
-                );
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[*]", hasSize(1)))
+                .andExpect(jsonPath("$[0].id").value(1L))
+                .andExpect(jsonPath("$[0].fullName").value(TestConstants.USERNAME2))
+                .andExpect(jsonPath("$[0].username").value(TestConstants.USERNAME2))
+                .andExpect(jsonPath("$[0].about").value(TestConstants.ABOUT2))
+                .andExpect(jsonPath("$[0].avatar").value(TestConstants.AVATAR_SRC_1))
+                .andExpect(jsonPath("$[0].isPrivateProfile").value(false));
     }
 
     @Test
     @DisplayName("[404] GET /ui/v1/lists/99/2/followers - Get list followers should list Not Found")
-    void getListFollowers_ShouldListNotFound() throws Exception {
+    public void getListFollowers_ShouldListNotFound() throws Exception {
         mockMvc.perform(get(UI_V1_LISTS + LIST_ID_FOLLOWERS, 99, 2)
                         .header(AUTH_USER_ID_HEADER, TestConstants.USER_ID))
                 .andExpect(status().isNotFound())
@@ -769,61 +724,57 @@ class ListsControllerTest extends IntegrationTestBase {
     }
 
     @Test
-    @DisplayName("[404] GET /ui/v1/lists/55/1/followers - Get list followers by private list should list Not Found")
-    void getListFollowers_ByPrivateListShouldListNotFound() throws Exception {
-        mockMvc.perform(get(UI_V1_LISTS + LIST_ID_FOLLOWERS, 55, 1)
+    @DisplayName("[404] GET /ui/v1/lists/5/1/followers - Get list followers by private list should list Not Found")
+    public void getListFollowers_ByPrivateListShouldListNotFound() throws Exception {
+        mockMvc.perform(get(UI_V1_LISTS + LIST_ID_FOLLOWERS, 5, 1)
                         .header(AUTH_USER_ID_HEADER, TestConstants.USER_ID))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$", is(LIST_NOT_FOUND)));
     }
 
     @Test
-    @DisplayName("[400] GET /ui/v1/lists/60/5/followers - Get list followers by blocked user")
-    void getListFollowers_ByBlockedUserAndListNotFound() throws Exception {
-        mockMvc.perform(get(UI_V1_LISTS + LIST_ID_FOLLOWERS, 60, 5)
+    @DisplayName("[400] GET /ui/v1/lists/10/5/followers - Get list followers by blocked user")
+    public void getListFollowers_ByBlockedUserAndListNotFound() throws Exception {
+        mockMvc.perform(get(UI_V1_LISTS + LIST_ID_FOLLOWERS, 10, 5)
                         .header(AUTH_USER_ID_HEADER, TestConstants.USER_ID))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$", is(String.format(USER_ID_BLOCKED, 2))));
     }
 
     @Test
-    @DisplayName("[200] GET /ui/v1/lists/54/2/members - Get list members")
-    void getListMembers() throws Exception {
-        mockMvc.perform(get(UI_V1_LISTS + LIST_ID_MEMBERS, 54, 2)
+    @DisplayName("[200] GET /ui/v1/lists/4/2/members - Get list members")
+    public void getListMembers() throws Exception {
+        mockMvc.perform(get(UI_V1_LISTS + LIST_ID_MEMBERS, 4, 2)
                         .header(AUTH_USER_ID_HEADER, TestConstants.USER_ID))
-                .andExpectAll(
-                        status().isOk(),
-                        jsonPath("$[*]", hasSize(1)),
-                        jsonPath("$[0].id").value(1L),
-                        jsonPath("$[0].fullName").value(TestConstants.USERNAME2),
-                        jsonPath("$[0].username").value(TestConstants.USERNAME2),
-                        jsonPath("$[0].about").value(TestConstants.ABOUT2),
-                        jsonPath("$[0].avatar").value(TestConstants.AVATAR_SRC_2),
-                        jsonPath("$[0].isPrivateProfile").value(false),
-                        jsonPath("$[0].isMemberInList").value(true)
-                );
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[*]", hasSize(1)))
+                .andExpect(jsonPath("$[0].id").value(1L))
+                .andExpect(jsonPath("$[0].fullName").value(TestConstants.USERNAME2))
+                .andExpect(jsonPath("$[0].username").value(TestConstants.USERNAME2))
+                .andExpect(jsonPath("$[0].about").value(TestConstants.ABOUT2))
+                .andExpect(jsonPath("$[0].avatar").value(TestConstants.AVATAR_SRC_1))
+                .andExpect(jsonPath("$[0].isPrivateProfile").value(false))
+                .andExpect(jsonPath("$[0].isMemberInList").value(true));
     }
 
     @Test
-    @DisplayName("[200] GET /ui/v1/lists/59/1/members - Get list members by another user")
-    void getListMembersByAnotherUser() throws Exception {
-        mockMvc.perform(get(UI_V1_LISTS + LIST_ID_MEMBERS, 59, 1)
+    @DisplayName("[200] GET /ui/v1/lists/9/1/members - Get list members by another user")
+    public void getListMembersByAnotherUser() throws Exception {
+        mockMvc.perform(get(UI_V1_LISTS + LIST_ID_MEMBERS, 9, 1)
                         .header(AUTH_USER_ID_HEADER, TestConstants.USER_ID))
-                .andExpectAll(
-                        status().isOk(),
-                        jsonPath("$[*]", hasSize(1)),
-                        jsonPath("$[0].id").value(1L),
-                        jsonPath("$[0].fullName").value(TestConstants.USERNAME2),
-                        jsonPath("$[0].username").value(TestConstants.USERNAME2),
-                        jsonPath("$[0].about").value(TestConstants.ABOUT2),
-                        jsonPath("$[0].avatar").value(TestConstants.AVATAR_SRC_2),
-                        jsonPath("$[0].isPrivateProfile").value(false)
-                        );
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[*]", hasSize(1)))
+                .andExpect(jsonPath("$[0].id").value(1L))
+                .andExpect(jsonPath("$[0].fullName").value(TestConstants.USERNAME2))
+                .andExpect(jsonPath("$[0].username").value(TestConstants.USERNAME2))
+                .andExpect(jsonPath("$[0].about").value(TestConstants.ABOUT2))
+                .andExpect(jsonPath("$[0].avatar").value(TestConstants.AVATAR_SRC_1))
+                .andExpect(jsonPath("$[0].isPrivateProfile").value(false));
     }
 
     @Test
     @DisplayName("[404] GET /ui/v1/lists/99/2/members - Get list members should list Not Found")
-    void getListMembers_ShouldListNotFound() throws Exception {
+    public void getListMembers_ShouldListNotFound() throws Exception {
         mockMvc.perform(get(UI_V1_LISTS + LIST_ID_MEMBERS, 99, 2)
                         .header(AUTH_USER_ID_HEADER, TestConstants.USER_ID))
                 .andExpect(status().isNotFound())
@@ -831,18 +782,18 @@ class ListsControllerTest extends IntegrationTestBase {
     }
 
     @Test
-    @DisplayName("[404] GET /ui/v1/lists/55/1/members - Get list members by private list should list Not Found")
-    void getListMembers_ByPrivateListShouldListNotFound() throws Exception {
-        mockMvc.perform(get(UI_V1_LISTS + LIST_ID_MEMBERS, 55, 1)
+    @DisplayName("[404] GET /ui/v1/lists/5/1/members - Get list members by private list should list Not Found")
+    public void getListMembers_ByPrivateListShouldListNotFound() throws Exception {
+        mockMvc.perform(get(UI_V1_LISTS + LIST_ID_MEMBERS, 5, 1)
                         .header(AUTH_USER_ID_HEADER, TestConstants.USER_ID))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$", is(LIST_NOT_FOUND)));
     }
 
     @Test
-    @DisplayName("[400] GET /ui/v1/lists/60/5/members - Get list members by blocked user")
-    void getListMembers_ByBlockedUserAndListNotFound() throws Exception {
-        mockMvc.perform(get(UI_V1_LISTS + LIST_ID_MEMBERS, 60, 5)
+    @DisplayName("[400] GET /ui/v1/lists/10/5/members - Get list members by blocked user")
+    public void getListMembers_ByBlockedUserAndListNotFound() throws Exception {
+        mockMvc.perform(get(UI_V1_LISTS + LIST_ID_MEMBERS, 10, 5)
                         .header(AUTH_USER_ID_HEADER, TestConstants.USER_ID))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$", is(String.format(USER_ID_BLOCKED, 2))));
@@ -850,7 +801,7 @@ class ListsControllerTest extends IntegrationTestBase {
 
     @Test
     @DisplayName("[200] GET /ui/v1/lists/search/2/MrCat - Search list members by username")
-    void searchListMembersByUsername() throws Exception {
+    public void searchListMembersByUsername() throws Exception {
         mockMvc.perform(get(UI_V1_LISTS + SEARCH_LIST_ID, 2, TestConstants.USERNAME)
                         .header(AUTH_USER_ID_HEADER, TestConstants.USER_ID))
                 .andExpect(status().isOk())

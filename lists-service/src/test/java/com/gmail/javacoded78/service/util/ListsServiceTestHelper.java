@@ -4,6 +4,7 @@ import com.gmail.javacoded78.dto.request.UserToListsRequest;
 import com.gmail.javacoded78.dto.response.lists.ListMemberResponse;
 import com.gmail.javacoded78.dto.response.user.CommonUserResponse;
 import com.gmail.javacoded78.model.Lists;
+import com.gmail.javacoded78.model.User;
 import com.gmail.javacoded78.repository.projection.BaseListProjection;
 import com.gmail.javacoded78.repository.projection.ListProjection;
 import com.gmail.javacoded78.repository.projection.ListUserProjection;
@@ -19,6 +20,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static com.gmail.javacoded78.util.TestConstants.ABOUT;
+import static com.gmail.javacoded78.util.TestConstants.AVATAR_SRC_1;
+import static com.gmail.javacoded78.util.TestConstants.FULL_NAME;
+import static com.gmail.javacoded78.util.TestConstants.USERNAME;
+import static com.gmail.javacoded78.util.TestConstants.USER_ID;
+
 public class ListsServiceTestHelper {
 
     private static final ProjectionFactory factory = new SpelAwareProxyProjectionFactory();
@@ -28,24 +35,22 @@ public class ListsServiceTestHelper {
                 ListProjection.class,
                 Map.of(
                         "id", 1L,
-                        "name", TestConstants.LIST_NAME,
+                        "listName", TestConstants.LIST_NAME,
                         "description", TestConstants.LIST_DESCRIPTION,
                         "altWallpaper", TestConstants.LIST_ALT_WALLPAPER,
                         "wallpaper", "",
-                        "listOwnerId", TestConstants.LIST_USER_ID,
-                        "listOwner", new CommonUserResponse(),
+                        "listOwner", mockUser(USER_ID),
                         "isFollower", false,
                         "isListPinned", false));
         ListProjection list2 = factory.createProjection(
                 ListProjection.class,
                 Map.of(
                         "id", 2L,
-                        "name", TestConstants.LIST_NAME_2,
+                        "listName", TestConstants.LIST_NAME_2,
                         "description", TestConstants.LIST_DESCRIPTION,
                         "altWallpaper", TestConstants.LIST_ALT_WALLPAPER,
                         "wallpaper", "",
-                        "listOwnerId", TestConstants.LIST_USER_ID,
-                        "listOwner", new CommonUserResponse(),
+                        "listOwner", mockUser(USER_ID),
                         "isFollower", false,
                         "isListPinned", false));
         return Arrays.asList(list1, list2);
@@ -56,24 +61,22 @@ public class ListsServiceTestHelper {
                 ListUserProjection.class,
                 Map.of(
                         "id", 1L,
-                        "name", TestConstants.LIST_NAME,
+                        "listName", TestConstants.LIST_NAME,
                         "description", TestConstants.LIST_DESCRIPTION,
                         "altWallpaper", TestConstants.LIST_ALT_WALLPAPER,
                         "wallpaper", "",
-                        "listOwnerId", TestConstants.LIST_USER_ID,
-                        "listOwner", new CommonUserResponse(),
+                        "listOwner", mockUser(USER_ID),
                         "isListPinned", false,
                         "isPrivate", false));
         ListUserProjection listUser2 = factory.createProjection(
                 ListUserProjection.class,
                 Map.of(
                         "id", 2L,
-                        "name", TestConstants.LIST_NAME_2,
+                        "listName", TestConstants.LIST_NAME_2,
                         "description", TestConstants.LIST_DESCRIPTION,
                         "altWallpaper", TestConstants.LIST_ALT_WALLPAPER,
                         "wallpaper", "",
-                        "listOwnerId", TestConstants.LIST_USER_ID,
-                        "listOwner", new CommonUserResponse(),
+                        "listOwner", mockUser(USER_ID),
                         "isListPinned", false,
                         "isPrivate", false));
         return Arrays.asList(listUser1, listUser2);
@@ -84,7 +87,7 @@ public class ListsServiceTestHelper {
                 PinnedListProjection.class,
                 Map.of(
                         "id", 1L,
-                        "name", TestConstants.LIST_NAME,
+                        "listName", TestConstants.LIST_NAME,
                         "altWallpaper", TestConstants.LIST_ALT_WALLPAPER,
                         "wallpaper", "",
                         "isListPinned", false,
@@ -93,7 +96,7 @@ public class ListsServiceTestHelper {
                 PinnedListProjection.class,
                 Map.of(
                         "id", 2L,
-                        "name", TestConstants.LIST_NAME_2,
+                        "listName", TestConstants.LIST_NAME_2,
                         "altWallpaper", TestConstants.LIST_ALT_WALLPAPER,
                         "wallpaper", "",
                         "isListPinned", false,
@@ -106,7 +109,7 @@ public class ListsServiceTestHelper {
                 SimpleListProjection.class,
                 Map.of(
                         "id", 1L,
-                        "name", TestConstants.LIST_NAME,
+                        "listName", TestConstants.LIST_NAME,
                         "altWallpaper", TestConstants.LIST_ALT_WALLPAPER,
                         "wallpaper", "",
                         "isPrivate", false));
@@ -114,7 +117,7 @@ public class ListsServiceTestHelper {
                 SimpleListProjection.class,
                 Map.of(
                         "id", 2L,
-                        "name", TestConstants.LIST_NAME_2,
+                        "listName", TestConstants.LIST_NAME_2,
                         "altWallpaper", TestConstants.LIST_ALT_WALLPAPER,
                         "wallpaper", "",
                         "isPrivate", false));
@@ -144,13 +147,12 @@ public class ListsServiceTestHelper {
     public static BaseListProjection createMockBaseListProjection(Long listOwnerId) {
         Map<String, Object> baseListMap = new HashMap<>();
         baseListMap.put("id", TestConstants.LIST_ID);
-        baseListMap.put("name", TestConstants.LIST_NAME);
+        baseListMap.put("listName", TestConstants.LIST_NAME);
         baseListMap.put("description", TestConstants.LIST_DESCRIPTION);
         baseListMap.put("altWallpaper", TestConstants.LIST_ALT_WALLPAPER);
         baseListMap.put("wallpaper", "");
-        baseListMap.put("listOwnerId", listOwnerId);
         baseListMap.put("isPrivate", false);
-        baseListMap.put("listOwner", new CommonUserResponse());
+        baseListMap.put("listOwner", mockUser(listOwnerId));
         baseListMap.put("membersSize", 111L);
         baseListMap.put("followersSize", 111L);
         baseListMap.put("isFollower", true);
@@ -163,8 +165,9 @@ public class ListsServiceTestHelper {
         lists.setListName(TestConstants.LIST_NAME);
         lists.setDescription(TestConstants.LIST_DESCRIPTION);
         lists.setAltWallpaper(TestConstants.LIST_ALT_WALLPAPER);
+        lists.setPrivate(false);
         lists.setWallpaper("");
-        lists.setListOwnerId(TestConstants.LIST_USER_ID);
+        lists.setListOwner(mockUser(USER_ID));
         return lists;
     }
 
@@ -183,13 +186,24 @@ public class ListsServiceTestHelper {
                 TweetListProjection.class,
                 Map.of(
                         "id", TestConstants.LIST_ID,
-                        "name", TestConstants.LIST_NAME,
+                        "listName", TestConstants.LIST_NAME,
                         "altWallpaper", TestConstants.LIST_ALT_WALLPAPER,
                         "wallpaper", "",
-                        "listOwnerId", userId,
-                        "listOwner", new CommonUserResponse(),
+                        "listOwner", mockUser(userId),
                         "isPrivate", false,
                         "membersSize", 1L
                 ));
+    }
+
+    public static User mockUser(Long userId) {
+        User user = new User();
+        user.setId(userId);
+        user.setFullName(FULL_NAME);
+        user.setUsername(USERNAME);
+        user.setAbout(ABOUT);
+        user.setAvatar(AVATAR_SRC_1);
+        user.setPrivateProfile(false);
+        user.setActive(true);
+        return user;
     }
 }

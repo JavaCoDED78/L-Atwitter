@@ -23,31 +23,27 @@ class ListsApiControllerTest extends IntegrationTestBase {
     private final MockMvc mockMvc;
 
     @Test
-    @DisplayName("[200] GET /api/v1/lists/54 - Get Notification List")
-    void getNotificationList() throws Exception {
-        mockMvc.perform(get(API_V1_LISTS + LIST_ID, 54)
+    @DisplayName("[200] GET /api/v1/lists/4 - Get Notification List")
+    public void getNotificationList() throws Exception {
+        mockMvc.perform(get(API_V1_LISTS + LIST_ID, 4)
                         .header(AUTH_USER_ID_HEADER, TestConstants.USER_ID))
-                .andExpectAll(
-                        status().isOk(),
-                        jsonPath("$.id").value(54),
-                        jsonPath("$.name").value(TestConstants.LIST_NAME)
-                );
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(4))
+                .andExpect(jsonPath("$.listName").value(TestConstants.LIST_NAME));
     }
 
     @Test
-    @DisplayName("[200] GET /api/v1/lists/tweet/54 - Get tweet list by id")
-    void getTweetList() throws Exception {
-        mockMvc.perform(get(API_V1_LISTS + TWEET_LIST_ID, 54)
+    @DisplayName("[200] GET /api/v1/lists/tweet/4 - Get tweet list by id")
+    public void getTweetList() throws Exception {
+        mockMvc.perform(get(API_V1_LISTS + TWEET_LIST_ID, 4)
                         .header(AUTH_USER_ID_HEADER, TestConstants.USER_ID))
-                .andExpectAll(
-                        status().isOk(),
-                        jsonPath("$.id").value(54),
-                        jsonPath("$.name").value(TestConstants.LIST_NAME),
-                        jsonPath("$.altWallpaper").value(TestConstants.LIST_ALT_WALLPAPER),
-                        jsonPath("$.wallpaper").isEmpty(),
-                        jsonPath("$.listOwner.id").value(TestConstants.LIST_USER_ID),
-                        jsonPath("$.membersSize").value(1L),
-                        jsonPath("$.isPrivate").value(false)
-                );
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(4))
+                .andExpect(jsonPath("$.listName").value(TestConstants.LIST_NAME))
+                .andExpect(jsonPath("$.altWallpaper").value(TestConstants.LIST_ALT_WALLPAPER))
+                .andExpect(jsonPath("$.wallpaper").isEmpty())
+                .andExpect(jsonPath("$.listOwner.id").value(TestConstants.LIST_USER_ID))
+                .andExpect(jsonPath("$.membersSize").value(1L))
+                .andExpect(jsonPath("$.isPrivate").value(false));
     }
 }
