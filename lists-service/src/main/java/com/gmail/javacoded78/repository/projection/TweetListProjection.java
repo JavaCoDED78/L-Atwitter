@@ -1,6 +1,7 @@
 package com.gmail.javacoded78.repository.projection;
 
 import com.gmail.javacoded78.dto.response.user.CommonUserResponse;
+import com.gmail.javacoded78.model.User;
 import org.springframework.beans.factory.annotation.Value;
 
 public interface TweetListProjection {
@@ -9,12 +10,9 @@ public interface TweetListProjection {
     String getListName();
     String getAltWallpaper();
     String getWallpaper();
-    Long getListOwnerId();
     boolean getIsPrivate();
+    User getListOwner();
 
-    @Value("#{@listsServiceHelper.getListOwnerById(target.listOwnerId)}")
-    CommonUserResponse getListOwner();
-
-    @Value("#{@listsMembersRepository.getMembersSize(target.id)}")
+    @Value("#{@listsRepository.getMembersSize(target.id)}")
     Long getMembersSize();
 }

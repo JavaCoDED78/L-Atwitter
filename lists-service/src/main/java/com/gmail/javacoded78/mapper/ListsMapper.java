@@ -21,6 +21,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Map;
 
 @Component
 @RequiredArgsConstructor
@@ -116,17 +117,15 @@ public class ListsMapper {
     }
 
     public List<ListMemberResponse> getListMembers(Long listId, Long listOwnerId) {
-        return listsService.getListMembers(listId, listOwnerId).stream()
-                .map(map -> {
-                    ListMemberResponse listMemberResponse = basicMapper.convertToResponse(map.get("user"), ListMemberResponse.class);
-                    listMemberResponse.setMemberInList((Boolean) map.get("isMemberInList"));
-                    return listMemberResponse;
-                })
-                .toList();
+        return mapMembers(listsService.getListMembers(listId, listOwnerId));
     }
 
     public List<ListMemberResponse> searchListMembersByUsername(Long listId, String username) {
-        return listsService.searchListMembersByUsername(listId, username).stream()
+        return mapMembers(listsService.searchListMembersByUsername(listId, username));
+    }
+
+    private List<ListMemberResponse> mapMembers(List<Map<String, Object>> members) {
+        return members.stream()
                 .map(map -> {
                     ListMemberResponse listMemberResponse = basicMapper.convertToResponse(map.get("user"), ListMemberResponse.class);
                     listMemberResponse.setMemberInList((Boolean) map.get("isMemberInList"));

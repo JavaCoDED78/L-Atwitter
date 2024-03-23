@@ -45,7 +45,7 @@ public class TestConstants {
 
     public static final String TEST_TWEET_TEXT = "test text";
     public static final String USERNAME2 = "Andrei Soroka";
-    public static final String ABOUT2 = "Hello2";
+    public static final String ABOUT2 = "Hello twitter!";
 
     public static final Long TWEET_ID = 11L;
     public static final String TWEET_TEXT = "#JetBrains https://www.jetbrains.com/ ";

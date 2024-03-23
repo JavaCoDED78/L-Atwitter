@@ -7,11 +7,7 @@ import com.gmail.javacoded78.dto.response.user.CommonUserResponse;
 import com.gmail.javacoded78.enums.NotificationType;
 import com.gmail.javacoded78.exception.ApiRequestException;
 import com.gmail.javacoded78.feign.NotificationClient;
-import com.gmail.javacoded78.feign.UserClient;
-import com.gmail.javacoded78.repository.ListsFollowersRepository;
-import com.gmail.javacoded78.repository.ListsMembersRepository;
 import com.gmail.javacoded78.repository.ListsRepository;
-import com.gmail.javacoded78.repository.PinnedListsRepository;
 import com.gmail.javacoded78.util.TestConstants;
 import com.gmail.javacoded78.util.TestUtil;
 

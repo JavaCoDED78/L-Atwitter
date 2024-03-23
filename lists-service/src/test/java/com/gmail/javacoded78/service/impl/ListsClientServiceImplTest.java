@@ -3,7 +3,6 @@ package com.gmail.javacoded78.service.impl;
 import com.gmail.javacoded78.dto.response.notification.NotificationListResponse;
 import com.gmail.javacoded78.dto.response.tweet.TweetListResponse;
 import com.gmail.javacoded78.dto.response.user.CommonUserResponse;
-import com.gmail.javacoded78.feign.UserClient;
 import com.gmail.javacoded78.mapper.BasicMapper;
 import com.gmail.javacoded78.repository.ListsRepository;
 import com.gmail.javacoded78.repository.projection.NotificationListProjection;

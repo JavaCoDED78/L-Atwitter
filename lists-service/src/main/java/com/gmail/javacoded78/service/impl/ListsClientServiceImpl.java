@@ -2,7 +2,6 @@ package com.gmail.javacoded78.service.impl;
 
 import com.gmail.javacoded78.dto.response.notification.NotificationListResponse;
 import com.gmail.javacoded78.dto.response.tweet.TweetListResponse;
-import com.gmail.javacoded78.feign.UserClient;
 import com.gmail.javacoded78.mapper.BasicMapper;
 import com.gmail.javacoded78.repository.ListsRepository;
 import com.gmail.javacoded78.repository.projection.NotificationListProjection;
@@ -21,7 +20,7 @@ import java.util.Optional;
 public class ListsClientServiceImpl implements ListsClientService {
 
     private final ListsRepository listsRepository;
-    private final UserClient userClient;
+    private final UserService userService;
     private final BasicMapper basicMapper;
 
     @Override
@@ -35,10 +34,10 @@ public class ListsClientServiceImpl implements ListsClientService {
         Long authUserId = AuthUtil.getAuthenticatedUserId();
         Optional<TweetListProjection> list = listsRepository.getListById(listId, authUserId, TweetListProjection.class);
 
-        if (list.isEmpty() || Boolean.TRUE.equals(userClient.isUserBlocked(list.get().getListOwnerId(), authUserId))) {
+        if (list.isEmpty() || userService.isUserBlocked(list.get().getListOwner().getId(), authUserId)) {
             return new TweetListResponse();
         }
-        if (!authUserId.equals(list.get().getListOwnerId()) && Boolean.TRUE.equals(userClient.isUserHavePrivateProfile(list.get().getListOwnerId()))) {
+        if (!authUserId.equals(list.get().getListOwner().getId()) && userService.isUserHavePrivateProfile(list.get().getListOwner().getId(), authUserId)) {
             return new TweetListResponse();
         }
         return basicMapper.convertToResponse(list.get(), TweetListResponse.class);
