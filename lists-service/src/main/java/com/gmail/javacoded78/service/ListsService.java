@@ -6,6 +6,7 @@ import com.gmail.javacoded78.dto.response.tweet.TweetResponse;
 import com.gmail.javacoded78.dto.response.lists.ListMemberResponse;
 import com.gmail.javacoded78.dto.request.UserToListsRequest;
 import com.gmail.javacoded78.model.Lists;
+import com.gmail.javacoded78.model.User;
 import com.gmail.javacoded78.repository.projection.BaseListProjection;
 import com.gmail.javacoded78.repository.projection.ListProjection;
 import com.gmail.javacoded78.repository.projection.ListUserProjection;
@@ -49,9 +50,9 @@ public interface ListsService {
 
     BaseListProjection getListDetails(Long listId);
 
-    List<ListMemberResponse> getListFollowers(Long listId, Long listOwnerId);
+    List<User> getListFollowers(Long listId, Long listOwnerId);
 
-    List<ListMemberResponse> getListMembers(Long listId, Long listOwnerId);
+    List<Map<String, Object>> getListMembers(Long listId, Long listOwnerId);
 
-    List<ListMemberResponse> searchListMembersByUsername(Long listId, String username);
+    List<Map<String, Object>> searchListMembersByUsername(Long listId, String username);
 }

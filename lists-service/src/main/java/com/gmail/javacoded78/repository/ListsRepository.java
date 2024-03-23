@@ -1,6 +1,7 @@
 package com.gmail.javacoded78.repository;
 
 import com.gmail.javacoded78.model.Lists;
+import com.gmail.javacoded78.model.User;
 import com.gmail.javacoded78.repository.projection.BaseListProjection;
 import com.gmail.javacoded78.repository.projection.ListProjection;
 import com.gmail.javacoded78.repository.projection.ListUserProjection;
@@ -103,13 +104,56 @@ public interface ListsRepository extends JpaRepository<Lists, Long> {
             LEFT JOIN list.listsMembers listsMember
             WHERE list.id = :listId
             AND list.listOwner.id = :authUserId
-            AND list.id IN (
-               SELECT listsMembers.listId FROM ListsMembers listsMembers
-               WHERE listsMembers.memberId = :memberId)
+            AND listsMember.id = :memberId
             """)
-    boolean isListIncludeUser2(@Param("listId") Long listId,
-                               @Param("authUserId") Long authUserId,
-                               @Param("memberId") Long memberId);
+    boolean isListIncludeUser(@Param("listId") Long listId,
+                              @Param("authUserId") Long authUserId,
+                              @Param("memberId") Long memberId);
+
+    @Query("""
+            SELECT list FROM Lists list
+            LEFT JOIN list.listsFollowers listsFollower
+            WHERE list.id = :listId AND list.listOwner.id = :authUserId
+            OR list.id = :listId AND list.isPrivate = false
+            OR list.id = :listId AND list.isPrivate = true AND listsFollower.id = :authUserId
+            """)
+    Optional<Lists> getNotPrivateList(@Param("listId") Long listId, @Param("authUserId") Long authUserId);
+
+    @Query("""
+            SELECT lists FROM Lists lists
+            WHERE lists.id = :listId AND lists.isPrivate = false
+            OR lists.id = :listId AND lists.listOwner.id = :authUserId
+            """)
+    Optional<BaseListProjection> getListDetails(@Param("listId") Long listId, @Param("authUserId") Long authUserId);
+
+    @Query("""
+            SELECT CASE WHEN count(list) > 0 THEN true ELSE false END FROM Lists list
+            LEFT JOIN list.listsFollowers listsFollower
+            WHERE list.id = :listId AND list.listOwner.id = :listOwnerId
+            OR list.id = :listId AND listsFollower.id = :listOwnerId
+            """)
+    boolean isListExist(@Param("listId") Long listId, @Param("listOwnerId") Long listOwnerId);
+
+    @Query("""
+            SELECT list.isPrivate FROM Lists list
+            WHERE list.id = :listId
+            AND list.listOwner.id <> :authUserId
+            """)
+    boolean isListPrivate(@Param("listId") Long listId, @Param("authUserId") Long authUserId);
+
+    @Query("""
+            SELECT listsFollower FROM Lists list
+            JOIN list.listsFollowers listsFollower
+            WHERE list.id = :listId
+            """)
+    List<User> getFollowersByListId(@Param("listId") Long listId);
+
+    @Query("""
+            SELECT listsMember FROM Lists list
+            JOIN list.listsMembers listsMember
+            WHERE list.id = :listId
+            """)
+    List<User> getMembersByListId(@Param("listId") Long listId);
 
     @Query("SELECT list FROM Lists list WHERE list.listOwner.id IN :listOwnerIds")
     List<ListProjection> getAllTweetLists(@Param("listOwnerIds") List<Long> listOwnerIds);
@@ -162,38 +206,33 @@ public interface ListsRepository extends JpaRepository<Lists, Long> {
     @Query("SELECT list FROM Lists list WHERE list.listOwner.id = :ownerId")
     List<SimpleListProjection> getUserOwnerLists(@Param("ownerId") Long ownerId);
 
-    @Query("SELECT CASE WHEN count(list) > 0 THEN true ELSE false END FROM Lists list " +
-            "WHERE list.id = :listId " +
-            "AND list.listOwner.id = :authUserId " +
-            "AND list.id IN (" +
-            "   SELECT listsMembers.listId FROM ListsMembers listsMembers " +
-            "   WHERE listsMembers.memberId = :memberId)")
-    boolean isListIncludeUser(@Param("listId") Long listId,
-                              @Param("authUserId") Long authUserId,
-                              @Param("memberId") Long memberId);
+//    @Query("SELECT CASE WHEN count(list) > 0 THEN true ELSE false END FROM Lists list " +
+//            "WHERE list.id = :listId " +
+//            "AND list.listOwner.id = :authUserId " +
+//            "AND list.id IN (" +
+//            "   SELECT listsMembers.listId FROM ListsMembers listsMembers " +
+//            "   WHERE listsMembers.memberId = :memberId)")
+//    boolean isListIncludeUser(@Param("listId") Long listId,
+//                              @Param("authUserId") Long authUserId,
+//                              @Param("memberId") Long memberId);
 
-    @Query("SELECT CASE WHEN count(list) > 0 THEN true ELSE false END FROM Lists list " +
-            "WHERE list.id = :listId AND list.listOwner.id = :listOwnerId " +
-            "OR list.id = :listId AND list.id IN (" +
-            "   SELECT listFollower.listId FROM ListsFollowers listFollower " +
-            "   WHERE listFollower.followerId = :listOwnerId)")
-    boolean isListExist(@Param("listId") Long listId, @Param("listOwnerId") Long listOwnerId);
+//    @Query("SELECT CASE WHEN count(list) > 0 THEN true ELSE false END FROM Lists list " +
+//            "WHERE list.id = :listId AND list.listOwner.id = :listOwnerId " +
+//            "OR list.id = :listId AND list.id IN (" +
+//            "   SELECT listFollower.listId FROM ListsFollowers listFollower " +
+//            "   WHERE listFollower.followerId = :listOwnerId)")
+//    boolean isListExist(@Param("listId") Long listId, @Param("listOwnerId") Long listOwnerId);
 
-    @Query("SELECT CASE WHEN count(list) > 0 THEN true ELSE false END FROM Lists list " +
-            "WHERE list.id = :listId AND list.listOwner.id = :authUserId " +
-            "OR list.id = :listId AND list.isPrivate = false " +
-            "OR list.id = :listId AND list.isPrivate = true AND list.id IN (" +
-            "   SELECT listFollower.listId FROM ListsFollowers listFollower " +
-            "   WHERE listFollower.followerId = :authUserId)")
-    boolean isListNotPrivate(@Param("listId") Long listId, @Param("authUserId") Long authUserId);
+//    @Query("SELECT CASE WHEN count(list) > 0 THEN true ELSE false END FROM Lists list " +
+//            "WHERE list.id = :listId AND list.listOwner.id = :authUserId " +
+//            "OR list.id = :listId AND list.isPrivate = false " +
+//            "OR list.id = :listId AND list.isPrivate = true AND list.id IN (" +
+//            "   SELECT listFollower.listId FROM ListsFollowers listFollower " +
+//            "   WHERE listFollower.followerId = :authUserId)")
+//    boolean isListNotPrivate(@Param("listId") Long listId, @Param("authUserId") Long authUserId);
 
-    @Query("SELECT lists FROM Lists lists " +
-            "WHERE lists.id = :listId AND lists.isPrivate = false " +
-            "OR lists.id = :listId AND lists.listOwner.id = :authUserId")
-    Optional<BaseListProjection> getListDetails(@Param("listId") Long listId, @Param("authUserId") Long authUserId);
-
-    @Query("SELECT list.isPrivate FROM Lists list " +
-            "WHERE list.id = :listId " +
-            "AND list.listOwner.id <> :authUserId")
-    boolean isListPrivate(@Param("listId") Long listId, @Param("authUserId") Long authUserId);
+//    @Query("SELECT list.isPrivate FROM Lists list " +
+//            "WHERE list.id = :listId " +
+//            "AND list.listOwner.id <> :authUserId")
+//    boolean isListPrivate(@Param("listId") Long listId, @Param("authUserId") Long authUserId);
 }
