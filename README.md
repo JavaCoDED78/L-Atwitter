@@ -1,5 +1,8 @@
 # L-Atwitter
 
+[![Lines-of-Code](https://tokei.rs/b1/github.com/javacoded78/l-atwitter)](https://github.com/javacoded78/l-atwitter)
+
+
 > L-Atwitter is a social media application clone that allows users to connect and share their thoughts and experiences with
 > others. With a robust system design and a reliable technology stack, Twitter provides a seamless and secure user
 > experience.</br>
